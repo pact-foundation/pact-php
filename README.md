@@ -1,10 +1,12 @@
-# Pact-PHP-Native
+# Pact PHP
 
 PHP version of Pact. Enables consumer driven contract testing, providing a mock service and DSL for the consumer project, and interaction playback and verification for the service provider project.
 
 This is a project to provide Pact functionality completely in PHP. This started as a straight port of 
 [Pact.Net](https://github.com/SEEK-Jobs/pact-net) on the 1.1 specification. Overtime, the project adjusted to a more 
 PHP way of doing things. 
+
+The namespace is PhpPact as [Pact-PHP](https://github.com/andykelk/pact-php) uses the namespace of PactPhp.
 
 
 ## Composer
