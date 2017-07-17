@@ -1,0 +1,32 @@
+{
+	"name": "mattersight/phppact",
+    "keywords": ["mattersight", "pact", "pact-php", "pact-php-native", "php-mock"],
+    "homepage": "https://github.com/Mattersight/php-pact",
+	"description": "Natively enables consumer driven contract testing, following the PACT foundation principles.",
+	"license": "MIT",
+	"prefer-stable": true,
+	"version": "1.0.1",
+    "authors": [
+        {
+            "name": "Mattermack",
+            "email": "charles.mack@mattersight.com"
+        }
+    ],
+    "require": {
+        "php-http/guzzle6-adapter": "^1.1",
+        "windwalker/http": "~3.0",
+        "apache/log4php": "^2.3",
+        "lukascivil/treewalker": "^0.41.0",
+        "jfalque/http-mock": "^1.0",
+        "justinrainbow/json-schema": "^5.2",
+		"php": ">=7"
+    },
+	"require-dev": {
+	    "phpunit/phpunit": "^6.2"
+	},
+	"autoload": {
+        "psr-4": {
+            "PhpPact\\": "src"
+        }
+    }
+}

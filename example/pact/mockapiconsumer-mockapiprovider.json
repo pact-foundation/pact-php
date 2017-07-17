@@ -1,0 +1,157 @@
+{
+	"provider":
+	{
+		"name": "MockApiProvider"
+	},
+	"consumer":
+	{
+		"name": "MockApiConsumer"
+	},
+	"interactions": [
+		{
+			"description": "There are ids and names - expect three types by default",
+			"provider_state": "A GET request to get types",
+			"request":
+			{
+				"method": "get",
+				"path": "/provider.php",
+				"headers":
+				{
+					"Accept": "application/json"
+				}
+			},
+			"response":
+			{
+				"status": 200,
+				"headers":
+				{
+					"Content-Type": "application/json"
+				},
+				"body":
+				{
+					"types": [
+						{
+							"id": 100,
+							"name": "Type 100"
+						},
+						{
+							"id": 101,
+							"name": "Type 101"
+						},
+						{
+							"id": 102,
+							"name": "Type 102"
+						}
+					]
+				}
+			}
+		},
+		{
+			"description": "There are ids and names - expect up to four types",
+			"provider_state": "A GET request to get variable types",
+			"request":
+			{
+				"method": "get",
+				"path": "/provider.php",
+				"query": "?amount=10",
+				"headers":
+				{
+					"Accept": "application/json"
+				}
+			},
+			"response":
+			{
+				"status": 200,
+				"headers":
+				{
+					"Content-Type": "application/json"
+				},
+				"body":
+				{
+					"types": [
+						{
+							"id": 100,
+							"name": "Type 100"
+						},
+						{
+							"id": 101,
+							"name": "Type 101"
+						},
+						{
+							"id": 102,
+							"name": "Type 102"
+						},
+						{
+							"id": 103,
+							"name": "Type 103"
+						}
+					]
+				}
+			}
+		},
+		{
+			"description": "A GET request to test setup and tear down",
+			"provider_state": "A GET request for a setup",
+			"request":
+			{
+				"method": "get",
+				"path": "/provider.php",
+				"query": "?file=mock.json",
+				"headers":
+				{
+					"Accept": "application/json"
+				}
+			},
+			"response":
+			{
+				"status": 200,
+				"headers":
+				{
+					"Content-Type": "application/json"
+				},
+				"body":
+				{
+					"types": [
+						{
+							"id": 700,
+							"name": "mock"
+						}
+					]
+				}
+			}
+		},
+		{
+			"description": "A POST request to save types",
+			"provider_state": "There is something to POST to",
+			"request":
+			{
+				"method": "post",
+				"path": "/provider.php",
+				"headers":
+				{
+					"Accept": "application/json"
+				},
+				"body":
+				{
+					"value": 1
+				}
+			},
+			"response":
+			{
+				"status": 200,
+				"headers":
+				{
+					"Content-Type": "application/json"
+				},
+				"body":
+				{
+					"type": "some new type"
+				}
+			}
+		}
+	],
+	"metadata":
+	{
+		"pactSpecificationVersion": "1.1.0"
+	}
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./test/bootstrap.php">
+  <testsuites>
+  	<testsuite name="PhpPact Example Test Suite">
+      <file>./example/test/ProviderTest.php</file>
+    </testsuite>
+  </testsuites>
+  <php>
+    <const name="WEB_SERVER_HOST" value="localhost" />
+    <const name="WEB_SERVER_PORT" value="1349" />
+    <const name="WEB_SERVER_DOCROOT" value="./example/site" />
+  </php>
+</phpunit>
