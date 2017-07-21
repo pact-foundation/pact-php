@@ -73,7 +73,7 @@ class PactBaseConfig
                 'layout' => array(
                     'class' => 'LoggerLayoutSimple'
                 ),
-                'threshold' => $consoleLevel;
+                'threshold' => $consoleLevel
             ));
 
 		// if there is log set, add another appender
