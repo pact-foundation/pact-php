@@ -61,35 +61,43 @@ class PactBaseConfig
     {
         $defaultLogValue = ini_get('error_log');
 
+		// if there is no log set, send everything to stderr
+		$consoleLevel = 'info';
+		if (!$defaultLogValue) {
+			$consoleLevel = 'DEBUG';	
+		}
+		
         $appenders = array(
             'console' => array(
                 'class' => 'LoggerAppenderConsole',
                 'layout' => array(
                     'class' => 'LoggerLayoutSimple'
                 ),
-                'threshold' => 'info'
+                'threshold' => $consoleLevel;
             ));
 
-        if ($defaultLogValue != 'syslog') {
-            $appenders["file"] = array(
-                'class' => 'LoggerAppenderFile',
-                'layout' => array(
-                    'class' => 'LoggerLayoutSimple'
-                ),
-                'params' => array(
-                    'file' => $defaultLogValue),
-                'append' => true
-            );
-        }
-        else {
-            $appenders['syslog'] = array(
-                'class' => 'LoggerAppenderSyslog',
-                'layout' => array(
-                    'class' => 'LoggerLayoutSimple'
-                )
-            );
-        }
-
+		// if there is log set, add another appender
+		if (!$defaultLogValue) {
+			if ($defaultLogValue != 'syslog') {
+				$appenders["file"] = array(
+					'class' => 'LoggerAppenderFile',
+					'layout' => array(
+						'class' => 'LoggerLayoutSimple'
+					),
+					'params' => array(
+						'file' => $defaultLogValue),
+					'append' => true
+				);
+			}
+			else {
+				$appenders['syslog'] = array(
+					'class' => 'LoggerAppenderSyslog',
+					'layout' => array(
+						'class' => 'LoggerLayoutSimple'
+					)
+				);
+			}
+		}
         \Logger::configure(array(
             'rootLogger' => array(
                 'appenders' => array_keys($appenders),
