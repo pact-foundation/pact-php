@@ -158,7 +158,7 @@ install:
   - appveyor DownloadFile https://getcomposer.org/composer.phar
   
   # try to update composer
-  - cmd: C:\tools\php71\php.exe .\composer.phar update
+  - cmd: C:\tools\php71\php.exe -i .\test\php.ini .\composer.phar update
   
   # batch commands start from cmd:
   - cmd: echo This is batch again
