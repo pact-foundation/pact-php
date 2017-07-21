@@ -149,6 +149,11 @@ install:
   - echo This is batch
   # to run script as a PowerShell command prepend it with ps:
   - ps: Write-Host 'This is PowerShell'
+  
+  # install php
+  - cinst php
+  - cmd: php -v
+  
   # batch commands start from cmd:
   - cmd: echo This is batch again
 #  - cmd: set MY_VAR=12345
@@ -198,6 +203,7 @@ install:
 #  publish_nuget: true             # package projects with .nuspec files and push to artifacts
 #  publish_nuget_symbols: true     # generate and publish NuGet symbol packages
 #  include_nuget_references: true  # add -IncludeReferencedProjects option while packaging NuGet artifacts
+build: off
 
   # MSBuild verbosity level
 #  verbosity: quiet|minimal|normal|detailed
