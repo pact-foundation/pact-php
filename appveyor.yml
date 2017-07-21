@@ -152,7 +152,7 @@ install:
   
   # install php
   - cinst php
-  - cmd: php -v
+  - cmd: C:\tools\php71\php.exe -v -i .\test\php.ini
   
   # batch commands start from cmd:
   - cmd: echo This is batch again
