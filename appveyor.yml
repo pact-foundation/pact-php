@@ -154,9 +154,15 @@ install:
   - cinst php
   - cmd: C:\tools\php71\php.exe -v -i .\test\php.ini
   
+  # install composer
+  - appveyor DownloadFile https://getcomposer.org/composer.phar
+  
+  # try to update composer
+  - cmd: C:\tools\php71\php.exe .\composer.phar update
+  
   # batch commands start from cmd:
   - cmd: echo This is batch again
-#  - cmd: set MY_VAR=12345
+
 
 # enable patching of AssemblyInfo.* files
 # assembly_info:
