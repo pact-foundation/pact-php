@@ -152,7 +152,9 @@ install:
   
   # install php
   - cinst php
-  - cmd: C:\tools\php71\php.exe -v -i .\test\php.ini
+  
+  # print php info
+  - cmd: C:\tools\php71\php.exe -i
   - cmd: copy /Y .\test\php.ini C:\tools\php71\
   
   # install composer
@@ -160,9 +162,6 @@ install:
   
   # try to update composer
   - cmd: C:\tools\php71\php.exe .\composer.phar update
-  
-  # batch commands start from cmd:
-  - cmd: echo This is batch again
 
 
 # enable patching of AssemblyInfo.* files

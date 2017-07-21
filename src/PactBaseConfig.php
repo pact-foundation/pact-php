@@ -77,7 +77,7 @@ class PactBaseConfig
             ));
 
 		// if there is log set, add another appender
-		if (!$defaultLogValue) {
+		if (!$defaultLogValue || $defaultLogValue == "stderr") {
 			if ($defaultLogValue != 'syslog') {
 				$appenders["file"] = array(
 					'class' => 'LoggerAppenderFile',
@@ -98,6 +98,7 @@ class PactBaseConfig
 				);
 			}
 		}
+		
         \Logger::configure(array(
             'rootLogger' => array(
                 'appenders' => array_keys($appenders),
