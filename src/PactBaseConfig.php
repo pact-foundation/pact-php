@@ -77,7 +77,7 @@ class PactBaseConfig
             ));
 
 		// if there is log set, add another appender
-		if (!$defaultLogValue || $defaultLogValue == "stderr") {
+		if ($defaultLogValue != false && $defaultLogValue != "stderr") {
 			if ($defaultLogValue != 'syslog') {
 				$appenders["file"] = array(
 					'class' => 'LoggerAppenderFile',
