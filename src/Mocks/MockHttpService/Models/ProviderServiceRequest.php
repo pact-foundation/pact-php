@@ -156,7 +156,7 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
             $obj->body = $this->_body;
 
             if ($this->isJsonString($obj->body)) {
-                $obj->body = \json_decode($obj->body);;
+                $obj->body = \json_decode($obj->body);
             }
         }
 
@@ -169,7 +169,7 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
             return false;
         }
 
-        \json_decode($obj);
+        @\json_decode($obj);
         if (\json_last_error()) {
             return false;
         }

@@ -284,6 +284,56 @@ $pactVerifier->ProviderState("Test State")
   
 ```
 
+## Pact Broker Integration
+To integrate with your pact broker host, there are several options. This section focuses on the ```PactBrokerConnector```.  To be fair, the pact broker authentication is currently untested but mirrors the implementation in pact-js.
+ 
+### Publishing Pacts
+There are several hopefully self explanatory functions in ```PactBrokerConnector```:
+
+- PublishFile - reads the JSON from a file
+- PublishJson - publishes from a JSON string
+- PublishPact - publishes from a ```ProviderServicePactFile``` object
+
+```php
+<?php
+
+// create your options
+$uriOptions = new \PhpPact\PactUriOptions("http://your-pact-broker" );
+$connector = new \PhpPact\PactBrokerConnector($uriOptions);
+
+// Use the appropriate function to read from a file, JSON string, or ProviderServicePactFile object
+$file = __DIR__ . '/../example/pact/mockapiconsumer-mockapiprovider.json';
+$statusCode = $connector->PublishFile($file, '1.0.3');
+
+```
+
+### Retrieving Pacts
+If you have an open pact broker, ```$pactVerifier->PactUri``` uses ```file_get_contents``` which accepts a URL.  You could simply use this technique in those cases.
+
+To do some more robust interactions, There are several hopefully self explanatory functions in ```PactBrokerConnector```:
+
+- RetrieveLatestProviderPacts - retrieve all the latest pacts associated with this provider
+- RetrievePact - retrieve particular pact
+
+```php
+<?php
+
+// create your options
+$uriOptions = new \PhpPact\PactUriOptions("http://your-pact-broker" );
+$connector = new \PhpPact\PactBrokerConnector($uriOptions);
+
+// particular version
+$pact = $connector->RetrievePact("MockApiProvider", "MockApiConsumer", "1.0.2");
+error_log(\json_encode($pact,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+// get all pacts for this provider
+$pacts = $connector->RetrieveLatestProviderPacts("MockApiProvider");
+$pact = array_pop($pacts);
+error_log(\json_encode($pact,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+```
+
+
 ## Project Tests
 To run Pact-Php-Native tests, there are several phpunit.xml files.   The provider tests use a Windows method to shutdown the mock server.
 Root is expected to be the root of Pact Php Native
