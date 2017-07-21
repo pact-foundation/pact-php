@@ -5,7 +5,6 @@
 	"description": "Natively enables consumer driven contract testing, following the PACT foundation principles.",
 	"license": "MIT",
 	"prefer-stable": true,
-	"version": "1.0.1",
     "authors": [
         {
             "name": "Mattermack",
