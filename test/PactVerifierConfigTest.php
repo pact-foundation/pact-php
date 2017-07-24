@@ -52,5 +52,7 @@ class PactVerifierConfigTest extends TestCase
         $this->assertEquals('http://127.0.10.13:333', $actual, 'The protocol embedded in the URL trumps what is passed in');
         $this->assertEquals("127.0.10.13", $config->getBaseUrn(), "Ensure URN is properly set");
         $this->assertEquals("333", $config->getPort(), "Ensure port is properly set");
+		
+		$this->assertTrue(false, "Force a failure to see if appveyor fails");
     }
 }
