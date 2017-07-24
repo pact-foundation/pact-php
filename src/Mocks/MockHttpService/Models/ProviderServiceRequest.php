@@ -146,6 +146,10 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
         $obj->method = $this->_method;
         $obj->path = $this->_path;
 
+        if ($this->_query) {
+            $obj->query = $this->_query;
+        }
+
         $header = $this->_headers;
         if (is_array($header)) {
             $header = (object)$header;
