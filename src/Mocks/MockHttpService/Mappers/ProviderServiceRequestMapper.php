@@ -19,16 +19,19 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
         $this->checkExistence($request, "method");
         $this->checkExistence($request, "path");
 
+        if (!isset($request->body)) {
+            $contentType = $this->GetContentType($request);
+            if (!$contentType) {
+                throw new \InvalidArgumentException("Header did not have a body or a proper content-type in the header");
+            }
+        }
+
         $body = false;
         if (isset($request->body) && $request->body != "") {
-            $this->checkExistence($request, "headers");
-
+            $contentType = $this->GetContentType($request);
             $body = $request->body;
-            $contentTypeStr = "Content-Type";
-            if (isset($request->headers->$contentTypeStr)
-                && stripos($request->headers->$contentTypeStr, "application/json") !== false
-                && !is_string($body)
-            ) {
+
+            if (stripos($contentType, "application/json") !== false && !is_string($body)) {
                 $body = \json_encode($body);
             }
         }
@@ -52,6 +55,26 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
             throw new \InvalidArgumentException("$attr was not set");
         }
     }
+
+    /**
+     * Mine the headers to pull out the content type
+     *
+     * @param $request
+     * @return bool
+     */
+    private function GetContentType($request)
+    {
+        $this->checkExistence($request, "headers");
+
+        $contentTypeStr = "Content-Type";
+        if (isset($request->headers->$contentTypeStr))
+        {
+            return $request->headers->$contentTypeStr;
+        }
+
+        return false;
+    }
+
 
     private function HttpRequestConvert(\Psr\Http\Message\RequestInterface $request)
     {

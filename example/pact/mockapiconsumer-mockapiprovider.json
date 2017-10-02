@@ -17,7 +17,7 @@
 				"path": "/provider.php",
 				"headers":
 				{
-					"Accept": "application/json"
+					"Content-Type": "application/json"
 				}
 			},
 			"response":
@@ -56,7 +56,7 @@
 				"query": "?amount=10",
 				"headers":
 				{
-					"Accept": "application/json"
+					"Content-Type": "application/json"
 				}
 			},
 			"response":
@@ -99,7 +99,7 @@
 				"query": "?file=mock.json",
 				"headers":
 				{
-					"Accept": "application/json"
+					"Content-Type": "application/json"
 				}
 			},
 			"response":

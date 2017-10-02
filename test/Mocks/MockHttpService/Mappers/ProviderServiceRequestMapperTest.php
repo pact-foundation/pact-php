@@ -19,8 +19,9 @@ class ProviderServiceRequestMapperTest extends TestCase
         $obj = new \stdClass();
         $obj->method = 'get';
         $obj->path = '/test';
-        $obj->headers = array();
-        $obj->headers["Content-Type"] = "application/json";
+        $obj->headers = new \stdClass();
+        $contentType = "Content-Type";
+        $obj->headers->$contentType = "application/json";
 
         $providerServiceRequest = $mapper->Convert($obj);
         $this->assertEquals('/test', $providerServiceRequest->getPath(), 'Path was set appropriately');
