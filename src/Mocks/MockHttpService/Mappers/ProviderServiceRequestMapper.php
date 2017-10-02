@@ -18,10 +18,11 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
 
         $this->checkExistence($request, "method");
         $this->checkExistence($request, "path");
-        $this->checkExistence($request, "headers");
 
         $body = false;
-        if (isset($request->body)) {
+        if (isset($request->body) && $request->body != "") {
+            $this->checkExistence($request, "headers");
+
             $body = $request->body;
             $contentTypeStr = "Content-Type";
             if (isset($request->headers->$contentTypeStr)
@@ -31,6 +32,12 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
                 $body = \json_encode($body);
             }
         }
+
+        // handle the case of empty body, then we do not care about the headers
+        if (!isset($request->headers)) {
+            $request->headers = null;
+        }
+
         $providerServiceRequest = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest($request->method, $request->path, $request->headers, $body);
         if (isset($request->query)) {
             $providerServiceRequest->setQuery($request->query);

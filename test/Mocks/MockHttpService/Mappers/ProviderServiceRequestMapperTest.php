@@ -19,27 +19,6 @@ class ProviderServiceRequestMapperTest extends TestCase
         $obj = new \stdClass();
         $obj->method = 'get';
         $obj->path = '/test';
-
-        $thrownException = false;
-        try {
-            $mapper->Convert($obj);
-        }catch(\Exception $e) {
-            $thrownException = true;
-        }
-        $this->assertTrue($thrownException, "Header was not included.  Throw an exception");
-
-        $obj = new \stdClass();
-        $obj->method = 'get';
-        $obj->path = '/test';
-        $obj->headers = array();
-
-        $providerServiceRequest = $mapper->Convert($obj);
-        $this->assertEquals('GET', $providerServiceRequest->getMethod(), 'Method was set appropriately and capitalized');
-        $this->assertEquals(array(), $providerServiceRequest->getHeaders(), "Empty headers are allowed");
-
-        $obj = new \stdClass();
-        $obj->method = 'get';
-        $obj->path = '/test';
         $obj->headers = array();
         $obj->headers["Content-Type"] = "application/json";
 
