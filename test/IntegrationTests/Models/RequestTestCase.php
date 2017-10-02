@@ -136,8 +136,6 @@ class RequestTestCase extends TestCase
     }
 
 
-
-
     public function Verify()
     {
         $result = $this->_requestComparer->Compare($this->_expected, $this->_actual);
