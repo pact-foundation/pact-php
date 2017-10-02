@@ -53,11 +53,7 @@ class ProviderServiceRequestComparer {
             $bodyResult = $this->_httpBodyComparer->Compare($expected->getBody(), $actual->getBody(), $expected->getMatchingRules());
             $result->AddChildResult($bodyResult);
         }
-        else if ($actual->getBody()) {
-            $result->RecordFailure(new \PhpPact\Comparers\ErrorMessageComparisonFailure(__CLASS__ . ": Expected no body but got one."));
-            $result->AddChildResult($bodyResult);
-        }
-
+        
         return $result;
     }
 

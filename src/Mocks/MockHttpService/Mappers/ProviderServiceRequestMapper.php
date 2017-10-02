@@ -19,13 +19,6 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
         $this->checkExistence($request, "method");
         $this->checkExistence($request, "path");
 
-        if (!isset($request->body)) {
-            $contentType = $this->GetContentType($request);
-            if (!$contentType) {
-                throw new \InvalidArgumentException("Header did not have a body or a proper content-type in the header");
-            }
-        }
-
         $body = false;
         if (isset($request->body) && $request->body != "") {
             $contentType = $this->GetContentType($request);
@@ -36,7 +29,6 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
             }
         }
 
-        // handle the case of empty body, then we do not care about the headers
         if (!isset($request->headers)) {
             $request->headers = null;
         }
@@ -64,10 +56,8 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
      */
     private function GetContentType($request)
     {
-        $this->checkExistence($request, "headers");
-
         $contentTypeStr = "Content-Type";
-        if (isset($request->headers->$contentTypeStr))
+        if (isset($request->headers) && isset($request->headers->$contentTypeStr))
         {
             return $request->headers->$contentTypeStr;
         }
