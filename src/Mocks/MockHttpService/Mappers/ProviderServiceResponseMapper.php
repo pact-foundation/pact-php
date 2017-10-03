@@ -22,7 +22,7 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
         $this->checkExistence($response, "headers");
 
         $body = false;
-        if (isset($response->body)) {
+        if (property_exists($response, "body")) {
             $body = $response->body;
 
             $contentTypeStr = "Content-Type";

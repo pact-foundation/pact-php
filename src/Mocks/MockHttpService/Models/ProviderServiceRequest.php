@@ -14,7 +14,7 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
     private $_matchingRules;
     private $_query; //[JsonProperty(PropertyName = "query")]
 
-    public function __construct($method, $path, $headers = null, $body = null)
+    public function __construct($method, $path, $headers = null, $body = false)
     {
         // enumerate over HttpVerb to set the value of the
         $verb = new \PhpPact\Mocks\MockHttpService\Models\HttpVerb();
@@ -24,7 +24,7 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
             $this->_headers = $headers;
         }
 
-        if ($body) {
+        if ($body !== false) {
             $this->setBody($body);
         }
     }
@@ -48,6 +48,11 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
     public function setBody($body)
     {
         $this->_bodyWasSet = true;
+
+        if (is_string($body) && strtolower($body) === "null") {
+            $body = null;
+        }
+
         $this->_body = $this->ParseBodyMatchingRules($body);
 
         return false;

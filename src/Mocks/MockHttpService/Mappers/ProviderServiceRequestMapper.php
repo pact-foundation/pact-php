@@ -20,7 +20,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
         $this->checkExistence($request, "path");
 
         $body = false;
-        if (isset($request->body) && $request->body != "") {
+        if (property_exists($request, "body")) {
             $contentType = $this->GetContentType($request);
             $body = $request->body;
 

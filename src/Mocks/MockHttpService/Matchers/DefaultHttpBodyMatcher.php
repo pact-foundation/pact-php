@@ -15,10 +15,25 @@ class DefaultHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
         $this->_allowExtraKeys = $allowExtraKeysInObjects;
     }
 
+    /**
+     * Check if expected and actual are empty strings or JSON objects
+     *
+     * @param $path
+     * @param $expected
+     * @param $actual
+     * @return \PhpPact\Matchers\MatcherResult
+     * @throws \Exception
+     */
     public function Match($path, $expected, $actual)
     {
+        // empty string check
         if (!is_object($expected) && !is_array($expected)) {
             throw new \Exception("Failed to compare objects.   If you are not testing objects, try the SerializeHttpBodyMatcher.");
+        }
+
+
+        if ((!is_object($expected) && !is_array($expected))  && (is_object($actual) || is_array($actual))) {
+            return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::ValueDoesNotMatch));
         }
 
         if (!$actual || (!is_object($actual) && !is_array($actual))) {
