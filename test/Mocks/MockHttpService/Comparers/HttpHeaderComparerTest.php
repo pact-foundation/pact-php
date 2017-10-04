@@ -28,6 +28,17 @@ class HttpHeaderComparerTest extends TestCase
         $results = $comparer->Compare($expectedHeaders, $actualHeaders);
         $this->assertFalse($results->HasFailure(), "We do not expect a failure here as the expected is a subset of actual");
 
+        // test that the lowercase comparison is implemented
+        $expectedHeaders = array();
+        $expectedHeaders["Content-Type"] = "application/json";
+
+        $actualHeaders = array();
+        $actualHeaders["coNTent-tYpe"] = "application/json";
+
+        $results = $comparer->Compare($expectedHeaders, $actualHeaders);
+        $this->assertFalse($results->HasFailure(), "We do not expect a failure here because it should be a lowercase comparison");
+
+
         // test that expected = actual
         $expectedHeaders = array();
         $expectedHeaders["Content-Type"] = "application/json";
@@ -38,7 +49,7 @@ class HttpHeaderComparerTest extends TestCase
         $actualHeaders["TestHeader"] = "Expect this to be there";
 
         $results = $comparer->Compare($expectedHeaders, $actualHeaders);
-        //$this->assertFalse($results->HasFailure(), "We do not expect a failure here as the expected is equal to actual");
+        $this->assertFalse($results->HasFailure(), "We do not expect a failure here as the expected is equal to actual");
 
         // test that expected is a superset of actual
         $expectedHeaders = array();
@@ -49,11 +60,7 @@ class HttpHeaderComparerTest extends TestCase
         $actualHeaders["Content-Type"] = "application/json";
 
         $results = $comparer->Compare($expectedHeaders, $actualHeaders);
-        //$this->assertTrue($results->HasFailure(), "We do expect a failure here as the expected is a super set to actual");
-
-
-        // tests classes
-        $obj = new \stdClass();
+        $this->assertTrue($results->HasFailure(), "We do expect a failure here as the expected is a super set to actual");
 
         // test that expected = actual
         $expectedHeaders = array();
@@ -65,7 +72,7 @@ class HttpHeaderComparerTest extends TestCase
         $actualHeaders->{"TestHeader"} = "Expect this to be there";
 
         $results = $comparer->Compare($expectedHeaders, $actualHeaders);
-        //$this->assertFalse($results->HasFailure(), "We do not expect a failure here as the expected is equal to actual.  Testing std class");
+        $this->assertFalse($results->HasFailure(), "We do not expect a failure here as the expected is equal to actual.  Testing std class");
 
     }
 }

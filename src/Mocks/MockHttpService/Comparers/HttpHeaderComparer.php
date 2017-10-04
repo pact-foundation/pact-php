@@ -22,6 +22,8 @@ class HttpHeaderComparer
         }
 
         $expectedArray = $this->ObjectToArray($expected);
+        $expectedArray = $this->MakeArrayLowerCase($expectedArray);
+
         $actualArray = $this->ObjectToArray($actual);
         $actualArray = $this->MakeArrayLowerCase($actualArray);
 
@@ -54,10 +56,9 @@ class HttpHeaderComparer
         foreach ($from as $key => $value) {
             if (is_array($value)) {
                 $value = $this->MakeArrayLowerCase($value);
-            } else {
-                $value = strtolower($value);
             }
-            $new[$key] = $value;
+
+            $new[strtolower($key)] = $value;
         }
 
         return $new;
