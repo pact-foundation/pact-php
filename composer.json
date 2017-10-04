@@ -5,6 +5,7 @@
 	"description": "Natively enables consumer driven contract testing, following the PACT foundation principles.",
 	"license": "MIT",
 	"prefer-stable": true,
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Mattermack",
@@ -15,9 +16,9 @@
         "php-http/guzzle6-adapter": "^1.1",
         "windwalker/http": "~3.0",
         "apache/log4php": "^2.3",
-        "lukascivil/treewalker": "^0.41.0",
+        "lukascivil/treewalker": "dev-master",
         "jfalque/http-mock": "^1.0",
-        "justinrainbow/json-schema": "^5.2",
+        "justinrainbow/json-schema": "5.2.1",
 		"php": ">=7"
     },
 	"require-dev": {

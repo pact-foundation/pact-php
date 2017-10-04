@@ -140,11 +140,39 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
 
     private function ParseBodyMatchingRules($body)
     {
+
         $this->_matchingRules = array();
-        $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\DefaultHttpBodyMatcher(false);
+
+        if ($this->getContentType() == "application/json") {
+            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
+        } else if ($this->getContentType() == "text/plain") {
+            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
+        }
+        else {
+            // make JSON the default based on specification tests
+            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
+        }
 
         return $body;
     }
+
+    /**
+     * Return the header value for Content-Type
+     *
+     * False is returned if not set
+     *
+     * @return mixed|bool
+     */
+    public function getContentType()
+    {
+        $headers = $this->getHeaders();
+        $key = 'Content-Type';
+        if (is_object($headers) && isset($headers->$key)) {
+            return $headers->$key;
+        }
+        return false;
+    }
+
 
     function jsonSerialize()
     {

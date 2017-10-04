@@ -4,7 +4,7 @@ namespace PhpPact\Mocks\MockHttpService\Matchers;
 
 use PHPUnit\Runner\Exception;
 
-class DefaultHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
+class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
 {
     CONST PATH = "$..*";
 

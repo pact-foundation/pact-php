@@ -25,4 +25,13 @@ interface IHttpMessage
      * @return mixed
      */
     public function setHeaders($headers);
+
+    /**
+     * Return the header value for Content-Type
+     *
+     * False is returned if not set
+     *
+     * @return mixed|bool
+     */
+    public function getContentType();
 }
