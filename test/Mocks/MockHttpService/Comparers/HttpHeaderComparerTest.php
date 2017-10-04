@@ -74,5 +74,34 @@ class HttpHeaderComparerTest extends TestCase
         $results = $comparer->Compare($expectedHeaders, $actualHeaders);
         $this->assertFalse($results->HasFailure(), "We do not expect a failure here as the expected is equal to actual.  Testing std class");
 
+        // test breaking apart header values by commas and other separators
+        $expectedHeaders = array();
+        $expectedHeaders["TestHeader"] = "expect, this to be there";
+
+        $actualHeaders = new \stdClass();
+        $actualHeaders->{"TestHeader"} = "expect, this to be there";
+
+        $results = $comparer->Compare($expectedHeaders, $actualHeaders);
+        $this->assertFalse($results->HasFailure(), "We do not expect a failure as the headers are identical with a comma (following a separate code path");
+
+        // test breaking apart header values by commas and other separators with spaces
+        $expectedHeaders = array();
+        $expectedHeaders["TestHeader"] = "expect, this space,  to be there";
+
+        $actualHeaders = new \stdClass();
+        $actualHeaders->{"TestHeader"} = "expect, this space, to be there";
+
+        $results = $comparer->Compare($expectedHeaders, $actualHeaders);
+        $this->assertFalse($results->HasFailure(), "We do not expect a failure as the headers are identical with more than one comma and extra spaces (following a separate code path");
+
+        // test breaking apart header values by commas and other separators with spaces where order matters
+        $expectedHeaders = array();
+        $expectedHeaders["TestHeader"] = "a, b, c";
+
+        $actualHeaders = new \stdClass();
+        $actualHeaders->{"TestHeader"} = "b, c, a";
+
+        $results = $comparer->Compare($expectedHeaders, $actualHeaders);
+        $this->assertTrue($results->HasFailure(), "Expect a failure as header value order matters");
     }
 }
