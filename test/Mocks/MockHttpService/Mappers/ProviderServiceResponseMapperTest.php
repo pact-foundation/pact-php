@@ -17,16 +17,6 @@ class ProviderServiceResponseMapperTest extends TestCase
     {
         $mapper = new ProviderServiceResponseMapper();
 
-        $obj = new \stdClass();
-        $obj->status = 200;
-
-        $thrownException = false;
-        try {
-            $mapper->Convert($obj);
-        }catch(\Exception $e) {
-            $thrownException = true;
-        }
-        $this->assertTrue($thrownException, "Header was not included.  Throw an exception");
 
         $obj = new \stdClass();
         $obj->status = 200;

@@ -18,23 +18,20 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
             return $response;
         }
 
-        $this->checkExistence($response, "status");
-        $this->checkExistence($response, "headers");
+        $headers = isset($response->headers)?$response->headers:array();
+        $status = isset($response->status)?$response->status:null;
 
         $body = false;
         if (property_exists($response, "body")) {
+            $contentType = $this->GetContentType($response);
             $body = $response->body;
 
-            $contentTypeStr = "Content-Type";
-            if (isset($response->headers->$contentTypeStr)
-                && stripos($response->headers->$contentTypeStr, "application/json") !== false
-                && !is_string($body)
-            ) {
+            if (stripos($contentType, "application/json") !== false && !is_string($body)) {
                 $body = \json_encode($body);
             }
         }
 
-        $providerServiceResponse = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse($response->status, $response->headers, $body);
+        $providerServiceResponse = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse($status, $headers, $body);
         return $providerServiceResponse;
     }
 
@@ -82,10 +79,20 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
         return $obj;
     }
 
-    private function checkExistence($obj, $attr)
+    /**
+     * Mine the headers to pull out the content type
+     *
+     * @param $request
+     * @return bool
+     */
+    private function GetContentType($response)
     {
-        if (!isset($obj->$attr)) {
-            throw new \InvalidArgumentException("$attr was not set");
+        $contentTypeStr = "Content-Type";
+        if (isset($response->headers) && isset($response->headers->$contentTypeStr))
+        {
+            return $response->headers->$contentTypeStr;
         }
+
+        return false;
     }
 }

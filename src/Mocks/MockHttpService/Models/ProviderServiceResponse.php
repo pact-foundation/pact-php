@@ -49,7 +49,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     }
 
 
-    public function __construct($status, $headers, $body = null)
+    public function __construct($status = null, $headers = array(), $body = null)
     {
         $this->_status = $status;
         $this->_headers = $headers;
