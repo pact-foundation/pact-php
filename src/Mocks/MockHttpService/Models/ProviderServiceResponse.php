@@ -65,6 +65,11 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     public function setBody($body)
     {
         $this->_bodyWasSet = true;
+
+        if (is_string($body) && strtolower($body) === "null") {
+            $body = null;
+        }
+
         $this->_body = $this->ParseBodyMatchingRules($body);
 
         return false;

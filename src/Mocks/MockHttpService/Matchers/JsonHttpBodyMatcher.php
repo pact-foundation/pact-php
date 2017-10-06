@@ -45,16 +45,68 @@ class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
             "returntype" => "array")              //Returntype = ["obj","jsonstring","array"]
         );
 
-        $results = $treewalker->getdiff($expected, $actual, false);
+        /*
+         * According to Pact, arrays have to remain the same regardless of extra keys allowed flag.
+         *
+         * Objects can have extra nodes but not arrays.   Here, we find all sub arrays and ensure they are the same
+         */
+        if ( method_exists($expected, "getBody") &&
+            method_exists($actual, "getBody") &&
+            $this->_allowExtraKeys == true
+        ) {
+            $arraysInActual = array();
+            $this->FindArrays($actual->getBody(), $arraysInActual);
+            error_log('$arraysInActual: '.print_r($arraysInActual, true)) ;
 
+            $arraysInExpected = array();
+            $this->FindArrays($expected->getBody(), $arraysInExpected);
+            error_log('$arraysInExpected: '.print_r($arraysInExpected, true)) ;
+
+            if (count($arraysInActual) != count($arraysInExpected)) {
+                return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::AdditionalPropertyInObject));
+            }
+
+            for($i = 0; $i<count($arraysInExpected); $i++) {
+                $testExpected = array_pop($arraysInExpected);
+                $testActual = array_pop($arraysInActual);
+                $diffs = $treewalker->getdiff($testExpected, $testActual, false);
+                $results = $this->ProcessResults($diffs, $path, false);
+                if ($results !== true) {
+                    return $results;
+                }
+            }
+        }
+
+        $diffs = $treewalker->getdiff($expected, $actual, false);
+        $results = $this->ProcessResults($diffs, $path, $this->_allowExtraKeys);
+        if ($results !== true) {
+            return $results;
+        }
+
+        return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\SuccessfulMatcherCheck($path));
+    }
+
+    private function ProcessResults($results, $path, $allowExtraObjectKeys = false)
+    {
         if (count($results['new']) > 0) {
             return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::AdditionalPropertyInObject));
         } else if (count($results['edited']) > 0) {
             return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::ValueDoesNotMatch));
-        } else if (count($results['removed']) > 0 && $this->_allowExtraKeys == false) {
+        } else if (count($results['removed']) > 0 && $allowExtraObjectKeys == false) {
             return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::AdditionalPropertyInObject));
         }
 
-        return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\SuccessfulMatcherCheck($path));
+        return true;
+    }
+
+    private function FindArrays($obj, &$result)
+    {
+        if (is_object($obj)) {
+            foreach ($obj as $key => $value) {
+                $this->FindArrays($value, $result);
+            }
+        } else if (is_array($obj)) {
+            $result[] = $obj;
+        }
     }
 }
