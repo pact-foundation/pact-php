@@ -12,6 +12,25 @@ The namespace is PhpPact as [Pact-PHP](https://github.com/andykelk/pact-php) use
 ## Composer
 Run `composer require mattersight/phppact`
 
+### Pact-PHP 1.1
+For Pact-PHP 1.1, there is an open pull request for one of the third party libraries.   Until that is resolved or completely fork from the library, you will need to use the following composer.json
+```json
+{
+	"prefer-stable": true,
+	"minimum-stability": "dev",
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/mattermack/TreeWalker"
+		}
+	],
+	"require":
+	{
+		"mattersight/phppact": "^1.1"
+	}
+}
+```
+
 ## Service Consumer
 
 ### 1. Build your client
