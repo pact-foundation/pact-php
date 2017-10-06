@@ -4,7 +4,7 @@
 #   - All section names are case-sensitive.
 #   - Section names should be unique on each level.
 
-version: 1.0.{build}
+version: 1.1.{build}
 
 branches:
   # whitelist
