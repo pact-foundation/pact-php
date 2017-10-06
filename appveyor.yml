@@ -33,7 +33,7 @@ install:
   - cmd: C:\tools\php71\php.exe -i
   - cmd: copy /Y .\test\php.ini C:\tools\php71\
   - appveyor DownloadFile https://getcomposer.org/composer.phar
-  - cmd: C:\tools\php71\php.exe .\composer.phar update
+  - cmd: C:\tools\php71\php.exe .\composer.phar update --ignore-platform-reqs
 
 build: off
 
