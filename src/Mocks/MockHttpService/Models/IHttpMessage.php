@@ -18,13 +18,13 @@ interface IHttpMessage
     /**
      * @return array
      */
-    public function getHeaders();
+    public function getHeaders() : array;
 
     /**
      * @param array $headers
      * @return mixed
      */
-    public function setHeaders($headers);
+    public function setHeaders(array $headers);
 
     /**
      * Return the header value for Content-Type
