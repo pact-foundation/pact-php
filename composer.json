@@ -12,17 +12,23 @@
             "email": "charles.mack@mattersight.com"
         }
     ],
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/mattermack/TreeWalker"
+      }
+    ],
     "require": {
         "php-http/guzzle6-adapter": "^1.1",
         "windwalker/http": "~3.0",
         "apache/log4php": "^2.3",
-        "lukascivil/treewalker": "dev-master",
         "jfalque/http-mock": "^1.0",
         "justinrainbow/json-schema": "5.2.1",
-		"php": ">=7"
+        "lukascivil/treewalker": "dev-bugfix-branch",
+        "php": ">=7"
     },
 	"require-dev": {
-        "symfony/yaml": "^3.3",
+      "symfony/yaml": "^3.3",
 	    "phpunit/phpunit": "^6.2",
 		"phpunit/php-invoker": "^1.1",
 		"phpunit/dbunit": "^3.0"
