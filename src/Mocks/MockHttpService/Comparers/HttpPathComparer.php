@@ -15,10 +15,6 @@ class HttpPathComparer
     {
         $result = new \PhpPact\Comparers\ComparisonResult(sprintf("has path %s", (string)$expected));
 
-        if (!$expected) {
-            return $result;
-        }
-
         if ($expected != $actual) {
             $result->RecordFailure(new \PhpPact\Comparers\DiffComparisonFailure($expected, $actual));
         }

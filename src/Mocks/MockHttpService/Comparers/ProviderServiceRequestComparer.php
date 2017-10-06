@@ -48,9 +48,10 @@ class ProviderServiceRequestComparer {
             $result->AddChildResult($headerResult);
         }
 
-        if ($expected->getBody())
+        // handles case where body is set but null
+        if ($expected->ShouldSerializeBody())
         {
-            $bodyResult = $this->_httpBodyComparer->Compare($expected->getBody(), $actual->getBody(), $expected->getMatchingRules());
+            $bodyResult = $this->_httpBodyComparer->Compare($expected, $actual, $expected->getMatchingRules());
             $result->AddChildResult($bodyResult);
         }
 

@@ -44,6 +44,11 @@ class HttpQueryStringComparerTest extends TestCase
         $actualUrl   = "http://localhost/folder/?x=1&y=2";
         $results = $comparer->Compare($expectedUrl, $actualUrl);
         $this->assertFalse($results->HasFailure(), "We expect no failures as there is the query is the same and supported at the folder root");
+
+        $expectedUrl = "http://localhost/folder/?x=1=a&y=2";
+        $actualUrl   = "http://localhost/folder/?x=1%3Da&y=2";
+        $results = $comparer->Compare($expectedUrl, $actualUrl);
+        $this->assertFalse($results->HasFailure(), "We expect no failures as the extra = should be encoded during the test");
     }
 
 }

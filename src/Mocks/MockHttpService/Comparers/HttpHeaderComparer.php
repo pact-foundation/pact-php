@@ -22,6 +22,8 @@ class HttpHeaderComparer
         }
 
         $expectedArray = $this->ObjectToArray($expected);
+        $expectedArray = $this->MakeArrayLowerCase($expectedArray);
+
         $actualArray = $this->ObjectToArray($actual);
         $actualArray = $this->MakeArrayLowerCase($actualArray);
 
@@ -31,9 +33,22 @@ class HttpHeaderComparer
 
             if (isset($actualArray[$header_key])) {
                 $actualValue = $actualArray[$header_key];
-                // we may want to split this out and compare each array
-                //$keywords = preg_split("/[\,;]+/", $actualValue[$header_key]);
-                if ($header_value != $actualValue) {
+
+                // split out the header values as an array and compare
+                $actualKeywords = preg_split("/[\,;]+/", $actualValue);
+                $expectedKeywords = preg_split("/[\,;]+/", $header_value);
+
+
+                if (count($actualKeywords) == count($expectedKeywords) && count($actualKeywords) > 0){
+                    $actualKeywords = array_map('trim', $actualKeywords);
+                    $expectedKeywords = array_map('trim', $expectedKeywords);
+
+                    if (!$this->array_diff_order($expectedKeywords, $actualKeywords)) {
+                        $failure = new \PhpPact\Comparers\DiffComparisonFailure($header_value, $actualValue);
+                        $headerResult->RecordFailure($failure);
+                    }
+                }
+                else if ($header_value != $actualValue) {
                     $failure = new \PhpPact\Comparers\DiffComparisonFailure($header_value, $actualValue);
                     $headerResult->RecordFailure($failure);
                 }
@@ -54,10 +69,9 @@ class HttpHeaderComparer
         foreach ($from as $key => $value) {
             if (is_array($value)) {
                 $value = $this->MakeArrayLowerCase($value);
-            } else {
-                $value = strtolower($value);
             }
-            $new[$key] = $value;
+
+            $new[strtolower($key)] = $value;
         }
 
         return $new;
@@ -69,5 +83,24 @@ class HttpHeaderComparer
             return $object;
 
         return array_map(array($this, 'ObjectToArray'), (array)$object);
+    }
+
+    /**
+     * We want to compare array values but in order.  Return true if they match
+     *
+     * @link https://stackoverflow.com/posts/17353683/revisions
+     *
+     * @param $array1
+     * @param $array2
+     * @return bool
+     */
+    private function array_diff_order( $array1, $array2 )
+    {
+        while ((list($key1, $val1) = each($array1)) && (list($key2, $val2) = each($array2)) ) {
+            if($key1 != $key2 || $val1 != $val2) {
+                return false;
+            }
+        }
+        return true;
     }
 }

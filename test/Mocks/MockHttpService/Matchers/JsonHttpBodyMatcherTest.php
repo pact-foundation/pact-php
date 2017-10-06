@@ -11,10 +11,10 @@ namespace PhpPact\Mocks\MockHttpService\Matchers;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Runner\Exception;
 
-class DefaultHttpBodyMatcherTest extends TestCase
+class JsonHttpBodyMatcherTest extends TestCase
 {
     public function testMatch() {
-        $matcher = new \PhpPact\Mocks\MockHttpService\Matchers\DefaultHttpBodyMatcher(false);
+        $matcher = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
 
         $expected = array();
         $expected[] = "Test";
@@ -91,7 +91,7 @@ class DefaultHttpBodyMatcherTest extends TestCase
         $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\FailedMatcherCheck), "This should be a failed match - new objects not allowed in current config");
 
         // test new objects (based on mapper allowKeysInObject = false
-        $matcher = new \PhpPact\Mocks\MockHttpService\Matchers\DefaultHttpBodyMatcher(true);
+        $matcher = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);
         $expected = new \stdClass();
         $expected->a1 = "a1";
 

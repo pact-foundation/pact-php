@@ -1,6 +1,9 @@
 <?php
 
-spl_autoload_register('pact_php_native_test_autoloader');
+spl_autoload_register('pact_php_native_src_autoloader');
+
+require_once (dirname(__FILE__) . '\\..\\vendor\\autoload.php');
+
 
 $command = CraftCommand(WEB_SERVER_HOST, WEB_SERVER_PORT, WEB_SERVER_DOCROOT);
 
@@ -73,13 +76,33 @@ function PrintDirectory($dir) {
 }
 
 // autoloader around source dir
-function pact_php_native_test_autoloader($className)
+function pact_php_native_src_autoloader($className)
 {
     $base = dirname(__FILE__) . '\\..\\src';
 
     $className = str_ireplace('\\PhpPact', '', $className);
     $className = str_ireplace('PhpPact', '', $className);
 
+    $path = $className;
+    $file = $base . $path . '.php';
+
+    if (file_exists($file)) {
+        require $file;
+    } else {
+        pact_php_native_test_autoloader($className);
+    }
+}
+
+
+function pact_php_native_test_autoloader($className)
+{
+    $base = dirname(__FILE__);
+
+    $className = str_ireplace('\\PhpPactTest', '', $className);
+    $className = str_ireplace('PhpPactTest', '', $className);
+    $className = str_ireplace('Test\\', '\\', $className);
+
+    $path = $className;
     $path = $className;
     $file = $base . $path . '.php';
 

@@ -49,7 +49,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     }
 
 
-    public function __construct($status, $headers, $body = null)
+    public function __construct($status = null, $headers = array(), $body = null)
     {
         $this->_status = $status;
         $this->_headers = $headers;
@@ -65,6 +65,11 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     public function setBody($body)
     {
         $this->_bodyWasSet = true;
+
+        if (is_string($body) && strtolower($body) === "null") {
+            $body = null;
+        }
+
         $this->_body = $this->ParseBodyMatchingRules($body);
 
         return false;
@@ -96,10 +101,35 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     private function ParseBodyMatchingRules($body)
     {
         $this->_matchingRules = array();
-        //$this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
-        $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\DefaultHttpBodyMatcher(true);
+
+        if ($this->getContentType() == "application/json") {
+            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);
+        } else if ($this->getContentType() == "text/plain") {
+            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
+        }
+        else {
+            // make JSON the default based on specification tests
+            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);
+        }
 
         return $body;
+    }
+
+    /**
+     * Return the header value for Content-Type
+     *
+     * False is returned if not set
+     *
+     * @return mixed|bool
+     */
+    public function getContentType()
+    {
+        $headers = $this->getHeaders();
+        $key = 'Content-Type';
+        if (is_object($headers) && isset($headers->$key)) {
+            return $headers->$key;
+        }
+        return false;
     }
 
 

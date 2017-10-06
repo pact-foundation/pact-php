@@ -12,7 +12,7 @@ namespace PhpPact\Mocks\MockHttpService\Comparers;
 
 use PHPUnit\Framework\TestCase;
 
-class ProviderServiceResponseMapperTest extends TestCase
+class ProviderServiceResponseComparerTest extends TestCase
 {
 
     public function testConvert()

@@ -29,10 +29,10 @@ class PactBuilderTest extends TestCase
         $pactFile->setProvider(new \PhpPact\Models\Pacticipant("testBuildProvider"));
         $pactFile->setConsumer(new \PhpPact\Models\Pacticipant("testBuildConsumer"));
 
-        $json = '{"description":"A GET request","provider_state":"Some types","request":{"method":"get","path":"/Call/","headers":{"Accept":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"A GET request","provider_state":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction1 = \json_decode($json);
 
-        $json = '{"description":"Another GET request","provider_state":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Accept":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"Another GET request","provider_state":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction2 = \json_decode($json);
 
         $expectedInteractions = array();

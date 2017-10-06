@@ -14,15 +14,17 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
     private $_matchingRules;
     private $_query; //[JsonProperty(PropertyName = "query")]
 
-    public function __construct($method, $path, $headers, $body = null)
+    public function __construct($method, $path, $headers = null, $body = false)
     {
         // enumerate over HttpVerb to set the value of the
         $verb = new \PhpPact\Mocks\MockHttpService\Models\HttpVerb();
         $this->_method = $verb->Enum($method);
         $this->_path = $path;
-        $this->_headers = $headers;
+        if ($headers) {
+            $this->_headers = $headers;
+        }
 
-        if ($body) {
+        if ($body !== false) {
             $this->setBody($body);
         }
     }
@@ -46,6 +48,11 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
     public function setBody($body)
     {
         $this->_bodyWasSet = true;
+
+        if (is_string($body) && strtolower($body) === "null") {
+            $body = null;
+        }
+
         $this->_body = $this->ParseBodyMatchingRules($body);
 
         return false;
@@ -133,11 +140,39 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
 
     private function ParseBodyMatchingRules($body)
     {
+
         $this->_matchingRules = array();
-        $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\DefaultHttpBodyMatcher(false);
+
+        if ($this->getContentType() == "application/json") {
+            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
+        } else if ($this->getContentType() == "text/plain") {
+            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
+        }
+        else {
+            // make JSON the default based on specification tests
+            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
+        }
 
         return $body;
     }
+
+    /**
+     * Return the header value for Content-Type
+     *
+     * False is returned if not set
+     *
+     * @return mixed|bool
+     */
+    public function getContentType()
+    {
+        $headers = $this->getHeaders();
+        $key = 'Content-Type';
+        if (is_object($headers) && isset($headers->$key)) {
+            return $headers->$key;
+        }
+        return false;
+    }
+
 
     function jsonSerialize()
     {
@@ -150,11 +185,13 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
             $obj->query = $this->_query;
         }
 
-        $header = $this->_headers;
-        if (is_array($header)) {
-            $header = (object)$header;
+        if ($this->_headers){
+            $header = $this->_headers;
+            if (is_array($header)) {
+                $header = (object)$header;
+            }
+            $obj->headers = $header;
         }
-        $obj->headers = $header;
 
         if ($this->_body) {
             $obj->body = $this->_body;
