@@ -56,11 +56,9 @@ class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
         ) {
             $arraysInActual = array();
             $this->FindArrays($actual->getBody(), $arraysInActual);
-            error_log('$arraysInActual: '.print_r($arraysInActual, true)) ;
 
             $arraysInExpected = array();
             $this->FindArrays($expected->getBody(), $arraysInExpected);
-            error_log('$arraysInExpected: '.print_r($arraysInExpected, true)) ;
 
             if (count($arraysInActual) != count($arraysInExpected)) {
                 return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::AdditionalPropertyInObject));

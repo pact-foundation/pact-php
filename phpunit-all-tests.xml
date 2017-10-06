@@ -7,6 +7,9 @@
   	<testsuite name="PhpPact Example Test Suite">
       <directory>./example/test/</directory>
     </testsuite>
+    <testsuite name="PhpPact Specification Test Suite">
+      <file>./test/IntegrationTests/MockHttpServiceSpecificationTests.php</file>
+    </testsuite>
   </testsuites>
   <php>
     <const name="WEB_SERVER_HOST" value="localhost" />

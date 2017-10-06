@@ -2,7 +2,6 @@
 <phpunit bootstrap="./test/bootstrap.php">
   <testsuites>
   	<testsuite name="PhpPact Specification Test Suite">
-      <file>./test/Mocks/MockHttpService/Comparers/HttpBodyComparerTest.php</file>
       <file>./test/IntegrationTests/MockHttpServiceSpecificationTests.php</file>
     </testsuite>
   </testsuites>

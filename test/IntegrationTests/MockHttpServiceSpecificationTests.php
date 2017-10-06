@@ -22,6 +22,7 @@ class MockHttpServiceSpecificationTests extends TestCase
         $this->RunPactSpecificationTests(__DIR__ . '/testcases-v1_1/request', 'request');
     }
 
+
     /**
      * @test
      */
@@ -47,13 +48,14 @@ class MockHttpServiceSpecificationTests extends TestCase
                     $hasException = false;
 
                     try {
+
                         switch ($testCaseType) {
                             case 'request' :
-                                $testCaseRunner = new \PhpPactTest\IntegrationTests\Models\RequestTestCase();
+                                $testCaseRunner = new Models\RequestTestCase();
                                 $testCaseRunner->Initialize($testCaseJson);
                                 break;
                             case 'response' :
-                                $testCaseRunner = new \PhpPactTest\IntegrationTests\Models\ResponseTestCase();
+                                $testCaseRunner = new Models\ResponseTestCase();
                                 $testCaseRunner->Initialize($testCaseJson);
                                 break;
                             default :
