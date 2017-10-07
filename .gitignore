@@ -248,3 +248,9 @@ vendor/*
 #phpstorm
 .idea/
 /composer.lock
+
+#eclipse
+.project
+.settings/
+.buildpath
+
