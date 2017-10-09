@@ -43,12 +43,7 @@ on_failure:
   - echo Failure
 
 notifications:
-  - provider: Webhook
-    url:
-      secure: c4xwvfA2YpTyASkpasFt2vA6q4pCxCMoWhfX9/JwBxp6rub4dphj6smGxy+5rnsHcvVU6/FvzVHQo4hoxL5gOA==
-    on_build_success: false
-    on_build_failure: true
-    on_build_status_changed: true
+
 # Email
 #  - provider: Email
 #    to:
