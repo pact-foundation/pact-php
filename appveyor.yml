@@ -8,7 +8,7 @@ version: 1.1.{build}
 
 skip_tags: false
 
-skip_non_tags: true
+skip_non_tags: false
 
 skip_commits:
   message: /Created.*\.(png|jpg|jpeg|bmp|gif)/      # Regex for matching commit message
@@ -41,7 +41,12 @@ on_failure:
   - echo Failure
 
 notifications:
-
+  - provider: Webhook
+    url:
+      secure: c4xwvfA2YpTyASkpasFt2vA6q4pCxCMoWhfX9/JwBxp6rub4dphj6smGxy+5rnsHcvVU6/FvzVHQo4hoxL5gOA==
+    on_build_success: false
+    on_build_failure: true
+    on_build_status_changed: true
 # Email
 #  - provider: Email
 #    to:
