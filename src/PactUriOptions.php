@@ -18,7 +18,6 @@ class PactUriOptions
      */
     public function __construct($uri, $username = null, $password = null)
     {
-
         if (!$uri) {
             throw new  \InvalidArgumentException("uri is null or empty.");
         }

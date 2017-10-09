@@ -18,7 +18,6 @@ class HttpRequestMessageMapper
      */
     public function Convert(\PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest $request, $baseUri)
     {
-
         if (substr($baseUri, -1) == '/') {
             $baseUri = substr($baseUri, 0, strlen($baseUri) - 1);
         }

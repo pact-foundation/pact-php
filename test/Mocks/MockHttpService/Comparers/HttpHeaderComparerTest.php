@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 
 class HttpHeaderComparerTest extends TestCase
 {
-    public function testCompare() {
-
+    public function testCompare()
+    {
         $comparer = new HttpHeaderComparer();
 
         // test that expected is a subset of actual

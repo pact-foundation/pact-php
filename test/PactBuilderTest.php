@@ -58,14 +58,10 @@ class PactBuilderTest extends TestCase
             $build->Build($pactFile);
             $expectedFile = self::TEMP_PACT_DIR . '/' . $pactFile->getFileName();
             $this->assertTrue(file_exists($expectedFile), sprintf("We expect pact file to be written: %s", $pactFile->getFileName()));
-
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
         }
         $this->assertFalse($hasException, "This basic get should verify the interactions and not throw an exception");
         // assert no exception
-
-
     }
-
 }

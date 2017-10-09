@@ -26,7 +26,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $request2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("GET", "/", $header, $body);
 
         $results = $comparer->Compare($request1, $request2);
-        $this->assertFalse($results->HasFailure(), "We expect these two requests to match" );
+        $this->assertFalse($results->HasFailure(), "We expect these two requests to match");
 
         // expect headers to be off
         $header = array();
@@ -43,7 +43,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $request2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("GET", "/", $header2, $body);
 
         $results = $comparer->Compare($request1, $request2);
-        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by the header. Note that the actual can have more header entries than the expected." );
+        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by the header. Note that the actual can have more header entries than the expected.");
 
         // expect path to be off
         $header = array();
@@ -55,7 +55,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $request2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("GET", "/new", $header, $body);
 
         $results = $comparer->Compare($request1, $request2);
-        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by path" );
+        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by path");
 
         // expect method to be off
         $header = array();
@@ -67,7 +67,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $request2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("POST", "/", $header, $body);
 
         $results = $comparer->Compare($request1, $request2);
-        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by method" );
+        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by method");
 
         // expect body to be off
         $header = array();
@@ -80,6 +80,6 @@ class ProviderServiceRequestComparerTest extends TestCase
         $request2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("GET", "/", $header, $body2);
 
         $results = $comparer->Compare($request1, $request2);
-        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by body" );
+        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by body");
     }
 }

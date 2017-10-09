@@ -67,18 +67,17 @@ class HttpQueryStringComparer
         }
 
         $equalCount = substr_count($query, "=");
-        $ampCount   = substr_count($query,"&");
+        $ampCount   = substr_count($query, "&");
 
         if ($equalCount > $ampCount) {
             $newQuery = "";
             $expectAmp = false;
 
-            for( $i = 0; $i < strlen($query); $i++ ) {
+            for ($i = 0; $i < strlen($query); $i++) {
                 if ($query[$i] == "&") {
                     $expectAmp = false;
                     $newQuery .= $query[$i];
-                }
-                else if ($query[$i] == "=") {
+                } elseif ($query[$i] == "=") {
                     if (!$expectAmp) {
                         $expectAmp = true;
                         $newQuery .= $query[$i];
@@ -126,7 +125,7 @@ class HttpQueryStringComparer
         }
         */
 
-        foreach($expectedKeys as $expectedKey=>$expectedArr) {
+        foreach ($expectedKeys as $expectedKey=>$expectedArr) {
 
             // if a key does not exist in expected and not actual, blow up
             if (!isset($actualKeys[$expectedKey])) {
@@ -142,7 +141,7 @@ class HttpQueryStringComparer
 
             // walk through each key subarray, if the values do not match, blow up
             $count = count($expectedArr);
-            for($i = 0; $i < $count; $i++) {
+            for ($i = 0; $i < $count; $i++) {
                 if ($expectedArr[$i] != $actualArr[$i]) {
                     return false;
                 }
@@ -180,7 +179,7 @@ class HttpQueryStringComparer
     {
         $keys = array();
 
-        foreach($arr as $pair) {
+        foreach ($arr as $pair) {
             $subpair = explode("=", trim($pair), 2);
             if (!isset($keys[$subpair[0]])) {
                 $keys[$subpair[0]] = array();
@@ -190,5 +189,4 @@ class HttpQueryStringComparer
 
         return $keys;
     }
-
 }

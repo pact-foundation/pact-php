@@ -5,7 +5,8 @@ use PHPUnit\Framework\TestCase;
 
 class ProviderStatesTest extends TestCase
 {
-    public function testAdd() {
+    public function testAdd()
+    {
         $providerStates = new ProviderStates();
 
         $providerStates->Add("State 1");
@@ -13,8 +14,7 @@ class ProviderStatesTest extends TestCase
         $throwException = false;
         try {
             $providerStates->Add("State 1");
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $throwException = true;
         }
 

@@ -2,7 +2,6 @@
 
 namespace PhpPact\Mocks\MockHttpService;
 
-
 class MockProviderService implements IMockProviderService
 {
     private $_providerState;
@@ -210,7 +209,6 @@ class MockProviderService implements IMockProviderService
 
         // cycle through all the requests we sent
         foreach ($this->_host->getRequestAndResponsePairs() as $pair) {
-
             if (!isset($pair[\PhpPact\Mocks\MockHttpService\MockProviderHost::REQUEST_KEY])) {
                 throw new \RuntimeException("Request was not set: " . print_r($pair, true));
             }
@@ -426,5 +424,4 @@ class MockProviderService implements IMockProviderService
 
         return $headers != null && isset($headers["Content-Type"]);
     }
-
 }

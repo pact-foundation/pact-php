@@ -59,5 +59,4 @@ class ProviderStates
 
         return null;
     }
-
 }

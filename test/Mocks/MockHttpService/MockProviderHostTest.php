@@ -13,7 +13,6 @@ use PHPUnit\Runner\Exception;
 
 class MockProviderHostTest extends TestCase
 {
-
     public function testHandle()
     {
 
@@ -65,15 +64,9 @@ class MockProviderHostTest extends TestCase
         $hasException = false;
         try {
             $response = $server->handle($httpRequest); // $foo
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $hasException = true;
         }
         $this->assertTrue($hasException, "We apply different headers and expect an error to be thrown.");
-
-
-
-
     }
 }

@@ -16,7 +16,7 @@ class PactVerifier implements IPactVerifier
     private $_pactFileUri;
     private $_pactUriOptions;
 
-    function __construct($baseUri)
+    public function __construct($baseUri)
     {
         $this->_providerStates = new \PhpPact\Models\ProviderStates();
         $this->_httpClient = new \Windwalker\Http\HttpClient();
@@ -66,7 +66,7 @@ class PactVerifier implements IPactVerifier
         return $this;
     }
 
-    function ServiceProvider($providerName, $httpClient = null, $httpRequestSender = null)
+    public function ServiceProvider($providerName, $httpClient = null, $httpRequestSender = null)
     {
         if (!$providerName) {
             throw new \InvalidArgumentException("Please supply a non null or empty providerName");
@@ -91,7 +91,7 @@ class PactVerifier implements IPactVerifier
         return $this;
     }
 
-    function HonoursPactWith($consumerName)
+    public function HonoursPactWith($consumerName)
     {
         if (!$consumerName) {
             throw new \InvalidArgumentException("Please supply a non null or empty consumerName");
@@ -122,7 +122,7 @@ class PactVerifier implements IPactVerifier
         return $this;
     }
 
-    function Verify($description = null, $providerState = null)
+    public function Verify($description = null, $providerState = null)
     {
         if (!$this->_httpRequestSender) {
             throw new \InvalidArgumentException("httpRequestSender has not been set, please supply a httpClient or httpRequestSenderFunc using the ServiceProvider method.");

@@ -4,7 +4,6 @@ namespace PhpPact\Mocks\MockHttpService\Models;
 
 class HandledRequest
 {
-
     public $_actualRequest;
     public $_matchedInteraction;
 
@@ -29,5 +28,4 @@ class HandledRequest
     {
         return $this->_matchedInteraction;
     }
-
 }

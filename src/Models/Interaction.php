@@ -16,7 +16,7 @@ class Interaction implements \JsonSerializable
      */
     private $_providerState;
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         $obj = new \stdClass();
         $obj->description = $this->_description;
@@ -65,6 +65,4 @@ class Interaction implements \JsonSerializable
         $this->_providerState = $providerState;
         return $this;
     }
-
-
 }

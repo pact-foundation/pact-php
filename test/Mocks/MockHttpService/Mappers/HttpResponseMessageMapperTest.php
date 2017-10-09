@@ -29,7 +29,7 @@ class HttpResponseMessageMapperTest extends TestCase
         $expectedContent = ($response->getHeaders())["Content-Type"];
         $actualContent = ($httpResponse->getHeaders())["Content-Type"][0];
 
-        $this->assertEquals($expectedContent,$actualContent, "Ensure the header content is the same");
+        $this->assertEquals($expectedContent, $actualContent, "Ensure the header content is the same");
         $this->assertEquals(count($response->getHeaders()), count($httpResponse->getHeaders()), "The header count should be the same");
         $this->assertEquals($response->getBody(), (string) $httpResponse->getBody(), "Make sure the body is set.");
     }

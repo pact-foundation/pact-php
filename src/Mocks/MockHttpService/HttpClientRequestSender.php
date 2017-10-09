@@ -45,5 +45,4 @@ class HttpClientRequestSender implements IHttpRequestSender
 
         return $response;
     }
-
 }

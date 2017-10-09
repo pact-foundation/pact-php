@@ -42,7 +42,7 @@ class ProviderServiceResponseMapperTest extends TestCase
         $obj->body = "Do not tell me what I can do to my body";
 
         $providerServiceResponse = $mapper->Convert($obj);
-        $this->assertEquals("Do not tell me what I can do to my body",  $providerServiceResponse->getBody(), "Body has been set to a string");
+        $this->assertEquals("Do not tell me what I can do to my body", $providerServiceResponse->getBody(), "Body has been set to a string");
 
 
         $obj = new \stdClass();
@@ -51,7 +51,7 @@ class ProviderServiceResponseMapperTest extends TestCase
         $obj->body = "{ \"typeId\": 1001, \"name\": \"talking\" }";
 
         $providerServiceResponse = $mapper->Convert($obj);
-        $this->assertEquals($obj->body,  $providerServiceResponse->getBody(), "Body has not been converted to json.");
+        $this->assertEquals($obj->body, $providerServiceResponse->getBody(), "Body has not been converted to json.");
 
         $obj = new \stdClass();
         $obj->status = 200;
@@ -59,7 +59,7 @@ class ProviderServiceResponseMapperTest extends TestCase
         $obj->body = \json_decode("{ \"typeId\": 1001, \"name\": \"talking\" }");
 
         $providerServiceResponse = $mapper->Convert($obj);
-        $this->assertEquals($obj->body,  $providerServiceResponse->getBody(), "Body is an object, which should be allowed.");
+        $this->assertEquals($obj->body, $providerServiceResponse->getBody(), "Body is an object, which should be allowed.");
 
 
         $json = "{ \"status\": 200, \"headers\": { \"Content-Type\": \"application/json\" }, \"body\": { \"segmentTypes\": [ { \"typeId\": 1000, \"name\": \"Negative Segment\" } ] } }";
@@ -74,5 +74,4 @@ class ProviderServiceResponseMapperTest extends TestCase
         $this->assertEquals(500, $providerServiceResponse->getStatus(), 'Method was set appropriately');
         $this->assertEquals(1, count($providerServiceResponse->getHeaders()), "We expect one header");
     }
-
 }

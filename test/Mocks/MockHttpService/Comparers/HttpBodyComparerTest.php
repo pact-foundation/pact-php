@@ -67,5 +67,4 @@ class HttpBodyComparerTest extends TestCase
         $this->assertTrue($hasException, "Expect a failure to happen");
         */
     }
-
 }

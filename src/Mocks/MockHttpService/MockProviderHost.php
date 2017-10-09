@@ -107,7 +107,7 @@ class MockProviderHost implements \Jfalque\HttpMock\ServerInterface
      *
      * @return $this
      */
-    public function return ($result)
+    public function return($result)
     {
         $this->_host = $this->_host->return($result);
         return $this;
@@ -139,20 +139,18 @@ class MockProviderHost implements \Jfalque\HttpMock\ServerInterface
         $this->_requestAndResponsePairs = array();
     }
 
-    private function PrintRequest(\Psr\Http\Message\RequestInterface $request) {
-
+    private function PrintRequest(\Psr\Http\Message\RequestInterface $request)
+    {
         $msg = "\nA " . $request->getMethod() . " request with URL: " . $request->getUri()->getHost() . "\n";
         $msg .= "\thas path: " . $request->getUri()->getPath() . "\n";
         $msg .= "\thas port: " . $request->getUri()->getPort() . "\n";
         $msg .= "\thas query: " . $request->getUri()->getQuery() . "\n";
 
-        if (count($request->getHeaders()) > 0 )
-        {
+        if (count($request->getHeaders()) > 0) {
             $msg .= "\thas headers: \n";
             $headers = $request->getHeaders();
 
-            foreach($headers as $key => $value)
-            {
+            foreach ($headers as $key => $value) {
                 $msg .= "\t\t" . $key . " with value " . $value[0] . "\n";
             }
         }

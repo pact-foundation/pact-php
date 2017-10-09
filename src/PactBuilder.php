@@ -97,7 +97,7 @@ class PactBuilder implements IPactBuilder
      * @param $providerName
      * @param PactConfig $config
      */
-    public function setMockService($providerName, \PhpPact\PactConfig $config )
+    public function setMockService($providerName, \PhpPact\PactConfig $config)
     {
         $this->_mockProviderService = new \PhpPact\Mocks\MockHttpService\MockProviderService($providerName, $config);
 
@@ -109,8 +109,7 @@ class PactBuilder implements IPactBuilder
      */
     public function getMockService()
     {
-        if (!$this->_mockProviderService)
-        {
+        if (!$this->_mockProviderService) {
             throw new \RuntimeException("Mock provider service has not been initialized");
         }
 
@@ -121,7 +120,7 @@ class PactBuilder implements IPactBuilder
      * @param string $consumerName
      * @return $this
      */
-    function ServiceConsumer($consumerName)
+    public function ServiceConsumer($consumerName)
     {
         if (!$consumerName) {
             throw new \RuntimeException("Please supply a non null or empty consumerName");
@@ -137,7 +136,7 @@ class PactBuilder implements IPactBuilder
      * @param string $providerName
      * @return $this
      */
-    function HasPactWith($providerName)
+    public function HasPactWith($providerName)
     {
         if (!$providerName) {
             throw new \RuntimeException("Please supply a non null or empty providerName");

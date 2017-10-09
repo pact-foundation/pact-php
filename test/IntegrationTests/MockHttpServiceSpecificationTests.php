@@ -10,7 +10,6 @@ namespace PhpPactTest\IntegrationTests;
 
 use PHPUnit\Framework\TestCase;
 
-
 class MockHttpServiceSpecificationTests extends TestCase
 {
 
@@ -48,22 +47,20 @@ class MockHttpServiceSpecificationTests extends TestCase
                     $hasException = false;
 
                     try {
-
                         switch ($testCaseType) {
-                            case 'request' :
+                            case 'request':
                                 $testCaseRunner = new Models\RequestTestCase();
                                 $testCaseRunner->Initialize($testCaseJson);
                                 break;
-                            case 'response' :
+                            case 'response':
                                 $testCaseRunner = new Models\ResponseTestCase();
                                 $testCaseRunner->Initialize($testCaseJson);
                                 break;
-                            default :
+                            default:
                                 throw new \InvalidArgumentException("Unexpected test case runner type: " . $testCaseType);
                         }
 
                         $testCaseRunner->Verify();
-
                     } catch (\Exception $e) {
                         $hasException = true;
                     }

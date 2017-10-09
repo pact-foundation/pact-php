@@ -13,10 +13,8 @@ use \PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer;
 use \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
 use \PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceResponseMapper;
 
-
 class ResponseTestCase extends TestCase
 {
-
     private $_match;
     private $_comment;
 
@@ -39,7 +37,8 @@ class ResponseTestCase extends TestCase
      * Using this function to avoid overriding PHPUnitTestCase constructors
      * @param $json
      */
-    public function Initialize($json) {
+    public function Initialize($json)
+    {
         $this->_responseComparer = new ProviderServiceResponseComparer();
 
         $jsonObj = \json_decode($json);

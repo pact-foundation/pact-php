@@ -2,7 +2,6 @@
 
 namespace PhpPact\Mocks\MockHttpService\Mappers;
 
-
 class HttpResponseMessageMapper
 {
     /**

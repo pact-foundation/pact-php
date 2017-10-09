@@ -31,7 +31,6 @@ class ProviderServiceInteraction extends \PhpPact\Models\Interaction implements 
         }
         $this->_providerServiceRequestMapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceRequestMapper();
         $this->_providerServiceResponseMapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceResponseMapper();
-
     }
 
     public function jsonSerialize()

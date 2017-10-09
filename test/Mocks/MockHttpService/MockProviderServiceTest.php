@@ -24,7 +24,7 @@ class MockProviderServiceTest extends TestCase
         $hasException = false;
         try {
             $mockProviderService->With($request);
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             $hasException = true;
         }
         $this->assertFalse($hasException, "Happy path with a get request");
@@ -35,7 +35,7 @@ class MockProviderServiceTest extends TestCase
         $hasException = false;
         try {
             $mockProviderService->With($request);
-        }catch(\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             $hasException = true;
         }
         $this->assertTrue($hasException, "An exception is thrown if the method is not set");
@@ -45,11 +45,9 @@ class MockProviderServiceTest extends TestCase
         $hasException = false;
         try {
             $mockProviderService->With($request);
-        }catch(\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             $hasException = true;
         }
         $this->assertTrue($hasException, "An exception is thrown if the object is not a ProviderServiceRequest");
     }
-
-
 }
