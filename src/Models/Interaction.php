@@ -16,13 +16,12 @@ class Interaction implements \JsonSerializable
      */
     private $_providerState;
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
-        $obj = new \stdClass();
-        $obj->description = $this->_description;
-        $obj->provider_state = $this->_providerState;
-
-        return $obj; // Encode this array instead of the current element
+        return [
+            'description' => $this->_description,
+            'provider_state' =>  $this->_providerState,
+        ];
     }
 
     public function AsJsonString()

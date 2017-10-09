@@ -12,21 +12,21 @@ class ProviderServicePactMapper implements \PhpPact\Mappers\IMapper
     public function Convert($request)
     {
         if (is_string($request)) {
-            $request = \json_decode($request);
+            $request = \json_decode($request, true);
         }
 
         $pact = new \PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile();
 
         $provider = new \PhpPact\Models\Pacticipant();
-        $provider->setName($request->provider);
+        $provider->setName($request['provider']);
         $pact->setProvider($provider);
 
         $consumer = new \PhpPact\Models\Pacticipant();
-        $consumer->setName($request->consumer);
+        $consumer->setName($request['consumer']);
         $pact->setConsumer($consumer);
 
-        $pact->setMetaData($request->metadata);
-        $pact->setInteractions($request->interactions);
+        $pact->setMetaData($request['metadata']);
+        $pact->setInteractions($request['interactions']);
 
         return $pact;
     }

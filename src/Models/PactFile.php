@@ -9,25 +9,26 @@ class PactFile extends \PhpPact\Models\PactDetails implements \JsonSerializable
 
     public function __construct()
     {
-        $this->_metadata = new \stdClass();
-        $this->_metadata->pactSpecificationVersion = '1.1.0';
+        $this->_metadata = [
+            'pactSpecificationVersion' => '1.1.0',
+        ];
     }
 
     public function jsonSerialize()
     {
         $obj = parent::jsonSerialize();
-        $obj->metadata = $this->_metadata;
+        $obj['metadata'] = $this->_metadata;
 
         return $obj;
     }
 
     function setMetadata($obj)
     {
-        if (isset($obj->metadata) && isset($obj->metadata->pactSpecificationVersion))
+        if (isset($obj['metadata']) && isset($obj['metadata']['pactSpecificationVersion']))
         {
-            $this->_metadata = $obj->metadata;
+            $this->_metadata = $obj['metadata'];
             return $this->_metadata;
-        } else if (isset($obj->pactSpecificationVersion))
+        } else if (isset($obj['pactSpecificationVersion']))
         {
             $this->_metadata = $obj;
             return $this->_metadata;

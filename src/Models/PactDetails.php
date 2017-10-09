@@ -28,14 +28,12 @@ class PactDetails implements \JsonSerializable
         $this->_logger = $logger;
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
-        // this _should_ cascade to child classes
-        $obj = new \stdClass();
-        $obj->provider = $this->_provider;
-        $obj->consumer = $this->_consumer;
-
-        return $obj;
+        return [
+            'provider' => $this->_provider,
+            'consumer' => $this->_consumer,
+        ];
     }
 
     /**

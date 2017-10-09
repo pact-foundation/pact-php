@@ -37,8 +37,8 @@ class ProviderServiceInteraction extends \PhpPact\Models\Interaction implements 
     public function jsonSerialize()
     {
         $obj = parent::jsonSerialize();
-        $obj->request = $this->_request;
-        $obj->response = $this->_response;
+        $obj['request'] = $this->_request;
+        $obj['response'] = $this->_response;
 
         return $obj;
     }

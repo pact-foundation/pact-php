@@ -12,7 +12,7 @@ class PactFileTest extends TestCase
         $f = new PactFile();
 
         $m = $f->getMetadata();
-        $this->assertTrue(isset($m->pactSpecificationVersion), "Ensure pact specification is set");
+        $this->assertTrue(isset($m['pactSpecificationVersion']), "Ensure pact specification is set");
 
         $thrownException = false;
         try {
@@ -24,8 +24,7 @@ class PactFileTest extends TestCase
 
         $thrownException = false;
         try {
-            $o = new \stdClass();
-            $f->setMetadata($o);
+            $f->setMetadata([]);
         }catch(\Exception $e) {
             $thrownException = true;
         }
@@ -33,25 +32,28 @@ class PactFileTest extends TestCase
 
         $thrownException = false;
         try {
-            $o = new \stdClass();
-            $o->pactSpecificationVersion = '2.0';
+            $o = [
+                'pactSpecificationVersion' => '2.0',
+            ];
             $m = $f->setMetadata($o);
         }catch(\Exception $e) {
             $thrownException = true;
         }
         $this->assertFalse($thrownException, "A proper object is set");
-        $this->assertEquals('2.0', $m->pactSpecificationVersion, "Checks that the metadata we checked appropriately");
+        $this->assertEquals('2.0', $m['pactSpecificationVersion'], "Checks that the metadata we checked appropriately");
 
         $thrownException = false;
         try {
-            $o = new \stdClass();
-            $o->metadata = new \stdClass();
-            $o->metadata->pactSpecificationVersion = '3.0';
+            $o = [
+                'metadata' => [
+                    'pactSpecificationVersion' => '3.0',
+                ],
+            ];
             $m = $f->setMetadata($o);
         }catch(\Exception $e) {
             $thrownException = true;
         }
         $this->assertFalse($thrownException, "A proper object is set");
-        $this->assertEquals('3.0', $m->pactSpecificationVersion, "Checks that the metadata we checked appropriately");
+        $this->assertEquals('3.0', $m['pactSpecificationVersion'], "Checks that the metadata we checked appropriately");
     }
 }

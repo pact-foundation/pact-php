@@ -7,7 +7,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
 
     private $_bodyWasSet;
     private $_body;
-    private $_headers; //[JsonProperty(PropertyName = "headers")] / [JsonConverter(typeof(PreserveCasingDictionaryConverter))]
+    private $_headers = []; //[JsonProperty(PropertyName = "headers")] / [JsonConverter(typeof(PreserveCasingDictionaryConverter))]
     private $_status;
     private $_matchingRules;
 
@@ -23,20 +23,22 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getHeaders()
+    public function getHeaders() : array
     {
         return $this->_headers;
     }
 
 
     /**
-     * @return mixed
+     * @param array headers
+     * @return $this
      */
-    public function setHeaders($headers)
+    public function setHeaders(array $headers)
     {
         $this->_headers = $headers;
+
         return $this;
     }
 
@@ -49,7 +51,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     }
 
 
-    public function __construct($status = null, $headers = array(), $body = null)
+    public function __construct($status = null, array $headers = array(), $body = null)
     {
         $this->_status = $status;
         $this->_headers = $headers;
@@ -125,31 +127,23 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     public function getContentType()
     {
         $headers = $this->getHeaders();
-        $key = 'Content-Type';
-        if (is_object($headers) && isset($headers->$key)) {
-            return $headers->$key;
-        }
-        return false;
+
+        return $headers['Content-Type'] ?? false;
     }
 
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         // this _should_ cascade to child classes
-        $obj = new \stdClass();
-        $obj->status = intval($this->_status);
-
-        $header = $this->_headers;
-        if (is_array($header)) {
-            $header = (object)$header;
-        }
-        $obj->headers = $header;
+        $obj = [];
+        $obj['status'] = intval($this->_status);
+        $obj['headers'] = $this->_headers;
 
         if ($this->_body) {
-            $obj->body = $this->_body;
+            $obj['body'] = $this->_body;
 
-            if ($this->isJsonString($obj->body)) {
-                $obj->body = \json_decode($obj->body);;
+            if ($this->isJsonString($obj['body'])) {
+                $obj['body'] = \json_decode($obj['body'], true);
             }
         }
 
@@ -162,7 +156,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
             return false;
         }
 
-        \json_decode($obj);
+        \json_decode($obj, true);
         if (\json_last_error()) {
             return false;
         }

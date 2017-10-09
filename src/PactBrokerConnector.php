@@ -67,7 +67,7 @@ class PactBrokerConnector
      */
     public function PublishJson($json, $version)
     {
-        $jsonDecoded = \json_decode($json);
+        $jsonDecoded = \json_decode($json, true);
         $mapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServicePactMapper();
         $pact = $mapper->Convert($jsonDecoded);
         return $this->Publish($pact, $version);
@@ -153,14 +153,14 @@ class PactBrokerConnector
         $httpResponse = $httpClient->sendRequest($httpRequest);
         $body = (string)$httpResponse->getBody();
 
-        $obj = \json_decode($body);
+        $obj = \json_decode($body, true);
 
         $pacts = array();
 
-        if (isset($obj->_links) && count($obj->_links->pacts) > 0) {
-            foreach ($obj->_links->pacts as $pactLink) {
-                $consumerName = $pactLink->name;
-                $version = $this->ExtractVersionFromUrl($pactLink->href);
+        if (isset($obj['_links']) && count($obj['_links']['pacts']) > 0) {
+            foreach ($obj['_links']['pacts'] as $pactLink) {
+                $consumerName = $pactLink['name'];
+                $version = $this->ExtractVersionFromUrl($pactLink['href']);
 
                 $pact = $this->RetrievePact($providerName, $consumerName, $version);
                 $pacts[] = $pact;

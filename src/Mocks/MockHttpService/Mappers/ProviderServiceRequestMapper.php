@@ -20,22 +20,22 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
         $this->checkExistence($request, "path");
 
         $body = false;
-        if (property_exists($request, "body")) {
-            $contentType = $this->GetContentType($request);
-            $body = $request->body;
+        if (array_key_exists('body', $request)) {
+            $contentType = $request['headers']['Content-Type'] ?? false;
+            $body = $request['body'];
 
             if (stripos($contentType, "application/json") !== false && !is_string($body)) {
                 $body = \json_encode($body);
             }
         }
 
-        if (!isset($request->headers)) {
-            $request->headers = null;
+        if (!isset($request['headers'])) {
+            $request['headers'] = [];
         }
 
-        $providerServiceRequest = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest($request->method, $request->path, $request->headers, $body);
-        if (isset($request->query)) {
-            $providerServiceRequest->setQuery($request->query);
+        $providerServiceRequest = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest($request['method'], $request['path'], $request['headers'], $body);
+        if (isset($request['query'])) {
+            $providerServiceRequest->setQuery($request['query']);
         }
 
         return $providerServiceRequest;
@@ -43,33 +43,16 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
 
     private function checkExistence($obj, $attr)
     {
-        if (!isset($obj->$attr)) {
+        if (!isset($obj[$attr])) {
             throw new \InvalidArgumentException("$attr was not set");
         }
-    }
-
-    /**
-     * Mine the headers to pull out the content type
-     *
-     * @param $request
-     * @return bool
-     */
-    private function GetContentType($request)
-    {
-        $contentTypeStr = "Content-Type";
-        if (isset($request->headers) && isset($request->headers->$contentTypeStr))
-        {
-            return $request->headers->$contentTypeStr;
-        }
-
-        return false;
     }
 
 
     private function HttpRequestConvert(\Psr\Http\Message\RequestInterface $request)
     {
-        $obj = new \stdClass();
-        $headerArray = (array)$request->getHeaders();
+        $obj = [];
+        $headerArray = $request->getHeaders();
 
         /*
          * Expected format
@@ -85,7 +68,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
                     [0] => Fri, 30 Jun 2017 21:50:19 +0000
                 )
         */
-        $obj->headers = new \stdClass();
+        $obj['headers'] = [];
         if (count($headerArray) > 0) {
 
             foreach ($headerArray as $header_key => $header_value) {
@@ -96,19 +79,19 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
                     throw new \Exception("This was an unexpected case based on the Windwalker implementation.   Make a unit test and pull request.");
                 }
 
-                $obj->headers->$header_key = array_pop($header_value);
+                $obj['headers'][$header_key] = array_pop($header_value);
             }
         }
 
-        $obj->method = $request->getMethod();
-        $obj->path = $request->getUri()->getPath();
+        $obj['method'] = $request->getMethod();
+        $obj['path'] = $request->getUri()->getPath();
 
         //@todo flush out query
-        $obj->query = $request->getUri()->getQuery();
+        $obj['query'] = $request->getUri()->getQuery();
 
         $body = (string)$request->getBody();
         if ($body) {
-            $obj->body = $body;
+            $obj['body'] = $body;
         }
 
         return $obj;

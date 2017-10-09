@@ -66,7 +66,7 @@ class HttpBodyComparer
      */
     private function JsonDecode($obj)
     {
-        $json = \json_decode($obj);
+        $json = \json_decode($obj, true);
         if ($json !== null) {
             $obj = $json;
         }

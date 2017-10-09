@@ -14,15 +14,13 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
     private $_matchingRules;
     private $_query; //[JsonProperty(PropertyName = "query")]
 
-    public function __construct($method, $path, $headers = null, $body = false)
+    public function __construct($method, $path, array $headers = [], $body = false)
     {
         // enumerate over HttpVerb to set the value of the
         $verb = new \PhpPact\Mocks\MockHttpService\Models\HttpVerb();
         $this->_method = $verb->Enum($method);
         $this->_path = $path;
-        if ($headers) {
-            $this->_headers = $headers;
-        }
+        $this->_headers = $headers;
 
         if ($body !== false) {
             $this->setBody($body);
@@ -79,17 +77,19 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
     /**
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders() : array
     {
         return $this->_headers;
     }
 
     /**
-     * @return mixed
+     * @param array headers
+     * @return $this
      */
-    public function setHeaders($headers)
+    public function setHeaders(array $headers)
     {
         $this->_headers = $headers;
+
         return $this;
     }
 
@@ -127,13 +127,14 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
         return $this->_bodyWasSet;
     }
 
+    // @todo this function is not used and is faulty! Remove?
     public function PathWithQuery()
     {
         if (!$this->_path && !$this->Query) {
             throw new \RuntimeException("Query has been supplied, however Path has not. Please specify as Path.");
         }
 
-        return !($this->Query) ?
+        return !$this->Query ?
             sprintf("%s?%s", $this->_path, $this->Query) :
             $this->_path;
     }
@@ -166,38 +167,31 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
     public function getContentType()
     {
         $headers = $this->getHeaders();
-        $key = 'Content-Type';
-        if (is_object($headers) && isset($headers->$key)) {
-            return $headers->$key;
-        }
-        return false;
+
+        return $headers['Content-Type'] ?? false;
     }
 
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         // this _should_ cascade to child classes
-        $obj = new \stdClass();
-        $obj->method = $this->_method;
-        $obj->path = $this->_path;
+        $obj = [];
+        $obj['method'] = $this->_method;
+        $obj['path'] = $this->_path;
 
         if ($this->_query) {
-            $obj->query = $this->_query;
+            $obj['query'] = $this->_query;
         }
 
         if ($this->_headers){
-            $header = $this->_headers;
-            if (is_array($header)) {
-                $header = (object)$header;
-            }
-            $obj->headers = $header;
+            $obj['headers'] = $this->_headers;
         }
 
         if ($this->_body) {
-            $obj->body = $this->_body;
+            $obj['body'] = $this->_body;
 
-            if ($this->isJsonString($obj->body)) {
-                $obj->body = \json_decode($obj->body);
+            if ($this->isJsonString($obj['body'])) {
+                $obj['body'] = \json_decode($obj['body'], true);
             }
         }
 
@@ -210,7 +204,7 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
             return false;
         }
 
-        @\json_decode($obj);
+        @\json_decode($obj, true);
         if (\json_last_error()) {
             return false;
         }

@@ -138,7 +138,7 @@ class PactVerifier implements IPactVerifier
             throw new \RuntimeException("Pact file cannot be found: {$this->_pactFileUri}");
         }
 
-        $jsonDecoded = \json_decode($pactFileJson);
+        $jsonDecoded = \json_decode($pactFileJson, true);
         $mapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServicePactMapper();
 
         $pactFile = $mapper->Convert($jsonDecoded);

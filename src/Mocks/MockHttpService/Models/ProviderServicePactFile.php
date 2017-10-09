@@ -18,7 +18,7 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
     public function jsonSerialize()
     {
         $obj = parent::jsonSerialize();
-        $obj->interactions = $this->_interactions;
+        $obj['interactions'] = $this->_interactions;
 
         return $obj;
     }
@@ -39,11 +39,11 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
 
         foreach ($interactionArray as $interactionObj) {
 
-            if (!isset($interactionObj->description)) {
+            if (!isset($interactionObj['description'])) {
                 throw new \RuntimeException("description is not set");
             }
 
-            if (!isset($interactionObj->provider_state)) {
+            if (!isset($interactionObj['provider_state'])) {
                 throw new \RuntimeException("provider_state is not set");
             }
 
@@ -59,10 +59,10 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
 
         if (!($interactionObj instanceof \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction)) {
             $interaction = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction();
-            $interaction->setProviderState($interactionObj->provider_state);
-            $interaction->setDescription($interactionObj->description);
-            $interaction->setRequest($interactionObj->request);
-            $interaction->setResponse($interactionObj->response);
+            $interaction->setProviderState($interactionObj['provider_state']);
+            $interaction->setDescription($interactionObj['description']);
+            $interaction->setRequest($interactionObj['request']);
+            $interaction->setResponse($interactionObj['response']);
         }
 
         $this->_interactions[] = $interaction;

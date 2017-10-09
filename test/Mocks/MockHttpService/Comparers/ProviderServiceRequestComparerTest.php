@@ -20,7 +20,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $header = array();
         $header["Content-Type"] = "application/json";
 
-        $body = \json_decode("{\"msg\" : \"I am the walrus\"}");
+        $body = \json_decode("{\"msg\" : \"I am the walrus\"}", true);
 
         $request1 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("GET", "/", $header, $body);
         $request2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("GET", "/", $header, $body);
@@ -33,7 +33,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $header["Content-Type"] = "application/json";
         $header["NewHeader"] = "nuffSaid";
 
-        $body = \json_decode("{\"msg\" : \"I am the walrus\"}");
+        $body = \json_decode("{\"msg\" : \"I am the walrus\"}", true);
 
         $header2 = array();
         $header2["Content-Type"] = "application/json";
@@ -49,7 +49,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $header = array();
         $header["Content-Type"] = "application/json";
 
-        $body = \json_decode("{\"msg\" : \"I am the walrus\"}");
+        $body = \json_decode("{\"msg\" : \"I am the walrus\"}", true);
 
         $request1 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("GET", "/old", $header, $body);
         $request2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("GET", "/new", $header, $body);
@@ -61,7 +61,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $header = array();
         $header["Content-Type"] = "application/json";
 
-        $body = \json_decode("{\"msg\" : \"I am the walrus\"}");
+        $body = \json_decode("{\"msg\" : \"I am the walrus\"}", true);
 
         $request1 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("GET", "/", $header, $body);
         $request2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("POST", "/", $header, $body);
@@ -73,8 +73,8 @@ class ProviderServiceRequestComparerTest extends TestCase
         $header = array();
         $header["Content-Type"] = "application/json";
 
-        $body = \json_decode("{\"msg\" : \"I am the walrus\"}");
-        $body2 = \json_decode("{\"msg\" : \"I am not the walrus. This is me.\", \"id\" : 2}");
+        $body = \json_decode("{\"msg\" : \"I am the walrus\"}", true);
+        $body2 = \json_decode("{\"msg\" : \"I am not the walrus. This is me.\", \"id\" : 2}", true);
 
         $request1 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("GET", "/", $header, $body);
         $request2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest("GET", "/", $header, $body2);

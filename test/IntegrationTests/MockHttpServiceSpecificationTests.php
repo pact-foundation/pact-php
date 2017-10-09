@@ -67,7 +67,7 @@ class MockHttpServiceSpecificationTests extends TestCase
                     } catch (\Exception $e) {
                         $hasException = true;
                     }
-                    $this->assertFalse($hasException, "Expected to pass case from: " . $testCaseSubDirectory . DIRECTORY_SEPARATOR . $testCaseFileName);
+                    $this->assertFalse($hasException, "Expected to pass case from: " . $fullPathFileName);
                 }
             }
         }

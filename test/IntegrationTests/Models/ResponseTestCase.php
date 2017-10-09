@@ -42,24 +42,24 @@ class ResponseTestCase extends TestCase
     public function Initialize($json) {
         $this->_responseComparer = new ProviderServiceResponseComparer();
 
-        $jsonObj = \json_decode($json);
-        if (isset($jsonObj->match)) {
-            $this->setMatch($jsonObj->match);
+        $jsonObj = \json_decode($json, true);
+        if (isset($jsonObj['match'])) {
+            $this->setMatch($jsonObj['match']);
         }
 
-        if (isset($jsonObj->comment)) {
-            $this->setComment($jsonObj->comment);
+        if (isset($jsonObj['comment'])) {
+            $this->setComment($jsonObj['comment']);
         }
 
         $mapper = new ProviderServiceResponseMapper();
-        if (isset($jsonObj->expected)) {
+        if (isset($jsonObj['expected'])) {
             // cast $json->expected
-            $this->setExpected($mapper->Convert($jsonObj->expected));
+            $this->setExpected($mapper->Convert($jsonObj['expected']));
         }
 
-        if (isset($jsonObj->actual)) {
+        if (isset($jsonObj['actual'])) {
             // cast $json->actual
-            $this->setActual($mapper->Convert($jsonObj->actual));
+            $this->setActual($mapper->Convert($jsonObj['actual']));
         }
     }
 

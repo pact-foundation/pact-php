@@ -30,10 +30,10 @@ class PactBuilderTest extends TestCase
         $pactFile->setConsumer(new \PhpPact\Models\Pacticipant("testBuildConsumer"));
 
         $json = '{"description":"A GET request","provider_state":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
-        $interaction1 = \json_decode($json);
+        $interaction1 = \json_decode($json, true);
 
         $json = '{"description":"Another GET request","provider_state":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
-        $interaction2 = \json_decode($json);
+        $interaction2 = \json_decode($json, true);
 
         $expectedInteractions = array();
         $expectedInteractions[] = $interaction1;
