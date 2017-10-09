@@ -30,10 +30,10 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
         }
 
         if (!isset($request->headers)) {
-            $request->headers = [];
+            $request->headers = null;
         }
 
-        $providerServiceRequest = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest($request->method, $request->path, get_object_vars($request->headers), $body);
+        $providerServiceRequest = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest($request->method, $request->path, $request->headers, $body);
         if (isset($request->query)) {
             $providerServiceRequest->setQuery($request->query);
         }
