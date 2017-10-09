@@ -7,7 +7,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
 
     private $_bodyWasSet;
     private $_body;
-    private $_headers = []; //[JsonProperty(PropertyName = "headers")] / [JsonConverter(typeof(PreserveCasingDictionaryConverter))]
+    private $_headers; //[JsonProperty(PropertyName = "headers")] / [JsonConverter(typeof(PreserveCasingDictionaryConverter))]
     private $_status;
     private $_matchingRules;
 
@@ -23,22 +23,20 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     }
 
     /**
-     * @return array
+     * @return mixed
      */
-    public function getHeaders() : array
+    public function getHeaders()
     {
         return $this->_headers;
     }
 
 
     /**
-     * @param array headers
-     * @return $this
+     * @return mixed
      */
-    public function setHeaders(array $headers)
+    public function setHeaders($headers)
     {
         $this->_headers = $headers;
-
         return $this;
     }
 
@@ -51,7 +49,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     }
 
 
-    public function __construct($status = null, array $headers = array(), $body = null)
+    public function __construct($status = null, $headers = array(), $body = null)
     {
         $this->_status = $status;
         $this->_headers = $headers;

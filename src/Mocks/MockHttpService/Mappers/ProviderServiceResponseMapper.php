@@ -18,8 +18,8 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
             return $response;
         }
 
-        $headers = isset($response->headers) ? $response->headers : array();
-        $status = isset($response->status) ? $response->status : null;
+        $headers = isset($response->headers)?$response->headers:array();
+        $status = isset($response->status)?$response->status:null;
 
         $body = false;
         if (property_exists($response, "body")) {
@@ -31,7 +31,7 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
             }
         }
 
-        $providerServiceResponse = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse($status, get_object_vars($headers), $body);
+        $providerServiceResponse = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse($status, $headers, $body);
         return $providerServiceResponse;
     }
 
