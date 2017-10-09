@@ -29,5 +29,4 @@ class PactConfig extends PactBaseConfig
         $this->_pactDir = $pactDir;
         return $this;
     }
-
 }

@@ -21,14 +21,12 @@ class PactFile extends \PhpPact\Models\PactDetails implements \JsonSerializable
         return $obj;
     }
 
-    function setMetadata($obj)
+    public function setMetadata($obj)
     {
-        if (isset($obj->metadata) && isset($obj->metadata->pactSpecificationVersion))
-        {
+        if (isset($obj->metadata) && isset($obj->metadata->pactSpecificationVersion)) {
             $this->_metadata = $obj->metadata;
             return $this->_metadata;
-        } else if (isset($obj->pactSpecificationVersion))
-        {
+        } elseif (isset($obj->pactSpecificationVersion)) {
             $this->_metadata = $obj;
             return $this->_metadata;
         }
@@ -36,7 +34,8 @@ class PactFile extends \PhpPact\Models\PactDetails implements \JsonSerializable
         throw new \RuntimeException("Metadata is not in the appropriate format");
     }
 
-    function getMetadata() {
+    public function getMetadata()
+    {
         return $this->_metadata;
     }
 

@@ -16,7 +16,6 @@ class HttpHeaderComparer
         $result = new \PhpPact\Comparers\ComparisonResult("includes headers");
 
         if ($actual == null) {
-
             $result->RecordFailure(new \PhpPact\Comparers\ErrorMessageComparisonFailure("Actual Headers are null"));
             return $result;
         }
@@ -39,7 +38,7 @@ class HttpHeaderComparer
                 $expectedKeywords = preg_split("/[\,;]+/", $header_value);
 
 
-                if (count($actualKeywords) == count($expectedKeywords) && count($actualKeywords) > 0){
+                if (count($actualKeywords) == count($expectedKeywords) && count($actualKeywords) > 0) {
                     $actualKeywords = array_map('trim', $actualKeywords);
                     $expectedKeywords = array_map('trim', $expectedKeywords);
 
@@ -47,8 +46,7 @@ class HttpHeaderComparer
                         $failure = new \PhpPact\Comparers\DiffComparisonFailure($header_value, $actualValue);
                         $headerResult->RecordFailure($failure);
                     }
-                }
-                else if ($header_value != $actualValue) {
+                } elseif ($header_value != $actualValue) {
                     $failure = new \PhpPact\Comparers\DiffComparisonFailure($header_value, $actualValue);
                     $headerResult->RecordFailure($failure);
                 }
@@ -77,10 +75,11 @@ class HttpHeaderComparer
         return $new;
     }
 
-    public function ObjectToArray ($object)
+    public function ObjectToArray($object)
     {
-        if (!is_object($object) && !is_array($object))
+        if (!is_object($object) && !is_array($object)) {
             return $object;
+        }
 
         return array_map(array($this, 'ObjectToArray'), (array)$object);
     }
@@ -94,10 +93,10 @@ class HttpHeaderComparer
      * @param $array2
      * @return bool
      */
-    private function array_diff_order( $array1, $array2 )
+    private function array_diff_order($array1, $array2)
     {
-        while ((list($key1, $val1) = each($array1)) && (list($key2, $val2) = each($array2)) ) {
-            if($key1 != $key2 || $val1 != $val2) {
+        while ((list($key1, $val1) = each($array1)) && (list($key2, $val2) = each($array2))) {
+            if ($key1 != $key2 || $val1 != $val2) {
                 return false;
             }
         }

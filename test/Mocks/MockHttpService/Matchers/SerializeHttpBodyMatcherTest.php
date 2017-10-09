@@ -12,7 +12,8 @@ use PHPUnit\Framework\TestCase;
 
 class SerializeHttpBodyMatcherTest extends TestCase
 {
-    public function testMatch() {
+    public function testMatch()
+    {
         $matcher = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
 
         $result = $matcher->Match("/", 'a', 'a');
@@ -37,7 +38,7 @@ class SerializeHttpBodyMatcherTest extends TestCase
         $b[0] = "Zero";
         $b[1] = "One";
 
-        $result = $matcher->Match("/", $a , $b);
+        $result = $matcher->Match("/", $a, $b);
         $checks = $result->getMatcherChecks();
         $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\SuccessfulMatcherCheck), "This should be a successful array match");
 
@@ -50,7 +51,7 @@ class SerializeHttpBodyMatcherTest extends TestCase
         $b->Zero = 0;
         $b->One = array(1, 2);
 
-        $result = $matcher->Match("/", $a , $b);
+        $result = $matcher->Match("/", $a, $b);
         $checks = $result->getMatcherChecks();
         $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\SuccessfulMatcherCheck), "This should be a successful object match");
 
@@ -62,10 +63,8 @@ class SerializeHttpBodyMatcherTest extends TestCase
         $b = new \stdClass();
         $b->One = array(1, 3);
 
-        $result = $matcher->Match("/", $a , $b);
+        $result = $matcher->Match("/", $a, $b);
         $checks = $result->getMatcherChecks();
         $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\FailedMatcherCheck), "This should be a failed object match");
-
     }
-
 }

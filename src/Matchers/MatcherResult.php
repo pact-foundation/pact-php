@@ -4,7 +4,6 @@ namespace PhpPact\Matchers;
 
 class MatcherResult
 {
-
     private $_matcherChecks;
 
     public function __construct($matcherCheck)
@@ -32,6 +31,4 @@ class MatcherResult
     {
         $this->_matcherChecks = $matcherChecks;
     }
-
-
 }

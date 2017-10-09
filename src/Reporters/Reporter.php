@@ -18,16 +18,11 @@ class Reporter implements IReporter
     {
         if (count($outputters) > 0) {
             $this->_outputters = $outputters;
-        }
-        else if ($config instanceof \PhpPact\PactVerifierConfig)
-        {
+        } elseif ($config instanceof \PhpPact\PactVerifierConfig) {
             $this->_outputters = $config->getReportOutputters();
-        }
-        else
-        {
+        } else {
             throw new Exception("Invalid parameters. Either provide a valid config or valid outputters");
         }
-
     }
 
 
@@ -77,7 +72,6 @@ class Reporter implements IReporter
         }
 
         if ($comparisonResult->HasFailure()) {
-
             $failureBuilder = '';
 
             $shallowFailureCount = $comparisonResult->ShallowFailureCount();
@@ -121,7 +115,6 @@ class Reporter implements IReporter
         $this->AddReportLine("Failures:", 0);
 
         foreach ($comparisonResult->Failures() as $failure) {
-
             $this->AddReportLine('', 0);
             $this->AddReportLine(sprintf("%s %s", $this->_failureCount, $failure->getResult()), 0);
         }

@@ -4,7 +4,6 @@ namespace PhpPact\Mocks\MockHttpService\Models;
 
 class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
 {
-
     private $_bodyWasSet;
     private $_body;
     private $_headers; //[JsonProperty(PropertyName = "headers")] / [JsonConverter(typeof(PreserveCasingDictionaryConverter))]
@@ -104,10 +103,9 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
 
         if ($this->getContentType() == "application/json") {
             $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);
-        } else if ($this->getContentType() == "text/plain") {
+        } elseif ($this->getContentType() == "text/plain") {
             $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
-        }
-        else {
+        } else {
             // make JSON the default based on specification tests
             $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);
         }
@@ -133,7 +131,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     }
 
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         // this _should_ cascade to child classes
         $obj = new \stdClass();
@@ -149,7 +147,8 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
             $obj->body = $this->_body;
 
             if ($this->isJsonString($obj->body)) {
-                $obj->body = \json_decode($obj->body);;
+                $obj->body = \json_decode($obj->body);
+                ;
             }
         }
 
@@ -169,5 +168,4 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
 
         return true;
     }
-
 }

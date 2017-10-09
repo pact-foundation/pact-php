@@ -12,7 +12,8 @@ use PHPUnit\Framework\TestCase;
 
 class HttpQueryStringComparerTest extends TestCase
 {
-    public function testCompare() {
+    public function testCompare()
+    {
         $comparer = new \PhpPact\Mocks\MockHttpService\Comparers\HttpQueryStringComparer();
 
         $expectedUrl = "http://localhost/";
@@ -50,5 +51,4 @@ class HttpQueryStringComparerTest extends TestCase
         $results = $comparer->Compare($expectedUrl, $actualUrl);
         $this->assertFalse($results->HasFailure(), "We expect no failures as the extra = should be encoded during the test");
     }
-
 }

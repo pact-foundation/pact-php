@@ -98,7 +98,6 @@ class ProviderServiceValidator
 
                     $this->_reporter->Indent();
                     $this->_reporter->ReportSummary($interactionComparisonResult);
-
                 } finally {
                     $this->InvokeProviderStateTearDownIfApplicable($providerStateItem);
                     $this->InvokeTearDownIfApplicable($providerStates);

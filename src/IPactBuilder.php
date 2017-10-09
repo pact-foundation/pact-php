@@ -3,7 +3,6 @@ namespace PhpPact;
 
 interface IPactBuilder
 {
-
     public function ServiceConsumer($consumerName);
 
     public function HasPactWith($providerName);

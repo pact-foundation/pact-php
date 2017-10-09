@@ -30,5 +30,4 @@ class ProviderServicePactMapper implements \PhpPact\Mappers\IMapper
 
         return $pact;
     }
-
 }

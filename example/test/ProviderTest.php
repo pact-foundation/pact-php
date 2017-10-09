@@ -6,10 +6,9 @@ use PHPUnit\Framework\TestCase;
 
 final class ProviderTest extends TestCase
 {
-
-    public function testServerExists() {
-
-		$http = new \Windwalker\Http\HttpClient();
+    public function testServerExists()
+    {
+        $http = new \Windwalker\Http\HttpClient();
         $uri = 'http://' . WEB_SERVER_HOST . ':' . WEB_SERVER_PORT . '/provider.php';
 
         $response = $http->get($uri);
@@ -18,8 +17,8 @@ final class ProviderTest extends TestCase
         $this->assertEquals(200, (int) $status, "Expect a 200 status code");
     }
 
-	public function testPactProvider() {
-
+    public function testPactProvider()
+    {
         $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
 
         $httpClient = new \Windwalker\Http\HttpClient();
@@ -27,10 +26,9 @@ final class ProviderTest extends TestCase
         $pactVerifier = new \PhpPact\PactVerifier($uri);
         $hasException = false;
         try {
+            $json = $this->getPactRoot() . DIRECTORY_SEPARATOR . 'mockapiconsumer-mockapiprovider.json';
 
-           $json = $this->getPactRoot() . DIRECTORY_SEPARATOR . 'mockapiconsumer-mockapiprovider.json';
-
-           $pactVerifier->ProviderState("Test State")
+            $pactVerifier->ProviderState("Test State")
                 ->ServiceProvider("MockApiProvider", $httpClient)
                 ->HonoursPactWith("MockApiConsumer")
                 ->PactUri($json)
@@ -39,15 +37,14 @@ final class ProviderTest extends TestCase
             $pactVerifier->Verify(null, "A GET request to get variable types");
 
             $pactVerifier->Verify(null, "There is something to POST to");
-
-        }catch(\PhpPact\PactFailureException $e) {
+        } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
         }
         $this->assertFalse($hasException, "Expect Pact to validate.");
     }
 
-    public function testPactProviderStateSetupTearDown() {
-
+    public function testPactProviderStateSetupTearDown()
+    {
         $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
 
         $httpClient = new \Windwalker\Http\HttpClient();
@@ -55,10 +52,10 @@ final class ProviderTest extends TestCase
         $pactVerifier = new \PhpPact\PactVerifier($uri);
         $hasException = false;
 
-        $setUpFunction = function() {
+        $setUpFunction = function () {
             $fileName = "mock.json";
             $currentDir = dirname(__FILE__);
-            $absolutePath = realpath($currentDir . '/../site/' );
+            $absolutePath = realpath($currentDir . '/../site/');
             $absolutePath .= '/' . $fileName;
 
             $type = new \stdClass();
@@ -74,10 +71,10 @@ final class ProviderTest extends TestCase
             file_put_contents($absolutePath, $output);
         };
 
-        $tearDownFunction = function() {
+        $tearDownFunction = function () {
             $fileName = "mock.json";
             $currentDir = dirname(__FILE__);
-            $absolutePath = realpath($currentDir . '/../site/' );
+            $absolutePath = realpath($currentDir . '/../site/');
             $absolutePath .= '/' . $fileName;
 
             unlink($absolutePath);
@@ -91,16 +88,15 @@ final class ProviderTest extends TestCase
                 ->HonoursPactWith("MockApiConsumer")
                 ->PactUri($json)
                 ->Verify(); // note that this should test all as we can run setup and tear down
-
-        }catch(\PhpPact\PactFailureException $e) {
+        } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
         }
         $this->assertFalse($hasException, "Expect Pact to validate.");
     }
 
-	private function getPactRoot() 
-	{
-		$dir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR;
-		return realpath($dir);
-	}
+    private function getPactRoot()
+    {
+        $dir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR;
+        return realpath($dir);
+    }
 }

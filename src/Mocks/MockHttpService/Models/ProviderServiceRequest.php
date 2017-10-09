@@ -4,7 +4,6 @@ namespace PhpPact\Mocks\MockHttpService\Models;
 
 class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
 {
-
     private $_bodyWasSet;
     private $_body;
     private $_method; // use setMethod
@@ -34,8 +33,7 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
      */
     public function getBody()
     {
-        if ($this->_bodyWasSet)
-        {
+        if ($this->_bodyWasSet) {
             return $this->_body;
         }
 
@@ -140,15 +138,13 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
 
     private function ParseBodyMatchingRules($body)
     {
-
         $this->_matchingRules = array();
 
         if ($this->getContentType() == "application/json") {
             $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
-        } else if ($this->getContentType() == "text/plain") {
+        } elseif ($this->getContentType() == "text/plain") {
             $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
-        }
-        else {
+        } else {
             // make JSON the default based on specification tests
             $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
         }
@@ -174,7 +170,7 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
     }
 
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         // this _should_ cascade to child classes
         $obj = new \stdClass();
@@ -185,7 +181,7 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
             $obj->query = $this->_query;
         }
 
-        if ($this->_headers){
+        if ($this->_headers) {
             $header = $this->_headers;
             if (is_array($header)) {
                 $header = (object)$header;
@@ -217,5 +213,4 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
 
         return true;
     }
-
 }

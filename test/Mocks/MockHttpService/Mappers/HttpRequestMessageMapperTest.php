@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 
 class HttpRequestMessageMapperTest extends TestCase
 {
-
-    public function testConvert() {
+    public function testConvert()
+    {
         $mapper = new \PhpPact\Mocks\MockHttpService\Mappers\HttpRequestMessageMapper();
 
         // test standard
@@ -33,7 +33,7 @@ class HttpRequestMessageMapperTest extends TestCase
 
         $actualHeaders = $httpRequest->getHeaders();
         $this->assertTrue(isset($actualHeaders["Content-Type"]), "We expect one header - content-type");
-        $this->assertEquals('/test',$httpRequest->getUri()->getPath(), "Test that path was set appropriately");
+        $this->assertEquals('/test', $httpRequest->getUri()->getPath(), "Test that path was set appropriately");
         $this->assertFalse(($httpRequest->getUri()->getQuery()? true : false), "Test that query was not set.  Note this is an explicit false check");
         $this->assertEquals($obj->body, (string) $httpRequest->getBody(), "Body is set appropriately");
 
@@ -55,9 +55,8 @@ class HttpRequestMessageMapperTest extends TestCase
 
         $actualHeaders = $httpRequest->getHeaders();
         $this->assertTrue(isset($actualHeaders["Content-Type"]), "We expect one header - content-type");
-        $this->assertEquals('/test',$httpRequest->getUri()->getPath(), "Test that path was set appropriately");
+        $this->assertEquals('/test', $httpRequest->getUri()->getPath(), "Test that path was set appropriately");
         $this->assertEquals("x=1&y=2", $httpRequest->getUri()->getQuery(), "Test that query was set with the ? removed");
         $this->assertEquals($obj->body, (string) $httpRequest->getBody(), "Body is set appropriately");
     }
-
 }

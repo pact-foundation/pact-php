@@ -1,8 +1,8 @@
 <?php
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
-class ProviderServiceRequestComparer {
-
+class ProviderServiceRequestComparer
+{
     private $_httpMethodComparer; //IHttpStatusCodeComparer
     private $_httpPathComparer; //IHttpHeaderComparer
     private $_httpQueryStringComparer; //IHttpQueryStringComparer
@@ -42,20 +42,17 @@ class ProviderServiceRequestComparer {
         $result->AddChildResult($queryResult);
 
 
-        if (count($expected->getHeaders()) > 0 )
-        {
+        if (count($expected->getHeaders()) > 0) {
             $headerResult = $this->_httpHeaderComparer->Compare($expected->getHeaders(), $actual->getHeaders());
             $result->AddChildResult($headerResult);
         }
 
         // handles case where body is set but null
-        if ($expected->ShouldSerializeBody())
-        {
+        if ($expected->ShouldSerializeBody()) {
             $bodyResult = $this->_httpBodyComparer->Compare($expected, $actual, $expected->getMatchingRules());
             $result->AddChildResult($bodyResult);
         }
 
         return $result;
     }
-
 }

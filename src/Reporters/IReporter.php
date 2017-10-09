@@ -1,6 +1,7 @@
 <?php
 
 namespace PhpPact\Reporters;
+
 interface IReporter
 {
     public function ReportInfo($infoMessage);
@@ -14,5 +15,4 @@ interface IReporter
     public function ResetIndentation();
 
     public function Flush();
-
 }

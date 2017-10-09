@@ -28,7 +28,7 @@ class PactDetails implements \JsonSerializable
         $this->_logger = $logger;
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         // this _should_ cascade to child classes
         $obj = new \stdClass();
@@ -72,10 +72,11 @@ class PactDetails implements \JsonSerializable
 
     public function GeneratePactFileName()
     {
-        $fileName = sprintf("%s-%s.json",
+        $fileName = sprintf(
+            "%s-%s.json",
             $this->_consumer != null ? $this->_consumer->Name : "",
-            $this->_provider != null ? $this->_provider->Name : "");
+            $this->_provider != null ? $this->_provider->Name : ""
+        );
         return \PhpPact\Extensions\StringExtensions::ToLowerSnakeCase($fileName);
     }
-
 }

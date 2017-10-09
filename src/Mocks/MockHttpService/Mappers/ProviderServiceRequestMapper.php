@@ -12,7 +12,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
     {
         if (($request instanceof \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest)) {
             return $request;
-        }else if ($request instanceof \Psr\Http\Message\RequestInterface) {
+        } elseif ($request instanceof \Psr\Http\Message\RequestInterface) {
             $request = $this->HttpRequestConvert($request);
         }
 
@@ -57,8 +57,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
     private function GetContentType($request)
     {
         $contentTypeStr = "Content-Type";
-        if (isset($request->headers) && isset($request->headers->$contentTypeStr))
-        {
+        if (isset($request->headers) && isset($request->headers->$contentTypeStr)) {
             return $request->headers->$contentTypeStr;
         }
 
@@ -87,7 +86,6 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
         */
         $obj->headers = new \stdClass();
         if (count($headerArray) > 0) {
-
             foreach ($headerArray as $header_key => $header_value) {
                 if (!is_array($header_value)) {
                     throw new \Exception("This was an unexpected case based on the Windwalker implementation.   Make a unit test and pull request.");
@@ -113,6 +111,4 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
 
         return $obj;
     }
-
-
 }

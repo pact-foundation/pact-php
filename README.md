@@ -13,17 +13,11 @@ The namespace is PhpPact as [Pact-PHP](https://github.com/andykelk/pact-php) use
 Run `composer require mattersight/phppact`
 
 ### Pact-PHP 1.1
-For Pact-PHP 1.1, there is an open pull request for one of the third party libraries.   Until that is resolved or completely fork from the library, you will need to use the following composer.json
+For Pact-PHP 1.1, there is a need to run dev-master on TreeWalker dependency, you will need to use the following composer.json
 ```json
 {
 	"prefer-stable": true,
 	"minimum-stability": "dev",
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/mattermack/TreeWalker"
-		}
-	],
 	"require":
 	{
 		"mattersight/phppact": "^1.1"

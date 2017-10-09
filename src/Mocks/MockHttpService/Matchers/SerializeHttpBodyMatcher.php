@@ -8,7 +8,6 @@
 
 namespace PhpPact\Mocks\MockHttpService\Matchers;
 
-
 class SerializeHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
 {
     /**
@@ -26,5 +25,4 @@ class SerializeHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
 
         return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::ValueDoesNotMatch));
     }
-
 }
