@@ -254,3 +254,4 @@ vendor/*
 .settings/
 .buildpath
 
+php-cs-fixer-v2.phar
