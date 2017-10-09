@@ -119,7 +119,6 @@ class PactBrokerConnector
         }
 
         return false;
-
     }
 
 
@@ -182,7 +181,6 @@ class PactBrokerConnector
      */
     public function RetrievePact($providerName, $consumerName, $version = "latest")
     {
-
         $url = $this->_uriOptions->getBaseUri();
         $path = '/pacts/provider/' . urlencode($providerName) . '/consumer/' . urlencode($consumerName);
 

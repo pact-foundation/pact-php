@@ -17,7 +17,8 @@ class UnexpectedRequestComparisonFailure extends ComparisonFailure
         $this->_requestDescription = sprintf("%s %s", $requestMethod, $requestPath);
         $this->_result = sprintf(
             "An unexpected request %s was seen by the mock provider service.",
-            $this->_requestDescription);
+            $this->_requestDescription
+        );
     }
 
     /**
@@ -27,5 +28,4 @@ class UnexpectedRequestComparisonFailure extends ComparisonFailure
     {
         return $this->_requestDescription;
     }
-
 }

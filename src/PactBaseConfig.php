@@ -61,12 +61,12 @@ class PactBaseConfig
     {
         $defaultLogValue = ini_get('error_log');
 
-		// if there is no log set, send everything to stderr
-		$consoleLevel = 'info';
-		if (!$defaultLogValue) {
-			$consoleLevel = 'DEBUG';	
-		}
-		
+        // if there is no log set, send everything to stderr
+        $consoleLevel = 'info';
+        if (!$defaultLogValue) {
+            $consoleLevel = 'DEBUG';
+        }
+        
         $appenders = array(
             'console' => array(
                 'class' => 'LoggerAppenderConsole',
@@ -76,29 +76,28 @@ class PactBaseConfig
                 'threshold' => $consoleLevel
             ));
 
-		// if there is log set, add another appender
-		if ($defaultLogValue != false && $defaultLogValue != "stderr") {
-			if ($defaultLogValue != 'syslog') {
-				$appenders["file"] = array(
-					'class' => 'LoggerAppenderFile',
-					'layout' => array(
-						'class' => 'LoggerLayoutSimple'
-					),
-					'params' => array(
-						'file' => $defaultLogValue),
-					'append' => true
-				);
-			}
-			else {
-				$appenders['syslog'] = array(
-					'class' => 'LoggerAppenderSyslog',
-					'layout' => array(
-						'class' => 'LoggerLayoutSimple'
-					)
-				);
-			}
-		}
-		
+        // if there is log set, add another appender
+        if ($defaultLogValue != false && $defaultLogValue != "stderr") {
+            if ($defaultLogValue != 'syslog') {
+                $appenders["file"] = array(
+                    'class' => 'LoggerAppenderFile',
+                    'layout' => array(
+                        'class' => 'LoggerLayoutSimple'
+                    ),
+                    'params' => array(
+                        'file' => $defaultLogValue),
+                    'append' => true
+                );
+            } else {
+                $appenders['syslog'] = array(
+                    'class' => 'LoggerAppenderSyslog',
+                    'layout' => array(
+                        'class' => 'LoggerLayoutSimple'
+                    )
+                );
+            }
+        }
+        
         \Logger::configure(array(
             'rootLogger' => array(
                 'appenders' => array_keys($appenders),
@@ -138,14 +137,13 @@ class PactBaseConfig
             $baseUri = substr($baseUri, 0, strlen($baseUri) - 1);
         }
 
-        if (strtolower(substr($baseUri, 0, 4)) == 'http' ) {
-            if (strtolower(substr($baseUri, 0, 5)) == 'https' ){
+        if (strtolower(substr($baseUri, 0, 4)) == 'http') {
+            if (strtolower(substr($baseUri, 0, 5)) == 'https') {
                 // strip off protocol
                 // account for ://
                 $protocol = 'https';
                 $baseUri = substr($baseUri, 8, strlen($baseUri) - 8);
-            }
-            else {
+            } else {
                 // strip off protocol
                 // account for ://
                 $protocol = 'http';
@@ -201,6 +199,4 @@ class PactBaseConfig
         }
         return $this->_baseUrn;
     }
-
-
 }

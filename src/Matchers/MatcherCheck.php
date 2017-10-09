@@ -4,7 +4,6 @@ namespace PhpPact\Matchers;
 
 class MatcherCheck
 {
-
     const PathPrefix = "$.";
     private $_path;
 

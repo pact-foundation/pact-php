@@ -5,7 +5,8 @@ use PHPUnit\Framework\TestCase;
 
 class HttpVerbTest extends TestCase
 {
-    public function testEnum() {
+    public function testEnum()
+    {
         $verb = new HttpVerb();
 
         $this->assertEquals(HttpVerb::GET, $verb->Enum('GeT'), 'Ensure we handle case appropriately.');

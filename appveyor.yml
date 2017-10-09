@@ -33,6 +33,8 @@ build: off
 
 test_script:
   - cmd: C:\tools\php71\php.exe .\vendor\phpunit\phpunit\phpunit -c .\phpunit-all-tests.xml
+  - appveyor DownloadFile http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar
+  - cmd: C:\tools\php71\php.exe php-cs-fixer-v2.phar fix  -v --dry-run --stop-on-violation --using-cache=no .
 
 on_success:
   - echo Success

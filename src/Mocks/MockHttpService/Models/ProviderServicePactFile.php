@@ -38,7 +38,6 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
         }
 
         foreach ($interactionArray as $interactionObj) {
-
             if (!isset($interactionObj->description)) {
                 throw new \RuntimeException("description is not set");
             }
@@ -89,7 +88,7 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
         $filteredInteractions = array();
 
         if (count($this->_interactions) > 0) {
-            foreach($this->_interactions as $interaction) {
+            foreach ($this->_interactions as $interaction) {
                 if (strtolower($description) == strtolower($interaction->getDescription())) {
                     $filteredInteractions[] = $interaction;
                 }
@@ -111,7 +110,7 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
         $filteredInteractions = array();
 
         if (count($this->_interactions) > 0) {
-            foreach($this->_interactions as $interaction) {
+            foreach ($this->_interactions as $interaction) {
                 if (strtolower($state) == strtolower($interaction->getProviderState())) {
                     $filteredInteractions[] = $interaction;
                 }
@@ -133,7 +132,7 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
     {
         $responseComparer = new \PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer();
 
-        foreach($this->_interactions as $interaction) {
+        foreach ($this->_interactions as $interaction) {
             /**
              * @var $interaction \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction
              */
@@ -159,7 +158,7 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
     {
         $requestComparer = new \PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceRequestComparer();
 
-        foreach($this->_interactions as $interaction) {
+        foreach ($this->_interactions as $interaction) {
             /**
              * @var $interaction \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction
              */

@@ -8,7 +8,8 @@ use PHPUnit\Runner\Exception;
 
 class PactFileTest extends TestCase
 {
-    public function testSetMetadata() {
+    public function testSetMetadata()
+    {
         $f = new PactFile();
 
         $m = $f->getMetadata();
@@ -17,7 +18,7 @@ class PactFileTest extends TestCase
         $thrownException = false;
         try {
             $f->setMetadata("fail now");
-        }catch(\Exception $e) {
+        } catch (\Exception $e) {
             $thrownException = true;
         }
         $this->assertTrue($thrownException, "Ensure an exception is thrown if the proper object is not passed");
@@ -26,7 +27,7 @@ class PactFileTest extends TestCase
         try {
             $o = new \stdClass();
             $f->setMetadata($o);
-        }catch(\Exception $e) {
+        } catch (\Exception $e) {
             $thrownException = true;
         }
         $this->assertTrue($thrownException, "Ensure an exception is thrown if the proper object is without a pactSpecificationVersion");
@@ -36,7 +37,7 @@ class PactFileTest extends TestCase
             $o = new \stdClass();
             $o->pactSpecificationVersion = '2.0';
             $m = $f->setMetadata($o);
-        }catch(\Exception $e) {
+        } catch (\Exception $e) {
             $thrownException = true;
         }
         $this->assertFalse($thrownException, "A proper object is set");
@@ -48,7 +49,7 @@ class PactFileTest extends TestCase
             $o->metadata = new \stdClass();
             $o->metadata->pactSpecificationVersion = '3.0';
             $m = $f->setMetadata($o);
-        }catch(\Exception $e) {
+        } catch (\Exception $e) {
             $thrownException = true;
         }
         $this->assertFalse($thrownException, "A proper object is set");

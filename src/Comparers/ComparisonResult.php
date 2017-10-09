@@ -65,5 +65,4 @@ class ComparisonResult
 
         $this->_childResults[] = $comparisonResult;
     }
-
 }

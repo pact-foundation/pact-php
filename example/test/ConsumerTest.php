@@ -1,6 +1,6 @@
 <?php
 
-require_once( __DIR__ . '/MockApiConsumer.php');
+require_once(__DIR__ . '/MockApiConsumer.php');
 
 use PHPUnit\Framework\TestCase;
 
@@ -70,7 +70,6 @@ class ConsumerTest extends TestCase
         $hasException = false;
         try {
             $results = $mockService->VerifyInteractions();
-
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
         }
@@ -216,7 +215,6 @@ class ConsumerTest extends TestCase
 
             $receivedBodyResponse = $clientUnderTest->GetWithBody("http://localhost");
             $receivedPathResponse = $clientUnderTest->GetWithPath("http://localhost");
-
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
         }

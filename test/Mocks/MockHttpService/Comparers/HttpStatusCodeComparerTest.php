@@ -13,7 +13,8 @@ use PHPUnit\Framework\TestCase;
 
 class HttpStatusCodeComparerTest extends TestCase
 {
-    public function testCompare() {
+    public function testCompare()
+    {
         $comparer = new HttpStatusCodeComparer();
 
         $expected = 200;
@@ -23,5 +24,4 @@ class HttpStatusCodeComparerTest extends TestCase
         $result = $comparer->Compare($expected, '300');
         $this->assertEquals(1, $result->ShallowFailureCount(), "One failure expected");
     }
-
 }

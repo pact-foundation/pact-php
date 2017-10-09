@@ -13,7 +13,8 @@ use PHPUnit\Runner\Exception;
 
 class JsonHttpBodyMatcherTest extends TestCase
 {
-    public function testMatch() {
+    public function testMatch()
+    {
         $matcher = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
 
         $expected = array();
@@ -33,7 +34,7 @@ class JsonHttpBodyMatcherTest extends TestCase
             $actual = array();
             $actual[] = "Test";
             $matcher->Match("/", $expected, $actual);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             $hasException = true;
         }
         $this->assertTrue($hasException, "Expect an exception when expected is a string");
@@ -103,5 +104,4 @@ class JsonHttpBodyMatcherTest extends TestCase
         $checks = $result->getMatcherChecks();
         $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\SuccessfulMatcherCheck), "This should be a successful match - new objects allowed in current config");
     }
-
 }

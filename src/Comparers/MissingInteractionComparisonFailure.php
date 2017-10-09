@@ -19,7 +19,8 @@ class MissingInteractionComparisonFailure extends ComparisonFailure
             "The interaction with description '%s' and provider state '%s', was not used by the test. Missing request %s.",
             $interaction->getDescription(),
             $interaction->getProviderState(),
-            $this->_requestDescription);
+            $this->_requestDescription
+        );
     }
 
     /**

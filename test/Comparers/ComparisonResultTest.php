@@ -104,7 +104,5 @@ class ComparisonResultTest extends TestCase
         $this->assertEquals(0, $results->ShallowFailureCount(), "Expect  shallow failures");
         $this->assertEquals(2, count($results->Failures()), "Expect two failures");
         $this->assertTrue($results->HasFailure(), "Expect failures");
-
     }
-
 }

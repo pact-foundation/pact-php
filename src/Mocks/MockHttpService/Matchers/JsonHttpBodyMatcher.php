@@ -6,7 +6,7 @@ use PHPUnit\Runner\Exception;
 
 class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
 {
-    CONST PATH = "$..*";
+    const PATH = "$..*";
 
     private $_allowExtraKeys;
 
@@ -40,7 +40,8 @@ class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
             return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::ValueDoesNotMatch));
         }
 
-        $treewalker = new \TreeWalker(array(
+        $treewalker = new \TreeWalker(
+            array(
             "debug" => false,                     //true => return the execution time, false => not
             "returntype" => "array")              //Returntype = ["obj","jsonstring","array"]
         );
@@ -50,7 +51,7 @@ class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
          *
          * Objects can have extra nodes but not arrays.   Here, we find all sub arrays and ensure they are the same
          */
-        if ( method_exists($expected, "getBody") &&
+        if (method_exists($expected, "getBody") &&
             method_exists($actual, "getBody") &&
             $this->_allowExtraKeys == true
         ) {
@@ -64,7 +65,7 @@ class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
                 return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::AdditionalPropertyInObject));
             }
 
-            for($i = 0; $i<count($arraysInExpected); $i++) {
+            for ($i = 0; $i<count($arraysInExpected); $i++) {
                 $testExpected = array_pop($arraysInExpected);
                 $testActual = array_pop($arraysInActual);
                 $diffs = $treewalker->getdiff($testExpected, $testActual, false);
@@ -88,9 +89,9 @@ class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
     {
         if (count($results['new']) > 0) {
             return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::AdditionalPropertyInObject));
-        } else if (count($results['edited']) > 0) {
+        } elseif (count($results['edited']) > 0) {
             return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::ValueDoesNotMatch));
-        } else if (count($results['removed']) > 0 && $allowExtraObjectKeys == false) {
+        } elseif (count($results['removed']) > 0 && $allowExtraObjectKeys == false) {
             return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::AdditionalPropertyInObject));
         }
 
@@ -103,7 +104,7 @@ class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
             foreach ($obj as $key => $value) {
                 $this->FindArrays($value, $result);
             }
-        } else if (is_array($obj)) {
+        } elseif (is_array($obj)) {
             $result[] = $obj;
         }
     }

@@ -52,7 +52,6 @@ class ProviderServicePactFileTest extends TestCase
         $actualInteractions = $pactFile->getInteractions();
 
         $this->assertEquals(0, count($actualInteractions), "No interactions returned");
-
     }
 
     public function testFilterInteractionsByProviderState()
@@ -124,6 +123,4 @@ class ProviderServicePactFileTest extends TestCase
         $this->assertEquals("A GET request", $actualInteraction1->getDescription(), "Check that an interaction has a description");
         $this->assertEquals("Some types", $actualInteraction1->getProviderState(), "Check that an interaction has a provider state");
     }
-
-
 }

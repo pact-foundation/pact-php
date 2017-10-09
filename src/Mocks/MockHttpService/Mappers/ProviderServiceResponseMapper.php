@@ -12,9 +12,9 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
     {
         if (is_string($response)) {
             $response = \json_decode($response);
-        } else if ($response instanceof \Psr\Http\Message\ResponseInterface) {
+        } elseif ($response instanceof \Psr\Http\Message\ResponseInterface) {
             $response = $this->HttpResponseConvert($response);
-        } else if ($response instanceof \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse) {
+        } elseif ($response instanceof \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse) {
             return $response;
         }
 
@@ -56,7 +56,6 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
         */
         $obj->headers = new \stdClass();
         if (count($headerArray) > 0) {
-
             foreach ($headerArray as $header_key => $header_value) {
                 if (!is_array($header_value)) {
                     throw new \Exception("This was an unexpected case based on the Windwalker implementation.   Make a unit test and pull request.");
@@ -88,8 +87,7 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
     private function GetContentType($response)
     {
         $contentTypeStr = "Content-Type";
-        if (isset($response->headers) && isset($response->headers->$contentTypeStr))
-        {
+        if (isset($response->headers) && isset($response->headers->$contentTypeStr)) {
             return $response->headers->$contentTypeStr;
         }
 

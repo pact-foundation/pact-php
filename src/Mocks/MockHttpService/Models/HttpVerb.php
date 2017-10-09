@@ -4,7 +4,6 @@ namespace PhpPact\Mocks\MockHttpService\Models;
 
 class HttpVerb
 {
-
     const NOTSET = 0; // only one who had a number in C#
     const GET = "GET";
     const POST = "POST";
@@ -15,7 +14,8 @@ class HttpVerb
 
     private $methodTypes;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->methodTypes = array();
         $this->methodTypes["NOTSET"] = self::NOTSET;
         $this->methodTypes["GET"] = self::GET;
@@ -26,10 +26,10 @@ class HttpVerb
         $this->methodTypes["PATCH"] = self::PATCH;
     }
 
-    function Enum($method) {
+    public function Enum($method)
+    {
         $method = strtoupper($method);
-        if (isset($this->methodTypes[$method]))
-        {
+        if (isset($this->methodTypes[$method])) {
             return $this->methodTypes[$method];
         }
 

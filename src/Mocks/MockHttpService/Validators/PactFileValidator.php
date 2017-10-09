@@ -8,7 +8,6 @@
 
 namespace PhpPact\Mocks\MockHttpService\Validators;
 
-
 /**
  * Class PactFileValidator
  *
@@ -49,5 +48,4 @@ class PactFileValidator
         $realPath = realpath($relativeDir);
         return $realPath;
     }
-
 }

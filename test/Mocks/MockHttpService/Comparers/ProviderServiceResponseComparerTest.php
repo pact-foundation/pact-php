@@ -8,13 +8,10 @@
 
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
-
-
 use PHPUnit\Framework\TestCase;
 
 class ProviderServiceResponseComparerTest extends TestCase
 {
-
     public function testConvert()
     {
         $comparer = new \PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer();
@@ -28,7 +25,7 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse(200, $header, $body);
 
         $results = $comparer->Compare($response1, $response2);
-        $this->assertFalse($results->HasFailure(), "We expect these two responses to match." );
+        $this->assertFalse($results->HasFailure(), "We expect these two responses to match.");
 
         // expect header failure
         $header = array();
@@ -45,7 +42,7 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse(200, $header2, $body);
 
         $results = $comparer->Compare($response2, $response1);
-        $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the headers are off." );
+        $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the headers are off.");
 
         // check status
         $header = array();
@@ -57,7 +54,7 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse(500, $header, $body);
 
         $results = $comparer->Compare($response1, $response2);
-        $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the statuses are off." );
+        $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the statuses are off.");
 
         // check body
         $header = array();
@@ -70,6 +67,6 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response2 = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse(200, $header, $body2);
 
         $results = $comparer->Compare($response1, $response2);
-        $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the bodies are different." );
+        $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the bodies are different.");
     }
 }

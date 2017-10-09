@@ -32,5 +32,4 @@ class PactVerifierConfig extends PactBaseConfig
     {
         $this->_reportOutputters = $reportOutputters;
     }
-
 }

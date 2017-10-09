@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 
 class PacticipantTest extends TestCase
 {
-
-    public function testSetName() {
+    public function testSetName()
+    {
         $p = new \PhpPact\Models\Pacticipant();
 
         $actual = $p->setName("MyName");
