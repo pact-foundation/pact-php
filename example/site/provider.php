@@ -1,4 +1,8 @@
 <?php
+/*
+	Mock Provider as an example
+	
+*/
 
 if (isset($_GET["amount"])) {
 	$objects = generate(intval($_GET["amount"]));
