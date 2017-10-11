@@ -53,7 +53,7 @@
 			{
 				"method": "get",
 				"path": "/provider.php",
-				"query": "?amount=10",
+				"query": "?amount=4",
 				"headers":
 				{
 					"Content-Type": "application/json"
