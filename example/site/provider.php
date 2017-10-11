@@ -40,5 +40,10 @@ function generate($objCount = 3)
     
     $ret = new \stdClass();
     $ret->types = $objects;
+
+    if ($objCount == 4) {
+        $ret->extra = "ignore me";
+    }
+
     return $ret;
 }

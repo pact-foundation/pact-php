@@ -85,7 +85,8 @@
 							"id": 103,
 							"name": "Type 103"
 						}
-					]
+					],
+					"extra" : "ignore me"
 				}
 			}
 		},
