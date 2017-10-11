@@ -142,7 +142,7 @@ class RequestTestCase extends TestCase
         if ($this->_match) {
             $this->assertFalse($result->HasFailure(), "There should not be any errors");
         } else {
-            $this->assertEquals(1, count($result->Failures()));
+            $this->assertGreaterThanOrEqual(1, count($result->Failures()));
         }
     }
 }

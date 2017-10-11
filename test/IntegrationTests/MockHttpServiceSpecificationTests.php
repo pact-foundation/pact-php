@@ -43,7 +43,7 @@ class MockHttpServiceSpecificationTests extends TestCase
                 foreach ($testCaseFileNames as $testCaseFileName) {
                     $fullPathFileName = $pathToTestCases . DIRECTORY_SEPARATOR . $testCaseSubDirectory . DIRECTORY_SEPARATOR . $testCaseFileName;
                     error_log("Started: " . $fullPathFileName);
-                    if ($testCaseFileName == 'array in different order xml.json' && $testCaseType == 'response') {
+                    if ($testCaseFileName == 'property name is different case xml.json' && $testCaseType == 'response') {
                         error_log('Debugging: ' . $fullPathFileName );
                     }
                     $testCaseJson = file_get_contents($fullPathFileName);

@@ -41,14 +41,15 @@ class ProviderServiceRequestComparer
         $queryResult = $this->_httpQueryStringComparer->Compare($expected->getQuery(), $actual->getQuery());
         $result->AddChildResult($queryResult);
 
-
         if (count($expected->getHeaders()) > 0) {
             $headerResult = $this->_httpHeaderComparer->Compare($expected->getHeaders(), $actual->getHeaders());
             $result->AddChildResult($headerResult);
         }
 
         // handles case where body is set but null
-        if ($expected->ShouldSerializeBody()) {
+        // If there has already been a faillure, do not check the body
+        // Failed header settings can result in the body processing to fail
+        if ($expected->ShouldSerializeBody() && !$result->HasFailure()) {
             $bodyResult = $this->_httpBodyComparer->Compare($expected, $actual, $expected->getMatchingRules(), $expected->getContentType());
             $result->AddChildResult($bodyResult);
         }
