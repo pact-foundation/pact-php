@@ -18,7 +18,7 @@ class MockHttpServiceSpecificationTests extends TestCase
      */
     public function TestRequestSpecification()
     {
-        $this->RunPactSpecificationTests(__DIR__ . '/testcases-v1_1/request', 'request');
+        $this->RunPactSpecificationTests(__DIR__ . '/testcases-v2_0/request', 'request');
     }
 
 
@@ -27,7 +27,7 @@ class MockHttpServiceSpecificationTests extends TestCase
      */
     public function TestResponseSpecification()
     {
-        $this->RunPactSpecificationTests(__DIR__ . '/testcases-v1_1/response', 'response');
+        $this->RunPactSpecificationTests(__DIR__ . '/testcases-v2_0/response', 'response');
     }
 
     private function RunPactSpecificationTests($pathToTestCases, $testCaseType)
@@ -42,6 +42,10 @@ class MockHttpServiceSpecificationTests extends TestCase
                 $testCaseFileNames = $this->GetFiles($pathToTestCases . DIRECTORY_SEPARATOR . $testCaseSubDirectory);
                 foreach ($testCaseFileNames as $testCaseFileName) {
                     $fullPathFileName = $pathToTestCases . DIRECTORY_SEPARATOR . $testCaseSubDirectory . DIRECTORY_SEPARATOR . $testCaseFileName;
+                    error_log("Started: " . $fullPathFileName);
+                    if ($testCaseFileName == 'array in different order xml.json' && $testCaseType == 'response') {
+                        error_log('Debugging: ' . $fullPathFileName );
+                    }
                     $testCaseJson = file_get_contents($fullPathFileName);
 
                     $hasException = false;
@@ -62,6 +66,8 @@ class MockHttpServiceSpecificationTests extends TestCase
 
                         $testCaseRunner->Verify();
                     } catch (\Exception $e) {
+                        error_log("Failed: " . $fullPathFileName);
+                        throw $e;
                         $hasException = true;
                     }
                     $this->assertFalse($hasException, "Expected to pass case from: " . $testCaseSubDirectory . DIRECTORY_SEPARATOR . $testCaseFileName);

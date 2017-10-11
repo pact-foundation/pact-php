@@ -19,6 +19,7 @@
         "jfalque/http-mock": "^1.0",
         "justinrainbow/json-schema": "5.2.1",
         "lukascivil/treewalker": "dev-master",
+        "flow/jsonpath": "^0.3.4",
         "php": ">=7"
     },
 	"require-dev": {

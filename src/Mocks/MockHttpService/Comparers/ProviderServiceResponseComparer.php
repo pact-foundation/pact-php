@@ -40,7 +40,7 @@ class ProviderServiceResponseComparer
 
         // handles case where body is set but null
         if ($expected->ShouldSerializeBody()) {
-            $bodyResult = $this->_httpBodyComparer->Compare($expected, $actual, $expected->getMatchingRules());
+            $bodyResult = $this->_httpBodyComparer->Compare($expected, $actual, $expected->getMatchingRules(), $expected->getContentType());
             $result->AddChildResult($bodyResult);
         }
 

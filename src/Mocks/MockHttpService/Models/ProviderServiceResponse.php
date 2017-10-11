@@ -105,6 +105,8 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
             $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);
         } elseif ($this->getContentType() == "text/plain") {
             $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
+        } elseif ($this->getContentType() == "application/xml") {
+            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatcher(true);
         } else {
             // make JSON the default based on specification tests
             $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);

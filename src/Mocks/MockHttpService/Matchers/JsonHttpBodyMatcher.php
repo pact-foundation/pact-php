@@ -2,7 +2,6 @@
 
 namespace PhpPact\Mocks\MockHttpService\Matchers;
 
-use PHPUnit\Runner\Exception;
 
 class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
 {
@@ -51,23 +50,28 @@ class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
          *
          * Objects can have extra nodes but not arrays.   Here, we find all sub arrays and ensure they are the same
          */
-        if (method_exists($expected, "getBody") &&
-            method_exists($actual, "getBody") &&
-            $this->_allowExtraKeys == true
-        ) {
+        if ($this->_allowExtraKeys == true ) {
+            $actualBody = $actual;
+            $expectedBody = $expected;
+
+            if (method_exists($expected, "getBody") &&  method_exists($actual, "getBody")) {
+                $actualBody = $actual->getBody();
+                $expectedBody = $expected->getBody();
+            }
+
             $arraysInActual = array();
-            $this->FindArrays($actual->getBody(), $arraysInActual);
+            $this->FindArrays($actualBody, $arraysInActual);
 
             $arraysInExpected = array();
-            $this->FindArrays($expected->getBody(), $arraysInExpected);
+            $this->FindArrays($expectedBody, $arraysInExpected);
 
             if (count($arraysInActual) != count($arraysInExpected)) {
                 return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::AdditionalPropertyInObject));
             }
 
             for ($i = 0; $i<count($arraysInExpected); $i++) {
-                $testExpected = array_pop($arraysInExpected);
-                $testActual = array_pop($arraysInActual);
+                $testExpected = $arraysInExpected[$i];
+                $testActual = $arraysInActual[$i];
                 $diffs = $treewalker->getdiff($testExpected, $testActual, false);
                 $results = $this->ProcessResults($diffs, $path, false);
                 if ($results !== true) {

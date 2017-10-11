@@ -12,7 +12,7 @@ class HttpBodyComparer
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function Compare($expected, $actual, $matchingRules)
+    public function Compare($expected, $actual, $matchingRules, $expectedContentType = "application/json")
     {
         $result = new \PhpPact\Comparers\ComparisonResult("has a body");
 
@@ -28,18 +28,19 @@ class HttpBodyComparer
         }
 
         // looking for an exact match at the object level
-        if (is_string($expected)) {
-            $expected = $this->JsonDecode($expected);
-        } elseif (method_exists($expected, "getBody") && is_string($expected->getBody())) {
-            $expected = $this->JsonDecode($expected->getBody());
-        }
+        if ($expectedContentType=="application/json") {
+            if (is_string($expected)) {
+                $expected = $this->JsonDecode($expected);
+            } elseif (method_exists($expected, "getBody") && is_string($expected->getBody())) {
+                $expected = $this->JsonDecode($expected->getBody());
+            }
 
-        if (is_string($actual)) {
-            $actual = $this->JsonDecode($actual);
-        } elseif (method_exists($actual, "getBody") && is_string($actual->getBody())) {
-            $actual = $this->JsonDecode($actual->getBody());
+            if (is_string($actual)) {
+                $actual = $this->JsonDecode($actual);
+            } elseif (method_exists($actual, "getBody") && is_string($actual->getBody())) {
+                $actual = $this->JsonDecode($actual->getBody());
+            }
         }
-
 
         // cycle through matching rules
         foreach ($matchingRules as $matchingRuleKey => $matchingRule) {
