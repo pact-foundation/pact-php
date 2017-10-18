@@ -50,7 +50,7 @@ class ProviderServiceRequestComparer
         // If there has already been a faillure, do not check the body
         // Failed header settings can result in the body processing to fail
         if ($expected->ShouldSerializeBody() && !$result->HasFailure()) {
-            $bodyResult = $this->_httpBodyComparer->Compare($expected, $actual, $expected->getMatchingRules(), $expected->getContentType());
+            $bodyResult = $this->_httpBodyComparer->Compare($expected, $actual, $expected->getBodyMatchers(), $expected->getContentType());
             $result->AddChildResult($bodyResult);
         }
 

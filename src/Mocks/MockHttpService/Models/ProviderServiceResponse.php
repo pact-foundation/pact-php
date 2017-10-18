@@ -8,7 +8,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     private $_body;
     private $_headers; //[JsonProperty(PropertyName = "headers")] / [JsonConverter(typeof(PreserveCasingDictionaryConverter))]
     private $_status;
-    private $_matchingRules;
+    private $_bodyMatchers;
 
     /**
      * @return mixed
@@ -83,33 +83,33 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     /**
      * @return mixed
      */
-    public function getMatchingRules()
+    public function getBodyMatchers()
     {
-        return $this->_matchingRules;
+        return $this->_bodyMatchers;
     }
 
     /**
      * @param mixed $matchingRules
      */
-    public function setMatchingRules($matchingRules)
+    public function setBodyMatchers($matchingRules)
     {
-        $this->_matchingRules = $matchingRules;
+        $this->_bodyMatchers = $matchingRules;
     }
 
 
     private function ParseBodyMatchingRules($body)
     {
-        $this->_matchingRules = array();
+        $this->_bodyMatchers = array();
 
         if ($this->getContentType() == "application/json") {
-            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);
+            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);
         } elseif ($this->getContentType() == "text/plain") {
-            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
+            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
         } elseif ($this->getContentType() == "application/xml") {
-            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatcher(true);
+            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatcher(true);
         } else {
             // make JSON the default based on specification tests
-            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);
+            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);
         }
 
         return $body;
