@@ -2,7 +2,12 @@
 
 namespace PhpPact\Mocks\MockHttpService\Models;
 
-class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
+use PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher;
+use PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher;
+use PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatcher;
+
+
+class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
 {
     private $_bodyWasSet;
     private $_body;
@@ -16,7 +21,7 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
     public function __construct($method, $path, $headers = null, $body = false)
     {
         // enumerate over HttpVerb to set the value of the
-        $verb = new \PhpPact\Mocks\MockHttpService\Models\HttpVerb();
+        $verb = new HttpVerb();
         $this->_method = $verb->Enum($method);
         $this->_path = $path;
         if ($headers) {
@@ -127,12 +132,12 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
 
     public function PathWithQuery()
     {
-        if (!$this->_path && !$this->Query) {
+        if (!$this->_path && !$this->_query) {
             throw new \RuntimeException("Query has been supplied, however Path has not. Please specify as Path.");
         }
 
-        return !($this->Query) ?
-            sprintf("%s?%s", $this->_path, $this->Query) :
+        return !($this->_query) ?
+            sprintf("%s?%s", $this->_path, $this->_query) :
             $this->_path;
     }
 
@@ -141,14 +146,14 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
         $this->_bodyMatchers = array();
 
         if ($this->getContentType() == "application/json") {
-            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
+            $this->_bodyMatchers[] = new JsonHttpBodyMatcher(false);
         } elseif ($this->getContentType() == "text/plain") {
-            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
+            $this->_bodyMatchers[] = new SerializeHttpBodyMatcher();
         } elseif ($this->getContentType() == "application/xml") {
-            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatcher(false);
+            $this->_bodyMatchers[] = new XmlHttpBodyMatcher(false);
         } else {
             // make JSON the default based on specification tests
-            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
+            $this->_bodyMatchers[] = new JsonHttpBodyMatcher(false);
         }
 
         return $body;

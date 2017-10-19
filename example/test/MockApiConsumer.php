@@ -43,6 +43,28 @@ class MockApiConsumer
     }
 
     /**
+     * Mock out a basic GET and a xml response
+     *
+     * @param $uri string
+     * @return mixed
+     */
+    public function GetWithResponseBodyXml($url)
+    {
+        $uri = (new \Windwalker\Uri\PsrUri($url))
+            ->withPath("/")
+            ->withQuery("xml=true");
+
+        $httpRequest = (new \Windwalker\Http\Request\Request())
+            ->withUri($uri)
+            ->withAddedHeader("Content-Type", "application/xml")
+            ->withMethod("get");
+
+
+        $response = $this->sendRequest($httpRequest);
+        return $response;
+    }
+
+    /**
      *
      * @param $uri string
      * @return mixed

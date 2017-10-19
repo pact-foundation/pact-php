@@ -86,7 +86,7 @@
 							"name": "Type 103"
 						}
 					],
-					"extra" : "ignore me"
+					"extra": "ignore me"
 				}
 			}
 		},
@@ -149,10 +149,33 @@
 					"type": "some new type"
 				}
 			}
+		},
+		{
+			"description": "A GET request with an XML header",
+			"provider_state": "There is an XML alligator named Mary",
+			"request":
+			{
+				"method": "get",
+				"path": "/provider.php",
+				"query": "xml=true",
+				"headers":
+				{
+					"Accept": "application/xml"
+				}
+			},
+			"response":
+			{
+				"status": 200,
+				"headers":
+				{
+					"Content-Type": "application/xml"
+				},
+				"body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><alligator name=\"Mary\" feet=\"4\"><favoriteColor>blue</favoriteColor></alligator>"
+			}
 		}
 	],
 	"metadata":
 	{
-		"pactSpecificationVersion": "1.1.0"
+		"pactSpecificationVersion": "2.0.0"
 	}
 }

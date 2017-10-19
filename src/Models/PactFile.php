@@ -2,15 +2,14 @@
 
 namespace PhpPact\Models;
 
-class PactFile extends \PhpPact\Models\PactDetails implements \JsonSerializable
+class PactFile extends PactDetails implements \JsonSerializable
 {
-    //[JsonProperty(PropertyName = "metadata")]
     public $_metadata;
 
     public function __construct()
     {
         $this->_metadata = new \stdClass();
-        $this->_metadata->pactSpecificationVersion = '1.1.0';
+        $this->_metadata->pactSpecificationVersion = '2.0.0';
     }
 
     public function jsonSerialize()

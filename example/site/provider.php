@@ -19,12 +19,21 @@ if (isset($_GET["amount"])) {
     $body = '{ "type": "some new type" }';
     $body = \json_encode(\json_decode($body));
     $objects = \json_decode($body);
-} else {
+} else if (!isset($_GET['xml'])) {
     $objects = generate();
 }
 
-header('Content-Type: application/json');
-echo json_encode($objects);
+if (isset($_GET['xml'])) {
+    header('Content-Type: application/xml');
+    $body =  '<?xml version="1.0" encoding="UTF-8"?><alligator name="Mary" feet="4"><favoriteColor>blue</favoriteColor></alligator>';
+    echo $body;
+}
+else {
+    header('Content-Type: application/json');
+    echo json_encode($objects);
+}
+
+
 
 function generate($objCount = 3)
 {
