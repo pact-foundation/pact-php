@@ -124,7 +124,7 @@ class MockProviderService implements IMockProviderService
      */
     public function addInteractionToPact(ProviderServiceInteraction $interaction)
     {
-        $this->_pactFile->AddInteraction($interaction);
+        $this->_pactFile->addInteraction($interaction);
     }
 
     /**
@@ -237,11 +237,11 @@ class MockProviderService implements IMockProviderService
             $response = $responseMapper->convert($httpResponse);
 
             // foreach request, check that request is in our list of interactions
-            $matchingInteraction = $this->_pactFile->FindInteractionByProviderServiceRequest($request);
+            $matchingInteraction = $this->_pactFile->findInteractionByProviderServiceRequest($request);
 
             // given that we got a response, does it look like the expected interactions response
             $matchingResponse = $matchingInteraction->getResponse();
-            $results = $responseComparer->Compare($matchingResponse, $response);
+            $results = $responseComparer->compare($matchingResponse, $response);
 
             $comparisonResults->AddChildResult($result);
         }
@@ -340,7 +340,7 @@ class MockProviderService implements IMockProviderService
         $this->AddMockToServer($interaction);
 
         // do we actually want to set the iteractions to the pact.  I think we want to do this after we verify or build.
-        $this->AddInteractionToPact($interaction);
+        $this->addInteractionToPact($interaction);
     }
 
     /**

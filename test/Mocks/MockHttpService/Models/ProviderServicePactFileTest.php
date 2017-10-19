@@ -21,7 +21,7 @@ class ProviderServicePactFileTest extends TestCase
 
         $pactFile = new ProviderServicePactFile();
         $pactFile->setInteractions($expectedInteractions);
-        $pactFile->FilterInteractionsByDescription("Another GET request");
+        $pactFile->filterInteractionsByDescription("Another GET request");
         $actualInteractions = $pactFile->getInteractions();
         $this->assertEquals(1, count($actualInteractions), "Check that one interactions is left");
 
@@ -42,7 +42,7 @@ class ProviderServicePactFileTest extends TestCase
 
         $pactFile = new ProviderServicePactFile();
         $pactFile->setInteractions($expectedInteractions);
-        $pactFile->FilterInteractionsByDescription("None existent description");
+        $pactFile->filterInteractionsByDescription("None existent description");
         $actualInteractions = $pactFile->getInteractions();
 
         $this->assertEquals(0, count($actualInteractions), "No interactions returned");
@@ -63,7 +63,7 @@ class ProviderServicePactFileTest extends TestCase
         $pactFile = new ProviderServicePactFile();
         $pactFile->setInteractions($expectedInteractions);
 
-        $actualInteractions = $pactFile->FilterInteractionsByProviderState("Some types");
+        $actualInteractions = $pactFile->filterInteractionsByProviderState("Some types");
         $this->assertEquals(1, count($actualInteractions), "Check that one interactions is left");
 
         $actualInteraction1 = $actualInteractions[0];
@@ -82,7 +82,7 @@ class ProviderServicePactFileTest extends TestCase
 
         $pactFile = new ProviderServicePactFile();
         $pactFile->setInteractions($expectedInteractions);
-        $pactFile->FilterInteractionsByProviderState("None existent state");
+        $pactFile->filterInteractionsByProviderState("None existent state");
         $actualInteractions = $pactFile->getInteractions();
 
         $this->assertEquals(0, count($actualInteractions), "No interactions returned");

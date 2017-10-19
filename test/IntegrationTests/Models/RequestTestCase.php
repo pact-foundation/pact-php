@@ -47,12 +47,12 @@ class RequestTestCase extends TestCase
         $mapper = new ProviderServiceRequestMapper();
         if (isset($jsonObj->expected)) {
             // cast $json->expected
-            $this->setExpected($mapper->Convert($jsonObj->expected));
+            $this->setExpected($mapper->convert($jsonObj->expected));
         }
 
         if (isset($jsonObj->actual)) {
             // cast $json->actual
-            $this->setActual($mapper->Convert($jsonObj->actual));
+            $this->setActual($mapper->convert($jsonObj->actual));
         }
     }
 

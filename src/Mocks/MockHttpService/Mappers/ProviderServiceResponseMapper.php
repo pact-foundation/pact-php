@@ -3,6 +3,7 @@
 namespace PhpPact\Mocks\MockHttpService\Mappers;
 
 use PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
+use PhpPact\Mappers\MatchingRuleMapper;
 
 class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
 {
@@ -33,7 +34,11 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
             }
         }
 
-        $providerServiceResponse = new ProviderServiceResponse($status, $headers, $body);
+        $matchingRulesMapper = new MatchingRuleMapper();
+        $matchingRules = $matchingRulesMapper->convert($response);
+
+        $providerServiceResponse = new ProviderServiceResponse($status, $headers, $body, $matchingRules);
+
         return $providerServiceResponse;
     }
 

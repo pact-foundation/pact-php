@@ -25,7 +25,7 @@ class ProviderServiceResponseComparer
      *
      * @return ComparisonResult
      */
-    public function Compare($expected, $actual)
+    public function compare($expected, $actual)
     {
         $result = new ComparisonResult("returns a response which");
         if (!$expected) {

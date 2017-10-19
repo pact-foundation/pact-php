@@ -9,6 +9,9 @@ use PhpPact\Mocks\MockHttpService\Models\HttpVerb;
 use PhpPact\PactFailureException;
 use PhpPact\PactBuilder;
 use PhpPact\PactConfig;
+use PhpPact\Matchers\Rules\MatcherRuleTypes;
+use PhpPact\Matchers\Rules\MatchingRule;
+
 
 class ConsumerTest extends TestCase
 {
@@ -345,5 +348,58 @@ class ConsumerTest extends TestCase
             $hasException = true;
         }
         $this->assertFalse($hasException, "This POST with a body should verify the interactions and not throw an exception");
+    }
+
+    /**
+     * @test
+     *
+     * Run similar test to GetBasic but using Matchers
+     */
+    public function testGetMatch()
+    {
+        // build the request
+        $reqHeaders = array();
+        $reqHeaders["Content-Type"] = "application/json";
+        $request = new ProviderServiceRequest(HttpVerb::GET, "/", $reqHeaders);
+
+        $reqMatchers = array();
+        $reqMatchers['$.body.msg'] = new MatchingRule('$.body.msg', array(MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::OBJECT_TYPE));
+        $request->setMatchingRules($reqMatchers);
+
+        // build the response
+        $resHeaders = array();
+        $resHeaders["Content-Type"] = "application/json";
+        $resHeaders["AnotherHeader"] = "my-header";
+
+        $response = new ProviderServiceResponse('200', $resHeaders);
+        $response->setBody("{\"msg\" : \"I am the walrus\"}");
+
+        // build up the expected results and appropriate responses
+        $mockService = $this->_build->getMockService();
+        $mockService->Given("Basic Get Request")
+            ->UponReceiving("A GET request with a base / path and a content type of json")
+            ->With($request)
+            ->WillRespondWith($response);
+
+        // build system under test
+        $host = $mockService->getHost();
+
+        $clientUnderTest = new MockApiConsumer();
+        $clientUnderTest->setMockHost($host);
+        $receivedResponse = $clientUnderTest->GetBasic("http://localhost");
+
+        // do some asserts on the return
+        $this->assertEquals('200', $receivedResponse->getStatusCode(), "Let's make sure we have an OK response");
+
+        // verify the interactions
+        $hasException = false;
+        try {
+            $results = $mockService->VerifyInteractions();
+        } catch (PactFailureException $e) {
+            $hasException = true;
+        }
+        $this->assertFalse($hasException, "This basic get should verify the interactions and not throw an exception");
+
+        error_log(\json_encode($request));
     }
 }

@@ -3,7 +3,7 @@
 namespace PhpPact\Matchers\Rules;
 
 
-class MatchingRule
+class MatchingRule implements \JsonSerializable
 {
     private $_jsonPath;
     private $_type;
@@ -75,18 +75,19 @@ class MatchingRule
     public function jsonSerialize()
     {
         $obj = new \stdClass();
-        $obj->{"{$this->getJsonPath()}"} = new \stdClass();
 
         if ($this->getMin()) {
-            $obj->{"{$this->getJsonPath()}"}->min = $this->getMin();
+            $obj->min = $this->getMin();
         }
 
         if ($this->getType()) {
-            $obj->{"{$this->getJsonPath()}"}->match = $this->getType();
+            $obj->match = $this->getType();
         }
 
         if ($this->getRegexPattern()) {
-            $obj->{"{$this->getJsonPath()}"}->regex = $this->getRegexPattern();
+            $obj->regex = $this->getRegexPattern();
         }
+
+        return $obj;
     }
 }

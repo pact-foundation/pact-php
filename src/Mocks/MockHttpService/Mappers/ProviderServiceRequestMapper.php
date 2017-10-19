@@ -2,7 +2,9 @@
 
 namespace PhpPact\Mocks\MockHttpService\Mappers;
 
+use PhpPact\Mappers\MatchingRuleMapper;
 use PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
+
 
 class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
 {
@@ -23,7 +25,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
 
         $body = false;
         if (property_exists($request, "body")) {
-            $contentType = $this->GetContentType($request);
+            $contentType = $this->getContentType($request);
             $body = $request->body;
 
             if (stripos($contentType, "application/json") !== false && !is_string($body)) {
@@ -35,7 +37,10 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
             $request->headers = null;
         }
 
-        $providerServiceRequest = new ProviderServiceRequest($request->method, $request->path, $request->headers, $body);
+        $matchingRulesMapper = new MatchingRuleMapper();
+        $matchingRules = $matchingRulesMapper->convert($request);
+
+        $providerServiceRequest = new ProviderServiceRequest($request->method, $request->path, $request->headers, $body, $matchingRules);
         if (isset($request->query)) {
             $providerServiceRequest->setQuery($request->query);
         }

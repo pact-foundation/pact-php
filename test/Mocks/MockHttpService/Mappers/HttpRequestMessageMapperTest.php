@@ -3,13 +3,14 @@
 namespace Mocks\MockHttpService\Mappers;
 
 use PhpPact\Mocks\MockHttpService\Mappers\HttpRequestMessageMapper;
+use PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceRequestMapper;
 use PHPUnit\Framework\TestCase;
 
 class HttpRequestMessageMapperTest extends TestCase
 {
     public function testConvert()
     {
-        $mapper = new \PhpPact\Mocks\MockHttpService\Mappers\HttpRequestMessageMapper();
+        $mapper = new HttpRequestMessageMapper();
 
         // test standard
         $obj = new \stdClass();
@@ -19,9 +20,9 @@ class HttpRequestMessageMapperTest extends TestCase
         $obj->headers["Content-Type"] = "application/json";
         $obj->body = "Do not tell me what I can do to my body";
 
-        $providerServiceRequestMapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceRequestMapper();
-        $providerServiceRequest = $providerServiceRequestMapper->Convert($obj);
-        $httpRequest = $mapper->Convert($providerServiceRequest, "http://localhost");
+        $providerServiceRequestMapper = new ProviderServiceRequestMapper();
+        $providerServiceRequest = $providerServiceRequestMapper->convert($obj);
+        $httpRequest = $mapper->convert($providerServiceRequest, "http://localhost");
 
         $this->assertTrue(($httpRequest instanceof \Psr\Http\Message\RequestInterface), "We expect a Psr request");
 
@@ -41,9 +42,9 @@ class HttpRequestMessageMapperTest extends TestCase
         $obj->headers["Content-Type"] = "application/json";
         $obj->body = "Do not tell me what I can do to my body";
 
-        $providerServiceRequestMapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceRequestMapper();
-        $providerServiceRequest = $providerServiceRequestMapper->Convert($obj);
-        $httpRequest = $mapper->Convert($providerServiceRequest, "http://localhost");
+        $providerServiceRequestMapper = new ProviderServiceRequestMapper();
+        $providerServiceRequest = $providerServiceRequestMapper->convert($obj);
+        $httpRequest = $mapper->convert($providerServiceRequest, "http://localhost");
 
         $this->assertTrue(($httpRequest instanceof \Psr\Http\Message\RequestInterface), "We expect a Psr request");
 

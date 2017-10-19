@@ -2,6 +2,9 @@
 
 namespace PhpPact\Mocks\MockHttpService\Models;
 
+use PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer;
+use PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceRequestComparer;
+
 class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonSerializable
 {
     private $_interactions;
@@ -46,18 +49,18 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
                 throw new \RuntimeException("provider_state is not set");
             }
 
-            $this->AddInteraction($interactionObj);
+            $this->addInteraction($interactionObj);
         }
 
         return $this->_interactions;
     }
 
-    public function AddInteraction($interactionObj)
+    public function addInteraction($interactionObj)
     {
         $interaction = $interactionObj;
 
-        if (!($interactionObj instanceof \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction)) {
-            $interaction = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction();
+        if (!($interactionObj instanceof ProviderServiceInteraction)) {
+            $interaction = new ProviderServiceInteraction();
             $interaction->setProviderState($interactionObj->provider_state);
             $interaction->setDescription($interactionObj->description);
             $interaction->setRequest($interactionObj->request);
@@ -83,7 +86,7 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
      * @param $description
      * @return array
      */
-    public function FilterInteractionsByDescription($description)
+    public function filterInteractionsByDescription($description)
     {
         $filteredInteractions = array();
 
@@ -105,7 +108,7 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
      * @param $state
      * @return array
      */
-    public function FilterInteractionsByProviderState($state)
+    public function filterInteractionsByProviderState($state)
     {
         $filteredInteractions = array();
 
@@ -128,13 +131,13 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
      * @return mixed|ProviderServiceInteraction
      * @throws \PhpPact\PactFailureException(
      */
-    public function FindInteractionsByProviderServiceResponse(\PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse $response)
+    public function findInteractionsByProviderServiceResponse(ProviderServiceResponse $response)
     {
-        $responseComparer = new \PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer();
+        $responseComparer = new ProviderServiceResponseComparer();
 
         foreach ($this->_interactions as $interaction) {
             /**
-             * @var $interaction \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction
+             * @var $interaction ProviderServiceInteraction
              */
             $interactionResponse = $interaction->getResponse();
             $comparisionResults = $responseComparer->Compare($interactionResponse, $response);
@@ -152,15 +155,15 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
      *
      * @param ProviderServiceRequest $request
      * @return mixed|ProviderServiceInteraction
-     * @throws \PhpPact\PactFailureException(
+     * @throws \PhpPact\PactFailureException
      */
-    public function FindInteractionByProviderServiceRequest(\PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest $request)
+    public function findInteractionByProviderServiceRequest(ProviderServiceRequest $request)
     {
-        $requestComparer = new \PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceRequestComparer();
+        $requestComparer = new ProviderServiceRequestComparer();
 
         foreach ($this->_interactions as $interaction) {
             /**
-             * @var $interaction \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction
+             * @var $interaction ProviderServiceInteraction
              */
             $interactionRequest = $interaction->getRequest();
             $comparisionResults = $requestComparer->Compare($interactionRequest, $request);
