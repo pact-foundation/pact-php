@@ -9,7 +9,7 @@
 namespace Mocks\MockHttpService\Comparers;
 
 use PhpPact\Mocks\MockHttpService\Comparers\HttpBodyComparer;
-use PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher;
+use PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatchChecker;
 use PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
 use PHPUnit\Framework\TestCase;
 
@@ -23,7 +23,7 @@ class HttpBodyComparerTest extends TestCase
     {
         $comparer = new HttpBodyComparer();
         $matchers = array();
-        $matchers[] = new JsonHttpBodyMatcher(true);
+        $matchers[] = new JsonHttpBodyMatchChecker(true);
 
         // empty body no content type
         // match = true

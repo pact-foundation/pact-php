@@ -2,9 +2,9 @@
 
 namespace PhpPact\Mocks\MockHttpService\Models;
 
-use PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher;
-use PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher;
-use PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatcher;
+use PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatchChecker;
+use PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatchChecker;
+use PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatchChecker;
 
 
 class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
@@ -17,6 +17,7 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
 
     private $_bodyMatchers;
     private $_query; //[JsonProperty(PropertyName = "query")]
+    private $_matchingRules;
 
     public function __construct($method, $path, $headers = null, $body = false)
     {
@@ -124,6 +125,29 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
         return $this->_bodyMatchers;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getMatchingRules()
+    {
+        return $this->_matchingRules;
+    }
+
+    /**
+     * @param array $matchingRules
+     */
+    public function setMatchingRules($matchingRules)
+    {
+        $this->_matchingRules = $matchingRules;
+    }
+
+    /**
+     * @param mixed $matchingRules
+     */
+    public function addMatchingRule($pattern, $matchType = false)
+    {
+        //$this->_matchingRules[] = $matchingRules;
+    }
 
     public function ShouldSerializeBody()
     {
@@ -146,14 +170,14 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
         $this->_bodyMatchers = array();
 
         if ($this->getContentType() == "application/json") {
-            $this->_bodyMatchers[] = new JsonHttpBodyMatcher(false);
+            $this->_bodyMatchers[] = new JsonHttpBodyMatchChecker(false);
         } elseif ($this->getContentType() == "text/plain") {
-            $this->_bodyMatchers[] = new SerializeHttpBodyMatcher();
+            $this->_bodyMatchers[] = new SerializeHttpBodyMatchChecker();
         } elseif ($this->getContentType() == "application/xml") {
-            $this->_bodyMatchers[] = new XmlHttpBodyMatcher(false);
+            $this->_bodyMatchers[] = new XmlHttpBodyMatchChecker(false);
         } else {
             // make JSON the default based on specification tests
-            $this->_bodyMatchers[] = new JsonHttpBodyMatcher(false);
+            $this->_bodyMatchers[] = new JsonHttpBodyMatchChecker(false);
         }
 
         return $body;

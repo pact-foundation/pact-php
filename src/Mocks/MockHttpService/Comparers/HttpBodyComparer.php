@@ -2,6 +2,10 @@
 
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
+use PhpPact\Comparers\DiffComparisonFailure;
+use PhpPact\Matchers\Checkers\FailedMatcherCheck;
+use PhpPact\Comparers\ComparisonResult;
+
 class HttpBodyComparer
 {
 
@@ -14,11 +18,11 @@ class HttpBodyComparer
      */
     public function Compare($expected, $actual, $matchingRules, $expectedContentType = "application/json")
     {
-        $result = new \PhpPact\Comparers\ComparisonResult("has a body");
+        $result = new ComparisonResult("has a body");
 
 
         if ($expected->ShouldSerializeBody() && $expected->getBody() == null && $actual->getBody()) {
-            $result->RecordFailure(new \PhpPact\Comparers\DiffComparisonFailure($expected, $actual));
+            $result->RecordFailure(new DiffComparisonFailure($expected, $actual));
             return $result;
         }
 
@@ -30,15 +34,15 @@ class HttpBodyComparer
         // looking for an exact match at the object level
         if ($expectedContentType=="application/json") {
             if (is_string($expected)) {
-                $expected = $this->JsonDecode($expected);
+                $expected = $this->jsonDecode($expected);
             } elseif (method_exists($expected, "getBody") && is_string($expected->getBody())) {
-                $expected = $this->JsonDecode($expected->getBody());
+                $expected = $this->jsonDecode($expected->getBody());
             }
 
             if (is_string($actual)) {
-                $actual = $this->JsonDecode($actual);
+                $actual = $this->jsonDecode($actual);
             } elseif (method_exists($actual, "getBody") && is_string($actual->getBody())) {
-                $actual = $this->JsonDecode($actual->getBody());
+                $actual = $this->jsonDecode($actual->getBody());
             }
         }
 
@@ -47,8 +51,8 @@ class HttpBodyComparer
             $results = $matchingRule->Match($matchingRuleKey, $expected, $actual);
             $checks = $results->getMatcherChecks();
             foreach ($checks as $check) {
-                if (($check instanceof \PhpPact\Matchers\FailedMatcherCheck)) {
-                    $result->RecordFailure(new \PhpPact\Comparers\DiffComparisonFailure($expected, $actual));
+                if (($check instanceof FailedMatcherCheck)) {
+                    $result->RecordFailure(new DiffComparisonFailure($expected, $actual));
                 }
             }
         }
@@ -61,7 +65,7 @@ class HttpBodyComparer
      * @param $obj
      * @return mixed
      */
-    private function JsonDecode($obj)
+    private function jsonDecode($obj)
     {
         $json = \json_decode($obj);
         if ($json !== null) {

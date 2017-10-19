@@ -2,8 +2,13 @@
 
 namespace PhpPact\Mocks\MockHttpService\Matchers;
 
+use PhpPact\Matchers\Checkers\IMatchChecker;
+use PhpPact\Matchers\Checkers\MatcherResult;
+use PhpPact\Matchers\Checkers\FailedMatcherCheck;
+use PhpPact\Matchers\Checkers\MatcherCheckFailureType;
+use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
 
-class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
+class JsonHttpBodyMatchChecker implements IMatchChecker
 {
     const PATH = "$..*";
 
@@ -20,23 +25,23 @@ class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
      * @param $path
      * @param $expected
      * @param $actual
-     * @return \PhpPact\Matchers\MatcherResult
+     * @return \PhpPact\Matchers\Checkers\MatcherResult
      * @throws \Exception
      */
     public function Match($path, $expected, $actual)
     {
         // empty string check
         if (!is_object($expected) && !is_array($expected)) {
-            throw new \Exception("Failed to compare objects.   If you are not testing objects, try the SerializeHttpBodyMatcher.");
+            throw new \Exception("Failed to compare objects.   If you are not testing objects, try the SerializeHttpBodyMatchChecker.");
         }
 
 
         if ((!is_object($expected) && !is_array($expected))  && (is_object($actual) || is_array($actual))) {
-            return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::ValueDoesNotMatch));
+            return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::ValueDoesNotMatch));
         }
 
         if (!$actual || (!is_object($actual) && !is_array($actual))) {
-            return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::ValueDoesNotMatch));
+            return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::ValueDoesNotMatch));
         }
 
         $treewalker = new \TreeWalker(
@@ -66,7 +71,7 @@ class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
             $this->FindArrays($expectedBody, $arraysInExpected);
 
             if (count($arraysInActual) != count($arraysInExpected)) {
-                return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::AdditionalPropertyInObject));
+                return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::AdditionalPropertyInObject));
             }
 
             for ($i = 0; $i<count($arraysInExpected); $i++) {
@@ -86,17 +91,17 @@ class JsonHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
             return $results;
         }
 
-        return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\SuccessfulMatcherCheck($path));
+        return new MatcherResult(new SuccessfulMatcherCheck($path));
     }
 
     private function ProcessResults($results, $path, $allowExtraObjectKeys = false)
     {
         if (count($results['new']) > 0) {
-            return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::AdditionalPropertyInObject));
+            return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::AdditionalPropertyInObject));
         } elseif (count($results['edited']) > 0) {
-            return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::ValueDoesNotMatch));
+            return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::ValueDoesNotMatch));
         } elseif (count($results['removed']) > 0 && $allowExtraObjectKeys == false) {
-            return new \PhpPact\Matchers\MatcherResult(new \PhpPact\Matchers\FailedMatcherCheck($path, \PhpPact\Matchers\MatcherCheckFailureType::AdditionalPropertyInObject));
+            return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::AdditionalPropertyInObject));
         }
 
         return true;

@@ -9,25 +9,28 @@
 namespace Mocks\MockHttpService\Matchers;
 
 use PHPUnit\Framework\TestCase;
+use PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatchChecker;
+use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
+use PhpPact\Matchers\Checkers\FailedMatcherCheck;
 
 class SerializeHttpBodyMatcherTest extends TestCase
 {
     public function testMatch()
     {
-        $matcher = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
+        $matcher = new SerializeHttpBodyMatchChecker();
 
         $result = $matcher->Match("/", 'a', 'a');
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\SuccessfulMatcherCheck), "This should be a successful match");
+        $this->assertTrue(($checks[0] instanceof SuccessfulMatcherCheck), "This should be a successful match");
 
         $result = $matcher->Match("/", 'a', 'b');
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\FailedMatcherCheck), "This should be a failed string match");
+        $this->assertTrue(($checks[0] instanceof FailedMatcherCheck), "This should be a failed string match");
 
         // test json string
         $result = $matcher->Match("/", '{"id" : 1}', '{"id" : 1}');
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\SuccessfulMatcherCheck), "This should be a successful json string match");
+        $this->assertTrue(($checks[0] instanceof SuccessfulMatcherCheck), "This should be a successful json string match");
 
         // test arrays
         $a = array();
@@ -40,7 +43,7 @@ class SerializeHttpBodyMatcherTest extends TestCase
 
         $result = $matcher->Match("/", $a, $b);
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\SuccessfulMatcherCheck), "This should be a successful array match");
+        $this->assertTrue(($checks[0] instanceof SuccessfulMatcherCheck), "This should be a successful array match");
 
         // test objects
         $a = new \stdClass();
@@ -53,7 +56,7 @@ class SerializeHttpBodyMatcherTest extends TestCase
 
         $result = $matcher->Match("/", $a, $b);
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\SuccessfulMatcherCheck), "This should be a successful object match");
+        $this->assertTrue(($checks[0] instanceof SuccessfulMatcherCheck), "This should be a successful object match");
 
         // test failed objects
         $a = new \stdClass();
@@ -65,6 +68,6 @@ class SerializeHttpBodyMatcherTest extends TestCase
 
         $result = $matcher->Match("/", $a, $b);
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\FailedMatcherCheck), "This should be a failed object match");
+        $this->assertTrue(($checks[0] instanceof FailedMatcherCheck), "This should be a failed object match");
     }
 }

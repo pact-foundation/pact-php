@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Matchers;
+namespace PhpPact\Matchers\Checkers;
 
 class SuccessfulMatcherCheck extends MatcherCheck
 {

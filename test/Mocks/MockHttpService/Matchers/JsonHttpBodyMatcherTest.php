@@ -9,13 +9,15 @@
 namespace PhpPact\Mocks\MockHttpService\Matchers;
 
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Runner\Exception;
+use PhpPact\Matchers\Checkers\FailedMatcherCheck;
+use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
+use PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatchChecker;
 
 class JsonHttpBodyMatcherTest extends TestCase
 {
     public function testMatch()
     {
-        $matcher = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
+        $matcher = new JsonHttpBodyMatchChecker(false);
 
         $expected = array();
         $expected[] = "Test";
@@ -25,7 +27,7 @@ class JsonHttpBodyMatcherTest extends TestCase
 
         $result = $matcher->Match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\SuccessfulMatcherCheck), "This should be a successful match");
+        $this->assertTrue(($checks[0] instanceof SuccessfulMatcherCheck), "This should be a successful match");
 
         // invalid object tests
         $hasException = false;
@@ -43,7 +45,7 @@ class JsonHttpBodyMatcherTest extends TestCase
         // if actual is not an object, get a failed to match check
         $result = $matcher->Match("/", array(), "b");
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\FailedMatcherCheck), "This should be a successful match");
+        $this->assertTrue(($checks[0] instanceof FailedMatcherCheck), "This should be a successful match");
 
 
         // start vetting objects
@@ -55,7 +57,7 @@ class JsonHttpBodyMatcherTest extends TestCase
 
         $result = $matcher->Match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\SuccessfulMatcherCheck), "This should be a successful match");
+        $this->assertTrue(($checks[0] instanceof SuccessfulMatcherCheck), "This should be a successful match");
 
         // test editted objects
         $expected = new \stdClass();
@@ -66,7 +68,7 @@ class JsonHttpBodyMatcherTest extends TestCase
 
         $result = $matcher->Match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\FailedMatcherCheck), "This should be a failed match - editing objects");
+        $this->assertTrue(($checks[0] instanceof FailedMatcherCheck), "This should be a failed match - editing objects");
 
         // test new objects
         $expected = new \stdClass();
@@ -77,7 +79,7 @@ class JsonHttpBodyMatcherTest extends TestCase
 
         $result = $matcher->Match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\FailedMatcherCheck), "This should be a failed match - removing objects");
+        $this->assertTrue(($checks[0] instanceof FailedMatcherCheck), "This should be a failed match - removing objects");
 
         // test new objects (based on mapper allowKeysInObject = false
         $expected = new \stdClass();
@@ -89,10 +91,10 @@ class JsonHttpBodyMatcherTest extends TestCase
 
         $result = $matcher->Match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\FailedMatcherCheck), "This should be a failed match - new objects not allowed in current config");
+        $this->assertTrue(($checks[0] instanceof FailedMatcherCheck), "This should be a failed match - new objects not allowed in current config");
 
         // test new objects (based on mapper allowKeysInObject = false
-        $matcher = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(true);
+        $matcher = new JsonHttpBodyMatchChecker(true);
         $expected = new \stdClass();
         $expected->a1 = "a1";
 
@@ -102,6 +104,6 @@ class JsonHttpBodyMatcherTest extends TestCase
 
         $result = $matcher->Match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
-        $this->assertTrue(($checks[0] instanceof \PhpPact\Matchers\SuccessfulMatcherCheck), "This should be a successful match - new objects allowed in current config");
+        $this->assertTrue(($checks[0] instanceof SuccessfulMatcherCheck), "This should be a successful match - new objects allowed in current config");
     }
 }

@@ -2,12 +2,12 @@
 
 namespace PhpPact\Mocks\MockHttpService\Matchers;
 
-use PhpPact\Matchers\MatcherResult;
-use PhpPact\Matchers\FailedMatcherCheck;
-use PhpPact\Matchers\MatcherCheckFailureType;
-use PhpPact\Matchers\SuccessfulMatcherCheck;
+use PhpPact\Matchers\Checkers\MatcherResult;
+use PhpPact\Matchers\Checkers\FailedMatcherCheck;
+use PhpPact\Matchers\Checkers\MatcherCheckFailureType;
+use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
 
-class XmlHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
+class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecker
 {
 
     private $_allowExtraKeys;
@@ -23,7 +23,7 @@ class XmlHttpBodyMatcher implements \PhpPact\Matchers\IMatcher
      * @param $path
      * @param $expected
      * @param $actual
-     * @return \PhpPact\Matchers\MatcherResult
+     * @return \PhpPact\Matchers\Checkers\MatcherResult
      * @throws \Exception
      */
     public function Match($path, $expected, $actual)

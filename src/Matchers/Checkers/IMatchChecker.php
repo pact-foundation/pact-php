@@ -1,8 +1,8 @@
 <?php
 
-namespace PhpPact\Matchers;
+namespace PhpPact\Matchers\Checkers;
 
-interface IMatcher
+interface IMatchChecker
 {
     public function Match($path, $expected, $actual);
 }
