@@ -31,7 +31,7 @@ class RequestTestCase extends TestCase
      * Using this function to avoid overriding PHPUnitTestCase constructors
      * @param $json
      */
-    public function Initialize($json)
+    public function initialize($json)
     {
         $this->_requestComparer = new ProviderServiceRequestComparer();
 

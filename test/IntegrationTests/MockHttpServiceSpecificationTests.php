@@ -45,11 +45,11 @@ class MockHttpServiceSpecificationTests extends TestCase
                         switch ($testCaseType) {
                             case 'request':
                                 $testCaseRunner = new Models\RequestTestCase();
-                                $testCaseRunner->Initialize($testCaseJson);
+                                $testCaseRunner->initialize($testCaseJson);
                                 break;
                             case 'response':
                                 $testCaseRunner = new Models\ResponseTestCase();
-                                $testCaseRunner->Initialize($testCaseJson);
+                                $testCaseRunner->initialize($testCaseJson);
                                 break;
                             default:
                                 throw new \InvalidArgumentException("Unexpected test case runner type: " . $testCaseType);
