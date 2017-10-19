@@ -63,13 +63,13 @@ class ProviderServiceInteraction extends \PhpPact\Models\Interaction implements 
 
     public function setRequest($obj)
     {
-        $this->_request = $this->_providerServiceRequestMapper->Convert($obj);
+        $this->_request = $this->_providerServiceRequestMapper->convert($obj);
         return $this->_request;
     }
 
     public function setResponse($obj)
     {
-        $this->_response = $this->_providerServiceResponseMapper->Convert($obj);
+        $this->_response = $this->_providerServiceResponseMapper->convert($obj);
         return $this->_response;
     }
 }
