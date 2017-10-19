@@ -52,12 +52,12 @@ class ComparisonResult
         $this->_message = $message;
     }
 
-    public function RecordFailure($comparisonFailure)
+    public function recordFailure($comparisonFailure)
     {
         $this->_failures[] = $comparisonFailure;
     }
 
-    public function AddChildResult(&$comparisonResult)
+    public function addChildResult(&$comparisonResult)
     {
         if ($comparisonResult == null) {
             return;

@@ -1,6 +1,8 @@
 <?php
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
+use PhpPact\Comparers;
+
 class ProviderServiceRequestComparer
 {
     private $_httpMethodComparer; //IHttpStatusCodeComparer
@@ -11,11 +13,11 @@ class ProviderServiceRequestComparer
 
     public function __construct()
     {
-        $this->_httpMethodComparer = new \PhpPact\Mocks\MockHttpService\Comparers\HttpMethodComparer();
-        $this->_httpPathComparer = new \PhpPact\Mocks\MockHttpService\Comparers\HttpPathComparer();
-        $this->_httpQueryStringComparer = new \PhpPact\Mocks\MockHttpService\Comparers\HttpQueryStringComparer();
-        $this->_httpHeaderComparer = new \PhpPact\Mocks\MockHttpService\Comparers\HttpHeaderComparer();
-        $this->_httpBodyComparer = new \PhpPact\Mocks\MockHttpService\Comparers\HttpBodyComparer();
+        $this->_httpMethodComparer = new HttpMethodComparer();
+        $this->_httpPathComparer = new HttpPathComparer();
+        $this->_httpQueryStringComparer = new HttpQueryStringComparer();
+        $this->_httpHeaderComparer = new HttpHeaderComparer();
+        $this->_httpBodyComparer = new HttpBodyComparer();
     }
 
     /**
@@ -23,27 +25,27 @@ class ProviderServiceRequestComparer
      * @param $actual \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function Compare($expected, $actual)
+    public function compare($expected, $actual)
     {
-        $result = new \PhpPact\Comparers\ComparisonResult("returns a response which");
+        $result = new Comparers\ComparisonResult("returns a response which");
 
         if (!$expected) {
-            $result->RecordFailure(new \PhpPact\Comparers\ErrorMessageComparisonFailure(__CLASS__ . ": Expected is null"));
+            $result->recordFailure(new Comparers\ErrorMessageComparisonFailure(__CLASS__ . ": Expected is null"));
             return $result;
         }
 
         $methodResult = $this->_httpMethodComparer->compare($expected->getMethod(), $actual->getMethod());
-        $result->AddChildResult($methodResult);
+        $result->addChildResult($methodResult);
 
         $pathResult = $this->_httpPathComparer->compare($expected->getPath(), $actual->getPath());
-        $result->AddChildResult($pathResult);
+        $result->addChildResult($pathResult);
 
         $queryResult = $this->_httpQueryStringComparer->compare($expected->getQuery(), $actual->getQuery());
-        $result->AddChildResult($queryResult);
+        $result->addChildResult($queryResult);
 
         if (count($expected->getHeaders()) > 0) {
             $headerResult = $this->_httpHeaderComparer->compare($expected->getHeaders(), $actual->getHeaders());
-            $result->AddChildResult($headerResult);
+            $result->addChildResult($headerResult);
         }
 
         // handles case where body is set but null
@@ -51,7 +53,7 @@ class ProviderServiceRequestComparer
         // Failed header settings can result in the body processing to fail
         if ($expected->shouldSerializeBody() && !$result->HasFailure()) {
             $bodyResult = $this->_httpBodyComparer->compare($expected, $actual, $expected->getBodyMatchers(), $expected->getContentType());
-            $result->AddChildResult($bodyResult);
+            $result->addChildResult($bodyResult);
         }
 
         return $result;

@@ -29,16 +29,16 @@ class ProviderServiceResponseComparer
     {
         $result = new ComparisonResult("returns a response which");
         if (!$expected) {
-            $result->RecordFailure(new ErrorMessageComparisonFailure(__CLASS__ . ": Expected is null"));
+            $result->recordFailure(new ErrorMessageComparisonFailure(__CLASS__ . ": Expected is null"));
             return $result;
         }
 
         $statusResult = $this->_httpStatusCodeComparer->compare($expected->getStatus(), $actual->getStatus());
-        $result->AddChildResult($statusResult);
+        $result->addChildResult($statusResult);
 
         if (count($expected->getHeaders()) > 0) {
             $headerResult = $this->_httpHeaderComparer->compare($expected->getHeaders(), $actual->getHeaders());
-            $result->AddChildResult($headerResult);
+            $result->addChildResult($headerResult);
         }
 
         // handles case where body is set but null
@@ -46,7 +46,7 @@ class ProviderServiceResponseComparer
         // Failed header settings can result in the body processing to fail
         if ($expected->shouldSerializeBody() && !$result->HasFailure()) {
             $bodyResult = $this->_httpBodyComparer->compare($expected, $actual, $expected->getBodyMatchers(), $expected->getContentType());
-            $result->AddChildResult($bodyResult);
+            $result->addChildResult($bodyResult);
         }
 
         return $result;

@@ -18,7 +18,7 @@ class HttpHeaderComparer
         $result = new Comparers\ComparisonResult("includes headers");
 
         if ($actual == null) {
-            $result->RecordFailure(new Comparers\ErrorMessageComparisonFailure("Actual Headers are null"));
+            $result->recordFailure(new Comparers\ErrorMessageComparisonFailure("Actual Headers are null"));
             return $result;
         }
 
@@ -46,18 +46,18 @@ class HttpHeaderComparer
 
                     if (!$this->arrayDiffOrder($expectedKeywords, $actualKeywords)) {
                         $failure = new Comparers\DiffComparisonFailure($header_value, $actualValue);
-                        $headerResult->RecordFailure($failure);
+                        $headerResult->recordFailure($failure);
                     }
                 } elseif ($header_value != $actualValue) {
                     $failure = new Comparers\DiffComparisonFailure($header_value, $actualValue);
-                    $headerResult->RecordFailure($failure);
+                    $headerResult->recordFailure($failure);
                 }
             } else {
                 $failure = new Comparers\ErrorMessageComparisonFailure(sprintf("Header with key '%s', does not exist in actual", $header_key));
-                $headerResult->RecordFailure($failure);
+                $headerResult->recordFailure($failure);
             }
 
-            $result->AddChildResult($headerResult);
+            $result->addChildResult($headerResult);
         }
 
         return $result;

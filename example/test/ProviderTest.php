@@ -32,11 +32,11 @@ final class ProviderTest extends TestCase
                 ->ServiceProvider("MockApiProvider", $httpClient)
                 ->HonoursPactWith("MockApiConsumer")
                 ->PactUri($json)
-                ->Verify(null, "A GET request to get types");
+                ->verify(null, "A GET request to get types");
 
-            $pactVerifier->Verify(null, "A GET request to get variable types");
+            $pactVerifier->verify(null, "A GET request to get variable types");
 
-            $pactVerifier->Verify(null, "There is something to POST to");
+            $pactVerifier->verify(null, "There is something to POST to");
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
         }
@@ -87,7 +87,7 @@ final class ProviderTest extends TestCase
                 ->ServiceProvider("MockApiProvider", $httpClient)
                 ->HonoursPactWith("MockApiConsumer")
                 ->PactUri($json)
-                ->Verify(); // note that this should test all as we can run setup and tear down
+                ->verify(); // note that this should test all as we can run setup and tear down
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
         }

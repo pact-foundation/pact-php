@@ -35,7 +35,7 @@ class HttpQueryStringComparer
         }
 
         if (!$expectedQuery || !$actualQuery) {
-            $result->RecordFailure(new DiffComparisonFailure($expected, $actual));
+            $result->recordFailure(new DiffComparisonFailure($expected, $actual));
             return $result;
         }
 
@@ -43,12 +43,12 @@ class HttpQueryStringComparer
         $actualQueryItems = $this->convertQueryToArray($actualQuery);
 
         if (count($expectedQueryItems) != count($actualQueryItems)) {
-            $result->RecordFailure(new DiffComparisonFailure($expectedQuery, $actualQuery));
+            $result->recordFailure(new DiffComparisonFailure($expectedQuery, $actualQuery));
             return $result;
         }
 
         if (!$this->compareArray($expectedQueryItems, $actualQueryItems)) {
-            $result->RecordFailure(new DiffComparisonFailure($expectedQuery, $actualQuery));
+            $result->recordFailure(new DiffComparisonFailure($expectedQuery, $actualQuery));
             return $result;
         }
 

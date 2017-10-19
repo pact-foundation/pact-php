@@ -9,11 +9,11 @@ class ProviderStatesTest extends TestCase
     {
         $providerStates = new ProviderStates();
 
-        $providerStates->Add("State 1");
+        $providerStates->add("State 1");
 
         $throwException = false;
         try {
-            $providerStates->Add("State 1");
+            $providerStates->add("State 1");
         } catch (Exception $e) {
             $throwException = true;
         }

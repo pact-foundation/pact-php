@@ -55,7 +55,7 @@ class MockHttpServiceSpecificationTests extends TestCase
                                 throw new \InvalidArgumentException("Unexpected test case runner type: " . $testCaseType);
                         }
 
-                        $testCaseRunner->Verify();
+                        $testCaseRunner->verify();
                     } catch (\Exception $e) {
                         $hasException = true;
                     }

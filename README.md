@@ -220,7 +220,7 @@ $pactVerifier->ProviderState("A GET request to get types")
                 ->ServiceProvider("MockApiProvider", $httpClient)
                 ->HonoursPactWith("MockApiConsumer")
                 ->PactUri('../pact/mockapiconsumer-mockapiprovider.json')
-                ->Verify();
+                ->verify();
 ```
 
 ### 4. Run the test
@@ -287,7 +287,7 @@ class ProviderTest extends TestCase
 ```
 
 ### Provider Test Filtering
-If you want to filter down the interaction you want to test, pass in options to `Verify()`.  Try the below.
+If you want to filter down the interaction you want to test, pass in options to `verify()`.  Try the below.
 
 ```php
 <?php
@@ -302,7 +302,7 @@ $pactVerifier->ProviderState("Test State")
     ->ServiceProvider("MockApiProvider", $httpClient)
     ->HonoursPactWith("MockApiConsumer")
     ->PactUri($json)
-    ->Verify(null, $testState);
+    ->verify(null, $testState);
   
 ```
 

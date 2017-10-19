@@ -19,5 +19,5 @@ interface IPactVerifier
 
     public function PactUri($uri, $options = null);
 
-    public function Verify($description = null, $providerState = null);
+    public function verify($description = null, $providerState = null);
 }

@@ -16,7 +16,7 @@ class HttpStatusCodeComparer
     {
         $result = new Comparers\ComparisonResult(sprintf("has status code %s", (string)$expected));
         if ($expected != $actual) {
-            $result->RecordFailure(new Comparers\DiffComparisonFailure($expected, $actual));
+            $result->recordFailure(new Comparers\DiffComparisonFailure($expected, $actual));
         }
 
         return $result;

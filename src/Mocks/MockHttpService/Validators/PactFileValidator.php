@@ -15,7 +15,7 @@ class PactFileValidator
      * @return bool
      * @throws \PhpPact\PactFailureException
      */
-    public function Validate(\PhpPact\Models\PactFile $pactFile)
+    public function validate(\PhpPact\Models\PactFile $pactFile)
     {
         $data = json_decode(json_encode($pactFile));
 

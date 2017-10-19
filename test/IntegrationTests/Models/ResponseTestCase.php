@@ -120,7 +120,7 @@ class ResponseTestCase extends TestCase
         $this->_actual = $actual;
     }
 
-    public function Verify()
+    public function verify()
     {
         $result = $this->_responseComparer->compare($this->_expected, $this->_actual);
 

@@ -22,7 +22,7 @@ class HttpBodyComparer
 
 
         if ($expected->shouldSerializeBody() && $expected->getBody() == null && $actual->getBody()) {
-            $result->RecordFailure(new DiffComparisonFailure($expected, $actual));
+            $result->recordFailure(new DiffComparisonFailure($expected, $actual));
             return $result;
         }
 
@@ -52,7 +52,7 @@ class HttpBodyComparer
             $checks = $results->getMatcherChecks();
             foreach ($checks as $check) {
                 if (($check instanceof FailedMatcherCheck)) {
-                    $result->RecordFailure(new DiffComparisonFailure($expected, $actual));
+                    $result->recordFailure(new DiffComparisonFailure($expected, $actual));
                 }
             }
         }
