@@ -2,6 +2,8 @@
 
 namespace PhpPact\Mocks\MockHttpService\Models;
 
+use PhpPact\Matchers\Rules\MatchingRule;
+
 class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
 {
     private $_bodyWasSet;
@@ -9,6 +11,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     private $_headers; //[JsonProperty(PropertyName = "headers")] / [JsonConverter(typeof(PreserveCasingDictionaryConverter))]
     private $_status;
     private $_bodyMatchers;
+    private $_matchingRules;
 
     /**
      * @return mixed
@@ -48,7 +51,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     }
 
 
-    public function __construct($status = null, $headers = array(), $body = null)
+    public function __construct($status = null, $headers = array(), $body = null, $matchingRules = array())
     {
         $this->_status = $status;
         $this->_headers = $headers;
@@ -56,6 +59,8 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
         if ($body) {
             $this->setBody($body);
         }
+
+        $this->setMatchingRules($matchingRules);
     }
 
     /**
@@ -69,14 +74,44 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
             $body = null;
         }
 
-        $this->_body = $this->ParseBodyMatchingRules($body);
+        $this->_body = $this->parseBodyMatchingRules($body);
 
         return false;
     }
 
-    public function ShouldSerializeBody()
+    public function shouldSerializeBody()
     {
         return $this->_bodyWasSet;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMatchingRules()
+    {
+        return $this->_matchingRules;
+    }
+
+    /**
+     * @param array|false $matchingRules
+     */
+    public function setMatchingRules($matchingRules)
+    {
+        if (count($matchingRules) > 0) {
+            foreach ($matchingRules as $matchingRule) {
+                $this->addMatchingRule($matchingRule);
+            }
+        }
+    }
+
+    /**
+     * Add a single matching rule
+     *
+     * @param MatchingRule $matchingRule
+     */
+    public function addMatchingRule(MatchingRule $matchingRule)
+    {
+        $this->_matchingRules[$matchingRule->getJsonPath()] = $matchingRule;
     }
 
 
@@ -97,7 +132,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     }
 
 
-    private function ParseBodyMatchingRules($body)
+    private function parseBodyMatchingRules($body)
     {
         $this->_bodyMatchers = array();
 

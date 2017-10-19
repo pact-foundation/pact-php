@@ -1,6 +1,6 @@
 <?php
 
-namespace Matchers\Rules;
+namespace PhpPact\Matchers\Rules;
 
 
 class MatcherRuleTypes

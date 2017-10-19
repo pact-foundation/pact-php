@@ -2,6 +2,9 @@
 
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
+use PhpPact\Comparers\ComparisonResult;
+use PhpPact\Comparers\ErrorMessageComparisonFailure;
+
 class ProviderServiceResponseComparer
 {
     private $_httpStatusCodeComparer; //IHttpStatusCodeComparer
@@ -10,9 +13,9 @@ class ProviderServiceResponseComparer
 
     public function __construct()
     {
-        $this->_httpStatusCodeComparer = new \PhpPact\Mocks\MockHttpService\Comparers\HttpStatusCodeComparer();
-        $this->_httpHeaderComparer = new \PhpPact\Mocks\MockHttpService\Comparers\HttpHeaderComparer();
-        $this->_httpBodyComparer = new \PhpPact\Mocks\MockHttpService\Comparers\HttpBodyComparer();
+        $this->_httpStatusCodeComparer = new HttpStatusCodeComparer();
+        $this->_httpHeaderComparer = new HttpHeaderComparer();
+        $this->_httpBodyComparer = new HttpBodyComparer();
     }
 
 
@@ -20,13 +23,13 @@ class ProviderServiceResponseComparer
      * @param $expected \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse
      * @param $actual \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse
      *
-     * @return \PhpPact\Comparers\ComparisonResult
+     * @return ComparisonResult
      */
     public function Compare($expected, $actual)
     {
-        $result = new \PhpPact\Comparers\ComparisonResult("returns a response which");
+        $result = new ComparisonResult("returns a response which");
         if (!$expected) {
-            $result->RecordFailure(new \PhpPact\Comparers\ErrorMessageComparisonFailure(__CLASS__ . ": Expected is null"));
+            $result->RecordFailure(new ErrorMessageComparisonFailure(__CLASS__ . ": Expected is null"));
             return $result;
         }
 
@@ -41,7 +44,7 @@ class ProviderServiceResponseComparer
         // handles case where body is set but null
         // If there has already been a faillure, do not check the body
         // Failed header settings can result in the body processing to fail
-        if ($expected->ShouldSerializeBody() && !$result->HasFailure()) {
+        if ($expected->shouldSerializeBody() && !$result->HasFailure()) {
             $bodyResult = $this->_httpBodyComparer->Compare($expected, $actual, $expected->getBodyMatchers(), $expected->getContentType());
             $result->AddChildResult($bodyResult);
         }

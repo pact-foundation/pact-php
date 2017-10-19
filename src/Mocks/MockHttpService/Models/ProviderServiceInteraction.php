@@ -2,25 +2,28 @@
 
 namespace PhpPact\Mocks\MockHttpService\Models;
 
+use PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceRequestMapper;
+use PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceResponseMapper;
+
 class ProviderServiceInteraction extends \PhpPact\Models\Interaction implements \JsonSerializable
 {
     /**
-     * @var \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest
+     * @var ProviderServiceRequest
      */
     private $_request;
 
     /**
-     * @var \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse
+     * @var ProviderServiceResponse
      */
     private $_response;
 
     /**
-     * @var \PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceRequestMapper
+     * @var ProviderServiceRequestMapper
      */
     protected $_providerServiceRequestMapper;
 
     /**
-     * @var \PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceResponseMapper
+     * @var ProviderServiceResponseMapper
      */
     protected $_providerServiceResponseMapper;
 
@@ -29,8 +32,8 @@ class ProviderServiceInteraction extends \PhpPact\Models\Interaction implements 
         if (is_callable('parent::__construct')) {
             parent::__construct();
         }
-        $this->_providerServiceRequestMapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceRequestMapper();
-        $this->_providerServiceResponseMapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceResponseMapper();
+        $this->_providerServiceRequestMapper = new ProviderServiceRequestMapper();
+        $this->_providerServiceResponseMapper = new ProviderServiceResponseMapper();
     }
 
     public function jsonSerialize()

@@ -1,6 +1,6 @@
 <?php
 
-namespace Matchers\Rules;
+namespace PhpPact\Matchers\Rules;
 
 
 class MatchingRule
@@ -72,4 +72,21 @@ class MatchingRule
         return isset($this->_regexPattern) ? $this->_regexPattern : false;
     }
 
+    public function jsonSerialize()
+    {
+        $obj = new \stdClass();
+        $obj->{"{$this->getJsonPath()}"} = new \stdClass();
+
+        if ($this->getMin()) {
+            $obj->{"{$this->getJsonPath()}"}->min = $this->getMin();
+        }
+
+        if ($this->getType()) {
+            $obj->{"{$this->getJsonPath()}"}->match = $this->getType();
+        }
+
+        if ($this->getRegexPattern()) {
+            $obj->{"{$this->getJsonPath()}"}->regex = $this->getRegexPattern();
+        }
+    }
 }

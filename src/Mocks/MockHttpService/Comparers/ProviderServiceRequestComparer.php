@@ -49,7 +49,7 @@ class ProviderServiceRequestComparer
         // handles case where body is set but null
         // If there has already been a faillure, do not check the body
         // Failed header settings can result in the body processing to fail
-        if ($expected->ShouldSerializeBody() && !$result->HasFailure()) {
+        if ($expected->shouldSerializeBody() && !$result->HasFailure()) {
             $bodyResult = $this->_httpBodyComparer->Compare($expected, $actual, $expected->getBodyMatchers(), $expected->getContentType());
             $result->AddChildResult($bodyResult);
         }

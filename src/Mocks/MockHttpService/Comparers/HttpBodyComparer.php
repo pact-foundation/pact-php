@@ -10,8 +10,8 @@ class HttpBodyComparer
 {
 
     /**
-     * @param $expected \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest
-     * @param $actual \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest
+     * @param $expected \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
+     * @param $actual \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
      * @param $matchingRules array[IMatcher]
      *
      * @return \PhpPact\Comparers\ComparisonResult
@@ -21,7 +21,7 @@ class HttpBodyComparer
         $result = new ComparisonResult("has a body");
 
 
-        if ($expected->ShouldSerializeBody() && $expected->getBody() == null && $actual->getBody()) {
+        if ($expected->shouldSerializeBody() && $expected->getBody() == null && $actual->getBody()) {
             $result->RecordFailure(new DiffComparisonFailure($expected, $actual));
             return $result;
         }

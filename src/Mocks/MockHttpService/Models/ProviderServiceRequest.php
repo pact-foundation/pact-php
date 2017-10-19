@@ -5,7 +5,7 @@ namespace PhpPact\Mocks\MockHttpService\Models;
 use PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatchChecker;
 use PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatchChecker;
 use PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatchChecker;
-
+use PhpPact\Matchers\Rules\MatchingRule;
 
 class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
 {
@@ -19,7 +19,7 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
     private $_query; //[JsonProperty(PropertyName = "query")]
     private $_matchingRules;
 
-    public function __construct($method, $path, $headers = null, $body = false)
+    public function __construct($method, $path, $headers = null, $body = false, $matchingRules = array())
     {
         // enumerate over HttpVerb to set the value of the
         $verb = new HttpVerb();
@@ -32,6 +32,9 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
         if ($body !== false) {
             $this->setBody($body);
         }
+
+
+        $this->setMatchingRules($matchingRules);
     }
 
     /**
@@ -57,7 +60,7 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
             $body = null;
         }
 
-        $this->_body = $this->ParseBodyMatchingRules($body);
+        $this->_body = $this->parseBodyMatchingRules($body);
 
         return false;
     }
@@ -126,7 +129,7 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getMatchingRules()
     {
@@ -134,27 +137,34 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
     }
 
     /**
-     * @param array $matchingRules
+     * @param array|false $matchingRules
      */
     public function setMatchingRules($matchingRules)
     {
-        $this->_matchingRules = $matchingRules;
+        if (count($matchingRules) > 0) {
+           foreach ($matchingRules as $matchingRule) {
+                $this->addMatchingRule($matchingRule);
+           }
+        }
     }
 
     /**
-     * @param mixed $matchingRules
+     * Add a single matching rule
+     *
+     * @param MatchingRule $matchingRule
      */
-    public function addMatchingRule($pattern, $matchType = false)
+    public function addMatchingRule(MatchingRule $matchingRule)
     {
-        //$this->_matchingRules[] = $matchingRules;
+        $this->_matchingRules[$matchingRule->getJsonPath()] = $matchingRule;
     }
 
-    public function ShouldSerializeBody()
+
+    public function shouldSerializeBody()
     {
         return $this->_bodyWasSet;
     }
 
-    public function PathWithQuery()
+    public function pathWithQuery()
     {
         if (!$this->_path && !$this->_query) {
             throw new \RuntimeException("Query has been supplied, however Path has not. Please specify as Path.");
@@ -165,7 +175,7 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
             $this->_path;
     }
 
-    private function ParseBodyMatchingRules($body)
+    private function parseBodyMatchingRules($body)
     {
         $this->_bodyMatchers = array();
 

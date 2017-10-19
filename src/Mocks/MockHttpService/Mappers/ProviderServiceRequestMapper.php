@@ -2,18 +2,20 @@
 
 namespace PhpPact\Mocks\MockHttpService\Mappers;
 
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
+
 class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
 {
     /**
      * @param $request
-     * @return \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest
+     * @return ProviderServiceRequest
      */
-    public function Convert($request)
+    public function convert($request)
     {
-        if (($request instanceof \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest)) {
+        if (($request instanceof ProviderServiceRequest)) {
             return $request;
         } elseif ($request instanceof \Psr\Http\Message\RequestInterface) {
-            $request = $this->HttpRequestConvert($request);
+            $request = $this->httpRequestConvert($request);
         }
 
         $this->checkExistence($request, "method");
@@ -33,7 +35,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
             $request->headers = null;
         }
 
-        $providerServiceRequest = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest($request->method, $request->path, $request->headers, $body);
+        $providerServiceRequest = new ProviderServiceRequest($request->method, $request->path, $request->headers, $body);
         if (isset($request->query)) {
             $providerServiceRequest->setQuery($request->query);
         }
@@ -54,7 +56,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
      * @param $request
      * @return bool
      */
-    private function GetContentType($request)
+    private function getContentType($request)
     {
         $contentTypeStr = "Content-Type";
         if (isset($request->headers) && isset($request->headers->$contentTypeStr)) {
@@ -65,7 +67,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
     }
 
 
-    private function HttpRequestConvert(\Psr\Http\Message\RequestInterface $request)
+    private function httpRequestConvert(\Psr\Http\Message\RequestInterface $request)
     {
         $obj = new \stdClass();
         $headerArray = (array)$request->getHeaders();
