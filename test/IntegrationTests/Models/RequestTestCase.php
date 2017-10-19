@@ -131,7 +131,7 @@ class RequestTestCase extends TestCase
 
     public function Verify()
     {
-        $result = $this->_requestComparer->Compare($this->_expected, $this->_actual);
+        $result = $this->_requestComparer->compare($this->_expected, $this->_actual);
 
         if ($this->_match) {
             $this->assertFalse($result->HasFailure(), "There should not be any errors");

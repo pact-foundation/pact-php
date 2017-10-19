@@ -12,10 +12,10 @@ class HttpStatusCodeComparerTest extends TestCase
         $comparer = new HttpStatusCodeComparer();
 
         $expected = 200;
-        $result = $comparer->Compare($expected, '200');
+        $result = $comparer->compare($expected, '200');
         $this->assertEquals(0, $result->ShallowFailureCount(), "No failures expected");
 
-        $result = $comparer->Compare($expected, '300');
+        $result = $comparer->compare($expected, '300');
         $this->assertEquals(1, $result->ShallowFailureCount(), "One failure expected");
     }
 }

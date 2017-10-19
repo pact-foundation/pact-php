@@ -140,7 +140,7 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
              * @var $interaction ProviderServiceInteraction
              */
             $interactionResponse = $interaction->getResponse();
-            $comparisionResults = $responseComparer->Compare($interactionResponse, $response);
+            $comparisionResults = $responseComparer->compare($interactionResponse, $response);
 
             if (!($comparisionResults->HasFailure())) {
                 return $interaction;
@@ -166,7 +166,7 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
              * @var $interaction ProviderServiceInteraction
              */
             $interactionRequest = $interaction->getRequest();
-            $comparisionResults = $requestComparer->Compare($interactionRequest, $request);
+            $comparisionResults = $requestComparer->compare($interactionRequest, $request);
 
             if (!($comparisionResults->HasFailure())) {
                 return $interaction;

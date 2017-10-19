@@ -125,7 +125,7 @@ class ProviderServiceValidator
     {
         $expectedResponse = $interaction->getResponse();
         $actualResponse = $this->_httpRequestSender->Send($interaction->getRequest(), $this->_config->getBaseUri());
-        $results = $this->_providerServiceResponseComparer->Compare($expectedResponse, $actualResponse);
+        $results = $this->_providerServiceResponseComparer->compare($expectedResponse, $actualResponse);
 
         return $results;
     }

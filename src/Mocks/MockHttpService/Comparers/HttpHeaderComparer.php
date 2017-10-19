@@ -2,6 +2,8 @@
 
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
+use PhpPact\Comparers;
+
 class HttpHeaderComparer
 {
 
@@ -11,23 +13,23 @@ class HttpHeaderComparer
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function Compare($expected, $actual)
+    public function compare($expected, $actual)
     {
-        $result = new \PhpPact\Comparers\ComparisonResult("includes headers");
+        $result = new Comparers\ComparisonResult("includes headers");
 
         if ($actual == null) {
-            $result->RecordFailure(new \PhpPact\Comparers\ErrorMessageComparisonFailure("Actual Headers are null"));
+            $result->RecordFailure(new Comparers\ErrorMessageComparisonFailure("Actual Headers are null"));
             return $result;
         }
 
-        $expectedArray = $this->ObjectToArray($expected);
-        $expectedArray = $this->MakeArrayLowerCase($expectedArray);
+        $expectedArray = $this->objectToArray($expected);
+        $expectedArray = $this->makeArrayLowerCase($expectedArray);
 
-        $actualArray = $this->ObjectToArray($actual);
-        $actualArray = $this->MakeArrayLowerCase($actualArray);
+        $actualArray = $this->objectToArray($actual);
+        $actualArray = $this->makeArrayLowerCase($actualArray);
 
         foreach ($expectedArray as $header_key => $header_value) {
-            $headerResult = new \PhpPact\Comparers\ComparisonResult(sprintf("'%s' with value %s", $header_key, $header_value));
+            $headerResult = new Comparers\ComparisonResult(sprintf("'%s' with value %s", $header_key, $header_value));
 
 
             if (isset($actualArray[$header_key])) {
@@ -42,16 +44,16 @@ class HttpHeaderComparer
                     $actualKeywords = array_map('trim', $actualKeywords);
                     $expectedKeywords = array_map('trim', $expectedKeywords);
 
-                    if (!$this->array_diff_order($expectedKeywords, $actualKeywords)) {
-                        $failure = new \PhpPact\Comparers\DiffComparisonFailure($header_value, $actualValue);
+                    if (!$this->arrayDiffOrder($expectedKeywords, $actualKeywords)) {
+                        $failure = new Comparers\DiffComparisonFailure($header_value, $actualValue);
                         $headerResult->RecordFailure($failure);
                     }
                 } elseif ($header_value != $actualValue) {
-                    $failure = new \PhpPact\Comparers\DiffComparisonFailure($header_value, $actualValue);
+                    $failure = new Comparers\DiffComparisonFailure($header_value, $actualValue);
                     $headerResult->RecordFailure($failure);
                 }
             } else {
-                $failure = new \PhpPact\Comparers\ErrorMessageComparisonFailure(sprintf("Header with key '%s', does not exist in actual", $header_key));
+                $failure = new Comparers\ErrorMessageComparisonFailure(sprintf("Header with key '%s', does not exist in actual", $header_key));
                 $headerResult->RecordFailure($failure);
             }
 
@@ -61,12 +63,12 @@ class HttpHeaderComparer
         return $result;
     }
 
-    private function MakeArrayLowerCase($from)
+    private function makeArrayLowerCase($from)
     {
         $new = array();
         foreach ($from as $key => $value) {
             if (is_array($value)) {
-                $value = $this->MakeArrayLowerCase($value);
+                $value = $this->makeArrayLowerCase($value);
             }
 
             $new[strtolower($key)] = $value;
@@ -75,13 +77,13 @@ class HttpHeaderComparer
         return $new;
     }
 
-    public function ObjectToArray($object)
+    public function objectToArray($object)
     {
         if (!is_object($object) && !is_array($object)) {
             return $object;
         }
 
-        return array_map(array($this, 'ObjectToArray'), (array)$object);
+        return array_map(array($this, 'objectToArray'), (array)$object);
     }
 
     /**
@@ -93,7 +95,7 @@ class HttpHeaderComparer
      * @param $array2
      * @return bool
      */
-    private function array_diff_order($array1, $array2)
+    private function arrayDiffOrder($array1, $array2)
     {
         while ((list($key1, $val1) = each($array1)) && (list($key2, $val2) = each($array2))) {
             if ($key1 != $key2 || $val1 != $val2) {

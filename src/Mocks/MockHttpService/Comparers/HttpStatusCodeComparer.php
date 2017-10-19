@@ -2,6 +2,8 @@
 
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
+use PhpPact\Comparers;
+
 class HttpStatusCodeComparer
 {
     /**
@@ -10,11 +12,11 @@ class HttpStatusCodeComparer
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function Compare($expected, $actual)
+    public function compare($expected, $actual)
     {
-        $result = new \PhpPact\Comparers\ComparisonResult(sprintf("has status code %s", (string)$expected));
+        $result = new Comparers\ComparisonResult(sprintf("has status code %s", (string)$expected));
         if ($expected != $actual) {
-            $result->RecordFailure(new \PhpPact\Comparers\DiffComparisonFailure($expected, $actual));
+            $result->RecordFailure(new Comparers\DiffComparisonFailure($expected, $actual));
         }
 
         return $result;

@@ -4,5 +4,5 @@ namespace PhpPact\Comparers;
 
 interface IComparer
 {
-    public function Compare($expected, $actual);
+    public function compare($expected, $actual);
 }

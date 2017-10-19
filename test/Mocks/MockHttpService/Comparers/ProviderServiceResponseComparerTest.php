@@ -9,7 +9,7 @@ class ProviderServiceResponseComparerTest extends TestCase
 {
     public function testConvert()
     {
-        $comparer = new \PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer();
+        $comparer = new ProviderServiceResponseComparer();
 
         $header = array();
         $header["Content-Type"] = "application/json";
@@ -19,7 +19,7 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response1 = new ProviderServiceResponse(200, $header, $body);
         $response2 = new ProviderServiceResponse(200, $header, $body);
 
-        $results = $comparer->Compare($response1, $response2);
+        $results = $comparer->compare($response1, $response2);
         $this->assertFalse($results->HasFailure(), "We expect these two responses to match.");
 
         // expect header failure
@@ -36,7 +36,7 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response1 = new ProviderServiceResponse(200, $header, $body);
         $response2 = new ProviderServiceResponse(200, $header2, $body);
 
-        $results = $comparer->Compare($response2, $response1);
+        $results = $comparer->compare($response2, $response1);
         $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the headers are off.");
 
         // check status
@@ -48,7 +48,7 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response1 = new ProviderServiceResponse(200, $header, $body);
         $response2 = new ProviderServiceResponse(500, $header, $body);
 
-        $results = $comparer->Compare($response1, $response2);
+        $results = $comparer->compare($response1, $response2);
         $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the statuses are off.");
 
         // check body
@@ -61,7 +61,7 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response1 = new ProviderServiceResponse(200, $header, $body);
         $response2 = new ProviderServiceResponse(200, $header, $body2);
 
-        $results = $comparer->Compare($response1, $response2);
+        $results = $comparer->compare($response1, $response2);
         $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the bodies are different.");
     }
 }

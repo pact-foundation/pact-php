@@ -32,17 +32,17 @@ class ProviderServiceRequestComparer
             return $result;
         }
 
-        $methodResult = $this->_httpMethodComparer->Compare($expected->getMethod(), $actual->getMethod());
+        $methodResult = $this->_httpMethodComparer->compare($expected->getMethod(), $actual->getMethod());
         $result->AddChildResult($methodResult);
 
-        $pathResult = $this->_httpPathComparer->Compare($expected->getPath(), $actual->getPath());
+        $pathResult = $this->_httpPathComparer->compare($expected->getPath(), $actual->getPath());
         $result->AddChildResult($pathResult);
 
-        $queryResult = $this->_httpQueryStringComparer->Compare($expected->getQuery(), $actual->getQuery());
+        $queryResult = $this->_httpQueryStringComparer->compare($expected->getQuery(), $actual->getQuery());
         $result->AddChildResult($queryResult);
 
         if (count($expected->getHeaders()) > 0) {
-            $headerResult = $this->_httpHeaderComparer->Compare($expected->getHeaders(), $actual->getHeaders());
+            $headerResult = $this->_httpHeaderComparer->compare($expected->getHeaders(), $actual->getHeaders());
             $result->AddChildResult($headerResult);
         }
 
@@ -50,7 +50,7 @@ class ProviderServiceRequestComparer
         // If there has already been a faillure, do not check the body
         // Failed header settings can result in the body processing to fail
         if ($expected->shouldSerializeBody() && !$result->HasFailure()) {
-            $bodyResult = $this->_httpBodyComparer->Compare($expected, $actual, $expected->getBodyMatchers(), $expected->getContentType());
+            $bodyResult = $this->_httpBodyComparer->compare($expected, $actual, $expected->getBodyMatchers(), $expected->getContentType());
             $result->AddChildResult($bodyResult);
         }
 

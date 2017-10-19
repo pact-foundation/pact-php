@@ -16,7 +16,7 @@ class HttpBodyComparer
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function Compare($expected, $actual, $matchingRules, $expectedContentType = "application/json")
+    public function compare($expected, $actual, $matchingRules, $expectedContentType = "application/json")
     {
         $result = new ComparisonResult("has a body");
 
