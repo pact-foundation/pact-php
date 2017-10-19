@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 7/7/2017
- * Time: 3:32 PM
- */
 
 namespace Mocks\MockHttpService\Mappers;
 

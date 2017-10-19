@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 7/7/2017
- * Time: 11:17 AM
- */
 
 namespace PhpPact\Mocks\MockHttpService\MockProviderService;
 

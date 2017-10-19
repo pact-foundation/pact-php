@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 9/29/2017
- * Time: 3:51 PM
- */
 
 namespace PhpPactTest\IntegrationTests\Models;
 

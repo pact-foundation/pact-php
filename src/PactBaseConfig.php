@@ -2,12 +2,6 @@
 
 namespace PhpPact;
 
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 7/7/2017
- * Time: 8:09 AM
- */
 class PactBaseConfig
 {
     /**

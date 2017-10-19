@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 7/20/2017
- * Time: 4:04 PM
- */
 
 namespace PhpPact;
 

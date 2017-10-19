@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 7/5/2017
- * Time: 12:43 PM
- */
 
 namespace Mocks\MockHttpService\Matchers;
 

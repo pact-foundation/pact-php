@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 6/28/2017
- * Time: 5:18 PM
- */
 
 namespace Mocks\MockHttpService\Models;
 
