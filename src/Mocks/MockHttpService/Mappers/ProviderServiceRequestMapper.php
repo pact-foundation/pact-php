@@ -3,6 +3,7 @@
 namespace PhpPact\Mocks\MockHttpService\Mappers;
 
 use PhpPact\Mappers\MatchingRuleMapper;
+use PhpPact\Mocks\MockHttpService\Models\HttpVerb;
 use PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
 
 
@@ -20,8 +21,15 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
             $request = $this->httpRequestConvert($request);
         }
 
-        $this->checkExistence($request, "method");
-        $this->checkExistence($request, "path");
+        if (!isset($request->method)) {
+            // add default
+            $request->method = HttpVerb::NOTSET;
+        }
+
+        if (!isset($request->path)) {
+            // add default
+            $request->path = "";
+        }
 
         $body = false;
         if (property_exists($request, "body")) {
@@ -48,12 +56,6 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
         return $providerServiceRequest;
     }
 
-    private function checkExistence($obj, $attr)
-    {
-        if (!isset($obj->$attr)) {
-            throw new \InvalidArgumentException("$attr was not set");
-        }
-    }
 
     /**
      * Mine the headers to pull out the content type

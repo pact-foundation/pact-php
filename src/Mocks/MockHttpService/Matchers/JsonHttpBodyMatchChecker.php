@@ -46,7 +46,7 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
 
         if ($this->shouldApplyMatchers($matchingRules)) {
             $jsonPathChecker = new JsonPathMatchChecker();
-            return $jsonPathChecker->match($path, $expected, $actual, $matchingRules, $this->_allowExtraKeys);
+            return $jsonPathChecker->match($path, $expected, $actual, $matchingRules, $this->_allowExtraKeys, 'body');
         }
 
         $treewalker = new \TreeWalker(

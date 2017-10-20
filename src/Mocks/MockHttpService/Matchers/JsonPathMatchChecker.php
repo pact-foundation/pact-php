@@ -9,7 +9,7 @@ use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
 use PhpPact\Matchers\Rules\MatcherRuleTypes;
 use PhpPact\Matchers\Rules\MatchingRule;
 
-class JsonPathMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecker
+class JsonPathMatchChecker
 {
     /**
      * @param $path
@@ -17,10 +17,11 @@ class JsonPathMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecker
      * @param $actual
      * @param $matchingRules array[MatchingRules]
      * @param $allowExtraKeys bool
+     * @param $matchingRules string
      *
      * @return MatcherResult
      */
-    public function match($path, $expected, $actual, $matchingRules = array(), $allowExtraKeys = false)
+    public function match($path, $expected, $actual, $matchingRules, $allowExtraKeys = false, $matchingPrefix = '')
     {
         if (count($matchingRules) < 1) {
             throw new \Exception(sprintf('JsonPathMatchChecker should not be called if there are no matching rules: %s', $path));
@@ -28,11 +29,13 @@ class JsonPathMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecker
 
         $failedReasons = array();
         foreach ($matchingRules as $jsonPath => $matchingRule) {
+            $narrowedJsonPath = $this->removePrefix($jsonPath, $matchingPrefix);
+
             /**
              * @var $matchingRule MatchingRule
              */
-            $expectedResult = (new \Peekmo\JsonPath\JsonStore($expected))->get($jsonPath);
-            $actualResult = (new \Peekmo\JsonPath\JsonStore($actual))->get($jsonPath);
+            $expectedResult = (new \Peekmo\JsonPath\JsonStore($expected))->get($narrowedJsonPath);
+            $actualResult = (new \Peekmo\JsonPath\JsonStore($actual))->get($narrowedJsonPath);
 
             $ruleFailedReasons = $this->processMatchingRules($path, $matchingRule, $expectedResult, $actualResult, $jsonPath, $allowExtraKeys);
             $failedReasons = array_merge($failedReasons, $ruleFailedReasons);
@@ -78,7 +81,7 @@ class JsonPathMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecker
                 $typeFailures = $this->processTypeCheck($bodyChecker, $matchingRule, $expected, $actual, $allowExtraKeys);
                 $ruleFailedReasons = array_merge($ruleFailedReasons, $typeFailures);
 
-            } else if ($matchingRule->getType() == MatcherRuleTypes::REGEX_TYPE && !$matchingRule->getRegexPattern()) {
+            } else if ($matchingRule->getType() == MatcherRuleTypes::REGEX_TYPE && $matchingRule->getRegexPattern()) {
                 $regexFailures = $this->processRegexCheck($bodyChecker, $matchingRule, $expected, $actual, $allowExtraKeys);
                 $ruleFailedReasons = array_merge($ruleFailedReasons, $regexFailures);
             }
@@ -137,6 +140,8 @@ class JsonPathMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecker
     }
 
     private function processRegexCheck($bodyChecker, MatchingRule $matchingRule, $expected, $actual, $allowExtraKeys) {
+        $ruleFailedReasons = array();
+
         // do we really care about expected here?
         $numOfMatches = 0;
         $numOfFailures = 0;
@@ -183,6 +188,8 @@ class JsonPathMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecker
             //$ruleFailedReasons[] = "JSONPath all actual results were not honored by type. Rule: " . $JSONPath;
             $ruleFailedReasons[] = new FailedMatcherCheck($bodyChecker, MatcherCheckFailureType::ValueDoesNotMatch);
         }
+
+        return $ruleFailedReasons;
     }
 
     /**
@@ -302,5 +309,9 @@ class JsonPathMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecker
         }
 
         return $newAssocArr;
+    }
+
+    private function removePrefix($jsonPath, $toRemove) {
+        return str_ireplace('$.' . $toRemove, '$', $jsonPath);
     }
 }

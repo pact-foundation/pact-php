@@ -120,14 +120,17 @@ class ResponseTestCase extends TestCase
         $this->_actual = $actual;
     }
 
-    public function verify()
+    /**
+     * @param $filePath
+     */
+    public function verify($filePath)
     {
         $result = $this->_responseComparer->compare($this->_expected, $this->_actual);
 
         if ($this->_match) {
-            $this->assertFalse($result->hasFailure(), "There should not be any errors");
+            $this->assertFalse($result->hasFailure(), "There should not be any errors" . $filePath);
         } else {
-            $this->assertGreaterThanOrEqual(1, count($result->failures()));
+            $this->assertGreaterThanOrEqual(1, count($result->failures()), "There should be at least one failure: " . $filePath);
         }
     }
 }

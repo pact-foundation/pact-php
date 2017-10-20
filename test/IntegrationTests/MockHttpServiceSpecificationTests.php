@@ -36,8 +36,15 @@ class MockHttpServiceSpecificationTests extends TestCase
                 $testCaseFileNames = $this->GetFiles($pathToTestCases . DIRECTORY_SEPARATOR . $testCaseSubDirectory);
                 foreach ($testCaseFileNames as $testCaseFileName) {
                     $fullPathFileName = $pathToTestCases . DIRECTORY_SEPARATOR . $testCaseSubDirectory . DIRECTORY_SEPARATOR . $testCaseFileName;
-
                     $testCaseJson = file_get_contents($fullPathFileName);
+
+                    /*
+                    error_log("Starting " . $fullPathFileName);
+
+                    if ($testCaseFileName == 'array with regular expression that does not match in element.json') {
+                        error_log("Debug " . $fullPathFileName);
+                    }
+                    */
 
                     $hasException = false;
 
@@ -55,7 +62,7 @@ class MockHttpServiceSpecificationTests extends TestCase
                                 throw new \InvalidArgumentException("Unexpected test case runner type: " . $testCaseType);
                         }
 
-                        $testCaseRunner->verify();
+                        $testCaseRunner->verify($fullPathFileName);
                     } catch (\Exception $e) {
                         $hasException = true;
                     }

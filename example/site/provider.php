@@ -10,12 +10,8 @@ if (isset($_GET["amount"])) {
     $fileName = filter_var($_GET["file"], FILTER_SANITIZE_STRING);
     $currentDir = dirname(__FILE__);
     $relativeDir = $currentDir . DIRECTORY_SEPARATOR . $fileName;
-    error_log("File get: " . $relativeDir);
-
     $objects = \json_decode(file_get_contents($relativeDir));
 } elseif (!empty($_POST)) {
-    error_log('received post');
-
     $body = '{ "type": "some new type" }';
     $body = \json_encode(\json_decode($body));
     $objects = \json_decode($body);

@@ -44,7 +44,7 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
             throw new \Exception("XML JSONPath not supported yet");
             /*
             $jsonPathChecker = new JsonPathMatchChecker();
-            return $jsonPathChecker->match($path, $expected, $actual, $matchingRules, $this->_allowExtraKeys);
+            return $jsonPathChecker->match($path, $expected, $actual, $matchingRules, $this->_allowExtraKeys, 'body');
             */
         }
 

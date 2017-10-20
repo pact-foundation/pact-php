@@ -21,22 +21,22 @@ class MatchingRule implements \JsonSerializable
         }
 
         if (isset($options[MatcherRuleTypes::MIN_COUNT])) {
-            $this->_min = intval(MatcherRuleTypes::MIN_COUNT);
+            $this->_min = intval($options[MatcherRuleTypes::MIN_COUNT]);
         }
 
         if (isset($options[MatcherRuleTypes::MAX_COUNT])) {
-            $this->_max = intval(MatcherRuleTypes::MAX_COUNT);
+            $this->_max = intval($options[MatcherRuleTypes::MAX_COUNT]);
         }
 
-        if ($options[MatcherRuleTypes::RULE_TYPE] == MatcherRuleTypes::REGEX_TYPE && isset($options[MatcherRuleTypes::REGEX_PATTERN])) {
-            $this->_type = MatcherRuleTypes::REGEX_TYPE;
-            $this->_regexPattern = $options[MatcherRuleTypes::REGEX_PATTERN];
-        }
-        else if ($options[MatcherRuleTypes::RULE_TYPE] == MatcherRuleTypes::OBJECT_TYPE) {
-            $this->_type = MatcherRuleTypes::OBJECT_TYPE;
-        }
-        else {
-            throw new \Exception("Invalid rule type and options set: " . $options[MatcherRuleTypes::RULE_TYPE] );
+        if (isset($options[MatcherRuleTypes::RULE_TYPE])) {
+            if ($options[MatcherRuleTypes::RULE_TYPE] == MatcherRuleTypes::REGEX_TYPE && isset($options[MatcherRuleTypes::REGEX_PATTERN])) {
+                $this->_type = $options[MatcherRuleTypes::RULE_TYPE];
+                $this->_regexPattern = $options[MatcherRuleTypes::REGEX_PATTERN];
+            } else if ($options[MatcherRuleTypes::RULE_TYPE] == MatcherRuleTypes::OBJECT_TYPE) {
+                $this->_type = $options[MatcherRuleTypes::RULE_TYPE];
+            } else {
+                throw new \Exception("Invalid rule type and options set: " . $options[MatcherRuleTypes::RULE_TYPE]);
+            }
         }
     }
 

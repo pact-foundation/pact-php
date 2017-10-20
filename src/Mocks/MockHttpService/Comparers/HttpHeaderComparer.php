@@ -27,7 +27,7 @@ class HttpHeaderComparer
 
         if ($this->shouldApplyMatchers($matchingRules)) {
             $jsonPathChecker = new JsonPathMatchChecker();
-            $results = $jsonPathChecker->match(__CLASS__, $expected, $actual, $matchingRules, false);
+            $results = $jsonPathChecker->match(__CLASS__, $expected, $actual, $matchingRules, false, 'header');
 
             /**
              * @var $results \PhpPact\Matchers\Checkers\MatcherResult

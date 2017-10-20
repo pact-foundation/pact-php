@@ -26,6 +26,10 @@ class MatchingRuleMapper
                     $options[MatcherRuleTypes::MIN_COUNT] = $matchingRule->min;
                 }
 
+                if (isset($matchingRule->max)) {
+                    $options[MatcherRuleTypes::MAX_COUNT] = $matchingRule->max;
+                }
+
                 if (isset($matchingRule->match)) {
                     $options[MatcherRuleTypes::RULE_TYPE] = $matchingRule->match;
                 }
