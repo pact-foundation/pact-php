@@ -38,13 +38,13 @@ class MockHttpServiceSpecificationTests extends TestCase
                     $fullPathFileName = $pathToTestCases . DIRECTORY_SEPARATOR . $testCaseSubDirectory . DIRECTORY_SEPARATOR . $testCaseFileName;
                     $testCaseJson = file_get_contents($fullPathFileName);
 
-                    /*
+
                     error_log("Starting " . $fullPathFileName);
 
-                    if ($testCaseFileName == 'array with regular expression that does not match in element.json') {
+                    if ($testCaseFileName == 'matches with regex.json' && $testCaseSubDirectory == 'headers') {
                         error_log("Debug " . $fullPathFileName);
                     }
-                    */
+
 
                     $hasException = false;
 

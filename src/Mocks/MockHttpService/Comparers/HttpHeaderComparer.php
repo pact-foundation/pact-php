@@ -9,6 +9,8 @@ use PhpPact\Mocks\MockHttpService\Matchers\JsonPathMatchChecker;
 class HttpHeaderComparer
 {
 
+    const PATH_PREFIX = 'headers';
+
     /**
      * @param $expected array
      * @param $actual array
@@ -27,7 +29,7 @@ class HttpHeaderComparer
 
         if ($this->shouldApplyMatchers($matchingRules)) {
             $jsonPathChecker = new JsonPathMatchChecker();
-            $results = $jsonPathChecker->match(__CLASS__, $expected, $actual, $matchingRules, false, 'header');
+            $results = $jsonPathChecker->match(__CLASS__, $expected, $actual, $matchingRules, false, static::PATH_PREFIX);
 
             /**
              * @var $results \PhpPact\Matchers\Checkers\MatcherResult
@@ -38,6 +40,8 @@ class HttpHeaderComparer
                     $result->recordFailure(new Comparers\DiffComparisonFailure($expected, $actual));
                 }
             }
+
+            return $result;
         }
 
 
@@ -135,7 +139,7 @@ class HttpHeaderComparer
 
         if (count($matchingRules) > 0) {
             foreach($matchingRules as $jsonPath => $matchingRule) {
-                if (stripos($jsonPath, '.header') !== false) {
+                if (stripos($jsonPath, '.' . static::PATH_PREFIX) !== false) {
                     return true;
                 }
             }

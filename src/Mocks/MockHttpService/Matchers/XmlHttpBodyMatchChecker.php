@@ -10,6 +10,8 @@ use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
 class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecker
 {
 
+    const PATH_PREFIX = 'body';
+
     private $_allowExtraKeys;
 
     public function __construct($allowExtraKeysInObjects)
@@ -44,7 +46,7 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
             throw new \Exception("XML JSONPath not supported yet");
             /*
             $jsonPathChecker = new JsonPathMatchChecker();
-            return $jsonPathChecker->match($path, $expected, $actual, $matchingRules, $this->_allowExtraKeys, 'body');
+            return $jsonPathChecker->match($path, $expected, $actual, $matchingRules, $this->_allowExtraKeys, static::PATH_PREFIX);
             */
         }
 
@@ -178,7 +180,7 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
 
         if (count($matchingRules) > 0) {
             foreach($matchingRules as $jsonPath => $matchingRule) {
-                if (stripos($jsonPath, 'body') !== false) {
+                if (stripos($jsonPath, '.' . static::PATH_PREFIX) !== false) {
                     return true;
                 }
             }
