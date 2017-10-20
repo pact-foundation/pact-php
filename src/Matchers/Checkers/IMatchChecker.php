@@ -4,5 +4,5 @@ namespace PhpPact\Matchers\Checkers;
 
 interface IMatchChecker
 {
-    public function Match($path, $expected, $actual);
+    public function match($path, $expected, $actual, $matchingRules = array());
 }

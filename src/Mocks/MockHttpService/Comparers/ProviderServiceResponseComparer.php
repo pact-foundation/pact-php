@@ -33,11 +33,11 @@ class ProviderServiceResponseComparer
             return $result;
         }
 
-        $statusResult = $this->_httpStatusCodeComparer->compare($expected->getStatus(), $actual->getStatus());
+        $statusResult = $this->_httpStatusCodeComparer->compare($expected->getStatus(), $actual->getStatus(), $expected->getMatchingRules());
         $result->addChildResult($statusResult);
 
         if (count($expected->getHeaders()) > 0) {
-            $headerResult = $this->_httpHeaderComparer->compare($expected->getHeaders(), $actual->getHeaders());
+            $headerResult = $this->_httpHeaderComparer->compare($expected->getHeaders(), $actual->getHeaders(), $expected->getMatchingRules());
             $result->addChildResult($headerResult);
         }
 
@@ -45,7 +45,7 @@ class ProviderServiceResponseComparer
         // If there has already been a faillure, do not check the body
         // Failed header settings can result in the body processing to fail
         if ($expected->shouldSerializeBody() && !$result->HasFailure()) {
-            $bodyResult = $this->_httpBodyComparer->compare($expected, $actual, $expected->getBodyMatchers(), $expected->getContentType());
+            $bodyResult = $this->_httpBodyComparer->compare($expected, $actual);
             $result->addChildResult($bodyResult);
         }
 

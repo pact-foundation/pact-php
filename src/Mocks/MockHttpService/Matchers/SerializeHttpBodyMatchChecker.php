@@ -13,10 +13,11 @@ class SerializeHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatch
      * @param $path
      * @param $expected
      * @param $actual
+     * @param $matchingRules array[MatchingRules]
      *
      * @return MatcherResult
      */
-    public function Match($path, $expected, $actual)
+    public function match($path, $expected, $actual, $matchingRules = array())
     {
         if ($actual != null && serialize($expected) == serialize($actual)) {
             return new MatcherResult(new SuccessfulMatcherCheck($path));

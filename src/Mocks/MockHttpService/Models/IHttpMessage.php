@@ -43,6 +43,13 @@ interface IHttpMessage
     public function getContentType();
 
     /**
+     * Get the body checkers to run over the body
+     *
+     * @return array
+     */
+    public function getBodyMatchers();
+
+    /**
      * Get the matching rules to run over JSON Path
      *
      * @return array

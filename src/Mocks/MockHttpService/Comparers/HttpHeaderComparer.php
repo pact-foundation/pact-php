@@ -10,10 +10,11 @@ class HttpHeaderComparer
     /**
      * @param $expected array
      * @param $actual array
+     * @param $matchingRules array[MatchingRules]
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function compare($expected, $actual)
+    public function compare($expected, $actual, $matchingRules = array())
     {
         $result = new Comparers\ComparisonResult("includes headers");
 

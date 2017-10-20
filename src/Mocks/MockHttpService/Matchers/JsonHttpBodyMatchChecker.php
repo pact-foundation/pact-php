@@ -22,13 +22,15 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
     /**
      * Check if expected and actual are empty strings or JSON objects
      *
-     * @param $path
-     * @param $expected
-     * @param $actual
+     * @param $path string
+     * @param $expected mixed
+     * @param $actual mixed
+     * @param $matchingRules[IMatchRules]
+     *
      * @return \PhpPact\Matchers\Checkers\MatcherResult
      * @throws \Exception
      */
-    public function Match($path, $expected, $actual)
+    public function match($path, $expected, $actual, $matchingRules = array())
     {
         // empty string check
         if (!is_object($expected) && !is_array($expected)) {

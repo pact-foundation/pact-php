@@ -19,7 +19,7 @@ class JsonHttpBodyMatcherTest extends TestCase
         $actual = array();
         $actual[] = "Test";
 
-        $result = $matcher->Match("/", $expected, $actual);
+        $result = $matcher->match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
         $this->assertTrue(($checks[0] instanceof SuccessfulMatcherCheck), "This should be a successful match");
 
@@ -29,7 +29,7 @@ class JsonHttpBodyMatcherTest extends TestCase
             $expected = "str-exp";
             $actual = array();
             $actual[] = "Test";
-            $matcher->Match("/", $expected, $actual);
+            $matcher->match("/", $expected, $actual);
         } catch (\Exception $e) {
             $hasException = true;
         }
@@ -37,7 +37,7 @@ class JsonHttpBodyMatcherTest extends TestCase
 
 
         // if actual is not an object, get a failed to match check
-        $result = $matcher->Match("/", array(), "b");
+        $result = $matcher->match("/", array(), "b");
         $checks = $result->getMatcherChecks();
         $this->assertTrue(($checks[0] instanceof FailedMatcherCheck), "This should be a successful match");
 
@@ -49,7 +49,7 @@ class JsonHttpBodyMatcherTest extends TestCase
         $actual = new \stdClass();
         $actual->a1 = "a1";
 
-        $result = $matcher->Match("/", $expected, $actual);
+        $result = $matcher->match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
         $this->assertTrue(($checks[0] instanceof SuccessfulMatcherCheck), "This should be a successful match");
 
@@ -60,7 +60,7 @@ class JsonHttpBodyMatcherTest extends TestCase
         $actual = new \stdClass();
         $actual->a1 = "a2";
 
-        $result = $matcher->Match("/", $expected, $actual);
+        $result = $matcher->match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
         $this->assertTrue(($checks[0] instanceof FailedMatcherCheck), "This should be a failed match - editing objects");
 
@@ -71,7 +71,7 @@ class JsonHttpBodyMatcherTest extends TestCase
         $actual = new \stdClass();
         $actual->a2 = "a1";
 
-        $result = $matcher->Match("/", $expected, $actual);
+        $result = $matcher->match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
         $this->assertTrue(($checks[0] instanceof FailedMatcherCheck), "This should be a failed match - removing objects");
 
@@ -83,7 +83,7 @@ class JsonHttpBodyMatcherTest extends TestCase
         $actual->a1 = "a1";
         $actual->a2 = "a2";
 
-        $result = $matcher->Match("/", $expected, $actual);
+        $result = $matcher->match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
         $this->assertTrue(($checks[0] instanceof FailedMatcherCheck), "This should be a failed match - new objects not allowed in current config");
 
@@ -96,7 +96,7 @@ class JsonHttpBodyMatcherTest extends TestCase
         $actual->a1 = "a1";
         $actual->a2 = "a2";
 
-        $result = $matcher->Match("/", $expected, $actual);
+        $result = $matcher->match("/", $expected, $actual);
         $checks = $result->getMatcherChecks();
         $this->assertTrue(($checks[0] instanceof SuccessfulMatcherCheck), "This should be a successful match - new objects allowed in current config");
     }

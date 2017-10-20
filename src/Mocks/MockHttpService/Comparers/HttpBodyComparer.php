@@ -12,20 +12,21 @@ class HttpBodyComparer
     /**
      * @param $expected \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
      * @param $actual \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
-     * @param $matchingRules array[IMatcher]
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function compare($expected, $actual, $matchingRules, $expectedContentType = "application/json")
+    public function compare($expected, $actual)
     {
-        $result = new ComparisonResult("has a body");
+        $bodyMatcherCheckers = $expected->getBodyMatchers();
+        $expectedContentType = $expected->getContentType();
+        $matchingRules = $expected->getMatchingRules();
 
+        $result = new ComparisonResult("has a body");
 
         if ($expected->shouldSerializeBody() && $expected->getBody() == null && $actual->getBody()) {
             $result->recordFailure(new DiffComparisonFailure($expected, $actual));
             return $result;
         }
-
 
         if ($expected->getBody() == null) {
             return $result;
@@ -47,8 +48,16 @@ class HttpBodyComparer
         }
 
         // cycle through matching rules
-        foreach ($matchingRules as $matchingRuleKey => $matchingRule) {
-            $results = $matchingRule->Match($matchingRuleKey, $expected, $actual);
+        foreach ($bodyMatcherCheckers as $bodyMatcherCheckerKey => $bodyMatcherChecker) {
+
+            /**
+             * @var $bodyMatcherChecker \PhpPact\Matchers\Checkers\IMatchChecker
+             */
+            $results = $bodyMatcherChecker->match($bodyMatcherCheckerKey, $expected, $actual, $matchingRules);
+
+            /**
+             * @var $results \PhpPact\Matchers\Checkers\MatcherResult
+             */
             $checks = $results->getMatcherChecks();
             foreach ($checks as $check) {
                 if (($check instanceof FailedMatcherCheck)) {

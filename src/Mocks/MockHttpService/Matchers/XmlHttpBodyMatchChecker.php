@@ -23,10 +23,12 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
      * @param $path
      * @param $expected
      * @param $actual
+     * @param $matchingRules array[MatchingRules]
+     * 
      * @return \PhpPact\Matchers\Checkers\MatcherResult
      * @throws \Exception
      */
-    public function Match($path, $expected, $actual)
+    public function match($path, $expected, $actual, $matchingRules = array())
     {
         if (method_exists($expected, "getBody") && method_exists($actual, "getBody")) {
             $expected = $expected->getBody();
@@ -39,8 +41,6 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
         }
 
         $jsonResults = $this->JsonDiff($expected, $actual);
-
-
         $diffs = count($jsonResults['new']) + count($jsonResults['edited']) + count($jsonResults['removed']);
 
         if ($diffs > 0) {

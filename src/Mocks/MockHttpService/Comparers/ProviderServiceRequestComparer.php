@@ -23,6 +23,7 @@ class ProviderServiceRequestComparer
     /**
      * @param $expected \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest
      * @param $actual \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest
+     *
      * @return \PhpPact\Comparers\ComparisonResult
      */
     public function compare($expected, $actual)
@@ -49,10 +50,10 @@ class ProviderServiceRequestComparer
         }
 
         // handles case where body is set but null
-        // If there has already been a faillure, do not check the body
+        // If there has already been a failure, do not check the body
         // Failed header settings can result in the body processing to fail
         if ($expected->shouldSerializeBody() && !$result->HasFailure()) {
-            $bodyResult = $this->_httpBodyComparer->compare($expected, $actual, $expected->getBodyMatchers(), $expected->getContentType());
+            $bodyResult = $this->_httpBodyComparer->compare($expected, $actual);
             $result->addChildResult($bodyResult);
         }
 
