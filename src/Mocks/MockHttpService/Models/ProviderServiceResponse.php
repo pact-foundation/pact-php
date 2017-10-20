@@ -164,6 +164,11 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
         if (is_object($headers) && isset($headers->$key)) {
             return $headers->$key;
         }
+
+        if (is_array($headers) && isset($headers[$key])) {
+            return $headers[$key];
+        }
+
         return false;
     }
 

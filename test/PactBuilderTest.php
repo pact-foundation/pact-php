@@ -23,7 +23,6 @@ class PactBuilderTest extends TestCase
 
     public function testBuild()
     {
-
         // build pact file
         $pactFile = new \PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile();
         $pactFile->setProvider(new \PhpPact\Models\Pacticipant("testBuildProvider"));

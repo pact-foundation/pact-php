@@ -241,7 +241,7 @@ class MockProviderService implements IMockProviderService
 
             // given that we got a response, does it look like the expected interactions response
             $matchingResponse = $matchingInteraction->getResponse();
-            $results = $responseComparer->compare($matchingResponse, $response);
+            $result = $responseComparer->compare($matchingResponse, $response);
 
             $comparisonResults->addChildResult($result);
         }

@@ -78,7 +78,7 @@ class ConsumerTest extends TestCase
         // verify the interactions
         $hasException = false;
         try {
-            $results = $mockService->VerifyInteractions();
+            $mockService->VerifyInteractions();
         } catch (PactFailureException $e) {
             $hasException = true;
         }
