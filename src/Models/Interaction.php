@@ -20,7 +20,7 @@ class Interaction implements \JsonSerializable
     {
         $obj = new \stdClass();
         $obj->description = $this->_description;
-        $obj->provider_state = $this->_providerState;
+        $obj->providerState = $this->_providerState;
 
         return $obj; // Encode this array instead of the current element
     }

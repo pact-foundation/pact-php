@@ -16,9 +16,6 @@
                 "providerState": {
                     "type": "string"
                 },
-                "provider_state": {
-                    "type": "string"
-                },
                 "request": {
                     "$ref": "#/definitions/request"
                 },
@@ -39,7 +36,79 @@
             },
             "type": "array"
         },
-        "participant": {
+        "matchingRules": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^\\$.*$": {
+                    "oneOf": [
+                        {
+                            "additionalProperties": false,
+                            "properties": {
+                                "match": {
+                                    "enum": ["type"],
+                                    "type": "string"
+                                },
+                                "max": {
+                                    "type": "number"
+                                },
+                                "min": {
+                                    "type": "number"
+                                }
+                            },
+                            "required": ["match"],
+                            "type": "object"
+                        },
+                        {
+                            "additionalProperties": false,
+                            "properties": {
+                                "match": {
+                                    "enum": ["regex"],
+                                    "type": "string"
+                                },
+                                "regex": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "match",
+                                "regex"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "metadata": {
+            "properties": {
+                "pactSpecification": {
+                    "additionalProperties": false,
+                    "properties": {
+                        "version": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["version"],
+                    "type": "object"
+                },
+                "pactSpecificationVersion": {
+                    "type": "string"
+                },
+                "pact-specification": {
+                    "additionalProperties": false,
+                    "properties": {
+                        "version": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["version"],
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "pacticipant": {
             "properties": {
                 "name": {
                     "type": "string"
@@ -51,8 +120,12 @@
         "request": {
             "additionalProperties": false,
             "properties": {
+                "body": {},
                 "headers": {
                     "$ref": "#/definitions/headers"
+                },
+                "matchingRules": {
+                    "$ref": "#/definitions/matchingRules"
                 },
                 "method": {
                     "enum": [
@@ -96,6 +169,9 @@
                 "headers": {
                     "$ref": "#/definitions/headers"
                 },
+                "matchingRules": {
+                    "$ref": "#/definitions/matchingRules"
+                },
                 "status": {
                     "maximum": 599,
                     "minimum": 100,
@@ -109,13 +185,16 @@
     "description": "Schema for a Pact file",
     "properties": {
         "consumer": {
-            "$ref": "#/definitions/participant"
+            "$ref": "#/definitions/pacticipant"
         },
         "interactions": {
             "$ref": "#/definitions/interactions"
         },
+        "metadata": {
+            "$ref": "#/definitions/metadata"
+        },
         "provider": {
-            "$ref": "#/definitions/participant"
+            "$ref": "#/definitions/pacticipant"
         }
     },
     "required": [

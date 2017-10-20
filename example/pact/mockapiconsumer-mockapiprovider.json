@@ -10,7 +10,7 @@
 	"interactions": [
 		{
 			"description": "There are ids and names - expect three types by default",
-			"provider_state": "A GET request to get types",
+			"providerState": "A GET request to get types",
 			"request":
 			{
 				"method": "get",
@@ -48,7 +48,7 @@
 		},
 		{
 			"description": "There are ids and names - expect up to four types",
-			"provider_state": "A GET request to get variable types",
+			"providerState": "A GET request to get variable types",
 			"request":
 			{
 				"method": "get",
@@ -92,7 +92,7 @@
 		},
 		{
 			"description": "A GET request to test setup and tear down",
-			"provider_state": "A GET request for a setup",
+			"providerState": "A GET request for a setup",
 			"request":
 			{
 				"method": "get",
@@ -123,7 +123,7 @@
 		},
 		{
 			"description": "A POST request to save types",
-			"provider_state": "There is something to POST to",
+			"providerState": "There is something to POST to",
 			"request":
 			{
 				"method": "post",
@@ -152,7 +152,7 @@
 		},
 		{
 			"description": "A GET request with an XML header",
-			"provider_state": "There is an XML alligator named Mary",
+			"providerState": "There is an XML alligator named Mary",
 			"request":
 			{
 				"method": "get",

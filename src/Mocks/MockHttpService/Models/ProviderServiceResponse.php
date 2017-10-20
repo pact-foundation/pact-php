@@ -197,7 +197,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
                  * @var $matchingRuleVo MatchingRule
                  */
                 $jsonPath = $matchingRuleVo->getJsonPath();
-                $obj->matchingRules->$jsonPath = \json_encode($matchingRuleVo);
+                $obj->matchingRules->$jsonPath = $matchingRuleVo->jsonSerialize();
             }
         }
 

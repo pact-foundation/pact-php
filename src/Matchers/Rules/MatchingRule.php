@@ -26,7 +26,7 @@ class MatchingRule implements \JsonSerializable
             $this->_type = MatcherRuleTypes::REGEX_TYPE;
             $this->_regexPattern = $options[MatcherRuleTypes::REGEX_PATTERN];
         }
-        if ($options[MatcherRuleTypes::RULE_TYPE] == MatcherRuleTypes::OBJECT_TYPE) {
+        else if ($options[MatcherRuleTypes::RULE_TYPE] == MatcherRuleTypes::OBJECT_TYPE) {
             $this->_type = MatcherRuleTypes::OBJECT_TYPE;
         }
         else {

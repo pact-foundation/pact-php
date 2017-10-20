@@ -32,8 +32,8 @@ class ConsumerTest extends TestCase
     {
         parent::setUp();
         $this->_build = new PactBuilder();
-        $this->_build->ServiceConsumer(self::CONSUMER_NAME)
-            ->HasPactWith(self::PROVIDER_NAME);
+        $this->_build->serviceConsumer(self::CONSUMER_NAME)
+            ->hasPactWith(self::PROVIDER_NAME);
     }
 
     protected function tearDown()
@@ -282,8 +282,8 @@ class ConsumerTest extends TestCase
         // define local build
         $localBuild = new PactBuilder();
         $localBuild->setConfig($config)
-            ->ServiceConsumer(self::CONSUMER_NAME)
-            ->HasPactWith(self::PROVIDER_NAME);
+            ->serviceConsumer(self::CONSUMER_NAME)
+            ->hasPactWith(self::PROVIDER_NAME);
 
 
         // build the request
@@ -308,7 +308,7 @@ class ConsumerTest extends TestCase
         try {
             $clientUnderTest = new MockApiConsumer();
             $clientUnderTest->setMockHost($host);
-            $receivedResponse = $clientUnderTest->GetWithPath("http://google.com");
+            $clientUnderTest->GetWithPath("http://google.com");
         } catch (PactFailureException $e) {
             $hasException = true;
         }
@@ -394,12 +394,10 @@ class ConsumerTest extends TestCase
         // verify the interactions
         $hasException = false;
         try {
-            $results = $mockService->VerifyInteractions();
+            $mockService->VerifyInteractions();
         } catch (PactFailureException $e) {
             $hasException = true;
         }
         $this->assertFalse($hasException, "This basic get should verify the interactions and not throw an exception");
-
-        error_log(\json_encode($request));
     }
 }

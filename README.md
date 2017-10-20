@@ -12,6 +12,10 @@ The namespace is PhpPact as [Pact-PHP](https://github.com/andykelk/pact-php) use
 ## Composer
 Run `composer require mattersight/phppact`
 
+### Pact-PHP 2.0
+Coming Soon ...
+
+
 ### Pact-PHP 1.1
 For Pact-PHP 1.1, there is a need to run dev-master on TreeWalker dependency, you will need to use the following composer.json
 ```json
@@ -20,10 +24,16 @@ For Pact-PHP 1.1, there is a need to run dev-master on TreeWalker dependency, yo
 	"minimum-stability": "dev",
 	"require":
 	{
-		"mattersight/phppact": "^1.1"
+		"mattersight/phppact": "dev-master"
 	}
 }
 ```
+
+If you want to run this on Windows, because of dependencies in PHP Unit and prettier output, certain libraries had to be included.
+Thus, there are two ways to run composer update on Windows
+ 1. `composer update --ignore-platform-reqs`
+ 2. `composer update --no-dev`
+ 
 
 ## Pull Requests
 This project is actively taking pull requests and appreciate the contribution.   The code needs to pass the CI validation 
@@ -139,8 +149,8 @@ class ConsumerTest extends TestCase
     {
         parent::setUp();
         $this->_build = new \PhpPact\PactBuilder();
-        $this->_build->ServiceConsumer(self::CONSUMER_NAME)
-            ->HasPactWith(self::PROVIDER_NAME);
+        $this->_build->serviceConsumer(self::CONSUMER_NAME)
+            ->hasPactWith(self::PROVIDER_NAME);
     }
 
     protected function tearDown()

@@ -121,7 +121,7 @@ class PactBuilder implements IPactBuilder
      * @param string $consumerName
      * @return $this
      */
-    public function ServiceConsumer($consumerName)
+    public function serviceConsumer($consumerName)
     {
         if (!$consumerName) {
             throw new \RuntimeException("Please supply a non null or empty consumerName");
@@ -137,7 +137,7 @@ class PactBuilder implements IPactBuilder
      * @param string $providerName
      * @return $this
      */
-    public function HasPactWith($providerName)
+    public function hasPactWith($providerName)
     {
         if (!$providerName) {
             throw new \RuntimeException("Please supply a non null or empty providerName");
@@ -159,14 +159,14 @@ class PactBuilder implements IPactBuilder
      *
      * @param bool|\PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile $pactFile
      */
-    public function Build($pactFile = false)
+    public function build($pactFile = false)
     {
         if (!$this->_mockProviderService) {
             throw new \RuntimeException("The Pact file could not be saved because the mock provider service is not initialised. Please initialise by calling the MockService() method.");
         }
 
         if (!$this->_consumerName) {
-            throw new \RuntimeException("ConsumerName has not been set, please supply a consumer name using the ServiceConsumer method.");
+            throw new \RuntimeException("ConsumerName has not been set, please supply a consumer name using the serviceConsumer method.");
         }
 
         if (!$this->_providerName) {
