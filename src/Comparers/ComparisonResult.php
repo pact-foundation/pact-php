@@ -8,13 +8,13 @@ class ComparisonResult
     private $_failures = array();
     private $_childResults = array();
 
-    public function Failures()
+    public function failures()
     {
         $localFailures = $this->_failures;
 
 
-        foreach ($this->ChildResults() as $childComparisonResult) {
-            $localFailures = array_merge($childComparisonResult->Failures(), $localFailures);
+        foreach ($this->childResults() as $childComparisonResult) {
+            $localFailures = array_merge($childComparisonResult->failures(), $localFailures);
         }
 
         return $localFailures;
@@ -28,21 +28,21 @@ class ComparisonResult
         return $this->_message;
     }
 
-    public function HasFailure()
+    public function hasFailure()
     {
-        if (count($this->Failures()) > 0) {
+        if (count($this->failures()) > 0) {
             return true;
         }
 
         return false;
     }
 
-    public function ShallowFailureCount()
+    public function shallowFailureCount()
     {
         return count($this->_failures);
     }
 
-    public function ChildResults()
+    public function childResults()
     {
         return $this->_childResults;
     }

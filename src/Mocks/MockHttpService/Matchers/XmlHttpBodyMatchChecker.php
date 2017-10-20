@@ -24,7 +24,7 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
      * @param $expected
      * @param $actual
      * @param $matchingRules array[MatchingRules]
-     * 
+     *
      * @return \PhpPact\Matchers\Checkers\MatcherResult
      * @throws \Exception
      */

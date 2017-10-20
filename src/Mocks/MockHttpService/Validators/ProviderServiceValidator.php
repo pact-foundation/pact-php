@@ -112,7 +112,7 @@ class ProviderServiceValidator
             $this->_reporter->ReportFailureReasons($comparisonResult);
             $this->_reporter->Flush();
 
-            if ($comparisonResult->HasFailure()) {
+            if ($comparisonResult->hasFailure()) {
                 throw new \PhpPact\PactFailureException("See test output or logs for failure details.");
             }
         }

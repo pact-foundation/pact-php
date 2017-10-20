@@ -71,10 +71,10 @@ class Reporter implements IReporter
             return;
         }
 
-        if ($comparisonResult->HasFailure()) {
+        if ($comparisonResult->hasFailure()) {
             $failureBuilder = '';
 
-            $shallowFailureCount = $comparisonResult->ShallowFailureCount();
+            $shallowFailureCount = $comparisonResult->shallowFailureCount();
 
             if ($shallowFailureCount > 0) {
                 $failureBuilder .= " (FAILED - ";
@@ -96,7 +96,7 @@ class Reporter implements IReporter
             $this->AddReportLine($comparisonResult->getMessage(), $this->_currentTabDepth + $tabDepth);
         }
 
-        foreach ($comparisonResult->ChildResults() as $childComparisonResult) {
+        foreach ($comparisonResult->childResults() as $childComparisonResult) {
             $this->AddSummary($childComparisonResult, $tabDepth + 1);
         }
     }
@@ -107,14 +107,14 @@ class Reporter implements IReporter
             return;
         }
 
-        if (!$comparisonResult->HasFailure()) {
+        if (!$comparisonResult->hasFailure()) {
             return;
         }
 
         $this->AddReportLine('', 0);
         $this->AddReportLine("Failures:", 0);
 
-        foreach ($comparisonResult->Failures() as $failure) {
+        foreach ($comparisonResult->failures() as $failure) {
             $this->AddReportLine('', 0);
             $this->AddReportLine(sprintf("%s %s", $this->_failureCount, $failure->getResult()), 0);
         }

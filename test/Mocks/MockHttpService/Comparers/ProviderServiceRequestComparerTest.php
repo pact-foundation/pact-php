@@ -22,7 +22,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $request2 = new ProviderServiceRequest("GET", "/", $header, $body);
 
         $results = $comparer->compare($request1, $request2);
-        $this->assertFalse($results->HasFailure(), "We expect these two requests to match");
+        $this->assertFalse($results->hasFailure(), "We expect these two requests to match");
 
         // expect headers to be off
         $header = array();
@@ -39,7 +39,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $request2 = new ProviderServiceRequest("GET", "/", $header2, $body);
 
         $results = $comparer->compare($request1, $request2);
-        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by the header. Note that the actual can have more header entries than the expected.");
+        $this->assertTrue($results->hasFailure(), "We expect these two requests to differ by the header. Note that the actual can have more header entries than the expected.");
 
         // expect path to be off
         $header = array();
@@ -51,7 +51,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $request2 = new ProviderServiceRequest("GET", "/new", $header, $body);
 
         $results = $comparer->compare($request1, $request2);
-        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by path");
+        $this->assertTrue($results->hasFailure(), "We expect these two requests to differ by path");
 
         // expect method to be off
         $header = array();
@@ -63,7 +63,7 @@ class ProviderServiceRequestComparerTest extends TestCase
         $request2 = new ProviderServiceRequest("POST", "/", $header, $body);
 
         $results = $comparer->compare($request1, $request2);
-        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by method");
+        $this->assertTrue($results->hasFailure(), "We expect these two requests to differ by method");
 
         // expect body to be off
         $header = array();
@@ -76,6 +76,6 @@ class ProviderServiceRequestComparerTest extends TestCase
         $request2 = new ProviderServiceRequest("GET", "/", $header, $body2);
 
         $results = $comparer->compare($request1, $request2);
-        $this->assertTrue($results->HasFailure(), "We expect these two requests to differ by body");
+        $this->assertTrue($results->hasFailure(), "We expect these two requests to differ by body");
     }
 }

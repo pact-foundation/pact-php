@@ -134,9 +134,9 @@ class RequestTestCase extends TestCase
         $result = $this->_requestComparer->compare($this->_expected, $this->_actual);
 
         if ($this->_match) {
-            $this->assertFalse($result->HasFailure(), "There should not be any errors");
+            $this->assertFalse($result->hasFailure(), "There should not be any errors");
         } else {
-            $this->assertGreaterThanOrEqual(1, count($result->Failures()));
+            $this->assertGreaterThanOrEqual(1, count($result->failures()));
         }
     }
 }

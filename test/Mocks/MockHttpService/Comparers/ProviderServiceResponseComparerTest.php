@@ -20,7 +20,7 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response2 = new ProviderServiceResponse(200, $header, $body);
 
         $results = $comparer->compare($response1, $response2);
-        $this->assertFalse($results->HasFailure(), "We expect these two responses to match.");
+        $this->assertFalse($results->hasFailure(), "We expect these two responses to match.");
 
         // expect header failure
         $header = array();
@@ -37,7 +37,7 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response2 = new ProviderServiceResponse(200, $header2, $body);
 
         $results = $comparer->compare($response2, $response1);
-        $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the headers are off.");
+        $this->assertTrue($results->hasFailure(), "We expect these two responses to not to match as the headers are off.");
 
         // check status
         $header = array();
@@ -49,7 +49,7 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response2 = new ProviderServiceResponse(500, $header, $body);
 
         $results = $comparer->compare($response1, $response2);
-        $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the statuses are off.");
+        $this->assertTrue($results->hasFailure(), "We expect these two responses to not to match as the statuses are off.");
 
         // check body
         $header = array();
@@ -62,6 +62,6 @@ class ProviderServiceResponseComparerTest extends TestCase
         $response2 = new ProviderServiceResponse(200, $header, $body2);
 
         $results = $comparer->compare($response1, $response2);
-        $this->assertTrue($results->HasFailure(), "We expect these two responses to not to match as the bodies are different.");
+        $this->assertTrue($results->hasFailure(), "We expect these two responses to not to match as the bodies are different.");
     }
 }

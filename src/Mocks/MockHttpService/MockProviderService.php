@@ -246,7 +246,7 @@ class MockProviderService implements IMockProviderService
             $comparisonResults->addChildResult($result);
         }
 
-        if ($comparisonResults->HasFailure()) {
+        if ($comparisonResults->hasFailure()) {
             throw new \PhpPact\PactFailureException("See test output or logs for failure details.");
         }
 
