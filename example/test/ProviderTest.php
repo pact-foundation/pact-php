@@ -28,10 +28,10 @@ final class ProviderTest extends TestCase
         try {
             $json = $this->getPactRoot() . DIRECTORY_SEPARATOR . 'mockapiconsumer-mockapiprovider.json';
 
-            $pactVerifier->ProviderState("Test State")
-                ->ServiceProvider("MockApiProvider", $httpClient)
-                ->HonoursPactWith("MockApiConsumer")
-                ->PactUri($json)
+            $pactVerifier->providerState("Test State")
+                ->serviceProvider("MockApiProvider", $httpClient)
+                ->honoursPactWith("MockApiConsumer")
+                ->pactUri($json)
                 ->verify(null, "A GET request to get types");
 
             $pactVerifier->verify(null, "A GET request to get variable types");
@@ -83,10 +83,10 @@ final class ProviderTest extends TestCase
         try {
             $json = $this->getPactRoot() . DIRECTORY_SEPARATOR . 'mockapiconsumer-mockapiprovider.json';
 
-            $pactVerifier->ProviderState("A GET request for a setup", $setUpFunction, $tearDownFunction)
-                ->ServiceProvider("MockApiProvider", $httpClient)
-                ->HonoursPactWith("MockApiConsumer")
-                ->PactUri($json)
+            $pactVerifier->providerState("A GET request for a setup", $setUpFunction, $tearDownFunction)
+                ->serviceProvider("MockApiProvider", $httpClient)
+                ->honoursPactWith("MockApiConsumer")
+                ->pactUri($json)
                 ->verify(); // note that this should test all as we can run setup and tear down
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;

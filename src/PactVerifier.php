@@ -60,7 +60,7 @@ class PactVerifier implements IPactVerifier
      * @param null $tearDown A tear down action that will be run after the interaction verify, if the provider has specified it in the interaction. If no action is required please use an empty lambda
      * @return PactVerifier $this
      */
-    public function ProviderState($providerState, $setUp = null, $tearDown = null)
+    public function providerState($providerState, $setUp = null, $tearDown = null)
     {
         if (!$providerState) {
             throw new \InvalidArgumentException("Please supply a non null or empty providerState");
@@ -72,7 +72,7 @@ class PactVerifier implements IPactVerifier
         return $this;
     }
 
-    public function ServiceProvider($providerName, $httpClient = null, $httpRequestSender = null)
+    public function serviceProvider($providerName, $httpClient = null, $httpRequestSender = null)
     {
         if (!$providerName) {
             throw new \InvalidArgumentException("Please supply a non null or empty providerName");
@@ -97,7 +97,7 @@ class PactVerifier implements IPactVerifier
         return $this;
     }
 
-    public function HonoursPactWith($consumerName)
+    public function honoursPactWith($consumerName)
     {
         if (!$consumerName) {
             throw new \InvalidArgumentException("Please supply a non null or empty consumerName");
@@ -112,7 +112,7 @@ class PactVerifier implements IPactVerifier
         return $this;
     }
 
-    public function PactUri($uri, $options = null)
+    public function pactUri($uri, $options = null)
     {
         if (!$uri) {
             throw new \InvalidArgumentException("Please supply a non null or empty consumerName");

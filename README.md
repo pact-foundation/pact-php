@@ -226,10 +226,10 @@ Bootstrap PHPUnit with appropriate composer and autoloaders.   Optionally, add a
 // Pick your PSR client.  Guzzle should work as well.
 $httpClient = new \Windwalker\Http\HttpClient();
 
-$pactVerifier->ProviderState("A GET request to get types")
-                ->ServiceProvider("MockApiProvider", $httpClient)
-                ->HonoursPactWith("MockApiConsumer")
-                ->PactUri('../pact/mockapiconsumer-mockapiprovider.json')
+$pactVerifier->providerState("A GET request to get types")
+                ->serviceProvider("MockApiProvider", $httpClient)
+                ->honoursPactWith("MockApiConsumer")
+                ->pactUri('../pact/mockapiconsumer-mockapiprovider.json')
                 ->verify();
 ```
 
@@ -291,7 +291,7 @@ class ProviderTest extends TestCase
             unlink($absolutePath);
         };
 
-        $pactVerifier->ProviderState("A GET request for a setup", $setUpFunction, $tearDownFunction);
+        $pactVerifier->providerState("A GET request for a setup", $setUpFunction, $tearDownFunction);
     }         
 }
 ```
@@ -308,10 +308,10 @@ $testState = "There is something to POST to";
 // Pick your PSR client.  Guzzle should work as well.
 $httpClient = new \Windwalker\Http\HttpClient();
 
-$pactVerifier->ProviderState("Test State")
-    ->ServiceProvider("MockApiProvider", $httpClient)
-    ->HonoursPactWith("MockApiConsumer")
-    ->PactUri($json)
+$pactVerifier->providerState("Test State")
+    ->serviceProvider("MockApiProvider", $httpClient)
+    ->honoursPactWith("MockApiConsumer")
+    ->pactUri($json)
     ->verify(null, $testState);
   
 ```
