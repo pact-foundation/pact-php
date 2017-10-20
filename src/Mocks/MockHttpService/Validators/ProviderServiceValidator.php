@@ -57,7 +57,7 @@ class ProviderServiceValidator
         }
 
         if ($pactFile->getInteractions() != null && count($pactFile->getInteractions()) > 0) {
-            $this->_reporter->ReportInfo(sprintf("Verifying a Pact between %s and %s", $pactFile->getConsumer()->getName(), $pactFile->getProvider()->getName()));
+            $this->_reporter->reportInfo(sprintf("Verifying a Pact between %s and %s", $pactFile->getConsumer()->getName(), $pactFile->getProvider()->getName()));
 
             $comparisonResult = new ComparisonResult();
 
@@ -69,7 +69,7 @@ class ProviderServiceValidator
 
                 $this->invokePactSetUpIfApplicable($providerStates);
 
-                $this->_reporter->ResetIndentation();
+                $this->_reporter->resetIndentation();
 
                 $providerStateItem = null; // better name?
 
@@ -84,33 +84,33 @@ class ProviderServiceValidator
                 $this->invokeProviderStateSetUpIfApplicable($providerStateItem);
 
                 if (!$interaction->getProviderState()) {
-                    $this->_reporter->Indent();
-                    $this->_reporter->ReportInfo(sprintf("Given %s", $interaction->getProviderState()));
+                    $this->_reporter->indent();
+                    $this->_reporter->reportInfo(sprintf("Given %s", $interaction->getProviderState()));
                 }
 
-                $this->_reporter->Indent();
-                $this->_reporter->ReportInfo(sprintf("%s", $interaction->getDescription()));
+                $this->_reporter->indent();
+                $this->_reporter->reportInfo(sprintf("%s", $interaction->getDescription()));
 
                 if (!$interaction->getRequest()) {
-                    $this->_reporter->Indent();
-                    $this->_reporter->ReportInfo(sprintf("with %s %s", $interaction->getRequest()->getMethod(), $interaction->getRequest()->getPath()));
+                    $this->_reporter->indent();
+                    $this->_reporter->reportInfo(sprintf("with %s %s", $interaction->getRequest()->getMethod(), $interaction->getRequest()->getPath()));
                 }
 
                 try {
                     $interactionComparisonResult = $this->validateInteraction($interaction);
                     $comparisonResult->addChildResult($interactionComparisonResult);
 
-                    $this->_reporter->Indent();
-                    $this->_reporter->ReportSummary($interactionComparisonResult);
+                    $this->_reporter->indent();
+                    $this->_reporter->reportSummary($interactionComparisonResult);
                 } finally {
                     $this->invokeProviderStateTearDownIfApplicable($providerStateItem);
                     $this->invokeTearDownIfApplicable($providerStates);
                 }
             }
 
-            $this->_reporter->ResetIndentation();
-            $this->_reporter->ReportFailureReasons($comparisonResult);
-            $this->_reporter->Flush();
+            $this->_reporter->resetIndentation();
+            $this->_reporter->reportFailureReasons($comparisonResult);
+            $this->_reporter->flush();
 
             if ($comparisonResult->hasFailure()) {
                 throw new \PhpPact\PactFailureException("See test output or logs for failure details.");

@@ -23,7 +23,7 @@ class Log4PHPOutputter implements \PhpPact\Reporters\Outputters\IReportOutputter
         $this->_writeLevel = strtolower($writeLevel);
     }
 
-    public function Write($report)
+    public function write($report)
     {
         $writeLevel = $this->_writeLevel;
 

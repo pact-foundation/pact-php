@@ -4,15 +4,15 @@ namespace PhpPact\Reporters;
 
 interface IReporter
 {
-    public function ReportInfo($infoMessage);
+    public function reportInfo($infoMessage);
 
-    public function ReportSummary(\PhpPact\Comparers\ComparisonResult $comparisonResult);
+    public function reportSummary(\PhpPact\Comparers\ComparisonResult $comparisonResult);
 
-    public function ReportFailureReasons(\PhpPact\Comparers\ComparisonResult $comparisonResult);
+    public function reportFailureReasons(\PhpPact\Comparers\ComparisonResult $comparisonResult);
 
-    public function Indent();
+    public function indent();
 
-    public function ResetIndentation();
+    public function resetIndentation();
 
-    public function Flush();
+    public function flush();
 }

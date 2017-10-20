@@ -4,7 +4,7 @@ namespace PhpPact\Reporters\Outputters;
 
 class ConsoleReportOutputter implements IReportOutputter
 {
-    public function Write($report)
+    public function write($report)
     {
         echo $report . "\n";
     }
