@@ -82,4 +82,5 @@ class HttpBodyComparer
         }
         return $obj;
     }
+
 }

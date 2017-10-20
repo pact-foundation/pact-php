@@ -40,7 +40,15 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
             return new MatcherResult(new SuccessfulMatcherCheck($path));
         }
 
-        $jsonResults = $this->JsonDiff($expected, $actual);
+        if ($this->shouldApplyMatchers($matchingRules)) {
+            throw new \Exception("XML JSONPath not supported yet");
+            /*
+            $jsonPathChecker = new JsonPathMatchChecker();
+            return $jsonPathChecker->match($path, $expected, $actual, $matchingRules, $this->_allowExtraKeys);
+            */
+        }
+
+        $jsonResults = $this->jsonDiff($expected, $actual);
         $diffs = count($jsonResults['new']) + count($jsonResults['edited']) + count($jsonResults['removed']);
 
         if ($diffs > 0) {
@@ -51,7 +59,7 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
             }
         } else {
             // now check XML order
-            return $this->CheckXmlOrder($expected, $actual, $path);
+            return $this->checkXmlOrder($expected, $actual, $path);
         }
 
         return new MatcherResult(new SuccessfulMatcherCheck($path));
@@ -64,7 +72,7 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
      * @param $actual
      * @return mixed|string
      */
-    private function JsonDiff($expected, $actual)
+    private function jsonDiff($expected, $actual)
     {
         // now Simple XML
         $expectedXml = simplexml_load_string($expected);
@@ -97,15 +105,15 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
      * @return MatcherResult
      * @throws \Exception
      */
-    private function CheckXmlOrder($expected, $actual, $path)
+    private function checkXmlOrder($expected, $actual, $path)
     {
         $expectedDom = new \DOMDocument();
         $expectedDom->loadXML($expected);
-        $expectedLeafs = $this->GetLeafs($expectedDom);
+        $expectedLeafs = $this->getLeafNodes($expectedDom);
 
         $actualDom = new \DOMDocument();
         $actualDom->loadXML($actual);
-        $actualLeafs = $this->GetLeafs($actualDom);
+        $actualLeafs = $this->getLeafNodes($actualDom);
 
 
         // the path count did not match
@@ -134,7 +142,7 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
      * @param \DOMDocument $xml
      * @return array
      */
-    private function GetLeafs(\DOMDocument $xml)
+    private function getLeafNodes(\DOMDocument $xml)
     {
         $xpath = new \DOMXPath($xml);
 
@@ -157,5 +165,25 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
         }
 
         return array_keys($leafs);
+    }
+
+    /**
+     * Test if we should apply matching rules to the body
+     *
+     * @param $matchingRules[MatchingRules]
+     *
+     * @return bool
+     */
+    private function shouldApplyMatchers($matchingRules) {
+
+        if (count($matchingRules) > 0) {
+            foreach($matchingRules as $jsonPath => $matchingRule) {
+                if (stripos($jsonPath, 'body') !== false) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

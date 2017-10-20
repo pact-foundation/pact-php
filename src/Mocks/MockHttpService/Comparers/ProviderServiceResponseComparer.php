@@ -33,7 +33,7 @@ class ProviderServiceResponseComparer
             return $result;
         }
 
-        $statusResult = $this->_httpStatusCodeComparer->compare($expected->getStatus(), $actual->getStatus(), $expected->getMatchingRules());
+        $statusResult = $this->_httpStatusCodeComparer->compare($expected->getStatus(), $actual->getStatus());
         $result->addChildResult($statusResult);
 
         if (count($expected->getHeaders()) > 0) {

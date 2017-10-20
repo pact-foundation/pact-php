@@ -10,8 +10,6 @@ use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
 
 class JsonHttpBodyMatchChecker implements IMatchChecker
 {
-    const PATH = "$..*";
-
     private $_allowExtraKeys;
 
     public function __construct($allowExtraKeysInObjects)
@@ -46,6 +44,11 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
             return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::ValueDoesNotMatch));
         }
 
+        if ($this->shouldApplyMatchers($matchingRules)) {
+            $jsonPathChecker = new JsonPathMatchChecker();
+            return $jsonPathChecker->match($path, $expected, $actual, $matchingRules, $this->_allowExtraKeys);
+        }
+
         $treewalker = new \TreeWalker(
             array(
             "debug" => false,                     //true => return the execution time, false => not
@@ -67,10 +70,10 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
             }
 
             $arraysInActual = array();
-            $this->FindArrays($actualBody, $arraysInActual);
+            $this->findArrays($actualBody, $arraysInActual);
 
             $arraysInExpected = array();
-            $this->FindArrays($expectedBody, $arraysInExpected);
+            $this->findArrays($expectedBody, $arraysInExpected);
 
             if (count($arraysInActual) != count($arraysInExpected)) {
                 return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::AdditionalPropertyInObject));
@@ -80,7 +83,7 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
                 $testExpected = $arraysInExpected[$i];
                 $testActual = $arraysInActual[$i];
                 $diffs = $treewalker->getdiff($testExpected, $testActual, false);
-                $results = $this->ProcessResults($diffs, $path, false);
+                $results = $this->processResults($diffs, $path, false);
                 if ($results !== true) {
                     return $results;
                 }
@@ -88,7 +91,7 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
         }
 
         $diffs = $treewalker->getdiff($expected, $actual, false);
-        $results = $this->ProcessResults($diffs, $path, $this->_allowExtraKeys);
+        $results = $this->processResults($diffs, $path, $this->_allowExtraKeys);
         if ($results !== true) {
             return $results;
         }
@@ -96,7 +99,7 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
         return new MatcherResult(new SuccessfulMatcherCheck($path));
     }
 
-    private function ProcessResults($results, $path, $allowExtraObjectKeys = false)
+    private function processResults($results, $path, $allowExtraObjectKeys = false)
     {
         if (count($results['new']) > 0) {
             return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::AdditionalPropertyInObject));
@@ -109,14 +112,34 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
         return true;
     }
 
-    private function FindArrays($obj, &$result)
+    private function findArrays($obj, &$result)
     {
         if (is_object($obj)) {
             foreach ($obj as $key => $value) {
-                $this->FindArrays($value, $result);
+                $this->findArrays($value, $result);
             }
         } elseif (is_array($obj)) {
             $result[] = $obj;
         }
+    }
+
+    /**
+     * Test if we should apply matching rules to the body
+     *
+     * @param $matchingRules[MatchingRules]
+     *
+     * @return bool
+     */
+    private function shouldApplyMatchers($matchingRules) {
+
+        if (count($matchingRules) > 0) {
+            foreach($matchingRules as $jsonPath => $matchingRule) {
+                if (stripos($jsonPath, 'body') !== false) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

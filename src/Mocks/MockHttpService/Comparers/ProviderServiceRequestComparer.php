@@ -45,7 +45,7 @@ class ProviderServiceRequestComparer
         $result->addChildResult($queryResult);
 
         if (count($expected->getHeaders()) > 0) {
-            $headerResult = $this->_httpHeaderComparer->compare($expected->getHeaders(), $actual->getHeaders());
+            $headerResult = $this->_httpHeaderComparer->compare($expected->getHeaders(), $actual->getHeaders(), $expected->getMatchingRules());
             $result->addChildResult($headerResult);
         }
 

@@ -9,11 +9,10 @@ class HttpStatusCodeComparer
     /**
      * @param $expected string
      * @param $actual string
-     * @param $matchingRules array[MatchingRules]
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function compare($expected, $actual, $matchingRules = array())
+    public function compare($expected, $actual)
     {
         $result = new Comparers\ComparisonResult(sprintf("has status code %s", (string)$expected));
         if ($expected != $actual) {

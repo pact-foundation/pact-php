@@ -3,6 +3,8 @@
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
 use PhpPact\Comparers;
+use PhpPact\Matchers\Checkers\FailedMatcherCheck;
+use PhpPact\Mocks\MockHttpService\Matchers\JsonPathMatchChecker;
 
 class HttpHeaderComparer
 {
@@ -14,7 +16,7 @@ class HttpHeaderComparer
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function compare($expected, $actual, $matchingRules = array())
+    public function compare($expected, $actual, $matchingRules )
     {
         $result = new Comparers\ComparisonResult("includes headers");
 
@@ -22,6 +24,22 @@ class HttpHeaderComparer
             $result->recordFailure(new Comparers\ErrorMessageComparisonFailure("Actual Headers are null"));
             return $result;
         }
+
+        if ($this->shouldApplyMatchers($matchingRules)) {
+            $jsonPathChecker = new JsonPathMatchChecker();
+            $results = $jsonPathChecker->match(__CLASS__, $expected, $actual, $matchingRules, false);
+
+            /**
+             * @var $results \PhpPact\Matchers\Checkers\MatcherResult
+             */
+            $checks = $results->getMatcherChecks();
+            foreach ($checks as $check) {
+                if (($check instanceof FailedMatcherCheck)) {
+                    $result->recordFailure(new Comparers\DiffComparisonFailure($expected, $actual));
+                }
+            }
+        }
+
 
         $expectedArray = $this->objectToArray($expected);
         $expectedArray = $this->makeArrayLowerCase($expectedArray);
@@ -104,5 +122,25 @@ class HttpHeaderComparer
             }
         }
         return true;
+    }
+
+    /**
+     * Test if we should apply matching rules to the body
+     *
+     * @param $matchingRules[MatchingRules]
+     *
+     * @return bool
+     */
+    private function shouldApplyMatchers($matchingRules) {
+
+        if (count($matchingRules) > 0) {
+            foreach($matchingRules as $jsonPath => $matchingRule) {
+                if (stripos($jsonPath, '.header') !== false) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
