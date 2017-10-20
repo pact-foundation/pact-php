@@ -11,4 +11,5 @@ class MatcherRuleTypes
     const REGEX_PATTERN = 'RegExPattern';
 
     const MIN_COUNT = 'MinCount';
+    const MAX_COUNT = 'MaxCount';
 }

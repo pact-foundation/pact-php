@@ -14,12 +14,18 @@ class MatchingRule implements \JsonSerializable
     {
         $this->_jsonPath = $jsonPath;
 
-        if (!isset($options[MatcherRuleTypes::MIN_COUNT]) && !isset($options[MatcherRuleTypes::RULE_TYPE])) {
-            throw new \Exception("Matching Rule options were not set to either a min value or an rule type");
+        if (!isset($options[MatcherRuleTypes::MIN_COUNT]) &&
+            !isset($options[MatcherRuleTypes::MAX_COUNT]) &&
+            !isset($options[MatcherRuleTypes::RULE_TYPE])) {
+            throw new \Exception("Matching Rule options were not set to either a min/max value or an rule type");
         }
 
         if (isset($options[MatcherRuleTypes::MIN_COUNT])) {
             $this->_min = intval(MatcherRuleTypes::MIN_COUNT);
+        }
+
+        if (isset($options[MatcherRuleTypes::MAX_COUNT])) {
+            $this->_max = intval(MatcherRuleTypes::MAX_COUNT);
         }
 
         if ($options[MatcherRuleTypes::RULE_TYPE] == MatcherRuleTypes::REGEX_TYPE && isset($options[MatcherRuleTypes::REGEX_PATTERN])) {
@@ -45,13 +51,23 @@ class MatchingRule implements \JsonSerializable
     }
 
     /**
-     * Get the integer value for the number of matches
+     * Get the integer value for the min number of matches
      *
      * @return int|false
      */
     public function getMin()
     {
         return isset($this->_min) ? $this->_min : false;
+    }
+
+    /**
+     * Get the integer value for the max number of matches
+     *
+     * @return int|false
+     */
+    public function getMax()
+    {
+        return isset($this->_max) ? $this->_max : false;
     }
 
     /**
