@@ -169,7 +169,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
             return $headers[$key];
         }
 
-        return false;
+        return 'application/json';
     }
 
 

@@ -41,7 +41,10 @@ class MockHttpServiceSpecificationTests extends TestCase
 
                     error_log("Starting " . $fullPathFileName);
 
-                    if ($testCaseFileName == 'matches with regex.json' && $testCaseSubDirectory == 'headers') {
+                    if ($testCaseFileName == 'additional property with type matcher.json' && $testCaseType == 'response') {
+                        error_log("Debug " . $fullPathFileName);
+                    }
+                    if ($testCaseFileName == 'array with at least one element matching by example.json' && $testCaseType == 'request') {
                         error_log("Debug " . $fullPathFileName);
                     }
 

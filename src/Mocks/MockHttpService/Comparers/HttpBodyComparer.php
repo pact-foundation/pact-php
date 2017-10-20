@@ -36,14 +36,24 @@ class HttpBodyComparer
         if ($expectedContentType=="application/json") {
             if (is_string($expected)) {
                 $expected = $this->jsonDecode($expected);
-            } elseif (method_exists($expected, "getBody") && is_string($expected->getBody())) {
-                $expected = $this->jsonDecode($expected->getBody());
+            } else if (method_exists($expected, "getBody")) {
+                if (is_string($expected->getBody())) {
+                    $expected = $this->jsonDecode($expected->getBody());
+                }
+                else {
+                    $expected = $expected->getBody();
+                }
             }
 
             if (is_string($actual)) {
                 $actual = $this->jsonDecode($actual);
-            } elseif (method_exists($actual, "getBody") && is_string($actual->getBody())) {
-                $actual = $this->jsonDecode($actual->getBody());
+            } else if (method_exists($actual, "getBody")) {
+                if (is_string($actual->getBody())) {
+                    $actual = $this->jsonDecode($actual->getBody());
+                }
+                else {
+                    $actual = $actual->getBody();
+                }
             }
         }
 
