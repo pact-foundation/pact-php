@@ -29,13 +29,17 @@ class JsonPathMatchChecker
 
         $failedReasons = array();
         foreach ($matchingRules as $jsonPath => $matchingRule) {
+            //error_log("$jsonPath");
             $narrowedJsonPath = $this->removePrefix($jsonPath, $matchingPrefix);
 
             /**
              * @var $matchingRule MatchingRule
              */
-            $expectedResult = (new \Peekmo\JsonPath\JsonStore($expected))->get($narrowedJsonPath);
-            $actualResult = (new \Peekmo\JsonPath\JsonStore($actual))->get($narrowedJsonPath);
+            $expectedResult = (new \Peekmo\JsonPath\JsonStore($expected))->get($narrowedJsonPath, false, true);
+            $actualResult = (new \Peekmo\JsonPath\JsonStore($actual))->get($narrowedJsonPath,false, true);
+
+            //error_log('Expected Peekmo: ' . print_r($expected, true) . print_r($expectedResult, true));
+            //error_log('Actual Peekmo: ' . print_r($actual, true) . print_r($actualResult, true));
 
             $ruleFailedReasons = $this->processMatchingRules($path, $matchingRule, $expectedResult, $actualResult, $jsonPath, $allowExtraKeys);
             $failedReasons = array_merge($failedReasons, $ruleFailedReasons);
@@ -312,6 +316,11 @@ class JsonPathMatchChecker
     }
 
     private function removePrefix($jsonPath, $toRemove) {
+
+        if (stripos($jsonPath, $toRemove . '[' ) !== false) {
+            return str_ireplace('$.' . $toRemove . '[', '$.[', $jsonPath);
+        }
+
         return str_ireplace('$.' . $toRemove, '$', $jsonPath);
     }
 }
