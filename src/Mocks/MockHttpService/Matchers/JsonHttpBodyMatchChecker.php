@@ -7,6 +7,7 @@ use PhpPact\Matchers\Checkers\MatcherResult;
 use PhpPact\Matchers\Checkers\FailedMatcherCheck;
 use PhpPact\Matchers\Checkers\MatcherCheckFailureType;
 use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
+use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
 
 class JsonHttpBodyMatchChecker implements IMatchChecker
 {
@@ -32,23 +33,17 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
      */
     public function match($path, $expected, $actual, $matchingRules = array())
     {
-        // empty string check
-        if (!is_object($expected) && !is_array($expected)) {
-            throw new \Exception("Failed to compare objects.   If you are not testing objects, try the SerializeHttpBodyMatchChecker.");
+        if (!($expected instanceof IHttpMessage)) {
+            throw new \Exception("Expected is not an instance of IHttpMessage: " . print_r($expected, true));
         }
 
-
-        if ((!is_object($expected) && !is_array($expected))  && (is_object($actual) || is_array($actual))) {
-            return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::ValueDoesNotMatch));
-        }
-
-        if (!$actual || (!is_object($actual) && !is_array($actual))) {
-            return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::ValueDoesNotMatch));
+        if (!($actual instanceof IHttpMessage)) {
+            throw new \Exception("Actual is not an instance of IHttpMessage: " . print_r($actual, true));
         }
 
         if ($this->shouldApplyMatchers($matchingRules)) {
             $jsonPathChecker = new JsonPathMatchChecker();
-            return $jsonPathChecker->match($path, $expected, $actual, $matchingRules, $this->_allowExtraKeys, static::PATH_PREFIX);
+            return $jsonPathChecker->match($path, $expected, $actual, $matchingRules, $this->_allowExtraKeys);
         }
 
         $treewalker = new \TreeWalker(
@@ -57,19 +52,24 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
             "returntype" => "array")              //Returntype = ["obj","jsonstring","array"]
         );
 
+        $actualBody = $actual->getBody();
+        $expectedBody = $expected->getBody();
+
+        if ($expected->getContentType() == "application/json") {
+            if (is_string($expectedBody)) {
+                $expectedBody = \json_decode($expectedBody);
+            }
+            if (is_string($actualBody)) {
+                $actualBody = \json_decode($actualBody);
+            }
+        }
+
         /*
          * According to Pact, arrays have to remain the same regardless of extra keys allowed flag.
          *
          * Objects can have extra nodes but not arrays.   Here, we find all sub arrays and ensure they are the same
          */
         if ($this->_allowExtraKeys == true ) {
-            $actualBody = $actual;
-            $expectedBody = $expected;
-
-            if (method_exists($expected, "getBody") &&  method_exists($actual, "getBody")) {
-                $actualBody = $actual->getBody();
-                $expectedBody = $expected->getBody();
-            }
 
             $arraysInActual = array();
             $this->findArrays($actualBody, $arraysInActual);
@@ -92,7 +92,7 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
             }
         }
 
-        $diffs = $treewalker->getdiff($expected, $actual, false);
+        $diffs = $treewalker->getdiff($expectedBody, $actualBody, false);
         $results = $this->processResults($diffs, $path, $this->_allowExtraKeys);
         if ($results !== true) {
             return $results;

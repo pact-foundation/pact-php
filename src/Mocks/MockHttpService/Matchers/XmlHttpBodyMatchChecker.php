@@ -6,6 +6,7 @@ use PhpPact\Matchers\Checkers\MatcherResult;
 use PhpPact\Matchers\Checkers\FailedMatcherCheck;
 use PhpPact\Matchers\Checkers\MatcherCheckFailureType;
 use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
+use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
 
 class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecker
 {
@@ -32,25 +33,27 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
      */
     public function match($path, $expected, $actual, $matchingRules = array())
     {
-        if (method_exists($expected, "getBody") && method_exists($actual, "getBody")) {
-            $expected = $expected->getBody();
-            $actual = $actual->getBody();
+        if (!($expected instanceof IHttpMessage)) {
+            throw new \Exception("Expected is not an instance of IHttpMessage: " . print_r($expected, true));
         }
 
+        if (!($actual instanceof IHttpMessage)) {
+            throw new \Exception("Actual is not an instance of IHttpMessage: " . print_r($actual, true));
+        }
+
+        $actualBody = $actual->getBody();
+        $expectedBody = $expected->getBody();
+
         // if we expect a match and the expected body is not set, call that successful
-        if (!$expected) {
+        if (!$expectedBody) {
             return new MatcherResult(new SuccessfulMatcherCheck($path));
         }
 
         if ($this->shouldApplyMatchers($matchingRules)) {
             throw new \Exception("XML JSONPath not supported yet");
-            /*
-            $jsonPathChecker = new JsonPathMatchChecker();
-            return $jsonPathChecker->match($path, $expected, $actual, $matchingRules, $this->_allowExtraKeys, static::PATH_PREFIX);
-            */
         }
 
-        $jsonResults = $this->jsonDiff($expected, $actual);
+        $jsonResults = $this->jsonDiff($expectedBody, $actualBody);
         $diffs = count($jsonResults['new']) + count($jsonResults['edited']) + count($jsonResults['removed']);
 
         if ($diffs > 0) {
@@ -61,7 +64,7 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
             }
         } else {
             // now check XML order
-            return $this->checkXmlOrder($expected, $actual, $path);
+            return $this->checkXmlOrder($expectedBody, $actualBody, $path);
         }
 
         return new MatcherResult(new SuccessfulMatcherCheck($path));

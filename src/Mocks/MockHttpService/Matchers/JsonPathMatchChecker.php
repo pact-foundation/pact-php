@@ -8,6 +8,7 @@ use PhpPact\Matchers\Checkers\MatcherCheckFailureType;
 use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
 use PhpPact\Matchers\Rules\MatcherRuleTypes;
 use PhpPact\Matchers\Rules\MatchingRule;
+use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
 
 class JsonPathMatchChecker
 {
@@ -27,19 +28,37 @@ class JsonPathMatchChecker
             throw new \Exception(sprintf('JsonPathMatchChecker should not be called if there are no matching rules: %s', $path));
         }
 
+        if (!($expected instanceof IHttpMessage)) {
+            throw new \Exception("Expected is not an instance of IHttpMessage: " . print_r($expected, true));
+        }
+
+        if (!($actual instanceof IHttpMessage)) {
+            throw new \Exception("Actual is not an instance of IHttpMessage: " . print_r($actual, true));
+        }
+
+        $cloneExpected = clone $expected;
+        $cloneActual = clone $actual;
+
+        if ($cloneExpected->getContentType() == "application/json") {
+            if (is_string($cloneExpected->getBody())) {
+                $expectedBody = $cloneExpected->getBody();
+                $expectedBody = \json_decode($expectedBody);
+                $cloneExpected->setBody($expectedBody);
+            }
+            if (is_string($cloneActual->getBody())) {
+                $actualBody = $cloneActual->getBody();
+                $actualBody = \json_decode($actualBody);
+                $cloneActual->setBody($actualBody);
+            }
+        }
+
         $failedReasons = array();
         foreach ($matchingRules as $jsonPath => $matchingRule) {
-            //error_log("$jsonPath");
-            $narrowedJsonPath = $this->removePrefix($jsonPath, $matchingPrefix);
-
             /**
              * @var $matchingRule MatchingRule
              */
-            $expectedResult = (new \Peekmo\JsonPath\JsonStore($expected))->get($narrowedJsonPath, false, true);
-            $actualResult = (new \Peekmo\JsonPath\JsonStore($actual))->get($narrowedJsonPath,false, true);
-
-            //error_log('Expected Peekmo: ' . print_r($expected, true) . print_r($expectedResult, true));
-            //error_log('Actual Peekmo: ' . print_r($actual, true) . print_r($actualResult, true));
+            $expectedResult = (new \Peekmo\JsonPath\JsonStore($cloneExpected))->get($jsonPath, false, true);
+            $actualResult = (new \Peekmo\JsonPath\JsonStore($cloneActual))->get($jsonPath,false, true);
 
             $ruleFailedReasons = $this->processMatchingRules($path, $matchingRule, $expectedResult, $actualResult, $jsonPath, $allowExtraKeys);
             $failedReasons = array_merge($failedReasons, $ruleFailedReasons);
@@ -313,14 +332,5 @@ class JsonPathMatchChecker
         }
 
         return $newAssocArr;
-    }
-
-    private function removePrefix($jsonPath, $toRemove) {
-
-        if (stripos($jsonPath, $toRemove . '[' ) !== false) {
-            return str_ireplace('$.' . $toRemove . '[', '$.[', $jsonPath);
-        }
-
-        return str_ireplace('$.' . $toRemove, '$', $jsonPath);
     }
 }

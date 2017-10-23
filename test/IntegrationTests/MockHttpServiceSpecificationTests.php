@@ -41,10 +41,10 @@ class MockHttpServiceSpecificationTests extends TestCase
 
                     error_log("Starting " . $fullPathFileName);
 
-                    if ($testCaseFileName == 'additional property with type matcher.json' && $testCaseType == 'response') {
+                    if ($testCaseFileName == 'objects in array with type mismatching.json' && $testCaseType == 'response') {
                         error_log("Debug " . $fullPathFileName);
                     }
-                    if ($testCaseFileName == 'array with at least one element matching by example.json' && $testCaseType == 'request') {
+                    if ($testCaseFileName == 'array size less than required.json' && $testCaseType == 'request') {
                         error_log("Debug " . $fullPathFileName);
                     }
 

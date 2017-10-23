@@ -80,7 +80,9 @@ class ConsumerTest extends TestCase
         try {
             $mockService->VerifyInteractions();
         } catch (PactFailureException $e) {
+           error_log(print_r($e->getMessage(), true));
             $hasException = true;
+            throw $e;
         }
         $this->assertFalse($hasException, "This basic get should verify the interactions and not throw an exception");
     }

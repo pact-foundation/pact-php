@@ -5,21 +5,29 @@ namespace PhpPact\Mocks\MockHttpService\Comparers;
 use PhpPact\Comparers;
 use PhpPact\Matchers\Checkers\FailedMatcherCheck;
 use PhpPact\Mocks\MockHttpService\Matchers\JsonPathMatchChecker;
+use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
 
 class HttpHeaderComparer
 {
-
     const PATH_PREFIX = 'headers';
 
     /**
-     * @param $expected array
-     * @param $actual array
-     * @param $matchingRules array[MatchingRules]
+     * @param $expected IHttpMessage
+     * @param $actual IHttpMessage
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function compare($expected, $actual, $matchingRules )
+    public function compare($expected, $actual )
     {
+        if (!($expected instanceof IHttpMessage)) {
+            throw new \Exception("Expected is not an instance of IHttpMessage: " . print_r($expected, true));
+        }
+
+        if (!($actual instanceof IHttpMessage)) {
+            throw new \Exception("Actual is not an instance of IHttpMessage: " . print_r($actual, true));
+        }
+
+        $matchingRules = $expected->getMatchingRules();
         $result = new Comparers\ComparisonResult("includes headers");
 
         if ($actual == null) {
@@ -29,7 +37,7 @@ class HttpHeaderComparer
 
         if ($this->shouldApplyMatchers($matchingRules)) {
             $jsonPathChecker = new JsonPathMatchChecker();
-            $results = $jsonPathChecker->match(__CLASS__, $expected, $actual, $matchingRules, false, static::PATH_PREFIX);
+            $results = $jsonPathChecker->match(__CLASS__, $expected, $actual, $matchingRules, false);
 
             /**
              * @var $results \PhpPact\Matchers\Checkers\MatcherResult
@@ -45,10 +53,10 @@ class HttpHeaderComparer
         }
 
 
-        $expectedArray = $this->objectToArray($expected);
+        $expectedArray = $this->objectToArray($expected->getHeaders());
         $expectedArray = $this->makeArrayLowerCase($expectedArray);
 
-        $actualArray = $this->objectToArray($actual);
+        $actualArray = $this->objectToArray($actual->getHeaders());
         $actualArray = $this->makeArrayLowerCase($actualArray);
 
         foreach ($expectedArray as $header_key => $header_value) {

@@ -18,7 +18,6 @@ class HttpBodyComparer
     public function compare($expected, $actual)
     {
         $bodyMatcherCheckers = $expected->getBodyMatchers();
-        $expectedContentType = $expected->getContentType();
         $matchingRules = $expected->getMatchingRules();
 
         $result = new ComparisonResult("has a body");
@@ -30,31 +29,6 @@ class HttpBodyComparer
 
         if ($expected->getBody() == null) {
             return $result;
-        }
-
-        // looking for an exact match at the object level
-        if ($expectedContentType=="application/json") {
-            if (is_string($expected)) {
-                $expected = $this->jsonDecode($expected);
-            } else if (method_exists($expected, "getBody")) {
-                if (is_string($expected->getBody())) {
-                    $expected = $this->jsonDecode($expected->getBody());
-                }
-                else {
-                    $expected = $expected->getBody();
-                }
-            }
-
-            if (is_string($actual)) {
-                $actual = $this->jsonDecode($actual);
-            } else if (method_exists($actual, "getBody")) {
-                if (is_string($actual->getBody())) {
-                    $actual = $this->jsonDecode($actual->getBody());
-                }
-                else {
-                    $actual = $actual->getBody();
-                }
-            }
         }
 
         // cycle through matching rules
