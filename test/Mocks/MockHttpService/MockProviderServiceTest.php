@@ -17,7 +17,7 @@ class MockProviderServiceTest extends TestCase
 
         $hasException = false;
         try {
-            $mockProviderService->With($request);
+            $mockProviderService->with($request);
         } catch (Exception $e) {
             $hasException = true;
         }
@@ -28,7 +28,7 @@ class MockProviderServiceTest extends TestCase
 
         $hasException = false;
         try {
-            $mockProviderService->With($request);
+            $mockProviderService->with($request);
         } catch (\InvalidArgumentException $e) {
             $hasException = true;
         }
@@ -38,7 +38,7 @@ class MockProviderServiceTest extends TestCase
         $request = false;
         $hasException = false;
         try {
-            $mockProviderService->With($request);
+            $mockProviderService->with($request);
         } catch (\InvalidArgumentException $e) {
             $hasException = true;
         }

@@ -10,29 +10,31 @@ The namespace is PhpPact as [Pact-PHP](https://github.com/andykelk/pact-php) use
 
 
 ## Composer
-Run `composer require mattersight/phppact`
-
-### Pact-PHP 2.0
-Coming Soon ...
-
-
-### Pact-PHP 1.1
-For Pact-PHP 1.1, there is a need to run dev-master on TreeWalker dependency, you will need to use the following composer.json
-```json
-{
-	"prefer-stable": true,
-	"minimum-stability": "dev",
-	"require":
-	{
-		"mattersight/phppact": "dev-master"
-	}
-}
-```
-
 If you want to run this on Windows, because of dependencies in PHP Unit and prettier output, certain libraries had to be included.
 Thus, there are two ways to run composer update on Windows
  1. `composer update --ignore-platform-reqs`
  2. `composer update --no-dev`
+
+### Pact-PHP 2.0
+
+For Pact-PHP 2.0, there is a need to run min-stability dev and pull from a feature addition to [Peekmo/jsonpath](https://github.com/Peekmo/JsonPath), you will need to use the following composer.json
+```json
+{
+	"prefer-stable": true,
+	"minimum-stability": "dev",
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/mattermack/JsonPath"
+      }
+    ],
+	"require":
+	{
+		"mattersight/phppact": "^2.0"
+	}
+}
+```
+
  
 
 ## Pull Requests
@@ -177,10 +179,10 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
-        $mockService->Given("Basic Get Request")
-            ->UponReceiving("A GET request with a base / path and a content type of json")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("Basic Get Request")
+            ->uponReceiving("A GET request with a base / path and a content type of json")
+            ->with($request)
+            ->willRespondWith($response);
 
         // build system under test
         $host = $mockService->getHost();
@@ -195,7 +197,7 @@ class ConsumerTest extends TestCase
         // verify the interactions
         $hasException = false;
         try {
-            $results = $mockService->VerifyInteractions();
+            $results = $mockService->verifyInteractions();
 
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;

@@ -60,17 +60,17 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
-        $mockService->Given("Basic Get Request")
-            ->UponReceiving("A GET request with a base / path and a content type of json")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("Basic Get Request")
+            ->uponReceiving("A GET request with a base / path and a content type of json")
+            ->with($request)
+            ->willRespondWith($response);
 
         // build system under test
         $host = $mockService->getHost();
 
         $clientUnderTest = new MockApiConsumer();
         $clientUnderTest->setMockHost($host);
-        $receivedResponse = $clientUnderTest->GetBasic("http://localhost");
+        $receivedResponse = $clientUnderTest->getBasic("http://localhost");
 
         // do some asserts on the return
         $this->assertEquals('200', $receivedResponse->getStatusCode(), "Let's make sure we have an OK response");
@@ -78,7 +78,7 @@ class ConsumerTest extends TestCase
         // verify the interactions
         $hasException = false;
         try {
-            $mockService->VerifyInteractions();
+            $mockService->verifyInteractions();
         } catch (PactFailureException $e) {
            $hasException = true;
         }
@@ -96,10 +96,10 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
-        $mockService->Given("There are ids and names - expect three types by default")
-            ->UponReceiving("A GET request to get types")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("There are ids and names - expect three types by default")
+            ->uponReceiving("A GET request to get types")
+            ->with($request)
+            ->willRespondWith($response);
 
         // build system under test
         $host = $mockService->getHost();
@@ -108,7 +108,7 @@ class ConsumerTest extends TestCase
         try {
             $clientUnderTest = new MockApiConsumer();
             $clientUnderTest->setMockHost($host);
-            $clientUnderTest->GetWithPath("http://localhost");
+            $clientUnderTest->getWithPath("http://localhost");
         } catch (PactFailureException $e) {
             $hasException = true;
         }
@@ -128,10 +128,10 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
-        $mockService->Given("There are ids and names - expect three types by default")
-            ->UponReceiving("A GET request to get types")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("There are ids and names - expect three types by default")
+            ->uponReceiving("A GET request to get types")
+            ->with($request)
+            ->willRespondWith($response);
 
         // build system under test
         $host = $mockService->getHost();
@@ -140,7 +140,7 @@ class ConsumerTest extends TestCase
         try {
             $clientUnderTest = new MockApiConsumer();
             $clientUnderTest->setMockHost($host);
-            $clientUnderTest->GetWithQuery("http://localhost");
+            $clientUnderTest->getWithQuery("http://localhost");
         } catch (PactFailureException $e) {
             $hasException = true;
         }
@@ -161,10 +161,10 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
-        $mockService->Given("There are ids and names - expect three types by default")
-            ->UponReceiving("A GET request to get types")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("There are ids and names - expect three types by default")
+            ->uponReceiving("A GET request to get types")
+            ->with($request)
+            ->willRespondWith($response);
 
         // build system under test
         $host = $mockService->getHost();
@@ -173,7 +173,7 @@ class ConsumerTest extends TestCase
         try {
             $clientUnderTest = new MockApiConsumer();
             $clientUnderTest->setMockHost($host);
-            $clientUnderTest->GetWithBody("http://localhost");
+            $clientUnderTest->getWithBody("http://localhost");
         } catch (PactFailureException $e) {
             $hasException = true;
         }
@@ -199,22 +199,22 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
-        $mockService->Given("There is an XML alligator named Mary")
-            ->UponReceiving("A GET request with an XML header")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("There is an XML alligator named Mary")
+            ->uponReceiving("A GET request with an XML header")
+            ->with($request)
+            ->willRespondWith($response);
 
         // build system under test
         $host = $mockService->getHost();
 
         $clientUnderTest = new MockApiConsumer();
         $clientUnderTest->setMockHost($host);
-        $clientUnderTest->GetWithResponseBodyXml("http://localhost");
+        $clientUnderTest->getWithResponseBodyXml("http://localhost");
 
         // verify the interactions
         $hasException = false;
         try {
-            $mockService->VerifyInteractions();
+            $mockService->verifyInteractions();
         } catch (PactFailureException $e) {
             $hasException = true;
         }
@@ -235,10 +235,10 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
-        $mockService->Given("GET with body")
-            ->UponReceiving("A GET request with a body")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("GET with body")
+            ->uponReceiving("A GET request with a body")
+            ->with($request)
+            ->willRespondWith($response);
 
         // build the second request
         $reqHeaders2 = array();
@@ -249,10 +249,10 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
-        $mockService->Given("GET with Path")
-            ->UponReceiving("A GET request with a non-trivial path")
-            ->With($request2)
-            ->WillRespondWith($response2);
+        $mockService->given("GET with Path")
+            ->uponReceiving("A GET request with a non-trivial path")
+            ->with($request2)
+            ->willRespondWith($response2);
 
 
         // build system under test
@@ -263,8 +263,8 @@ class ConsumerTest extends TestCase
             $clientUnderTest = new MockApiConsumer();
             $clientUnderTest->setMockHost($host);
 
-            $clientUnderTest->GetWithBody("http://localhost");
-            $clientUnderTest->GetWithPath("http://localhost");
+            $clientUnderTest->getWithBody("http://localhost");
+            $clientUnderTest->getWithPath("http://localhost");
         } catch (PactFailureException $e) {
             $hasException = true;
         }
@@ -295,10 +295,10 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $localBuild->getMockService();
-        $mockService->Given("GET with Path")
-            ->UponReceiving("A GET request with a non-trivial path")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("GET with Path")
+            ->uponReceiving("A GET request with a non-trivial path")
+            ->with($request)
+            ->willRespondWith($response);
 
         // build system under test
         $host = $mockService->getHost();
@@ -308,7 +308,7 @@ class ConsumerTest extends TestCase
         try {
             $clientUnderTest = new MockApiConsumer();
             $clientUnderTest->setMockHost($host);
-            $clientUnderTest->GetWithPath("http://google.com");
+            $clientUnderTest->getWithPath("http://google.com");
         } catch (PactFailureException $e) {
             $hasException = true;
         }
@@ -331,10 +331,10 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
-        $mockService->Given("There is something to post to")
-            ->UponReceiving("A POST request to save types")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("There is something to post to")
+            ->uponReceiving("A POST request to save types")
+            ->with($request)
+            ->willRespondWith($response);
 
         // build system under test
         $host = $mockService->getHost();
@@ -376,17 +376,17 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
-        $mockService->Given("Basic Get Request")
-            ->UponReceiving("A GET request with a base / path and a content type of json")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("Basic Get Request")
+            ->uponReceiving("A GET request with a base / path and a content type of json")
+            ->with($request)
+            ->willRespondWith($response);
 
         // build system under test
         $host = $mockService->getHost();
 
         $clientUnderTest = new MockApiConsumer();
         $clientUnderTest->setMockHost($host);
-        $receivedResponse = $clientUnderTest->GetBasic("http://localhost");
+        $receivedResponse = $clientUnderTest->getBasic("http://localhost");
 
         // do some asserts on the return
         $this->assertEquals('200', $receivedResponse->getStatusCode(), "Let's make sure we have an OK response");
@@ -394,7 +394,7 @@ class ConsumerTest extends TestCase
         // verify the interactions
         $hasException = false;
         try {
-            $mockService->VerifyInteractions();
+            $mockService->verifyInteractions();
         } catch (PactFailureException $e) {
             $hasException = true;
         }

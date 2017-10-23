@@ -131,7 +131,7 @@ class MockProviderService implements IMockProviderService
      * @param string $providerState
      * @return $this
      */
-    public function Given($providerState)
+    public function given($providerState)
     {
         if (!$providerState) {
             throw new \InvalidArgumentException("Please supply a non null or empty providerState");
@@ -146,7 +146,7 @@ class MockProviderService implements IMockProviderService
      * @param string $description
      * @return $this
      */
-    public function UponReceiving($description)
+    public function uponReceiving($description)
     {
         if (!$description) {
             throw new \InvalidArgumentException("Please supply a non null or empty description");
@@ -161,7 +161,7 @@ class MockProviderService implements IMockProviderService
      * @param ProviderServiceRequest $request
      * @return $this
      */
-    public function With($request)
+    public function with($request)
     {
         if ($request == null || !($request instanceof ProviderServiceRequest)) {
             throw new \InvalidArgumentException("Please supply a non null request");
@@ -189,7 +189,7 @@ class MockProviderService implements IMockProviderService
      * @param ProviderServiceResponse $response
      * @return $this
      */
-    public function WillRespondWith($response)
+    public function willRespondWith($response)
     {
         if ($response == null || !($response instanceof ProviderServiceResponse)) {
             throw new \InvalidArgumentException("Please supply a non null response");
@@ -209,7 +209,7 @@ class MockProviderService implements IMockProviderService
     }
 
 
-    public function VerifyInteractions()
+    public function verifyInteractions()
     {
         $requestMapper = new ProviderServiceRequestMapper();
 
@@ -256,7 +256,7 @@ class MockProviderService implements IMockProviderService
     /**
      * Encapsulate the initialization of the mock service
      */
-    public function Start()
+    public function start()
     {
         $this->_host = new MockProviderHost();
     }
@@ -264,7 +264,7 @@ class MockProviderService implements IMockProviderService
     /**
      * Clear previous hosts and reset states
      */
-    public function Stop()
+    public function stop()
     {
         $this->clearAllState();
         $this->_host = null;
@@ -273,7 +273,7 @@ class MockProviderService implements IMockProviderService
     /**
      * Clear the interactions
      */
-    public function ClearInteractions()
+    public function clearInteractions()
     {
         $this->_pactFile->setInteractions(array());
     }
@@ -284,7 +284,7 @@ class MockProviderService implements IMockProviderService
      * @return ProviderServiceResponse
      * @throws \PhpPact\PactFailureException
      */
-    public function SendMockRequest(ProviderServiceRequest $providerServiceRequest, $baseUri)
+    public function sendMockRequest(ProviderServiceRequest $providerServiceRequest, $baseUri)
     {
         if ($this->_host == null) {
             throw new \RuntimeException("Unable to perform operation because the mock provider service is not running.");
@@ -337,7 +337,7 @@ class MockProviderService implements IMockProviderService
         $interaction->setRequest($this->_request);
         $interaction->setResponse($this->_response);
 
-        $this->AddMockToServer($interaction);
+        $this->addMockToServer($interaction);
 
         // do we actually want to set the iteractions to the pact.  I think we want to do this after we verify or build.
         $this->addInteractionToPact($interaction);
@@ -346,7 +346,7 @@ class MockProviderService implements IMockProviderService
     /**
      * @param ProviderServiceInteraction $interaction
      */
-    public function AddMockToServer(ProviderServiceInteraction $interaction)
+    public function addMockToServer(ProviderServiceInteraction $interaction)
     {
         if ($this->_host == null) {
             throw new \RuntimeException("Host has not been set.");
@@ -398,7 +398,7 @@ class MockProviderService implements IMockProviderService
     private function clearAllState()
     {
         $this->clearTransientState();
-        $this->ClearInteractions();
+        $this->clearInteractions();
     }
 
     /**
