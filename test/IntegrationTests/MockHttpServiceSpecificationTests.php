@@ -12,7 +12,7 @@ class MockHttpServiceSpecificationTests extends TestCase
      */
     public function TestRequestSpecification()
     {
-        $this->RunPactSpecificationTests(__DIR__ . '/testcases-v2_0/request', 'request');
+        $this->RunPactSpecificationTests(__DIR__ . '/testcases/request', 'request');
     }
 
 
@@ -21,7 +21,7 @@ class MockHttpServiceSpecificationTests extends TestCase
      */
     public function TestResponseSpecification()
     {
-        $this->RunPactSpecificationTests(__DIR__ . '/testcases-v2_0/response', 'response');
+        $this->RunPactSpecificationTests(__DIR__ . '/testcases/response', 'response');
     }
 
     private function RunPactSpecificationTests($pathToTestCases, $testCaseType)
@@ -38,19 +38,7 @@ class MockHttpServiceSpecificationTests extends TestCase
                     $fullPathFileName = $pathToTestCases . DIRECTORY_SEPARATOR . $testCaseSubDirectory . DIRECTORY_SEPARATOR . $testCaseFileName;
                     $testCaseJson = file_get_contents($fullPathFileName);
 
-
-                    error_log("Starting " . $fullPathFileName);
-
-                    if ($testCaseFileName == 'objects in array with type mismatching.json' && $testCaseType == 'response') {
-                        error_log("Debug " . $fullPathFileName);
-                    }
-                    if ($testCaseFileName == 'array size less than required.json' && $testCaseType == 'request') {
-                        error_log("Debug " . $fullPathFileName);
-                    }
-
-
                     $hasException = false;
-
                     try {
                         switch ($testCaseType) {
                             case 'request':

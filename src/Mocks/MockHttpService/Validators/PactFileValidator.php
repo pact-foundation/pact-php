@@ -20,7 +20,7 @@ class PactFileValidator
         $data = json_decode(json_encode($pactFile));
 
         $validator = new \JsonSchema\Validator;
-        $validator->validate($data, (object)['$ref' => 'file://' . $this->HuntForSchema()]);
+        $validator->validate($data, (object)['$ref' => 'file://' . $this->huntForSchema($pactFile)]);
 
         if (!$validator->isValid()) {
             $msg = "JSON does not validate. Violations:\n";
@@ -34,12 +34,18 @@ class PactFileValidator
         return true;
     }
 
-    private function HuntForSchema()
+    private function huntForSchema(\PhpPact\Models\PactFile $pactFile)
     {
+
         $fileName = 'pact-file-schema.json';
         $currentDir = dirname(__FILE__);
-        $relativeDir = $currentDir . '/../../../Models/' . $fileName;
+        $relativeDir = $currentDir . '/../../../Schema/' . $pactFile->getPactSpecificationVersion() . '/'. $fileName;
         $realPath = realpath($relativeDir);
+
+        if (!file_exists($realPath)) {
+            throw new \Exception(sprintf("Schema for Pact File cannot be found: %s" , $relativeDir));
+        }
+
         return $realPath;
     }
 }

@@ -21,12 +21,12 @@ class PactBuilderTest extends TestCase
         }
     }
 
-    public function testBuild()
+    public function testBuildV2()
     {
         // build pact file
         $pactFile = new \PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile();
-        $pactFile->setProvider(new \PhpPact\Models\Pacticipant("testBuildProvider"));
-        $pactFile->setConsumer(new \PhpPact\Models\Pacticipant("testBuildConsumer"));
+        $pactFile->setProvider(new \PhpPact\Models\Pacticipant("testBuildProviderV2"));
+        $pactFile->setConsumer(new \PhpPact\Models\Pacticipant("testBuildConsumerV2"));
 
         $json = '{"description":"A GET request","providerState":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction1 = \json_decode($json);
@@ -43,7 +43,43 @@ class PactBuilderTest extends TestCase
         $expectedInteractions[] = $interaction3;
 
         $pactFile->setInteractions($expectedInteractions);
+        // should be v2 by default
+        //$pactFile->setPactSpecificationVersion(\PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile::SPECIFICATION_VERSION_2);
 
+        $this->runBuild($pactFile);
+    }
+
+
+    /**
+     * Test that a specification for v1.1 can be built
+     *
+     * @test
+     */
+    public function testBuildV1dot1()
+    {
+        // build pact file
+        $pactFile = new \PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile();
+        $pactFile->setProvider(new \PhpPact\Models\Pacticipant("testBuildProviderV1dot1"));
+        $pactFile->setConsumer(new \PhpPact\Models\Pacticipant("testBuildConsumerV1dot1"));
+
+        $json = '{"description":"A GET request","providerState":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $interaction1 = \json_decode($json);
+
+        $json = '{"description":"Another GET request","providerState":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $interaction2 = \json_decode($json);
+
+        $expectedInteractions = array();
+        $expectedInteractions[] = $interaction1;
+        $expectedInteractions[] = $interaction2;
+
+        $pactFile->setInteractions($expectedInteractions);
+        $pactFile->setPactSpecificationVersion(\PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile::SPECIFICATION_VERSION_1);
+
+        $this->runBuild($pactFile);
+    }
+
+
+    private function runBuild(\PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile $pactFile) {
         // build config with new location
         $config = new \PhpPact\PactConfig();
         $config->setPactDir(self::TEMP_PACT_DIR);
@@ -62,10 +98,10 @@ class PactBuilderTest extends TestCase
             $expectedFile = self::TEMP_PACT_DIR . '/' . $pactFile->getFileName();
             $this->assertTrue(file_exists($expectedFile), sprintf("We expect pact file to be written: %s", $pactFile->getFileName()));
         } catch (\PhpPact\PactFailureException $e) {
-            //error_log($e->getMessage());
             $hasException = true;
         }
         $this->assertFalse($hasException, "This basic get should verify the interactions and not throw an exception");
-        // assert no exception
+
     }
+
 }
