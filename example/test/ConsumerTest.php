@@ -350,21 +350,20 @@ class ConsumerTest extends TestCase
         $this->assertFalse($hasException, "This POST with a body should verify the interactions and not throw an exception");
     }
 
+
+
     /**
      * @test
      *
      * Run similar test to GetBasic but using Matchers
      */
-    public function testGetMatch()
+    public function testGetWithMatcher()
     {
         // build the request
         $reqHeaders = array();
         $reqHeaders["Content-Type"] = "application/json";
         $request = new ProviderServiceRequest(HttpVerb::GET, "/", $reqHeaders);
 
-        $reqMatchers = array();
-        $reqMatchers['$.body.msg'] = new MatchingRule('$.body.msg', array(MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::OBJECT_TYPE));
-        $request->setMatchingRules($reqMatchers);
 
         // build the response
         $resHeaders = array();
@@ -372,7 +371,17 @@ class ConsumerTest extends TestCase
         $resHeaders["AnotherHeader"] = "my-header";
 
         $response = new ProviderServiceResponse('200', $resHeaders);
-        $response->setBody("{\"msg\" : \"I am the walrus\"}");
+        $response->setBody("{\"msg\" : \"I am almost a walrus\"}");
+
+        $resMatchers = array();
+        $resMatchers['$.body.msg'] = new MatchingRule('$.body.msg', array(
+            MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::REGEX_TYPE,
+            MatcherRuleTypes::REGEX_PATTERN => 'walrus')
+        );
+        $resMatchers['$.body.*'] = new MatchingRule('$.body.*', array(
+            MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::OBJECT_TYPE)
+        );
+        $response->setMatchingRules($resMatchers);
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
@@ -389,6 +398,7 @@ class ConsumerTest extends TestCase
         $receivedResponse = $clientUnderTest->getBasic("http://localhost");
 
         // do some asserts on the return
+        // this is pointless in this case
         $this->assertEquals('200', $receivedResponse->getStatusCode(), "Let's make sure we have an OK response");
 
         // verify the interactions
@@ -398,6 +408,6 @@ class ConsumerTest extends TestCase
         } catch (PactFailureException $e) {
             $hasException = true;
         }
-        $this->assertFalse($hasException, "This basic get should verify the interactions and not throw an exception");
+        $this->assertFalse($hasException, "This basic get should verify the interactions by response regex and not throw an exception");
     }
 }

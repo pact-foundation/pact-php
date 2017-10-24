@@ -82,7 +82,7 @@ class MockApiConsumer
      * @param $uri string
      * @return mixed
      */
-    public function GetBasic($url)
+    public function getBasic($url)
     {
         $uri = (new \Windwalker\Uri\PsrUri($url))
             ->withPath("/");
@@ -189,7 +189,7 @@ class ConsumerTest extends TestCase
 
         $clientUnderTest = new MockApiConsumer();
         $clientUnderTest->setMockHost($host);
-        $receivedResponse = $clientUnderTest->GetBasic("http://localhost");
+        $receivedResponse = $clientUnderTest->getBasic("http://localhost");
 
         // do some asserts on the return
         $this->assertEquals('200', $receivedResponse->getStatusCode(), "Let's make sure we have an OK response");
@@ -261,7 +261,11 @@ class ProviderTest extends TestCase
 {
     public function testPactProviderStateSetupTearDown() 
     {
+        
         $httpClient = new \Windwalker\Http\HttpClient();
+        
+        // whatever your URL of choice is
+        $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
 
         $pactVerifier = new \PhpPact\PactVerifier($uri);
 
@@ -293,7 +297,18 @@ class ProviderTest extends TestCase
             unlink($absolutePath);
         };
 
-        $pactVerifier->providerState("A GET request for a setup", $setUpFunction, $tearDownFunction);
+        // wherever your PACT file is
+        // you may want to leverage PactBrokerConnector to pull this
+        $json = 'mockapiconsumer-mockapiprovider.json';
+
+        $pactVerifier->providerState("A GET request for a setup", $setUpFunction, $tearDownFunction)
+            ->serviceProvider("MockApiProvider", $httpClient)
+            ->honoursPactWith("MockApiConsumer")
+            ->pactUri($json)
+            ->verify(); // note that this should test all as we can run setup and tear down
+            
+        
+        
     }         
 }
 ```
@@ -316,6 +331,44 @@ $pactVerifier->providerState("Test State")
     ->pactUri($json)
     ->verify(null, $testState);
   
+```
+
+### Matchers
+This is a PHP specific implementation of Matchers.  This was derived from the [JVM Matching Instructions.](https://github.com/DiUS/pact-jvm/wiki/Matching)   
+While almost all [Pact Specifications under v2](https://github.com/pact-foundation/pact-specification/tree/version-2), are implemented, there are a few outliners:
+1. XML JSONPath cases have not yet been implemented
+2. Only JSON body and header matchers have been implemented to date
+
+I figure this is the most common use cases and most difficult to knock out.   While all tests are passing, I do not believe the 
+spirit of some of the cases are honored.   Refactoring will certainly need to be done in some cases.
+
+All matchers need to be defined by a JSONPath and attached to either the Request or Response object.  There are all kinds of gotchas,
+which have been documented on [Matching Gotchas](https://github.com/realestate-com-au/pact/wiki/Matching-gotchas)
+
+For PHP gotchas, the Pact-PHP added the first and last backslash ( / ).   For example, if you wanted to have a regex for just words instead of 
+`/\w+/`, you would just put in `\w+`.  
+
+Responser body matchers need to follow Postel's law.   Below there are two matchers:
+1. Confirm that all responses have the same type
+2. Confirm `walrus` is in the response body
+```php
+<?php 
+$resHeaders = array();
+$resHeaders["Content-Type"] = "application/json";
+$resHeaders["AnotherHeader"] = "my-header";
+
+$response = new ProviderServiceResponse('200', $resHeaders);
+$response->setBody("{\"msg\" : \"I am almost a walrus\"}");
+
+$resMatchers = array();
+$resMatchers['$.body.msg'] = new MatchingRule('$.body.msg', array(
+    MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::REGEX_TYPE,
+    MatcherRuleTypes::REGEX_PATTERN => 'walrus')
+);
+$resMatchers['$.body.*'] = new MatchingRule('$.body.*', array(
+    MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::OBJECT_TYPE)
+);
+$response->setMatchingRules($resMatchers);
 ```
 
 ## Pact Broker Integration
