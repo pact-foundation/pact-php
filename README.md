@@ -22,12 +22,12 @@ For Pact-PHP 2.0, there is a need to run min-stability dev and pull from a featu
 {
 	"prefer-stable": true,
 	"minimum-stability": "dev",
-    "repositories": [
-      {
-        "type": "vcs",
-        "url": "https://github.com/mattermack/JsonPath"
-      }
-    ],
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/mattermack/JsonPath"
+		}
+	],
 	"require":
 	{
 		"mattersight/phppact": "^2.0"
