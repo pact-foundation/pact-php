@@ -172,6 +172,57 @@
 				},
 				"body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><alligator name=\"Mary\" feet=\"4\"><favoriteColor>blue</favoriteColor></alligator>"
 			}
+		},
+		{
+			"description": "A GET request with a base / path and a content type of json",
+			"providerState": "A GET request to get variable types with matches",
+			"request": {
+				"method": "GET",
+				"path": "/provider.php",
+				"query": "?amount=6",
+				"headers": {
+					"Content-Type": "application/json"
+				}
+			},
+			"response": {
+				"status": 200,
+				"headers": {
+					"Content-Type": "application/json"
+				},
+				"body":
+				{
+					"types": [
+						{
+							"id": 100,
+							"name": "Type 100"
+						},
+						{
+							"id": 101,
+							"name": "Type 101"
+						},
+						{
+							"id": 102,
+							"name": "Type 102"
+						},
+						{
+							"id": 103,
+							"name": "Type 103"
+						}
+					]
+				},
+				"matchingRules": {
+					"$.body.types[*].name": {
+						"match": "regex",
+						"regex": "Type"
+					},
+					"$.body.types[*].id": {
+						"match": "type"
+					},
+					"$.body.types[*]": {
+						"min": 3
+					}
+				}
+			}
 		}
 	],
 	"metadata":

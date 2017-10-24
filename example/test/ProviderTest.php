@@ -1,7 +1,5 @@
 <?php
 
-
-
 use PHPUnit\Framework\TestCase;
 
 final class ProviderTest extends TestCase
@@ -88,6 +86,30 @@ final class ProviderTest extends TestCase
                 ->honoursPactWith("MockApiConsumer")
                 ->pactUri($json)
                 ->verify(); // note that this should test all as we can run setup and tear down
+        } catch (\PhpPact\PactFailureException $e) {
+            $hasException = true;
+        }
+        $this->assertFalse($hasException, "Expect Pact to validate.");
+    }
+
+    public function testPactProviderWithMatchers()
+    {
+        $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
+
+        $httpClient = new \Windwalker\Http\HttpClient();
+
+        $pactVerifier = new \PhpPact\PactVerifier($uri);
+        $hasException = false;
+        try {
+            $json = $this->getPactRoot() . DIRECTORY_SEPARATOR . 'mockapiconsumer-mockapiprovider.json';
+
+            $pactVerifier->providerState("Test State")
+                ->serviceProvider("MockApiProvider", $httpClient)
+                ->honoursPactWith("MockApiConsumer")
+                ->pactUri($json);
+
+            $pactVerifier->verify(null, "A GET request to get variable types with matches");
+
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
         }

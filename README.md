@@ -39,7 +39,7 @@ For Pact-PHP 2.0, there is a need to run min-stability dev and pull from a featu
 
 ## Pull Requests
 This project is actively taking pull requests and appreciate the contribution.   The code needs to pass the CI validation 
-which can be found at [AppVeyor]https://ci.appveyor.com/project/mattermack/pact-php)
+which can be found at [AppVeyor](https://ci.appveyor.com/project/mattermack/pact-php)
 
 All code needs to pass a PSR-2 lint check, which is wrapped into a Powerscript to download php-cs-fixer-v2.phar and run 
 the lint checker against the same command as the CI tool.
