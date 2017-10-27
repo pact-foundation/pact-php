@@ -42,7 +42,7 @@ class PactBrokerConnector
      * @param $file - file location of pact
      * @param $version - version of pact
      */
-    public function PublishFile($file, $version)
+    public function publishFile($file, $version)
     {
         $json = file_get_contents($file);
 
@@ -50,7 +50,7 @@ class PactBrokerConnector
             throw new \RuntimeException("Pact file cannot be found: {$file}");
         }
 
-        return $this->PublishJson($json, $version);
+        return $this->publishJson($json, $version);
     }
 
 
@@ -59,12 +59,12 @@ class PactBrokerConnector
      * @param string $json
      * @param $version
      */
-    public function PublishJson($json, $version)
+    public function publishJson($json, $version)
     {
         $jsonDecoded = \json_decode($json);
         $mapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServicePactMapper();
-        $pact = $mapper->Convert($jsonDecoded);
-        return $this->Publish($pact, $version);
+        $pact = $mapper->convert($jsonDecoded);
+        return $this->publish($pact, $version);
     }
 
 
@@ -74,7 +74,7 @@ class PactBrokerConnector
      *
      * @return bool return true if response was 200
      */
-    public function Publish(\PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile $pact, $version)
+    public function publish(\PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile $pact, $version)
     {
         if (!isset($this->_uriOptions)) {
             throw new \RuntimeException("Options is not set and needs to be \PhpPact\PactUriOptions.");
@@ -124,7 +124,7 @@ class PactBrokerConnector
      * @param $providerName
      * @return array
      */
-    public function RetrieveLatestProviderPacts($providerName)
+    public function retrieveLatestProviderPacts($providerName)
     {
         $url = $this->_uriOptions->getBaseUri();
         $path = '/pacts/provider/' . urlencode($providerName) . '/latest';
@@ -153,9 +153,9 @@ class PactBrokerConnector
         if (isset($obj->_links) && count($obj->_links->pacts) > 0) {
             foreach ($obj->_links->pacts as $pactLink) {
                 $consumerName = $pactLink->name;
-                $version = $this->ExtractVersionFromUrl($pactLink->href);
+                $version = $this->extractVersionFromUrl($pactLink->href);
 
-                $pact = $this->RetrievePact($providerName, $consumerName, $version);
+                $pact = $this->retrievePact($providerName, $consumerName, $version);
                 $pacts[] = $pact;
             }
         }
@@ -173,7 +173,7 @@ class PactBrokerConnector
      * @param string $version
      * @return Mocks\MockHttpService\Models\ProviderServicePactFile
      */
-    public function RetrievePact($providerName, $consumerName, $version = "latest")
+    public function retrievePact($providerName, $consumerName, $version = "latest")
     {
         $url = $this->_uriOptions->getBaseUri();
         $path = '/pacts/provider/' . urlencode($providerName) . '/consumer/' . urlencode($consumerName);
@@ -203,7 +203,7 @@ class PactBrokerConnector
 
         // map to pact object
         $mapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServicePactMapper();
-        $pact = $mapper->Convert($body);
+        $pact = $mapper->convert($body);
 
         return $pact;
     }
@@ -214,7 +214,7 @@ class PactBrokerConnector
      * @param $url
      * @return mixed
      */
-    private function ExtractVersionFromUrl($url)
+    private function extractVersionFromUrl($url)
     {
         $arr = explode('/', $url);
         $index = count($arr) - 1;

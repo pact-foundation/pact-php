@@ -385,7 +385,7 @@ class MockProviderService implements IMockProviderService
 
         // work through a conversion to $mapper
         $mapper = new HttpResponseMessageMapper();
-        $httpResponse = $mapper->Convert($interaction->getResponse());
+        $httpResponse = $mapper->convert($interaction->getResponse());
         $server = $server->return($i = $httpResponse);
         $server = $server->end();
 

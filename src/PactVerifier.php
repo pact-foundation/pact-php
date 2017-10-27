@@ -147,7 +147,7 @@ class PactVerifier implements IPactVerifier
         $jsonDecoded = \json_decode($pactFileJson);
         $mapper = new Mocks\MockHttpService\Mappers\ProviderServicePactMapper();
 
-        $pactFile = $mapper->Convert($jsonDecoded);
+        $pactFile = $mapper->convert($jsonDecoded);
 
         //Filter interactions
         if ($description != null) {

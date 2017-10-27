@@ -377,9 +377,9 @@ To integrate with your pact broker host, there are several options. This section
 ### Publishing Pacts
 There are several hopefully self explanatory functions in ```PactBrokerConnector```:
 
-- PublishFile - reads the JSON from a file
-- PublishJson - publishes from a JSON string
-- PublishPact - publishes from a ```ProviderServicePactFile``` object
+- publishFile - reads the JSON from a file
+- publishJson - publishes from a JSON string
+- publish - publishes from a ```ProviderServicePactFile``` object
 
 ```php
 <?php
@@ -390,7 +390,7 @@ $connector = new \PhpPact\PactBrokerConnector($uriOptions);
 
 // Use the appropriate function to read from a file, JSON string, or ProviderServicePactFile object
 $file = __DIR__ . '/../example/pact/mockapiconsumer-mockapiprovider.json';
-$statusCode = $connector->PublishFile($file, '1.0.3');
+$statusCode = $connector->publishFile($file, '1.0.3');
 
 ```
 
@@ -399,8 +399,8 @@ If you have an open pact broker, ```$pactVerifier->PactUri``` uses ```file_get_c
 
 To do some more robust interactions, There are several hopefully self explanatory functions in ```PactBrokerConnector```:
 
-- RetrieveLatestProviderPacts - retrieve all the latest pacts associated with this provider
-- RetrievePact - retrieve particular pact
+- retrieveLatestProviderPacts - retrieve all the latest pacts associated with this provider
+- retrievePact - retrieve particular pact
 
 ```php
 <?php
@@ -410,11 +410,11 @@ $uriOptions = new \PhpPact\PactUriOptions("http://your-pact-broker" );
 $connector = new \PhpPact\PactBrokerConnector($uriOptions);
 
 // particular version
-$pact = $connector->RetrievePact("MockApiProvider", "MockApiConsumer", "1.0.2");
+$pact = $connector->retrievePact("MockApiProvider", "MockApiConsumer", "1.0.2");
 error_log(\json_encode($pact,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
 // get all pacts for this provider
-$pacts = $connector->RetrieveLatestProviderPacts("MockApiProvider");
+$pacts = $connector->retrieveLatestProviderPacts("MockApiProvider");
 $pact = array_pop($pacts);
 error_log(\json_encode($pact,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 

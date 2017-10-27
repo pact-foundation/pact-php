@@ -53,7 +53,7 @@ class MockProviderHost implements \Jfalque\HttpMock\ServerInterface
     {
         $this->_host = new \Jfalque\HttpMock\Server();
 
-        $this->ClearRequestResponse();
+        $this->clearRequestResponse();
     }
 
     public function __call($name, $arguments)
@@ -92,7 +92,7 @@ class MockProviderHost implements \Jfalque\HttpMock\ServerInterface
         }
 
 
-        throw new \RuntimeException("No mock responses for were found for this request: " . $this->PrintRequest($request));
+        throw new \RuntimeException("No mock responses for were found for this request: " . $this->printRequest($request));
     }
 
     /**
@@ -134,12 +134,12 @@ class MockProviderHost implements \Jfalque\HttpMock\ServerInterface
 
 
 
-    public function ClearRequestResponse()
+    public function clearRequestResponse()
     {
         $this->_requestAndResponsePairs = array();
     }
 
-    private function PrintRequest(\Psr\Http\Message\RequestInterface $request)
+    private function printRequest(\Psr\Http\Message\RequestInterface $request)
     {
         $msg = "\nA " . $request->getMethod() . " request with URL: " . $request->getUri()->getHost() . "\n";
         $msg .= "\thas path: " . $request->getUri()->getPath() . "\n";
