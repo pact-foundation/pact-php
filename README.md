@@ -10,14 +10,6 @@ The namespace is PhpPact as [Pact-PHP](https://github.com/andykelk/pact-php) use
 
 
 ## Composer
-On Linux, run `composer require mattersight/phppact`
-
-If you want to run this on Windows, because of dependencies in PHP Unit and prettier output, certain libraries had to be included. Thus, there are two ways to run composer update on Windows
-
-- `composer update --ignore-platform-reqs`
-- `composer update --no-dev`
-
-### Pact-PHP 1.1
 For Pact-PHP 1.1, there is a need to run dev-master on TreeWalker dependency, you will need to use the following composer.json
 ```json
 {
@@ -29,6 +21,14 @@ For Pact-PHP 1.1, there is a need to run dev-master on TreeWalker dependency, yo
 	}
 }
 ```
+
+On Linux, you can simple run `composer update` 
+
+If you want to run this on Windows, because of dependencies in PHP Unit and prettier output, certain libraries had to be included. Thus, there are two ways to run composer update on Windows
+
+- `composer update --ignore-platform-reqs`
+- `composer update --no-dev`
+
 
 ## Pull Requests
 This project is actively taking pull requests and appreciate the contribution.   The code needs to pass the CI validation 
