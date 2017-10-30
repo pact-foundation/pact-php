@@ -16,7 +16,6 @@ Thus, there are two ways to run composer update on Windows
  2. `composer update --no-dev`
 
 ### Pact-PHP 2.0
-
 For Pact-PHP 2.0, there is a need to run min-stability dev and pull from a feature addition to [Peekmo/jsonpath](https://github.com/Peekmo/JsonPath), you will need to use the following composer.json
 ```json
 {
@@ -35,6 +34,10 @@ For Pact-PHP 2.0, there is a need to run min-stability dev and pull from a featu
 }
 ```
 
+## PHP Extentions
+To support XML, you need the `php_xsl` extension.
+  
+To support PactBrokerConnector, you need `php_curl` extension and possibly `php_openssl`
  
 
 ## Pull Requests

@@ -81,6 +81,17 @@ class MatchingRule implements \JsonSerializable
     }
 
     /**
+     * Set the JSON path to query
+     *
+     * @return string
+     */
+    public function setJsonPath($jsonPath)
+    {
+        $this->_jsonPath = $jsonPath;
+        return $this;
+    }
+
+    /**
      * @return string|mixed
      */
     public function getRegexPattern()
