@@ -2,19 +2,22 @@
 
 namespace PhpPact\Mocks\MockHttpService\Mappers;
 
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
+use PhpPact\Mappers\MatchingRuleMapper;
+
 class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
 {
     /**
      * @param $response
-     * @return \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse
+     * @return ProviderServiceResponse
      */
-    public function Convert($response)
+    public function convert($response)
     {
         if (is_string($response)) {
             $response = \json_decode($response);
         } elseif ($response instanceof \Psr\Http\Message\ResponseInterface) {
-            $response = $this->HttpResponseConvert($response);
-        } elseif ($response instanceof \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse) {
+            $response = $this->httpResponseConvert($response);
+        } elseif ($response instanceof ProviderServiceResponse) {
             return $response;
         }
 
@@ -23,7 +26,7 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
 
         $body = false;
         if (property_exists($response, "body")) {
-            $contentType = $this->GetContentType($response);
+            $contentType = $this->getContentType($response);
             $body = $response->body;
 
             if (stripos($contentType, "application/json") !== false && !is_string($body)) {
@@ -31,11 +34,15 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
             }
         }
 
-        $providerServiceResponse = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse($status, $headers, $body);
+        $matchingRulesMapper = new MatchingRuleMapper();
+        $matchingRules = $matchingRulesMapper->convert($response);
+
+        $providerServiceResponse = new ProviderServiceResponse($status, $headers, $body, $matchingRules);
+
         return $providerServiceResponse;
     }
 
-    private function HttpResponseConvert(\Psr\Http\Message\ResponseInterface $response)
+    private function httpResponseConvert(\Psr\Http\Message\ResponseInterface $response)
     {
         $obj = new \stdClass();
         $headerArray = (array)$response->getHeaders();
@@ -84,7 +91,7 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
      * @param $request
      * @return bool
      */
-    private function GetContentType($response)
+    private function getContentType($response)
     {
         $contentTypeStr = "Content-Type";
         if (isset($response->headers) && isset($response->headers->$contentTypeStr)) {

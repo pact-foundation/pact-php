@@ -2,52 +2,50 @@
 
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
+use PhpPact\Comparers\DiffComparisonFailure;
+use PhpPact\Matchers\Checkers\FailedMatcherCheck;
+use PhpPact\Comparers\ComparisonResult;
+
 class HttpBodyComparer
 {
 
     /**
-     * @param $expected \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest
-     * @param $actual \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest
-     * @param $matchingRules array[IMatcher]
+     * @param $expected \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
+     * @param $actual \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function Compare($expected, $actual, $matchingRules)
+    public function compare($expected, $actual)
     {
-        $result = new \PhpPact\Comparers\ComparisonResult("has a body");
+        $bodyMatcherCheckers = $expected->getBodyMatchers();
+        $matchingRules = $expected->getMatchingRules();
 
+        $result = new ComparisonResult("has a body");
 
-        if ($expected->ShouldSerializeBody() && $expected->getBody() == null && $actual->getBody()) {
-            $result->RecordFailure(new \PhpPact\Comparers\DiffComparisonFailure($expected, $actual));
+        if ($expected->shouldSerializeBody() && $expected->getBody() == null && $actual->getBody()) {
+            $result->recordFailure(new DiffComparisonFailure($expected, $actual));
             return $result;
         }
-
 
         if ($expected->getBody() == null) {
             return $result;
         }
 
-        // looking for an exact match at the object level
-        if (is_string($expected)) {
-            $expected = $this->JsonDecode($expected);
-        } elseif (method_exists($expected, "getBody") && is_string($expected->getBody())) {
-            $expected = $this->JsonDecode($expected->getBody());
-        }
-
-        if (is_string($actual)) {
-            $actual = $this->JsonDecode($actual);
-        } elseif (method_exists($actual, "getBody") && is_string($actual->getBody())) {
-            $actual = $this->JsonDecode($actual->getBody());
-        }
-
-
         // cycle through matching rules
-        foreach ($matchingRules as $matchingRuleKey => $matchingRule) {
-            $results = $matchingRule->Match($matchingRuleKey, $expected, $actual);
+        foreach ($bodyMatcherCheckers as $bodyMatcherCheckerKey => $bodyMatcherChecker) {
+
+            /**
+             * @var $bodyMatcherChecker \PhpPact\Matchers\Checkers\IMatchChecker
+             */
+            $results = $bodyMatcherChecker->match($bodyMatcherCheckerKey, $expected, $actual, $matchingRules);
+
+            /**
+             * @var $results \PhpPact\Matchers\Checkers\MatcherResult
+             */
             $checks = $results->getMatcherChecks();
             foreach ($checks as $check) {
-                if (($check instanceof \PhpPact\Matchers\FailedMatcherCheck)) {
-                    $result->RecordFailure(new \PhpPact\Comparers\DiffComparisonFailure($expected, $actual));
+                if (($check instanceof FailedMatcherCheck)) {
+                    $result->recordFailure(new DiffComparisonFailure($expected, $actual));
                 }
             }
         }
@@ -60,7 +58,7 @@ class HttpBodyComparer
      * @param $obj
      * @return mixed
      */
-    private function JsonDecode($obj)
+    private function jsonDecode($obj)
     {
         $json = \json_decode($obj);
         if ($json !== null) {
@@ -68,4 +66,6 @@ class HttpBodyComparer
         }
         return $obj;
     }
+
+
 }

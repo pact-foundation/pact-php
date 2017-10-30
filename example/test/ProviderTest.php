@@ -1,7 +1,5 @@
 <?php
 
-
-
 use PHPUnit\Framework\TestCase;
 
 final class ProviderTest extends TestCase
@@ -28,15 +26,15 @@ final class ProviderTest extends TestCase
         try {
             $json = $this->getPactRoot() . DIRECTORY_SEPARATOR . 'mockapiconsumer-mockapiprovider.json';
 
-            $pactVerifier->ProviderState("Test State")
-                ->ServiceProvider("MockApiProvider", $httpClient)
-                ->HonoursPactWith("MockApiConsumer")
-                ->PactUri($json)
-                ->Verify(null, "A GET request to get types");
+            $pactVerifier->providerState("Test State")
+                ->serviceProvider("MockApiProvider", $httpClient)
+                ->honoursPactWith("MockApiConsumer")
+                ->pactUri($json)
+                ->verify(null, "A GET request to get types");
 
-            $pactVerifier->Verify(null, "A GET request to get variable types");
+            $pactVerifier->verify(null, "A GET request to get variable types");
 
-            $pactVerifier->Verify(null, "There is something to POST to");
+            $pactVerifier->verify(null, "There is something to POST to");
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
         }
@@ -83,11 +81,59 @@ final class ProviderTest extends TestCase
         try {
             $json = $this->getPactRoot() . DIRECTORY_SEPARATOR . 'mockapiconsumer-mockapiprovider.json';
 
-            $pactVerifier->ProviderState("A GET request for a setup", $setUpFunction, $tearDownFunction)
-                ->ServiceProvider("MockApiProvider", $httpClient)
-                ->HonoursPactWith("MockApiConsumer")
-                ->PactUri($json)
-                ->Verify(); // note that this should test all as we can run setup and tear down
+            $pactVerifier->providerState("A GET request for a setup", $setUpFunction, $tearDownFunction)
+                ->serviceProvider("MockApiProvider", $httpClient)
+                ->honoursPactWith("MockApiConsumer")
+                ->pactUri($json)
+                ->verify(); // note that this should test all as we can run setup and tear down
+        } catch (\PhpPact\PactFailureException $e) {
+            $hasException = true;
+        }
+        $this->assertFalse($hasException, "Expect Pact to validate.");
+    }
+
+    public function testPactProviderWithMatchers()
+    {
+        $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
+
+        $httpClient = new \Windwalker\Http\HttpClient();
+
+        $pactVerifier = new \PhpPact\PactVerifier($uri);
+        $hasException = false;
+        try {
+            $json = $this->getPactRoot() . DIRECTORY_SEPARATOR . 'mockapiconsumer-mockapiprovider.json';
+
+            $pactVerifier->providerState("Test State")
+                ->serviceProvider("MockApiProvider", $httpClient)
+                ->honoursPactWith("MockApiConsumer")
+                ->pactUri($json);
+
+            $pactVerifier->verify(null, "There is an XML alligator named Mary");
+
+        } catch (\PhpPact\PactFailureException $e) {
+            $hasException = true;
+        }
+        $this->assertFalse($hasException, "Expect Pact to validate.");
+    }
+
+    public function testPactProviderWithXmlMatchers()
+    {
+        $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
+
+        $httpClient = new \Windwalker\Http\HttpClient();
+
+        $pactVerifier = new \PhpPact\PactVerifier($uri);
+        $hasException = false;
+        try {
+            $json = $this->getPactRoot() . DIRECTORY_SEPARATOR . 'mockapiconsumer-mockapiprovider.json';
+
+            $pactVerifier->providerState("Test State")
+                ->serviceProvider("MockApiProvider", $httpClient)
+                ->honoursPactWith("MockApiConsumer")
+                ->pactUri($json);
+
+            $pactVerifier->verify(null, "There is an XML alligator named Mary and favorite color should be an array");
+
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
         }

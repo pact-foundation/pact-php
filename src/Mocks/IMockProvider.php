@@ -4,7 +4,7 @@ namespace PhpPact\Mocks;
 
 interface IMockProvider
 {
-    public function Given($providerState);
+    public function given($providerState);
 
-    public function UponReceiving($description);
+    public function uponReceiving($description);
 }

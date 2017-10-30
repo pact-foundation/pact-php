@@ -1,30 +1,26 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 7/7/2017
- * Time: 3:32 PM
- */
 
 namespace Mocks\MockHttpService\Mappers;
 
 use PhpPact\Mocks\MockHttpService\Mappers\HttpResponseMessageMapper;
+use \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
+
 use PHPUnit\Framework\TestCase;
 
 class HttpResponseMessageMapperTest extends TestCase
 {
     public function testConvert()
     {
-        $mapper = new \PhpPact\Mocks\MockHttpService\Mappers\HttpResponseMessageMapper();
+        $mapper = new HttpResponseMessageMapper();
 
         $resHeaders = array();
         $resHeaders["Content-Type"] =  "application/json";
         $resHeaders["Fake-Header"] =  "more-cool-stuff";
 
-        $response = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse(200, $resHeaders);
+        $response = new ProviderServiceResponse(200, $resHeaders);
         $response->setBody("Hello, it's me");
 
-        $httpResponse = $mapper->Convert($response);
+        $httpResponse = $mapper->convert($response);
 
         $expectedContent = ($response->getHeaders())["Content-Type"];
         $actualContent = ($httpResponse->getHeaders())["Content-Type"][0];

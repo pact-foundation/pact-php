@@ -27,7 +27,7 @@ class MockApiConsumer
      * @param $uri string
      * @return mixed
      */
-    public function GetBasic($url)
+    public function getBasic($url)
     {
         $uri = (new \Windwalker\Uri\PsrUri($url))
             ->withPath("/");
@@ -43,11 +43,33 @@ class MockApiConsumer
     }
 
     /**
+     * Mock out a basic GET and a xml response
      *
      * @param $uri string
      * @return mixed
      */
-    public function GetWithPath($url)
+    public function getWithResponseBodyXml($url)
+    {
+        $uri = (new \Windwalker\Uri\PsrUri($url))
+            ->withPath("/")
+            ->withQuery("xml=true");
+
+        $httpRequest = (new \Windwalker\Http\Request\Request())
+            ->withUri($uri)
+            ->withAddedHeader("Content-Type", "application/xml")
+            ->withMethod("get");
+
+
+        $response = $this->sendRequest($httpRequest);
+        return $response;
+    }
+
+    /**
+     *
+     * @param $uri string
+     * @return mixed
+     */
+    public function getWithPath($url)
     {
         $uri = (new \Windwalker\Uri\PsrUri($url))
             ->withPath("/test.php");
@@ -61,7 +83,7 @@ class MockApiConsumer
         return $response;
     }
 
-    public function GetWithQuery($url)
+    public function getWithQuery($url)
     {
         $uri = (new \Windwalker\Uri\PsrUri($url))
             ->withPath("/")
@@ -76,7 +98,7 @@ class MockApiConsumer
         return $response;
     }
 
-    public function GetWithBody($url)
+    public function getWithBody($url)
     {
         $uri = (new \Windwalker\Uri\PsrUri($url))
             ->withPath("/");
@@ -94,7 +116,7 @@ class MockApiConsumer
         return $response;
     }
 
-    public function PostWithBody($url)
+    public function postWithBody($url)
     {
         $uri = (new \Windwalker\Uri\PsrUri($url))
             ->withPath("/");
@@ -111,10 +133,6 @@ class MockApiConsumer
         return $response;
     }
 
-    public function GetWithMultipleRequests($url)
-    {
-        throw new \Exception("Not implemented");
-    }
 
     /**
      * Encapsulate your calls to the actual api. This allows mock out of server calls

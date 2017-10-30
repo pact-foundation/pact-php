@@ -4,7 +4,7 @@ namespace PhpPact\Mocks\MockHttpService;
 
 interface IHttpHost
 {
-    public function Start();
+    public function start();
 
-    public function Stop();
+    public function stop();
 }

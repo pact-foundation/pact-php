@@ -4,5 +4,5 @@ namespace PhpPact\Mappers;
 
 interface IMapper
 {
-    public function Convert($request);
+    public function convert($request);
 }

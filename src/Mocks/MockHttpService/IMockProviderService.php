@@ -6,17 +6,17 @@ use PhpPact\Mocks\IMockProvider;
 
 interface IMockProviderService extends IMockProvider
 {
-    public function With($request);
+    public function with($request);
 
-    public function WillRespondWith($response);
+    public function willRespondWith($response);
 
-    public function Start();
+    public function start();
 
-    public function Stop();
+    public function stop();
 
-    public function ClearInteractions();
+    public function clearInteractions();
 
-    public function VerifyInteractions();
+    public function verifyInteractions();
 
-    public function SendMockRequest(\PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest $providerServiceRequest, $baseUri);
+    public function sendMockRequest(\PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest $providerServiceRequest, $baseUri);
 }

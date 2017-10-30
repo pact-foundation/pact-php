@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 6/28/2017
- * Time: 5:18 PM
- */
 
 namespace Mocks\MockHttpService\Models;
 
@@ -15,10 +9,10 @@ class ProviderServicePactFileTest extends TestCase
 {
     public function testFilterInteractionsByDescription()
     {
-        $json = '{"description":"A GET request","provider_state":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"A GET request","providerState":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction1 = \json_decode($json);
 
-        $json = '{"description":"Another GET request","provider_state":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"Another GET request","providerState":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction2 = \json_decode($json);
 
         $expectedInteractions = array();
@@ -27,7 +21,7 @@ class ProviderServicePactFileTest extends TestCase
 
         $pactFile = new ProviderServicePactFile();
         $pactFile->setInteractions($expectedInteractions);
-        $pactFile->FilterInteractionsByDescription("Another GET request");
+        $pactFile->filterInteractionsByDescription("Another GET request");
         $actualInteractions = $pactFile->getInteractions();
         $this->assertEquals(1, count($actualInteractions), "Check that one interactions is left");
 
@@ -36,10 +30,10 @@ class ProviderServicePactFileTest extends TestCase
 
 
         // empty case
-        $json = '{"description":"A GET request","provider_state":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"A GET request","providerState":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction1 = \json_decode($json);
 
-        $json = '{"description":"Another GET request","provider_state":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"Another GET request","providerState":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction2 = \json_decode($json);
 
         $expectedInteractions = array();
@@ -48,7 +42,7 @@ class ProviderServicePactFileTest extends TestCase
 
         $pactFile = new ProviderServicePactFile();
         $pactFile->setInteractions($expectedInteractions);
-        $pactFile->FilterInteractionsByDescription("None existent description");
+        $pactFile->filterInteractionsByDescription("None existent description");
         $actualInteractions = $pactFile->getInteractions();
 
         $this->assertEquals(0, count($actualInteractions), "No interactions returned");
@@ -56,10 +50,10 @@ class ProviderServicePactFileTest extends TestCase
 
     public function testFilterInteractionsByProviderState()
     {
-        $json = '{"description":"A GET request","provider_state":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"A GET request","providerState":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction1 = \json_decode($json);
 
-        $json = '{"description":"Another GET request","provider_state":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"Another GET request","providerState":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction2 = \json_decode($json);
 
         $expectedInteractions = array();
@@ -69,17 +63,17 @@ class ProviderServicePactFileTest extends TestCase
         $pactFile = new ProviderServicePactFile();
         $pactFile->setInteractions($expectedInteractions);
 
-        $actualInteractions = $pactFile->FilterInteractionsByProviderState("Some types");
+        $actualInteractions = $pactFile->filterInteractionsByProviderState("Some types");
         $this->assertEquals(1, count($actualInteractions), "Check that one interactions is left");
 
         $actualInteraction1 = $actualInteractions[0];
         $this->assertEquals("Some types", $actualInteraction1->getProviderState(), "Some types");
 
         // empty case
-        $json = '{"description":"A GET request","provider_state":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"A GET request","providerState":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction1 = \json_decode($json);
 
-        $json = '{"description":"Another GET request","provider_state":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"Another GET request","providerState":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction2 = \json_decode($json);
 
         $expectedInteractions = array();
@@ -88,7 +82,7 @@ class ProviderServicePactFileTest extends TestCase
 
         $pactFile = new ProviderServicePactFile();
         $pactFile->setInteractions($expectedInteractions);
-        $pactFile->FilterInteractionsByProviderState("None existent state");
+        $pactFile->filterInteractionsByProviderState("None existent state");
         $actualInteractions = $pactFile->getInteractions();
 
         $this->assertEquals(0, count($actualInteractions), "No interactions returned");
@@ -101,10 +95,10 @@ class ProviderServicePactFileTest extends TestCase
         $this->assertEquals(0, count($actualInteractions), "Empty array is allowed as there are no interactions");
 
 
-        $json = '{"description":"A GET request","provider_state":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"A GET request","providerState":"Some types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction1 = \json_decode($json);
 
-        $json = '{"description":"Another GET request","provider_state":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $json = '{"description":"Another GET request","providerState":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction2 = \json_decode($json);
 
         $expectedInteractions = array();

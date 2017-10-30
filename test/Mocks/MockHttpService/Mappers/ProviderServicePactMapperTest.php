@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 6/28/2017
- * Time: 3:52 PM
- */
 
 namespace Mocks\MockHttpService\Mappers;
 
@@ -28,12 +22,12 @@ class ProviderServicePactMapperTest extends TestCase
         $obj->metadata->pactSpecificationVersion = "4.1";
         $obj->interactions = array();
 
-        $providerServicePactFile = $mapper->Convert($obj);
+        $providerServicePactFile = $mapper->convert($obj);
         $this->assertEquals('MyProvider', $providerServicePactFile->getProvider()->getName(), "Provider name should be set");
         $this->assertEquals('4.1', $providerServicePactFile->getMetadata()->pactSpecificationVersion, "Specification should be set");
 
         $json = '{ "provider": { "name": "ProviderApi" }, "consumer": { "name": "ApiConsumer" },"interactions": [], "metadata": { "pactSpecificationVersion": "1.1.0"  } }';
-        $providerServicePactFile = $mapper->Convert($json);
+        $providerServicePactFile = $mapper->convert($json);
         $this->assertEquals('ApiConsumer', $providerServicePactFile->getConsumer()->getName(), "Consumer name should be set");
         $this->assertEquals('1.1.0', $providerServicePactFile->getMetadata()->pactSpecificationVersion, "Specification should be set");
     }

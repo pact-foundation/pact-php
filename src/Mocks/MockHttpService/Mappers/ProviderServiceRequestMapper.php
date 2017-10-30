@@ -2,26 +2,38 @@
 
 namespace PhpPact\Mocks\MockHttpService\Mappers;
 
+use PhpPact\Mappers\MatchingRuleMapper;
+use PhpPact\Mocks\MockHttpService\Models\HttpVerb;
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
+
+
 class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
 {
     /**
      * @param $request
-     * @return \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest
+     * @return ProviderServiceRequest
      */
-    public function Convert($request)
+    public function convert($request)
     {
-        if (($request instanceof \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest)) {
+        if (($request instanceof ProviderServiceRequest)) {
             return $request;
         } elseif ($request instanceof \Psr\Http\Message\RequestInterface) {
-            $request = $this->HttpRequestConvert($request);
+            $request = $this->httpRequestConvert($request);
         }
 
-        $this->checkExistence($request, "method");
-        $this->checkExistence($request, "path");
+        if (!isset($request->method)) {
+            // add default
+            $request->method = HttpVerb::NOTSET;
+        }
+
+        if (!isset($request->path)) {
+            // add default
+            $request->path = "";
+        }
 
         $body = false;
         if (property_exists($request, "body")) {
-            $contentType = $this->GetContentType($request);
+            $contentType = $this->getContentType($request);
             $body = $request->body;
 
             if (stripos($contentType, "application/json") !== false && !is_string($body)) {
@@ -33,7 +45,10 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
             $request->headers = null;
         }
 
-        $providerServiceRequest = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest($request->method, $request->path, $request->headers, $body);
+        $matchingRulesMapper = new MatchingRuleMapper();
+        $matchingRules = $matchingRulesMapper->convert($request);
+
+        $providerServiceRequest = new ProviderServiceRequest($request->method, $request->path, $request->headers, $body, $matchingRules);
         if (isset($request->query)) {
             $providerServiceRequest->setQuery($request->query);
         }
@@ -41,12 +56,6 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
         return $providerServiceRequest;
     }
 
-    private function checkExistence($obj, $attr)
-    {
-        if (!isset($obj->$attr)) {
-            throw new \InvalidArgumentException("$attr was not set");
-        }
-    }
 
     /**
      * Mine the headers to pull out the content type
@@ -54,7 +63,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
      * @param $request
      * @return bool
      */
-    private function GetContentType($request)
+    private function getContentType($request)
     {
         $contentTypeStr = "Content-Type";
         if (isset($request->headers) && isset($request->headers->$contentTypeStr)) {
@@ -65,7 +74,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
     }
 
 
-    private function HttpRequestConvert(\Psr\Http\Message\RequestInterface $request)
+    private function httpRequestConvert(\Psr\Http\Message\RequestInterface $request)
     {
         $obj = new \stdClass();
         $headerArray = (array)$request->getHeaders();

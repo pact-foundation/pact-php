@@ -2,7 +2,11 @@
 
 namespace PhpPact\Mocks\MockHttpService\Validators;
 
-use PHPUnit\Runner\Exception;
+use PhpPact\PactVerifierConfig;
+use PhpPact\Mocks\MockHttpService;
+use PhpPact\Reporters\Reporter;
+use PhpPact\Models\ProviderStates;
+use PhpPact\Comparers\ComparisonResult;
 
 class ProviderServiceValidator
 {
@@ -27,9 +31,9 @@ class ProviderServiceValidator
      */
     private $_config;
 
-    public function __construct(\PhpPact\Mocks\MockHttpService\IHttpRequestSender $httpRequestSender, \PhpPact\Reporters\Reporter $reporter, \PhpPact\PactVerifierConfig $config)
+    public function __construct(MockHttpService\IHttpRequestSender $httpRequestSender, Reporter $reporter, PactVerifierConfig $config)
     {
-        $this->_providerServiceResponseComparer = new \PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer();
+        $this->_providerServiceResponseComparer = new MockHttpService\Comparers\ProviderServiceResponseComparer();
         $this->_httpRequestSender = $httpRequestSender;
         $this->_reporter = $reporter;
         $this->_config = $config;
@@ -42,7 +46,7 @@ class ProviderServiceValidator
      * @throws \Exception
      * @throws \PhpPact\PactFailureException
      */
-    public function Validate(\PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile $pactFile, \PhpPact\Models\ProviderStates $providerStates)
+    public function validate(MockHttpService\Models\ProviderServicePactFile $pactFile, ProviderStates $providerStates)
     {
         if (!$pactFile->getConsumer()) {
             throw new \InvalidArgumentException("Please supply a non null or empty Consumer name in the pactFile");
@@ -53,9 +57,9 @@ class ProviderServiceValidator
         }
 
         if ($pactFile->getInteractions() != null && count($pactFile->getInteractions()) > 0) {
-            $this->_reporter->ReportInfo(sprintf("Verifying a Pact between %s and %s", $pactFile->getConsumer()->getName(), $pactFile->getProvider()->getName()));
+            $this->_reporter->reportInfo(sprintf("Verifying a Pact between %s and %s", $pactFile->getConsumer()->getName(), $pactFile->getProvider()->getName()));
 
-            $comparisonResult = new \PhpPact\Comparers\ComparisonResult();
+            $comparisonResult = new ComparisonResult();
 
             foreach ($pactFile->getInteractions() as $interaction) {
 
@@ -63,54 +67,52 @@ class ProviderServiceValidator
                  * @var $interaction \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction;
                  */
 
-                $this->InvokePactSetUpIfApplicable($providerStates);
+                $this->invokePactSetUpIfApplicable($providerStates);
 
-                $this->_reporter->ResetIndentation();
+                $this->_reporter->resetIndentation();
 
                 $providerStateItem = null; // better name?
 
                 if ($interaction->getProviderState() != null) {
                     try {
-                        $providerStateItem = $providerStates->Find($interaction->getProviderState());
-                    } catch (Exception $e) {
+                        $providerStateItem = $providerStates->find($interaction->getProviderState());
+                    } catch (\Exception $e) {
                         throw new \Exception(sprintf("providerState '%s' was defined by a consumer, however could not be found. Please supply this provider state.", $interaction->getProviderState()), $e);
                     }
                 }
 
-                $this->InvokeProviderStateSetUpIfApplicable($providerStateItem);
+                $this->invokeProviderStateSetUpIfApplicable($providerStateItem);
 
                 if (!$interaction->getProviderState()) {
-                    $this->_reporter->Indent();
-                    $this->_reporter->ReportInfo(sprintf("Given %s", $interaction->getProviderState()));
+                    $this->_reporter->indent();
+                    $this->_reporter->reportInfo(sprintf("Given %s", $interaction->getProviderState()));
                 }
 
-                $this->_reporter->Indent();
-                $this->_reporter->ReportInfo(sprintf("%s", $interaction->getDescription()));
+                $this->_reporter->indent();
+                $this->_reporter->reportInfo(sprintf("%s", $interaction->getDescription()));
 
                 if (!$interaction->getRequest()) {
-                    $this->_reporter->Indent();
-                    $this->_reporter->ReportInfo(sprintf("with %s %s", $interaction->getRequest()->getMethod(), $interaction->getRequest()->getPath()));
+                    $this->_reporter->indent();
+                    $this->_reporter->reportInfo(sprintf("with %s %s", $interaction->getRequest()->getMethod(), $interaction->getRequest()->getPath()));
                 }
 
                 try {
-                    $interactionComparisonResult = $this->ValidateInteraction($interaction);
-                    $comparisonResult->AddChildResult($interactionComparisonResult);
+                    $interactionComparisonResult = $this->validateInteraction($interaction);
+                    $comparisonResult->addChildResult($interactionComparisonResult);
 
-                    $this->_reporter->Indent();
-                    $this->_reporter->ReportSummary($interactionComparisonResult);
+                    $this->_reporter->indent();
+                    $this->_reporter->reportSummary($interactionComparisonResult);
                 } finally {
-                    $this->InvokeProviderStateTearDownIfApplicable($providerStateItem);
-                    $this->InvokeTearDownIfApplicable($providerStates);
+                    $this->invokeProviderStateTearDownIfApplicable($providerStateItem);
+                    $this->invokeTearDownIfApplicable($providerStates);
                 }
             }
 
-            $this->_reporter->ResetIndentation();
-            $this->_reporter->ReportFailureReasons($comparisonResult);
-            $this->_reporter->Flush();
+            $this->_reporter->resetIndentation();
+            $this->_reporter->reportFailureReasons($comparisonResult);
+            $this->_reporter->flush();
 
-            //$this->_config->getLogger()->debug('**** Logging all results: ' . print_r($comparisonResult, true));
-
-            if ($comparisonResult->HasFailure()) {
+            if ($comparisonResult->hasFailure()) {
                 throw new \PhpPact\PactFailureException("See test output or logs for failure details.");
             }
         }
@@ -121,16 +123,16 @@ class ProviderServiceValidator
      * @param ProviderServiceInteraction $
      * @return \PhpPact\Comparers\ComparisonResult ComparisonResult
      */
-    private function ValidateInteraction(\PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction $interaction)
+    private function validateInteraction(\PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction $interaction)
     {
         $expectedResponse = $interaction->getResponse();
         $actualResponse = $this->_httpRequestSender->Send($interaction->getRequest(), $this->_config->getBaseUri());
-        $results = $this->_providerServiceResponseComparer->Compare($expectedResponse, $actualResponse);
+        $results = $this->_providerServiceResponseComparer->compare($expectedResponse, $actualResponse);
 
         return $results;
     }
 
-    private function InvokePactSetUpIfApplicable(\PhpPact\Models\ProviderStates $providerStates)
+    private function invokePactSetUpIfApplicable(\PhpPact\Models\ProviderStates $providerStates)
     {
         if ($providerStates->count() > 0 && $providerStates->SetUp != null) {
             $func = $providerStates->SetUp;
@@ -146,7 +148,7 @@ class ProviderServiceValidator
         return false;
     }
 
-    private function InvokeTearDownIfApplicable(\PhpPact\Models\ProviderStates $providerStates)
+    private function invokeTearDownIfApplicable(ProviderStates $providerStates)
     {
         if ($providerStates->count() > 0 && $providerStates->TearDown != null) {
             $func = $providerStates->TearDown;
@@ -166,7 +168,7 @@ class ProviderServiceValidator
      * @param $providerState \PhpPact\Models\ProviderState|null
      * @return bool
      */
-    private function InvokeProviderStateSetUpIfApplicable($providerState)
+    private function invokeProviderStateSetUpIfApplicable($providerState)
     {
         /*
          * @var $providerState \PhpPact\Models\ProviderState
@@ -189,7 +191,7 @@ class ProviderServiceValidator
      * @param $providerState \PhpPact\Models\ProviderState|null
      * @return bool
      */
-    private function InvokeProviderStateTearDownIfApplicable($providerState)
+    private function invokeProviderStateTearDownIfApplicable($providerState)
     {
         /*
          * @var $providerState \PhpPact\Models\ProviderState

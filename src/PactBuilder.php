@@ -3,6 +3,7 @@
 namespace PhpPact;
 
 use PhpPact\Models\Pacticipant;
+use PhpPact\Mocks\MockHttpService\Validators;
 
 class PactBuilder implements IPactBuilder
 {
@@ -35,7 +36,7 @@ class PactBuilder implements IPactBuilder
     public function __construct($config = null)
     {
         if (!$config) {
-            $this->_config = new \PhpPact\PactConfig();
+            $this->_config = new PactConfig();
         } else {
             $this->_config = $config;
         }
@@ -97,9 +98,9 @@ class PactBuilder implements IPactBuilder
      * @param $providerName
      * @param PactConfig $config
      */
-    public function setMockService($providerName, \PhpPact\PactConfig $config)
+    public function setMockService($providerName, PactConfig $config)
     {
-        $this->_mockProviderService = new \PhpPact\Mocks\MockHttpService\MockProviderService($providerName, $config);
+        $this->_mockProviderService = new Mocks\MockHttpService\MockProviderService($providerName, $config);
 
         return $this;
     }
@@ -120,7 +121,7 @@ class PactBuilder implements IPactBuilder
      * @param string $consumerName
      * @return $this
      */
-    public function ServiceConsumer($consumerName)
+    public function serviceConsumer($consumerName)
     {
         if (!$consumerName) {
             throw new \RuntimeException("Please supply a non null or empty consumerName");
@@ -136,7 +137,7 @@ class PactBuilder implements IPactBuilder
      * @param string $providerName
      * @return $this
      */
-    public function HasPactWith($providerName)
+    public function hasPactWith($providerName)
     {
         if (!$providerName) {
             throw new \RuntimeException("Please supply a non null or empty providerName");
@@ -158,21 +159,21 @@ class PactBuilder implements IPactBuilder
      *
      * @param bool|\PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile $pactFile
      */
-    public function Build($pactFile = false)
+    public function build($pactFile = false)
     {
         if (!$this->_mockProviderService) {
             throw new \RuntimeException("The Pact file could not be saved because the mock provider service is not initialised. Please initialise by calling the MockService() method.");
         }
 
         if (!$this->_consumerName) {
-            throw new \RuntimeException("ConsumerName has not been set, please supply a consumer name using the ServiceConsumer method.");
+            throw new \RuntimeException("ConsumerName has not been set, please supply a consumer name using the serviceConsumer method.");
         }
 
         if (!$this->_providerName) {
             throw new \RuntimeException("ProviderName has not been set, please supply a provider name using the HasPactWith method.");
         }
 
-        if ($pactFile && !($pactFile instanceof \PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile)) {
+        if ($pactFile && !($pactFile instanceof Mocks\MockHttpService\Models\ProviderServicePactFile)) {
             throw  new \RuntimeException("Pact file was passed in but not a valid object type");
         }
 
@@ -183,16 +184,16 @@ class PactBuilder implements IPactBuilder
             $pactFile->setConsumer(new Pacticipant($this->_consumerName));
         }
 
-        $pactValidator = new \PhpPact\Mocks\MockHttpService\Validators\PactFileValidator();
-        $pactValidator->Validate($pactFile);
+        $pactValidator = new Validators\PactFileValidator();
+        $pactValidator->validate($pactFile);
 
-        $this->PersistPactFile($pactFile);
+        $this->persistPactFile($pactFile);
     }
 
     /**
      * Actually persist the file
      */
-    private function PersistPactFile(\PhpPact\Models\PactFile $pactFile)
+    private function persistPactFile(Models\PactFile $pactFile)
     {
         $output = \json_encode($pactFile, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         $fileName = $this->_config->getPactDir() . '/' . $pactFile->getFileName();

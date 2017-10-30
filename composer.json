@@ -12,6 +12,12 @@
             "email": "charles.mack@mattersight.com"
         }
     ],
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/mattermack/JsonPath"
+      }
+    ],
     "require": {
         "php-http/guzzle6-adapter": "^1.1",
         "windwalker/http": "~3.0",
@@ -19,6 +25,9 @@
         "jfalque/http-mock": "^1.0",
         "justinrainbow/json-schema": "5.2.1",
         "lukascivil/treewalker": "dev-master",
+        "peekmo/jsonpath": "dev-feature_pathing_retention",
+        "zendframework/zend-json": "^3.0",
+        "zendframework/zend-xml2json": "^3.1",
         "php": ">=7"
     },
 	"require-dev": {

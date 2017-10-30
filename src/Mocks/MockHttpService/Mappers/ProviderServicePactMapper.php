@@ -2,26 +2,29 @@
 
 namespace PhpPact\Mocks\MockHttpService\Mappers;
 
+use PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile;
+use PhpPact\Models\Pacticipant;
+
 class ProviderServicePactMapper implements \PhpPact\Mappers\IMapper
 {
     /**
      *
      * @param \stdClass $json
-     * @return \PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile
+     * @return ProviderServicePactFile
      */
-    public function Convert($request)
+    public function convert($request)
     {
         if (is_string($request)) {
             $request = \json_decode($request);
         }
 
-        $pact = new \PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile();
+        $pact = new ProviderServicePactFile();
 
-        $provider = new \PhpPact\Models\Pacticipant();
+        $provider = new Pacticipant();
         $provider->setName($request->provider);
         $pact->setProvider($provider);
 
-        $consumer = new \PhpPact\Models\Pacticipant();
+        $consumer = new Pacticipant();
         $consumer->setName($request->consumer);
         $pact->setConsumer($consumer);
 

@@ -2,14 +2,20 @@
 
 namespace PhpPact;
 
-use PHPUnit\Runner\Exception;
-
 class PactVerifier implements IPactVerifier
 {
     private $_httpClient;
-    private $_config; //PactVerifierConfig
 
-    private $_httpRequestSender; //IHttpRequestSender
+    /**
+     * @var PactVerifierConfig
+     */
+    private $_config;
+
+    /**
+     * @var Mocks\MockHttpService\IHttpRequestSender
+     */
+    private $_httpRequestSender;
+
     private $_consumerName;
     private $_providerName;
     private $_providerStates;
@@ -18,9 +24,9 @@ class PactVerifier implements IPactVerifier
 
     public function __construct($baseUri)
     {
-        $this->_providerStates = new \PhpPact\Models\ProviderStates();
+        $this->_providerStates = new Models\ProviderStates();
         $this->_httpClient = new \Windwalker\Http\HttpClient();
-        $this->_config = new \PhpPact\PactVerifierConfig();
+        $this->_config = new PactVerifierConfig();
         $this->_config->setBaseUri($baseUri);
     }
 
@@ -36,7 +42,7 @@ class PactVerifier implements IPactVerifier
      * @param PactVerifierConfig $config
      * @return PactVerifier
      */
-    public function setConfig(\PhpPact\PactVerifierConfig $config)
+    public function setConfig(PactVerifierConfig $config)
     {
         $this->_config = $config;
         return $this;
@@ -54,19 +60,19 @@ class PactVerifier implements IPactVerifier
      * @param null $tearDown A tear down action that will be run after the interaction verify, if the provider has specified it in the interaction. If no action is required please use an empty lambda
      * @return PactVerifier $this
      */
-    public function ProviderState($providerState, $setUp = null, $tearDown = null)
+    public function providerState($providerState, $setUp = null, $tearDown = null)
     {
         if (!$providerState) {
             throw new \InvalidArgumentException("Please supply a non null or empty providerState");
         }
 
-        $providerStateItem = new \PhpPact\Models\ProviderState($providerState, $setUp, $tearDown);
-        $this->_providerStates->Add($providerStateItem);
+        $providerStateItem = new Models\ProviderState($providerState, $setUp, $tearDown);
+        $this->_providerStates->add($providerStateItem);
 
         return $this;
     }
 
-    public function ServiceProvider($providerName, $httpClient = null, $httpRequestSender = null)
+    public function serviceProvider($providerName, $httpClient = null, $httpRequestSender = null)
     {
         if (!$providerName) {
             throw new \InvalidArgumentException("Please supply a non null or empty providerName");
@@ -91,7 +97,7 @@ class PactVerifier implements IPactVerifier
         return $this;
     }
 
-    public function HonoursPactWith($consumerName)
+    public function honoursPactWith($consumerName)
     {
         if (!$consumerName) {
             throw new \InvalidArgumentException("Please supply a non null or empty consumerName");
@@ -106,7 +112,7 @@ class PactVerifier implements IPactVerifier
         return $this;
     }
 
-    public function PactUri($uri, $options = null)
+    public function pactUri($uri, $options = null)
     {
         if (!$uri) {
             throw new \InvalidArgumentException("Please supply a non null or empty consumerName");
@@ -122,7 +128,7 @@ class PactVerifier implements IPactVerifier
         return $this;
     }
 
-    public function Verify($description = null, $providerState = null)
+    public function verify($description = null, $providerState = null)
     {
         if (!$this->_httpRequestSender) {
             throw new \InvalidArgumentException("httpRequestSender has not been set, please supply a httpClient or httpRequestSenderFunc using the ServiceProvider method.");
@@ -139,9 +145,9 @@ class PactVerifier implements IPactVerifier
         }
 
         $jsonDecoded = \json_decode($pactFileJson);
-        $mapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServicePactMapper();
+        $mapper = new Mocks\MockHttpService\Mappers\ProviderServicePactMapper();
 
-        $pactFile = $mapper->Convert($jsonDecoded);
+        $pactFile = $mapper->convert($jsonDecoded);
 
         //Filter interactions
         if ($description != null) {
@@ -157,10 +163,10 @@ class PactVerifier implements IPactVerifier
         }
 
         try {
-            $reporter = new \PhpPact\Reporters\Reporter($this->_config);
-            $validator = new \PhpPact\Mocks\MockHttpService\Validators\ProviderServiceValidator($this->_httpRequestSender, $reporter, $this->_config);
-            $validator->Validate($pactFile, $this->_providerStates);
-        } catch (Exception $e) {
+            $reporter = new Reporters\Reporter($this->_config);
+            $validator = new Mocks\MockHttpService\Validators\ProviderServiceValidator($this->_httpRequestSender, $reporter, $this->_config);
+            $validator->validate($pactFile, $this->_providerStates);
+        } catch (\Exception $e) {
             $this->_config->getLogger()->fatal("Unable to verify pact: " . $e->getMessage());
             throw $e;
         }

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 6/29/2017
- * Time: 3:00 PM
- */
 
 namespace Mocks\MockHttpService\Comparers;
 
@@ -18,10 +12,10 @@ class HttpStatusCodeComparerTest extends TestCase
         $comparer = new HttpStatusCodeComparer();
 
         $expected = 200;
-        $result = $comparer->Compare($expected, '200');
-        $this->assertEquals(0, $result->ShallowFailureCount(), "No failures expected");
+        $result = $comparer->compare($expected, '200');
+        $this->assertEquals(0, $result->shallowFailureCount(), "No failures expected");
 
-        $result = $comparer->Compare($expected, '300');
-        $this->assertEquals(1, $result->ShallowFailureCount(), "One failure expected");
+        $result = $comparer->compare($expected, '300');
+        $this->assertEquals(1, $result->shallowFailureCount(), "One failure expected");
     }
 }

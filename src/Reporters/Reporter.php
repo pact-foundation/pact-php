@@ -2,8 +2,6 @@
 
 namespace PhpPact\Reporters;
 
-use PHPUnit\Runner\Exception;
-
 class Reporter implements IReporter
 {
     private $_outputters;
@@ -21,37 +19,37 @@ class Reporter implements IReporter
         } elseif ($config instanceof \PhpPact\PactVerifierConfig) {
             $this->_outputters = $config->getReportOutputters();
         } else {
-            throw new Exception("Invalid parameters. Either provide a valid config or valid outputters");
+            throw new \Exception("Invalid parameters. Either provide a valid config or valid outputters");
         }
     }
 
 
-    public function ReportInfo($infoMessage)
+    public function reportInfo($infoMessage)
     {
-        $this->AddReportLine($infoMessage, $this->_currentTabDepth);
+        $this->addReportLine($infoMessage, $this->_currentTabDepth);
     }
 
-    public function ReportSummary(\PhpPact\Comparers\ComparisonResult $comparisonResult)
+    public function reportSummary(\PhpPact\Comparers\ComparisonResult $comparisonResult)
     {
-        $this->AddSummary($comparisonResult);
+        $this->addSummary($comparisonResult);
     }
 
-    public function ReportFailureReasons(\PhpPact\Comparers\ComparisonResult $comparisonResult)
+    public function reportFailureReasons(\PhpPact\Comparers\ComparisonResult $comparisonResult)
     {
-        $this->WriteFailureReasons($comparisonResult);
+        $this->writeFailureReasons($comparisonResult);
     }
 
-    public function Indent()
+    public function indent()
     {
         $this->_currentTabDepth++;
     }
 
-    public function ResetIndentation()
+    public function resetIndentation()
     {
         $this->_currentTabDepth = 0;
     }
 
-    public function Flush()
+    public function flush()
     {
         if (empty($this->_reportLines) || $this->_outputters == null) {
             return;
@@ -61,20 +59,20 @@ class Reporter implements IReporter
             /**
              * @var \PhpPact\Reporters\Outputters\IReportOutputter $outputter
              */
-            $outputter->Write(implode(PHP_EOL, $this->_reportLines));
+            $outputter->write(implode(PHP_EOL, $this->_reportLines));
         }
     }
 
-    private function AddSummary(\PhpPact\Comparers\ComparisonResult $comparisonResult, $tabDepth = 0)
+    private function addSummary(\PhpPact\Comparers\ComparisonResult $comparisonResult, $tabDepth = 0)
     {
         if ($comparisonResult == null) {
             return;
         }
 
-        if ($comparisonResult->HasFailure()) {
+        if ($comparisonResult->hasFailure()) {
             $failureBuilder = '';
 
-            $shallowFailureCount = $comparisonResult->ShallowFailureCount();
+            $shallowFailureCount = $comparisonResult->shallowFailureCount();
 
             if ($shallowFailureCount > 0) {
                 $failureBuilder .= " (FAILED - ";
@@ -91,36 +89,36 @@ class Reporter implements IReporter
                 $failureBuilder .= ")";
             }
 
-            $this->AddReportLine($comparisonResult->getMessage() . $failureBuilder, $this->_currentTabDepth + $tabDepth);
+            $this->addReportLine($comparisonResult->getMessage() . $failureBuilder, $this->_currentTabDepth + $tabDepth);
         } else {
-            $this->AddReportLine($comparisonResult->getMessage(), $this->_currentTabDepth + $tabDepth);
+            $this->addReportLine($comparisonResult->getMessage(), $this->_currentTabDepth + $tabDepth);
         }
 
-        foreach ($comparisonResult->ChildResults() as $childComparisonResult) {
-            $this->AddSummary($childComparisonResult, $tabDepth + 1);
+        foreach ($comparisonResult->childResults() as $childComparisonResult) {
+            $this->addSummary($childComparisonResult, $tabDepth + 1);
         }
     }
 
-    private function WriteFailureReasons(\PhpPact\Comparers\ComparisonResult $comparisonResult)
+    private function writeFailureReasons(\PhpPact\Comparers\ComparisonResult $comparisonResult)
     {
         if ($comparisonResult == null) {
             return;
         }
 
-        if (!$comparisonResult->HasFailure()) {
+        if (!$comparisonResult->hasFailure()) {
             return;
         }
 
-        $this->AddReportLine('', 0);
-        $this->AddReportLine("Failures:", 0);
+        $this->addReportLine('', 0);
+        $this->addReportLine("Failures:", 0);
 
-        foreach ($comparisonResult->Failures() as $failure) {
-            $this->AddReportLine('', 0);
-            $this->AddReportLine(sprintf("%s %s", $this->_failureCount, $failure->getResult()), 0);
+        foreach ($comparisonResult->failures() as $failure) {
+            $this->addReportLine('', 0);
+            $this->addReportLine(sprintf("%s %s", $this->_failureCount, $failure->getResult()), 0);
         }
     }
 
-    private function AddReportLine($message, $tabDepth)
+    private function addReportLine($message, $tabDepth)
     {
         $a = array_fill(0, $tabDepth * 2, ' '); //Each tab we want to be 2 space chars
         $indentation = implode('', $a);

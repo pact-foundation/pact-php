@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 9/29/2017
- * Time: 3:51 PM
- */
 
 namespace PhpPactTest\IntegrationTests\Models;
 
@@ -37,7 +31,7 @@ class ResponseTestCase extends TestCase
      * Using this function to avoid overriding PHPUnitTestCase constructors
      * @param $json
      */
-    public function Initialize($json)
+    public function initialize($json)
     {
         $this->_responseComparer = new ProviderServiceResponseComparer();
 
@@ -53,12 +47,12 @@ class ResponseTestCase extends TestCase
         $mapper = new ProviderServiceResponseMapper();
         if (isset($jsonObj->expected)) {
             // cast $json->expected
-            $this->setExpected($mapper->Convert($jsonObj->expected));
+            $this->setExpected($mapper->convert($jsonObj->expected));
         }
 
         if (isset($jsonObj->actual)) {
             // cast $json->actual
-            $this->setActual($mapper->Convert($jsonObj->actual));
+            $this->setActual($mapper->convert($jsonObj->actual));
         }
     }
 
@@ -126,14 +120,17 @@ class ResponseTestCase extends TestCase
         $this->_actual = $actual;
     }
 
-    public function Verify()
+    /**
+     * @param $filePath
+     */
+    public function verify($filePath)
     {
-        $result = $this->_responseComparer->Compare($this->_expected, $this->_actual);
+        $result = $this->_responseComparer->compare($this->_expected, $this->_actual);
 
         if ($this->_match) {
-            $this->assertFalse($result->HasFailure(), "There should not be any errors");
+            $this->assertFalse($result->hasFailure(), "There should not be any errors" . $filePath);
         } else {
-            $this->assertEquals(1, count($result->Failures()));
+            $this->assertGreaterThanOrEqual(1, count($result->failures()), "There should be at least one failure: " . $filePath);
         }
     }
 }

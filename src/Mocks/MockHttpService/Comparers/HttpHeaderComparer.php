@@ -2,32 +2,65 @@
 
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
+use PhpPact\Comparers;
+use PhpPact\Matchers\Checkers\FailedMatcherCheck;
+use PhpPact\Mocks\MockHttpService\Matchers\JsonPathMatchChecker;
+use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
+
 class HttpHeaderComparer
 {
+    const PATH_PREFIX = 'headers';
 
     /**
-     * @param $expected array
-     * @param $actual array
+     * @param $expected IHttpMessage
+     * @param $actual IHttpMessage
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function Compare($expected, $actual)
+    public function compare($expected, $actual )
     {
-        $result = new \PhpPact\Comparers\ComparisonResult("includes headers");
+        if (!($expected instanceof IHttpMessage)) {
+            throw new \Exception("Expected is not an instance of IHttpMessage: " . print_r($expected, true));
+        }
+
+        if (!($actual instanceof IHttpMessage)) {
+            throw new \Exception("Actual is not an instance of IHttpMessage: " . print_r($actual, true));
+        }
+
+        $matchingRules = $expected->getMatchingRules();
+        $result = new Comparers\ComparisonResult("includes headers");
 
         if ($actual == null) {
-            $result->RecordFailure(new \PhpPact\Comparers\ErrorMessageComparisonFailure("Actual Headers are null"));
+            $result->recordFailure(new Comparers\ErrorMessageComparisonFailure("Actual Headers are null"));
             return $result;
         }
 
-        $expectedArray = $this->ObjectToArray($expected);
-        $expectedArray = $this->MakeArrayLowerCase($expectedArray);
+        if ($this->shouldApplyMatchers($matchingRules)) {
+            $jsonPathChecker = new JsonPathMatchChecker();
+            $results = $jsonPathChecker->match(__CLASS__, $expected, $actual, $matchingRules, false);
 
-        $actualArray = $this->ObjectToArray($actual);
-        $actualArray = $this->MakeArrayLowerCase($actualArray);
+            /**
+             * @var $results \PhpPact\Matchers\Checkers\MatcherResult
+             */
+            $checks = $results->getMatcherChecks();
+            foreach ($checks as $check) {
+                if (($check instanceof FailedMatcherCheck)) {
+                    $result->recordFailure(new Comparers\DiffComparisonFailure($expected, $actual));
+                }
+            }
+
+            return $result;
+        }
+
+
+        $expectedArray = $this->objectToArray($expected->getHeaders());
+        $expectedArray = $this->makeArrayLowerCase($expectedArray);
+
+        $actualArray = $this->objectToArray($actual->getHeaders());
+        $actualArray = $this->makeArrayLowerCase($actualArray);
 
         foreach ($expectedArray as $header_key => $header_value) {
-            $headerResult = new \PhpPact\Comparers\ComparisonResult(sprintf("'%s' with value %s", $header_key, $header_value));
+            $headerResult = new Comparers\ComparisonResult(sprintf("'%s' with value %s", $header_key, $header_value));
 
 
             if (isset($actualArray[$header_key])) {
@@ -42,31 +75,31 @@ class HttpHeaderComparer
                     $actualKeywords = array_map('trim', $actualKeywords);
                     $expectedKeywords = array_map('trim', $expectedKeywords);
 
-                    if (!$this->array_diff_order($expectedKeywords, $actualKeywords)) {
-                        $failure = new \PhpPact\Comparers\DiffComparisonFailure($header_value, $actualValue);
-                        $headerResult->RecordFailure($failure);
+                    if (!$this->arrayDiffOrder($expectedKeywords, $actualKeywords)) {
+                        $failure = new Comparers\DiffComparisonFailure($header_value, $actualValue);
+                        $headerResult->recordFailure($failure);
                     }
                 } elseif ($header_value != $actualValue) {
-                    $failure = new \PhpPact\Comparers\DiffComparisonFailure($header_value, $actualValue);
-                    $headerResult->RecordFailure($failure);
+                    $failure = new Comparers\DiffComparisonFailure($header_value, $actualValue);
+                    $headerResult->recordFailure($failure);
                 }
             } else {
-                $failure = new \PhpPact\Comparers\ErrorMessageComparisonFailure(sprintf("Header with key '%s', does not exist in actual", $header_key));
-                $headerResult->RecordFailure($failure);
+                $failure = new Comparers\ErrorMessageComparisonFailure(sprintf("Header with key '%s', does not exist in actual", $header_key));
+                $headerResult->recordFailure($failure);
             }
 
-            $result->AddChildResult($headerResult);
+            $result->addChildResult($headerResult);
         }
 
         return $result;
     }
 
-    private function MakeArrayLowerCase($from)
+    private function makeArrayLowerCase($from)
     {
         $new = array();
         foreach ($from as $key => $value) {
             if (is_array($value)) {
-                $value = $this->MakeArrayLowerCase($value);
+                $value = $this->makeArrayLowerCase($value);
             }
 
             $new[strtolower($key)] = $value;
@@ -75,13 +108,13 @@ class HttpHeaderComparer
         return $new;
     }
 
-    public function ObjectToArray($object)
+    public function objectToArray($object)
     {
         if (!is_object($object) && !is_array($object)) {
             return $object;
         }
 
-        return array_map(array($this, 'ObjectToArray'), (array)$object);
+        return array_map(array($this, 'objectToArray'), (array)$object);
     }
 
     /**
@@ -93,7 +126,7 @@ class HttpHeaderComparer
      * @param $array2
      * @return bool
      */
-    private function array_diff_order($array1, $array2)
+    private function arrayDiffOrder($array1, $array2)
     {
         while ((list($key1, $val1) = each($array1)) && (list($key2, $val2) = each($array2))) {
             if ($key1 != $key2 || $val1 != $val2) {
@@ -101,5 +134,25 @@ class HttpHeaderComparer
             }
         }
         return true;
+    }
+
+    /**
+     * Test if we should apply matching rules to the body
+     *
+     * @param $matchingRules[MatchingRules]
+     *
+     * @return bool
+     */
+    private function shouldApplyMatchers($matchingRules) {
+
+        if (count($matchingRules) > 0) {
+            foreach($matchingRules as $jsonPath => $matchingRule) {
+                if (stripos($jsonPath, '.' . static::PATH_PREFIX) !== false) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

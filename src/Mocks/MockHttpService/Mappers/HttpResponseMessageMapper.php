@@ -2,13 +2,15 @@
 
 namespace PhpPact\Mocks\MockHttpService\Mappers;
 
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
+
 class HttpResponseMessageMapper
 {
     /**
      * @param \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse $response
      * @return \Windwalker\Http\Response\Response
      */
-    public function Convert(\PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse $response)
+    public function convert(ProviderServiceResponse $response)
     {
         $httpResponse = new \Windwalker\Http\Response\Response();
 

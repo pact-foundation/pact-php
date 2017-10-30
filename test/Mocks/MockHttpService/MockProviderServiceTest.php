@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 7/7/2017
- * Time: 11:17 AM
- */
 
 namespace PhpPact\Mocks\MockHttpService\MockProviderService;
 
@@ -23,7 +17,7 @@ class MockProviderServiceTest extends TestCase
 
         $hasException = false;
         try {
-            $mockProviderService->With($request);
+            $mockProviderService->with($request);
         } catch (Exception $e) {
             $hasException = true;
         }
@@ -34,7 +28,7 @@ class MockProviderServiceTest extends TestCase
 
         $hasException = false;
         try {
-            $mockProviderService->With($request);
+            $mockProviderService->with($request);
         } catch (\InvalidArgumentException $e) {
             $hasException = true;
         }
@@ -44,7 +38,7 @@ class MockProviderServiceTest extends TestCase
         $request = false;
         $hasException = false;
         try {
-            $mockProviderService->With($request);
+            $mockProviderService->with($request);
         } catch (\InvalidArgumentException $e) {
             $hasException = true;
         }

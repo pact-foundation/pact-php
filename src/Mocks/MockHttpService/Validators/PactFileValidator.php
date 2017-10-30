@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 7/12/2017
- * Time: 11:20 AM
- */
 
 namespace PhpPact\Mocks\MockHttpService\Validators;
 
@@ -21,12 +15,12 @@ class PactFileValidator
      * @return bool
      * @throws \PhpPact\PactFailureException
      */
-    public function Validate(\PhpPact\Models\PactFile $pactFile)
+    public function validate(\PhpPact\Models\PactFile $pactFile)
     {
         $data = json_decode(json_encode($pactFile));
 
         $validator = new \JsonSchema\Validator;
-        $validator->validate($data, (object)['$ref' => 'file://' . $this->HuntForSchema()]);
+        $validator->validate($data, (object)['$ref' => 'file://' . $this->huntForSchema($pactFile)]);
 
         if (!$validator->isValid()) {
             $msg = "JSON does not validate. Violations:\n";
@@ -40,12 +34,18 @@ class PactFileValidator
         return true;
     }
 
-    private function HuntForSchema()
+    private function huntForSchema(\PhpPact\Models\PactFile $pactFile)
     {
+
         $fileName = 'pact-file-schema.json';
         $currentDir = dirname(__FILE__);
-        $relativeDir = $currentDir . '/../../../Models/' . $fileName;
+        $relativeDir = $currentDir . '/../../../Schema/' . $pactFile->getPactSpecificationVersion() . '/'. $fileName;
         $realPath = realpath($relativeDir);
+
+        if (!file_exists($realPath)) {
+            throw new \Exception(sprintf("Schema for Pact File cannot be found: %s" , $relativeDir));
+        }
+
         return $realPath;
     }
 }

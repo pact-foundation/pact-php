@@ -2,7 +2,12 @@
 
 namespace PhpPact\Mocks\MockHttpService\Models;
 
-class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
+use PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatchChecker;
+use PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatchChecker;
+use PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatchChecker;
+use PhpPact\Matchers\Rules\MatchingRule;
+
+class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
 {
     private $_bodyWasSet;
     private $_body;
@@ -10,13 +15,14 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
     private $_path; //[JsonProperty(PropertyName = "path")]
     private $_headers; //[JsonProperty(PropertyName = "headers")] / [JsonConverter(typeof(PreserveCasingDictionaryConverter))]
 
-    private $_matchingRules;
+    private $_bodyMatchers;
     private $_query; //[JsonProperty(PropertyName = "query")]
+    private $_matchingRules;
 
-    public function __construct($method, $path, $headers = null, $body = false)
+    public function __construct($method, $path, $headers = null, $body = false, $matchingRules = array())
     {
         // enumerate over HttpVerb to set the value of the
-        $verb = new \PhpPact\Mocks\MockHttpService\Models\HttpVerb();
+        $verb = new HttpVerb();
         $this->_method = $verb->Enum($method);
         $this->_path = $path;
         if ($headers) {
@@ -26,6 +32,9 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
         if ($body !== false) {
             $this->setBody($body);
         }
+
+
+        $this->setMatchingRules($matchingRules);
     }
 
     /**
@@ -51,7 +60,7 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
             $body = null;
         }
 
-        $this->_body = $this->ParseBodyMatchingRules($body);
+        $this->_body = $this->parseBodyMatchingRules($body);
 
         return false;
     }
@@ -114,39 +123,71 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
     /**
      * @return mixed
      */
+    public function getBodyMatchers()
+    {
+        return $this->_bodyMatchers;
+    }
+
+    /**
+     * @return array
+     */
     public function getMatchingRules()
     {
         return $this->_matchingRules;
     }
 
+    /**
+     * @param array|false $matchingRules
+     */
+    public function setMatchingRules($matchingRules)
+    {
+        if (count($matchingRules) > 0) {
+           foreach ($matchingRules as $matchingRule) {
+                $this->addMatchingRule($matchingRule);
+           }
+        }
+    }
 
-    public function ShouldSerializeBody()
+    /**
+     * Add a single matching rule
+     *
+     * @param MatchingRule $matchingRule
+     */
+    public function addMatchingRule(MatchingRule $matchingRule)
+    {
+        $this->_matchingRules[$matchingRule->getJsonPath()] = $matchingRule;
+    }
+
+
+    public function shouldSerializeBody()
     {
         return $this->_bodyWasSet;
     }
 
-    public function PathWithQuery()
+    public function pathWithQuery()
     {
-        if (!$this->_path && !$this->Query) {
+        if (!$this->_path && !$this->_query) {
             throw new \RuntimeException("Query has been supplied, however Path has not. Please specify as Path.");
         }
 
-        return !($this->Query) ?
-            sprintf("%s?%s", $this->_path, $this->Query) :
+        return !($this->_query) ?
+            sprintf("%s?%s", $this->_path, $this->_query) :
             $this->_path;
     }
 
-    private function ParseBodyMatchingRules($body)
+    private function parseBodyMatchingRules($body)
     {
-        $this->_matchingRules = array();
+        $this->_bodyMatchers = array();
 
         if ($this->getContentType() == "application/json") {
-            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
+            $this->_bodyMatchers[] = new JsonHttpBodyMatchChecker(false);
         } elseif ($this->getContentType() == "text/plain") {
-            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatcher();
+            $this->_bodyMatchers[] = new SerializeHttpBodyMatchChecker();
+        } elseif ($this->getContentType() == "application/xml") {
+            $this->_bodyMatchers[] = new XmlHttpBodyMatchChecker(false);
         } else {
             // make JSON the default based on specification tests
-            $this->_matchingRules[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatcher(false);
+            $this->_bodyMatchers[] = new JsonHttpBodyMatchChecker(false);
         }
 
         return $body;
@@ -166,7 +207,7 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
         if (is_object($headers) && isset($headers->$key)) {
             return $headers->$key;
         }
-        return false;
+        return 'application/json';
     }
 
 
@@ -191,26 +232,20 @@ class ProviderServiceRequest implements \JsonSerializable, \PhpPact\Mocks\MockHt
 
         if ($this->_body) {
             $obj->body = $this->_body;
+        }
 
-            if ($this->isJsonString($obj->body)) {
-                $obj->body = \json_decode($obj->body);
+        if (count($this->_matchingRules) > 0) {
+            $obj->matchingRules = new \stdClass();
+            foreach($this->_matchingRules as $matchingRuleVo) {
+
+                /**
+                 * @var $matchingRuleVo MatchingRule
+                 */
+                $jsonPath = $matchingRuleVo->getJsonPath();
+                $obj->matchingRules->$jsonPath = $matchingRuleVo->jsonSerialize();
             }
         }
 
         return $obj;
-    }
-
-    private function isJsonString($obj)
-    {
-        if ($obj === '') {
-            return false;
-        }
-
-        @\json_decode($obj);
-        if (\json_last_error()) {
-            return false;
-        }
-
-        return true;
     }
 }

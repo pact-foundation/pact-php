@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 9/29/2017
- * Time: 3:26 PM
- */
 
 namespace PhpPactTest\IntegrationTests;
 
@@ -18,7 +12,7 @@ class MockHttpServiceSpecificationTests extends TestCase
      */
     public function TestRequestSpecification()
     {
-        $this->RunPactSpecificationTests(__DIR__ . '/testcases-v1_1/request', 'request');
+        $this->RunPactSpecificationTests(__DIR__ . '/testcases/request', 'request');
     }
 
 
@@ -27,7 +21,7 @@ class MockHttpServiceSpecificationTests extends TestCase
      */
     public function TestResponseSpecification()
     {
-        $this->RunPactSpecificationTests(__DIR__ . '/testcases-v1_1/response', 'response');
+        $this->RunPactSpecificationTests(__DIR__ . '/testcases/response', 'response');
     }
 
     private function RunPactSpecificationTests($pathToTestCases, $testCaseType)
@@ -45,22 +39,21 @@ class MockHttpServiceSpecificationTests extends TestCase
                     $testCaseJson = file_get_contents($fullPathFileName);
 
                     $hasException = false;
-
                     try {
                         switch ($testCaseType) {
                             case 'request':
                                 $testCaseRunner = new Models\RequestTestCase();
-                                $testCaseRunner->Initialize($testCaseJson);
+                                $testCaseRunner->initialize($testCaseJson);
                                 break;
                             case 'response':
                                 $testCaseRunner = new Models\ResponseTestCase();
-                                $testCaseRunner->Initialize($testCaseJson);
+                                $testCaseRunner->initialize($testCaseJson);
                                 break;
                             default:
                                 throw new \InvalidArgumentException("Unexpected test case runner type: " . $testCaseType);
                         }
 
-                        $testCaseRunner->Verify();
+                        $testCaseRunner->verify($fullPathFileName);
                     } catch (\Exception $e) {
                         $hasException = true;
                     }

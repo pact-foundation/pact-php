@@ -2,6 +2,8 @@
 
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
+use PhpPact\Comparers;
+
 class HttpPathComparer
 {
 
@@ -11,12 +13,12 @@ class HttpPathComparer
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
-    public function Compare($expected, $actual)
+    public function compare($expected, $actual)
     {
-        $result = new \PhpPact\Comparers\ComparisonResult(sprintf("has path %s", (string)$expected));
+        $result = new Comparers\ComparisonResult(sprintf("has path %s", (string)$expected));
 
         if ($expected != $actual) {
-            $result->RecordFailure(new \PhpPact\Comparers\DiffComparisonFailure($expected, $actual));
+            $result->recordFailure(new Comparers\DiffComparisonFailure($expected, $actual));
         }
 
         return $result;

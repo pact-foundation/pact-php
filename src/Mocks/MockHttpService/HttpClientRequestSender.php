@@ -36,9 +36,9 @@ class HttpClientRequestSender implements IHttpRequestSender
      */
     public function Send($request, $baseUri)
     {
-        $httpRequest = $this->_httpRequestMessageMapper->Convert($request, $baseUri);
+        $httpRequest = $this->_httpRequestMessageMapper->convert($request, $baseUri);
         $httpResponse = $this->_httpClient->sendRequest($httpRequest);
-        $response = $this->_providerServiceResponseMapper->Convert($httpResponse);
+        $response = $this->_providerServiceResponseMapper->convert($httpResponse);
 
         unset($httpRequest);
         unset($httpResponse);

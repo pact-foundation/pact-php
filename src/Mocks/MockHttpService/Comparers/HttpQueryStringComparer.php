@@ -2,14 +2,15 @@
 
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
-use PHPUnit\Runner\Exception;
+use PhpPact\Comparers\ComparisonResult;
+use PhpPact\Comparers\DiffComparisonFailure;
 
 class HttpQueryStringComparer
 {
-    public function Compare($expected, $actual)
+    public function compare($expected, $actual)
     {
         if (!$expected && !$actual) {
-            return new \PhpPact\Comparers\ComparisonResult("has no query strings");
+            return new ComparisonResult("has no query strings");
         }
 
         $expectedQuery = $expected;
@@ -27,27 +28,27 @@ class HttpQueryStringComparer
 
         $actualQuery = rtrim($actualQuery, '&');
 
-        $result = new \PhpPact\Comparers\ComparisonResult(sprintf("has query %s", ($expectedQuery ? $expectedQuery : "null")));
+        $result = new ComparisonResult(sprintf("has query %s", ($expectedQuery ? $expectedQuery : "null")));
 
         if (!$expectedQuery && !$actualQuery) {
-            return new \PhpPact\Comparers\ComparisonResult("has no query strings");
+            return new ComparisonResult("has no query strings");
         }
 
         if (!$expectedQuery || !$actualQuery) {
-            $result->RecordFailure(new \PhpPact\Comparers\DiffComparisonFailure($expected, $actual));
+            $result->recordFailure(new DiffComparisonFailure($expected, $actual));
             return $result;
         }
 
-        $expectedQueryItems = $this->ConvertQueryToArray($expectedQuery);
-        $actualQueryItems = $this->ConvertQueryToArray($actualQuery);
+        $expectedQueryItems = $this->convertQueryToArray($expectedQuery);
+        $actualQueryItems = $this->convertQueryToArray($actualQuery);
 
         if (count($expectedQueryItems) != count($actualQueryItems)) {
-            $result->RecordFailure(new \PhpPact\Comparers\DiffComparisonFailure($expectedQuery, $actualQuery));
+            $result->recordFailure(new DiffComparisonFailure($expectedQuery, $actualQuery));
             return $result;
         }
 
-        if (!$this->CompareArray($expectedQueryItems, $actualQueryItems, $result)) {
-            $result->RecordFailure(new \PhpPact\Comparers\DiffComparisonFailure($expectedQuery, $actualQuery));
+        if (!$this->compareArray($expectedQueryItems, $actualQueryItems)) {
+            $result->recordFailure(new DiffComparisonFailure($expectedQuery, $actualQuery));
             return $result;
         }
 
@@ -60,7 +61,7 @@ class HttpQueryStringComparer
      * @param $query
      * @return array
      */
-    private function ConvertQueryToArray($query)
+    private function convertQueryToArray($query)
     {
         if (!trim($query)) {
             return array();
@@ -69,8 +70,8 @@ class HttpQueryStringComparer
         $equalCount = substr_count($query, "=");
         $ampCount   = substr_count($query, "&");
 
+        $newQuery = "";
         if ($equalCount > $ampCount) {
-            $newQuery = "";
             $expectAmp = false;
 
             for ($i = 0; $i < strlen($query); $i++) {
@@ -103,27 +104,15 @@ class HttpQueryStringComparer
      *
      * @return bool
      */
-    private function CompareArray($expected, $actual)
+    private function compareArray($expected, $actual)
     {
-        $expectedKeys = $this->ExplodeKeys($expected);
-        $actualKeys = $this->ExplodeKeys($actual);
+        $expectedKeys = $this->explodeKeys($expected);
+        $actualKeys = $this->explodeKeys($actual);
 
         // if the keys in the original strings do not equal, blow up
         if (count($expectedKeys) != count($actualKeys)) {
             return false;
         }
-
-        // check that the unique keys are in the proper order
-        /*
-        $expectedKeyArr = array_keys($expectedKeys);
-        $actualKeyArr = array_keys($actualKeys);
-        $count = count($expectedKeyArr);
-        for($i = 0; $i < $count; $i++) {
-            if ($expectedKeyArr[$i] != $actualKeyArr[$i]) {
-                return false;
-            }
-        }
-        */
 
         foreach ($expectedKeys as $expectedKey=>$expectedArr) {
 
@@ -175,7 +164,7 @@ class HttpQueryStringComparer
      * @param $arr
      * @return array
      */
-    private function ExplodeKeys($arr)
+    private function explodeKeys($arr)
     {
         $keys = array();
 

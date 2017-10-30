@@ -2,7 +2,7 @@
 
 namespace PhpPact\Mocks\MockHttpService\Mappers;
 
-use Windwalker\Http\Request\Request;
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
 
 class HttpRequestMessageMapper
 {
@@ -12,11 +12,11 @@ class HttpRequestMessageMapper
      *
      * This should likely not be in the generic http request message class
      *
-     * @param \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest $request
+     * @param ProviderServiceRequest $request
      * @param string $baseUri
      * @return \Windwalker\Http\Request\Request
      */
-    public function Convert(\PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest $request, $baseUri)
+    public function convert(ProviderServiceRequest $request, $baseUri)
     {
         if (substr($baseUri, -1) == '/') {
             $baseUri = substr($baseUri, 0, strlen($baseUri) - 1);

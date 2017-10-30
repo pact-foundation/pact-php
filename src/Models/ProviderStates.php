@@ -15,7 +15,7 @@ class ProviderStates
         $this->TearDown = $tearDown;
     }
 
-    public function Add($providerState)
+    public function add($providerState)
     {
         if (!$this->_providerStates) {
             $this->_providerStates = array();
@@ -39,7 +39,7 @@ class ProviderStates
     }
 
 
-    public function Find($providerState)
+    public function find($providerState)
     {
         if ($providerState == null) {
             throw new \InvalidArgumentException("Please supply a non null providerState");
@@ -47,7 +47,7 @@ class ProviderStates
 
         if ($this->_providerStates) {
             $description = $providerState;
-            if ($providerState instanceof \PhpPact\Models\ProviderState) {
+            if ($providerState instanceof ProviderState) {
                 $description = $providerState->ProviderStateDescription;
             }
 

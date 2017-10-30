@@ -13,11 +13,11 @@ interface IPactVerifier
      * @param $tearDown A tear down action that will be run after the interaction verify, if the provider has specified it in the interaction. If no action is required please namespace an empty lambda () => {}
      */
 
-    public function ServiceProvider($providerName, $httpClient, $httpRequestSender);
+    public function serviceProvider($providerName, $httpClient, $httpRequestSender);
 
-    public function HonoursPactWith($consumerName);
+    public function honoursPactWith($consumerName);
 
-    public function PactUri($uri, $options = null);
+    public function pactUri($uri, $options = null);
 
-    public function Verify($description = null, $providerState = null);
+    public function verify($description = null, $providerState = null);
 }

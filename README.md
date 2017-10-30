@@ -10,25 +10,35 @@ The namespace is PhpPact as [Pact-PHP](https://github.com/andykelk/pact-php) use
 
 
 ## Composer
-For Pact-PHP 1.1, there is a need to run dev-master on TreeWalker dependency, you will need to use the following composer.json
+If you want to run this on Windows, because of dependencies in PHP Unit and prettier output, certain libraries had to be included.
+Thus, there are two ways to run composer update on Windows
+ 1. `composer update --ignore-platform-reqs`
+ 2. `composer update --no-dev`
+
+### Pact-PHP 2.0
+For Pact-PHP 2.0, there is a need to run min-stability dev and pull from a feature addition to [Peekmo/jsonpath](https://github.com/Peekmo/JsonPath), you will need to use the following composer.json
 ```json
 {
 	"prefer-stable": true,
 	"minimum-stability": "dev",
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/mattermack/JsonPath"
+		}
+	],
 	"require":
 	{
-		"mattersight/phppact": "^1.1"
+		"mattersight/phppact": "^2.0"
 	}
 }
 ```
 
-On Linux, you can simple run `composer update` 
-
-If you want to run this on Windows, because of dependencies in PHP Unit and prettier output, certain libraries had to be included. Thus, there are two ways to run composer update on Windows
-
-- `composer update --ignore-platform-reqs`
-- `composer update --no-dev`
-
+## PHP Extentions
+To support XML, you need the `php_xsl` extension.
+  
+To support PactBrokerConnector, you need `php_curl` extension and possibly `php_openssl`
+ 
 
 ## Pull Requests
 This project is actively taking pull requests and appreciate the contribution.   The code needs to pass the CI validation 
@@ -75,7 +85,7 @@ class MockApiConsumer
      * @param $uri string
      * @return mixed
      */
-    public function GetBasic($url)
+    public function getBasic($url)
     {
         $uri = (new \Windwalker\Uri\PsrUri($url))
             ->withPath("/");
@@ -144,8 +154,8 @@ class ConsumerTest extends TestCase
     {
         parent::setUp();
         $this->_build = new \PhpPact\PactBuilder();
-        $this->_build->ServiceConsumer(self::CONSUMER_NAME)
-            ->HasPactWith(self::PROVIDER_NAME);
+        $this->_build->serviceConsumer(self::CONSUMER_NAME)
+            ->hasPactWith(self::PROVIDER_NAME);
     }
 
     protected function tearDown()
@@ -172,17 +182,17 @@ class ConsumerTest extends TestCase
 
         // build up the expected results and appropriate responses
         $mockService = $this->_build->getMockService();
-        $mockService->Given("Basic Get Request")
-            ->UponReceiving("A GET request with a base / path and a content type of json")
-            ->With($request)
-            ->WillRespondWith($response);
+        $mockService->given("Basic Get Request")
+            ->uponReceiving("A GET request with a base / path and a content type of json")
+            ->with($request)
+            ->willRespondWith($response);
 
         // build system under test
         $host = $mockService->getHost();
 
         $clientUnderTest = new MockApiConsumer();
         $clientUnderTest->setMockHost($host);
-        $receivedResponse = $clientUnderTest->GetBasic("http://localhost");
+        $receivedResponse = $clientUnderTest->getBasic("http://localhost");
 
         // do some asserts on the return
         $this->assertEquals('200', $receivedResponse->getStatusCode(), "Let's make sure we have an OK response");
@@ -190,7 +200,7 @@ class ConsumerTest extends TestCase
         // verify the interactions
         $hasException = false;
         try {
-            $results = $mockService->VerifyInteractions();
+            $results = $mockService->verifyInteractions();
 
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
@@ -221,11 +231,11 @@ Bootstrap PHPUnit with appropriate composer and autoloaders.   Optionally, add a
 // Pick your PSR client.  Guzzle should work as well.
 $httpClient = new \Windwalker\Http\HttpClient();
 
-$pactVerifier->ProviderState("A GET request to get types")
-                ->ServiceProvider("MockApiProvider", $httpClient)
-                ->HonoursPactWith("MockApiConsumer")
-                ->PactUri('../pact/mockapiconsumer-mockapiprovider.json')
-                ->Verify();
+$pactVerifier->providerState("A GET request to get types")
+                ->serviceProvider("MockApiProvider", $httpClient)
+                ->honoursPactWith("MockApiConsumer")
+                ->pactUri('../pact/mockapiconsumer-mockapiprovider.json')
+                ->verify();
 ```
 
 ### 4. Run the test
@@ -254,7 +264,11 @@ class ProviderTest extends TestCase
 {
     public function testPactProviderStateSetupTearDown() 
     {
+        
         $httpClient = new \Windwalker\Http\HttpClient();
+        
+        // whatever your URL of choice is
+        $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
 
         $pactVerifier = new \PhpPact\PactVerifier($uri);
 
@@ -286,13 +300,24 @@ class ProviderTest extends TestCase
             unlink($absolutePath);
         };
 
-        $pactVerifier->ProviderState("A GET request for a setup", $setUpFunction, $tearDownFunction);
+        // wherever your PACT file is
+        // you may want to leverage PactBrokerConnector to pull this
+        $json = 'mockapiconsumer-mockapiprovider.json';
+
+        $pactVerifier->providerState("A GET request for a setup", $setUpFunction, $tearDownFunction)
+            ->serviceProvider("MockApiProvider", $httpClient)
+            ->honoursPactWith("MockApiConsumer")
+            ->pactUri($json)
+            ->verify(); // note that this should test all as we can run setup and tear down
+            
+        
+        
     }         
 }
 ```
 
 ### Provider Test Filtering
-If you want to filter down the interaction you want to test, pass in options to `Verify()`.  Try the below.
+If you want to filter down the interaction you want to test, pass in options to `verify()`.  Try the below.
 
 ```php
 <?php
@@ -303,12 +328,50 @@ $testState = "There is something to POST to";
 // Pick your PSR client.  Guzzle should work as well.
 $httpClient = new \Windwalker\Http\HttpClient();
 
-$pactVerifier->ProviderState("Test State")
-    ->ServiceProvider("MockApiProvider", $httpClient)
-    ->HonoursPactWith("MockApiConsumer")
-    ->PactUri($json)
-    ->Verify(null, $testState);
+$pactVerifier->providerState("Test State")
+    ->serviceProvider("MockApiProvider", $httpClient)
+    ->honoursPactWith("MockApiConsumer")
+    ->pactUri($json)
+    ->verify(null, $testState);
   
+```
+
+### Matchers
+This is a PHP specific implementation of Matchers.  This was derived from the [JVM Matching Instructions.](https://github.com/DiUS/pact-jvm/wiki/Matching)   
+While almost all [Pact Specifications under v2](https://github.com/pact-foundation/pact-specification/tree/version-2), are implemented, there are a few outliners:
+1. XML JSONPath cases have not yet been implemented
+2. Only JSON body and header matchers have been implemented to date
+
+I figure this is the most common use cases and most difficult to knock out.   While all tests are passing, I do not believe the 
+spirit of some of the cases are honored.   Refactoring will certainly need to be done in some cases.
+
+All matchers need to be defined by a JSONPath and attached to either the Request or Response object.  There are all kinds of gotchas,
+which have been documented on [Matching Gotchas](https://github.com/realestate-com-au/pact/wiki/Matching-gotchas)
+
+For PHP gotchas, the Pact-PHP added the first and last backslash ( / ).   For example, if you wanted to have a regex for just words instead of 
+`/\w+/`, you would just put in `\w+`.  
+
+Responser body matchers need to follow Postel's law.   Below there are two matchers:
+1. Confirm that all responses have the same type
+2. Confirm `walrus` is in the response body
+```php
+<?php 
+$resHeaders = array();
+$resHeaders["Content-Type"] = "application/json";
+$resHeaders["AnotherHeader"] = "my-header";
+
+$response = new ProviderServiceResponse('200', $resHeaders);
+$response->setBody("{\"msg\" : \"I am almost a walrus\"}");
+
+$resMatchers = array();
+$resMatchers['$.body.msg'] = new MatchingRule('$.body.msg', array(
+    MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::REGEX_TYPE,
+    MatcherRuleTypes::REGEX_PATTERN => 'walrus')
+);
+$resMatchers['$.body.*'] = new MatchingRule('$.body.*', array(
+    MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::OBJECT_TYPE)
+);
+$response->setMatchingRules($resMatchers);
 ```
 
 ## Pact Broker Integration
@@ -317,9 +380,9 @@ To integrate with your pact broker host, there are several options. This section
 ### Publishing Pacts
 There are several hopefully self explanatory functions in ```PactBrokerConnector```:
 
-- PublishFile - reads the JSON from a file
-- PublishJson - publishes from a JSON string
-- PublishPact - publishes from a ```ProviderServicePactFile``` object
+- publishFile - reads the JSON from a file
+- publishJson - publishes from a JSON string
+- publish - publishes from a ```ProviderServicePactFile``` object
 
 ```php
 <?php
@@ -330,7 +393,7 @@ $connector = new \PhpPact\PactBrokerConnector($uriOptions);
 
 // Use the appropriate function to read from a file, JSON string, or ProviderServicePactFile object
 $file = __DIR__ . '/../example/pact/mockapiconsumer-mockapiprovider.json';
-$statusCode = $connector->PublishFile($file, '1.0.3');
+$statusCode = $connector->publishFile($file, '1.0.3');
 
 ```
 
@@ -339,8 +402,8 @@ If you have an open pact broker, ```$pactVerifier->PactUri``` uses ```file_get_c
 
 To do some more robust interactions, There are several hopefully self explanatory functions in ```PactBrokerConnector```:
 
-- RetrieveLatestProviderPacts - retrieve all the latest pacts associated with this provider
-- RetrievePact - retrieve particular pact
+- retrieveLatestProviderPacts - retrieve all the latest pacts associated with this provider
+- retrievePact - retrieve particular pact
 
 ```php
 <?php
@@ -350,11 +413,11 @@ $uriOptions = new \PhpPact\PactUriOptions("http://your-pact-broker" );
 $connector = new \PhpPact\PactBrokerConnector($uriOptions);
 
 // particular version
-$pact = $connector->RetrievePact("MockApiProvider", "MockApiConsumer", "1.0.2");
+$pact = $connector->retrievePact("MockApiProvider", "MockApiConsumer", "1.0.2");
 error_log(\json_encode($pact,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
 // get all pacts for this provider
-$pacts = $connector->RetrieveLatestProviderPacts("MockApiProvider");
+$pacts = $connector->retrieveLatestProviderPacts("MockApiProvider");
 $pact = array_pop($pacts);
 error_log(\json_encode($pact,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
