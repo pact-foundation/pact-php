@@ -108,7 +108,31 @@ final class ProviderTest extends TestCase
                 ->honoursPactWith("MockApiConsumer")
                 ->pactUri($json);
 
-            $pactVerifier->verify(null, "A GET request to get variable types with matches");
+            $pactVerifier->verify(null, "There is an XML alligator named Mary");
+
+        } catch (\PhpPact\PactFailureException $e) {
+            $hasException = true;
+        }
+        $this->assertFalse($hasException, "Expect Pact to validate.");
+    }
+
+    public function testPactProviderWithXmlMatchers()
+    {
+        $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
+
+        $httpClient = new \Windwalker\Http\HttpClient();
+
+        $pactVerifier = new \PhpPact\PactVerifier($uri);
+        $hasException = false;
+        try {
+            $json = $this->getPactRoot() . DIRECTORY_SEPARATOR . 'mockapiconsumer-mockapiprovider.json';
+
+            $pactVerifier->providerState("Test State")
+                ->serviceProvider("MockApiProvider", $httpClient)
+                ->honoursPactWith("MockApiConsumer")
+                ->pactUri($json);
+
+            $pactVerifier->verify(null, "There is an XML alligator named Mary and favorite color should be an array");
 
         } catch (\PhpPact\PactFailureException $e) {
             $hasException = true;
