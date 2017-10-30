@@ -340,12 +340,8 @@ $pactVerifier->providerState("Test State")
 
 ### Matchers
 This is a PHP specific implementation of Matchers.  This was derived from the [JVM Matching Instructions.](https://github.com/DiUS/pact-jvm/wiki/Matching)   
-While almost all [Pact Specifications under v2](https://github.com/pact-foundation/pact-specification/tree/version-2), are implemented, there are a few outliners:
-1. XML JSONPath cases have not yet been implemented
-2. Only JSON body and header matchers have been implemented to date
-
-I figure this is the most common use cases and most difficult to knock out.   While all tests are passing, I do not believe the 
-spirit of some of the cases are honored.   Refactoring will certainly need to be done in some cases.
+While almost all [Pact Specifications under v2](https://github.com/pact-foundation/pact-specification/tree/version-2) are implemented and passing, I do not 
+believe the spirit of some of the cases are not honored.   Refactoring will certainly need to be done in some cases.
 
 All matchers need to be defined by a JSONPath and attached to either the Request or Response object.  There are all kinds of gotchas,
 which have been documented on [Matching Gotchas](https://github.com/realestate-com-au/pact/wiki/Matching-gotchas)
