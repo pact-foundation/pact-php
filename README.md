@@ -1,5 +1,7 @@
 # Pact PHP
 
+[![Build status](https://ci.appveyor.com/api/projects/status/o18awsc0chcw184d/branch/master?svg=true)](https://ci.appveyor.com/project/mattermack/pact-php/branch/master)
+
 PHP version of Pact. Enables consumer driven contract testing, providing a mock service and DSL for the consumer project, and interaction playback and verification for the service provider project.
 
 This is a project to provide Pact functionality completely in PHP. This started as a straight port of 
