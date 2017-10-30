@@ -2,7 +2,7 @@
   "match": false,
   "comment": "XML array with type matcher mismatch",
   "expected": {
-    "headers": {},
+    "headers": {"Content-Type": "application/xml"},
     "body" : "<?xml version=\"1.0\" encoding=\"UTF-8\"?><people><person>Fred</person></people>",
     "matchingRules" : {
       "$.body.people" : {
@@ -11,7 +11,7 @@
     }
   },
   "actual": {
-    "headers": {},
+    "headers": {"Content-Type": "application/xml"},
     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><people><person>Fred</person><person>Fred</person><cat>Fred</cat></people>"
   }
 }

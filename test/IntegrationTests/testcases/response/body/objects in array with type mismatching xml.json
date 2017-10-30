@@ -2,7 +2,7 @@
   "match": false,
   "comment": "XML objects in array with type mismatching",
   "expected": {
-    "headers": {},
+    "headers": {"Content-Type": "application/xml"},
     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><people><person name=\"John Smith\" age=\"50\"/></people>",
     "matchingRules": {
       "$.body[*]": {
@@ -14,7 +14,7 @@
     }
   },
   "actual": {
-    "headers": {},
+    "headers": {"Content-Type": "application/xml"},
     "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><people><person name=\"Peter Peterson\" age=\"22\" gender=\"Male\"/><person/></people>"
   }
 }

@@ -17,7 +17,7 @@ class XmlHttpBodyMatchCheckerTest extends TestCase
         $xmlHttpBodyMatchChecker = new XmlHttpBodyMatchChecker(false);
 
         $original = "$.body.animals[*].alligator['@phoneNumber']";
-        $expected = "$.body.animals[*].alligator[*].@attributes.phoneNumber";
+        $expected = "$.body.animals.alligator[*].@attributes.phoneNumber";
         $actual = $xmlHttpBodyMatchChecker->modifyPathForXmlAttributes($original);
 
         $this->assertEquals($expected, $actual, "XML with attributes should be transformed");

@@ -73,47 +73,61 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
             }
 
             $newExpected->setMatchingRules($matchers);
-        }
 
-        $jsonHttpBodyMatchChecker = new JsonHttpBodyMatchChecker($this->_allowExtraKeys);
-        $results = $jsonHttpBodyMatchChecker->match($path, $newExpected, $newActual, $newExpected->getMatchingRules());
+            $jsonHttpBodyMatchChecker = new JsonHttpBodyMatchChecker($this->_allowExtraKeys);
+            $results = $jsonHttpBodyMatchChecker->match($path, $newExpected, $newActual, $newExpected->getMatchingRules());
 
-        /**
-         * @var $results \PhpPact\Matchers\Checkers\MatcherResult
-         */
-        $checks = $results->getMatcherChecks();
-        $numOfJsonFailures = 0;
-        $numOfJsonMatches = 0;
-        foreach ($checks as $check) {
-            if (($check instanceof FailedMatcherCheck)) {
-                $numOfJsonFailures++;
+            /**
+             * @var $results \PhpPact\Matchers\Checkers\MatcherResult
+             */
+            $checks = $results->getMatcherChecks();
+            $numOfJsonFailures = 0;
+            $numOfJsonMatches = 0;
+            foreach ($checks as $check) {
+                if (($check instanceof FailedMatcherCheck)) {
+                    $numOfJsonFailures++;
+                } else {
+                    $numOfJsonMatches++;
+                }
             }
-            else {
-                $numOfJsonMatches++;
+
+            // do we need to do anything to numOfJsonMatches?
+
+            $numOfXmlFailures = 0;
+            $numOfXmlMatches = 0;
+            foreach ($expected->getMatchingRules() as $jsonPath => $rule) {
+                $passedXmlProcessing = $this->processXml($expected, $actual, $jsonPath);
+                if ($passedXmlProcessing) {
+                    $numOfXmlMatches++;
+                } else {
+                    $numOfXmlFailures++;
+                }
+            }
+
+            if ($numOfXmlFailures > 0 || ($numOfXmlFailures == 0 && $numOfJsonFailures > 0)) {
+                return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::AdditionalPropertyInObject));
+            }
+
+        } else {
+            $jsonResults = $this->jsonDiff($expected->getBody(), $actual->getBody());
+            $diffs = count($jsonResults['new']) + count($jsonResults['edited']) + count($jsonResults['removed']);
+
+            if ($diffs > 0) {
+                if (!$this->_allowExtraKeys) {
+                    return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::AdditionalPropertyInObject));
+                } else if ((count($jsonResults['new']) + count($jsonResults['edited'])) > 0) {
+                    return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::AdditionalPropertyInObject));
+                }
+            } else {
+                // now check XML order
+                return $this->checkXmlOrder($expected->getBody(), $actual->getBody(), $path);
             }
         }
-
-        // do we need to do anything to numOfJsonMatches?
-
-        $numOfXmlFailures = 0;
-        $numOfXmlMatches = 0;
-        foreach ($expected->getMatchingRules() as $jsonPath => $rule) {
-            $passedXmlProcessing = $this->processXml($expected, $actual, $jsonPath);
-            if ($passedXmlProcessing) {
-                $numOfXmlMatches++;
-            }
-            else {
-                $numOfXmlFailures++;
-            }
-        }
-
-        if ($numOfXmlFailures > 0 || ($numOfXmlFailures == 0 && $numOfJsonFailures > 0)) {
-            return new MatcherResult(new FailedMatcherCheck($path, MatcherCheckFailureType::AdditionalPropertyInObject));
-        }
-
 
         return new MatcherResult(new SuccessfulMatcherCheck($path));
     }
+
+
 
     /**
      * @param $expected IHttpMessage
@@ -151,7 +165,6 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
             }
         }
 
-
         foreach($actualEligibleNodes as $parentNode) {
             // test if is in the same type
             foreach($parentNode->childNodes as $childNode) {
@@ -178,6 +191,35 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
     }
 
 
+    /**
+     * Run a JSON diff comparison for an initial baseline
+     *
+     * @param $expected
+     * @param $actual
+     * @return mixed|string
+     */
+    private function jsonDiff($expected, $actual)
+    {
+        // now Simple XML
+        $expectedXml = simplexml_load_string($expected);
+        $json = json_encode($expectedXml);
+        $expectedObj = json_decode($json);
+
+        // now Simple XML
+        $actualXml = simplexml_load_string($actual);
+        $json = json_encode($actualXml);
+        $actualObj = json_decode($json);
+
+        $treewalker = new \TreeWalker(
+            array(
+                "debug" => false,                     //true => return the execution time, false => not
+                "returntype" => "array")              //Returntype = ["obj","jsonstring","array"]
+        );
+
+        $diffs = $treewalker->getdiff($expectedObj, $actualObj, false);
+
+        return $diffs;
+    }
 
     /**
      * Walk the XML paths and determine if expected and actual are in the same order
