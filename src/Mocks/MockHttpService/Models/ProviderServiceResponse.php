@@ -185,8 +185,13 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
         }
         $obj->headers = $header;
 
+
         if ($this->_body) {
-            $obj->body = $this->_body;
+            if ($this->isJsonString($this->_body)) {
+                $obj->body = \json_decode($this->_body);
+            } else {
+                $obj->body = $this->_body;
+            }
         }
 
         if (count($this->_matchingRules) > 0) {
@@ -202,5 +207,13 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
         }
 
         return $obj;
+    }
+
+    private function isJsonString($string) {
+        if (!is_string($string)) {
+            return false;
+        }
+        \json_decode($string);
+        return (\json_last_error() == JSON_ERROR_NONE);
     }
 }
