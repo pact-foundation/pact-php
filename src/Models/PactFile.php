@@ -23,17 +23,36 @@ class PactFile extends PactDetails implements \JsonSerializable
         return $obj;
     }
 
+    /**
+     * This needs some refactoring.
+     *
+     * @param $obj
+     * @return \stdClass
+     */
     public function setMetadata($obj)
     {
+        $metadata = new \stdClass();
         if (isset($obj->metadata) && isset($obj->metadata->pactSpecificationVersion)) {
-            $this->_metadata = $obj->metadata;
-            return $this->_metadata;
-        } elseif (isset($obj->pactSpecificationVersion)) {
-            $this->_metadata = $obj;
-            return $this->_metadata;
+            $metadata =  $obj->metadata;
+        }
+        elseif (isset($obj->pactSpecification) && isset($obj->metadata->pactSpecification->version)) {
+            $metadata->pactSpecificationVersion = $obj->metadata->pactSpecification->version;
+        }
+        elseif (isset($obj->pactSpecification) && isset($obj->pactSpecification->version)) {
+            $metadata->pactSpecificationVersion = $obj->pactSpecification->version;
+        }
+        elseif (isset($obj->pactSpecificationVersion)) {
+            $metadata = $obj;
         }
 
-        throw new \RuntimeException("Metadata is not in the appropriate format");
+        $tmpMetadata = (array) $metadata;
+        if (empty($tmpMetadata)) {
+            throw new \RuntimeException("Metadata is not in the appropriate format");
+        }
+
+
+        $this->_metadata = $metadata;
+        return $this->_metadata;
     }
 
     public function getMetadata()

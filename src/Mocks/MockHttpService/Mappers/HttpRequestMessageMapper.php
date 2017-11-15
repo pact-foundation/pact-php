@@ -34,8 +34,10 @@ class HttpRequestMessageMapper
         $httpRequest = $httpRequest->withUri($uri)
             ->withMethod($request->getMethod());
 
-        foreach ($request->getHeaders() as $header_key => $header_value) {
-            $httpRequest = $httpRequest->withAddedHeader($header_key, $header_value);
+        if (count($request->getHeaders()) > 0) {
+            foreach ($request->getHeaders() as $header_key => $header_value) {
+                $httpRequest = $httpRequest->withAddedHeader($header_key, $header_value);
+            }
         }
 
         if ($request->getBody()) {
