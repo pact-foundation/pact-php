@@ -71,5 +71,18 @@ class ProviderServiceRequestMapperTest extends TestCase
 
         $providerServiceRequest = $mapper->convert($obj);
         $this->assertEquals($obj->body, $providerServiceRequest->getBody(), "Body is converted to JSON bc of the header");
+
+
+        // convert the request
+        $uri = (new \Windwalker\Uri\PsrUri('http://fake-url.com'))
+            ->withPath('/awesome-sauce');
+        $httpRequest = (new \Windwalker\Http\Request\Request())
+            ->withUri($uri)
+            ->withAddedHeader("Content-Type", "application/json")
+            ->withMethod("get");
+
+        $providerServiceRequest = $mapper->convert($httpRequest);
+        $headerResults = $providerServiceRequest->getHeaders();
+        $this->assertEquals("application/json", $headerResults["Content-Type"] , "A content-type header should exist as json");
     }
 }

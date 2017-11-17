@@ -204,8 +204,8 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
     {
         $headers = $this->getHeaders();
         $key = 'Content-Type';
-        if (is_object($headers) && isset($headers->$key)) {
-            return $headers->$key;
+        if (is_array($headers) && isset($headers[$key])) {
+            return $headers[$key];
         }
         return 'application/json';
     }

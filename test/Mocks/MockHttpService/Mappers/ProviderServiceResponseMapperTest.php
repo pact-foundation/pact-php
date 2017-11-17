@@ -67,5 +67,13 @@ class ProviderServiceResponseMapperTest extends TestCase
         $providerServiceResponse = $mapper->convert($httpResponse);
         $this->assertEquals(500, $providerServiceResponse->getStatus(), 'Method was set appropriately');
         $this->assertEquals(1, count($providerServiceResponse->getHeaders()), "We expect one header");
+
+        $httpResponse = new \Windwalker\Http\Response\Response();
+        $httpResponse = $httpResponse->withStatus(500)
+                            ->withAddedHeader("Content-Type", 'application/xml');
+
+        $providerServiceResponse = $mapper->convert($httpResponse);
+        $headerResults = $providerServiceResponse->getHeaders();
+        $this->assertEquals("application/xml", $headerResults["Content-Type"] , "A content-type header should exist as json");
     }
 }

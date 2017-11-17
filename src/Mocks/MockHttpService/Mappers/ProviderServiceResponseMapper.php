@@ -21,7 +21,12 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
             return $response;
         }
 
-        $headers = isset($response->headers)?$response->headers:array();
+        if (isset($response->headers) && is_object($response->headers)) {
+            $response->headers = (array) $response->headers;
+        } else if (!isset($response->headers)) {
+            $response->headers = array();
+        }
+
         $status = isset($response->status)?$response->status:null;
 
         $body = false;
@@ -37,7 +42,7 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
         $matchingRulesMapper = new MatchingRuleMapper();
         $matchingRules = $matchingRulesMapper->convert($response);
 
-        $providerServiceResponse = new ProviderServiceResponse($status, $headers, $body, $matchingRules);
+        $providerServiceResponse = new ProviderServiceResponse($status, $response->headers, $body, $matchingRules);
 
         return $providerServiceResponse;
     }
@@ -61,7 +66,7 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
                     [0] => Fri, 30 Jun 2017 21:50:19 +0000
                 )
         */
-        $obj->headers = new \stdClass();
+        $obj->headers = array();
         if (count($headerArray) > 0) {
             foreach ($headerArray as $header_key => $header_value) {
                 if (!is_array($header_value)) {
@@ -71,7 +76,7 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
                     throw new \Exception("This was an unexpected case based on the Windwalker implementation.   Make a unit test and pull request.");
                 }
 
-                $obj->headers->$header_key = array_pop($header_value);
+                $obj->headers[$header_key] = array_pop($header_value);
             }
         }
 
@@ -88,14 +93,14 @@ class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
     /**
      * Mine the headers to pull out the content type
      *
-     * @param $request
+     * @param $response
      * @return bool
      */
     private function getContentType($response)
     {
         $contentTypeStr = "Content-Type";
-        if (isset($response->headers) && isset($response->headers->$contentTypeStr)) {
-            return $response->headers->$contentTypeStr;
+        if (isset($response->headers) && isset($response->headers[$contentTypeStr])) {
+            return $response->headers[$contentTypeStr];
         }
 
         return false;

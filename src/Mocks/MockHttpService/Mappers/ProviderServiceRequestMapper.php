@@ -31,6 +31,12 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
             $request->path = "";
         }
 
+        if (!isset($request->headers)) {
+            $request->headers = null;
+        } else if (is_object($request->headers)) {
+            $request->headers = (array) $request->headers;
+        }
+
         $body = false;
         if (property_exists($request, "body")) {
             $contentType = $this->getContentType($request);
@@ -41,9 +47,8 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
             }
         }
 
-        if (!isset($request->headers)) {
-            $request->headers = null;
-        }
+
+
 
         $matchingRulesMapper = new MatchingRuleMapper();
         $matchingRules = $matchingRulesMapper->convert($request);
@@ -66,8 +71,8 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
     private function getContentType($request)
     {
         $contentTypeStr = "Content-Type";
-        if (isset($request->headers) && isset($request->headers->$contentTypeStr)) {
-            return $request->headers->$contentTypeStr;
+        if (isset($request->headers) && isset($request->headers[$contentTypeStr])) {
+            return $request->headers[$contentTypeStr];
         }
 
         return false;
@@ -93,7 +98,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
                     [0] => Fri, 30 Jun 2017 21:50:19 +0000
                 )
         */
-        $obj->headers = new \stdClass();
+        $obj->headers = array();
         if (count($headerArray) > 0) {
             foreach ($headerArray as $header_key => $header_value) {
                 if (!is_array($header_value)) {
@@ -103,7 +108,7 @@ class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
                     throw new \Exception("This was an unexpected case based on the Windwalker implementation.   Make a unit test and pull request.");
                 }
 
-                $obj->headers->$header_key = array_pop($header_value);
+                $obj->headers[$header_key] = array_pop($header_value);
             }
         }
 
