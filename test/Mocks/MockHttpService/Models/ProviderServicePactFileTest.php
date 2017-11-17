@@ -15,9 +15,13 @@ class ProviderServicePactFileTest extends TestCase
         $json = '{"description":"Another GET request","providerState":"Some more types","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
         $interaction2 = \json_decode($json);
 
+        $json = '{"description":"A GET request with a different state","provider_state":"Now with more underscores","request":{"method":"get","path":"/Call/","headers":{"Content-Type":"application/json"}},"response":{"status":200,"headers":{"Content-Type":"application/json"},"body":{"types":[{"id":1000}]}}}';
+        $interaction3 = \json_decode($json);
+
         $expectedInteractions = array();
         $expectedInteractions[] = $interaction1;
         $expectedInteractions[] = $interaction2;
+        $expectedInteractions[] = $interaction3;
 
         $pactFile = new ProviderServicePactFile();
         $pactFile->setInteractions($expectedInteractions);

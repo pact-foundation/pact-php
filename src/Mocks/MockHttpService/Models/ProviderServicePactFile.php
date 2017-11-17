@@ -45,9 +45,10 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
                 throw new \RuntimeException("description is not set");
             }
 
-            if (!isset($interactionObj->providerState)) {
-                throw new \RuntimeException("providerState is not set");
+            if (!isset($interactionObj->providerState) && !isset($interactionObj->provider_state)) {
+                throw new \RuntimeException("provider state is not set");
             }
+
 
             $this->addInteraction($interactionObj);
         }
@@ -61,7 +62,13 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
 
         if (!($interactionObj instanceof ProviderServiceInteraction)) {
             $interaction = new ProviderServiceInteraction();
-            $interaction->setProviderState($interactionObj->providerState);
+
+            if (isset($interactionObj->providerState)) {
+                $interaction->setProviderState($interactionObj->providerState);
+            } else if (isset($interactionObj->provider_state)) {
+                $interaction->setProviderState($interactionObj->provider_state);
+            }
+
             $interaction->setDescription($interactionObj->description);
             $interaction->setRequest($interactionObj->request);
             $interaction->setResponse($interactionObj->response);
