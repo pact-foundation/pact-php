@@ -2,6 +2,9 @@
 
 namespace PhpPact;
 
+use \PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile;
+use \PhpPact\Mocks\MockHttpService\Mappers\ProviderServicePactMapper;
+
 class PactBrokerConnector
 {
     private $_uriOptions;
@@ -62,7 +65,7 @@ class PactBrokerConnector
     public function publishJson($json, $version)
     {
         $jsonDecoded = \json_decode($json);
-        $mapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServicePactMapper();
+        $mapper = new ProviderServicePactMapper();
         $pact = $mapper->convert($jsonDecoded);
         return $this->publish($pact, $version);
     }
@@ -74,7 +77,7 @@ class PactBrokerConnector
      *
      * @return bool return true if response was 200
      */
-    public function publish(\PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile $pact, $version)
+    public function publish(ProviderServicePactFile $pact, $version)
     {
         if (!isset($this->_uriOptions)) {
             throw new \RuntimeException("Options is not set and needs to be \PhpPact\PactUriOptions.");
@@ -202,7 +205,7 @@ class PactBrokerConnector
         $body = (string)$httpResponse->getBody();
 
         // map to pact object
-        $mapper = new \PhpPact\Mocks\MockHttpService\Mappers\ProviderServicePactMapper();
+        $mapper = new ProviderServicePactMapper();
         $pact = $mapper->convert($body);
 
         return $pact;
@@ -219,5 +222,63 @@ class PactBrokerConnector
         $arr = explode('/', $url);
         $index = count($arr) - 1;
         return $arr[$index];
+    }
+
+    /**
+     * Wrapper used to validate the provider for this particular pact back to the broker
+     *
+     * @param $providerName
+     * @param $consumerName
+     * @param $pactVersion
+     * @param bool $verificationState
+     * @param $providerVersion - generally a GUID
+     * @param $buildUrl
+     * @return bool
+     */
+    public function verify($providerName, $consumerName, $pactVersion, bool $verificationState, $providerVersion, $buildUrl)
+    {
+        if (!isset($this->_uriOptions)) {
+            throw new \RuntimeException("Options is not set and needs to be \PhpPact\PactUriOptions.");
+        }
+
+        if (!$pactVersion) {
+            throw new \RuntimeException("Version of the pact that you are testing is required");
+        }
+
+
+        $url = $this->_uriOptions->getBaseUri();
+        $path = '/pacts/provider/' . urlencode($providerName) . '/consumer/' . urlencode($consumerName) . '/pact-version/' . urlencode($pactVersion) . '/verification-results';
+
+        $results = new \stdClass();
+        $results->success = $verificationState;
+        $results->providerApplicationVersion = $providerVersion;
+        $results->buildUrl = $buildUrl;
+
+
+        // build request
+        $uri = (new \Windwalker\Uri\PsrUri($url))
+            ->withPath($path);
+
+        $httpRequest = (new \Windwalker\Http\Request\Request())
+            ->withUri($uri)
+            ->withAddedHeader("Content-Type", "application/json")
+            ->withMethod("POST");
+
+        if ($this->_uriOptions->getUsername() && $this->_uriOptions->getPassword()) {
+            $httpRequest = $httpRequest->withAddedHeader("authorization", $this->_uriOptions->AuthorizationHeader());
+        }
+
+        $httpRequest->getBody()->write(\json_encode($results));
+
+        // send request
+        $httpClient = new \Windwalker\Http\HttpClient();
+        $httpResponse = $httpClient->sendRequest($httpRequest);
+        $statusCode = intval($httpResponse->getStatusCode());
+
+        if ($statusCode == 200) {
+            return true;
+        }
+
+        return false;
     }
 }

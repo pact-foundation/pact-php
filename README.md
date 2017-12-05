@@ -423,6 +423,20 @@ error_log(\json_encode($pact,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
 ```
 
+### Publishing verification results to Broker
+If the Provider is PHP, a simple wrapper exists in the connector to publish the verification back to the broker. 
+The complexities lies in passing the build version, build url, and pact version back.   Your CI tools should be able to provider this data.
+
+```php
+<?php
+
+$uriOptions = new \PhpPact\PactUriOptions("http://your-pact-broker" );
+$connector = new \PhpPact\PactBrokerConnector($uriOptions);
+
+$connector->verify("MockProvider", "MockConsumer", "cd3e2a61063e428b5bd4e91c5e6c5dee0c45cf99", true, '0.0.42', "http://your-ci-builder/api/pact-example-api/job/master/42/");
+
+```
+
 
 ## Project Tests
 To run Pact-Php-Native tests, there are several phpunit.xml files.   The provider tests use a Windows method to shutdown the mock server.
