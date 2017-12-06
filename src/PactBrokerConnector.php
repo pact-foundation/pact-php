@@ -173,35 +173,16 @@ class PactBrokerConnector
      *
      * @param $providerName
      * @param $consumerName
-     * @param string $version
+     * @param string $consumerVersion
      * @return Mocks\MockHttpService\Models\ProviderServicePactFile
      */
-    public function retrievePact($providerName, $consumerName, $version = "latest")
+    public function retrievePact($providerName, $consumerName, $consumerVersion = "latest")
     {
-        $url = $this->_uriOptions->getBaseUri();
-        $path = '/pacts/provider/' . urlencode($providerName) . '/consumer/' . urlencode($consumerName);
-
-        if (strtolower($version) == "latest") {
-            $path .= "/" . $version;
-        } else {
-            $path .= '/version/' . $version;
+        if (!isset($this->_uriOptions)) {
+            throw new \RuntimeException("Options is not set and needs to be \PhpPact\PactUriOptions.");
         }
 
-        // build request
-        $uri = (new \Windwalker\Uri\PsrUri($url))
-            ->withPath($path);
-
-        $httpRequest = (new \Windwalker\Http\Request\Request())
-            ->withUri($uri)
-            ->withMethod("GET");
-
-        if ($this->_uriOptions->getUsername() && $this->_uriOptions->getPassword()) {
-            $httpRequest = $httpRequest->withAddedHeader("authorization", $this->_uriOptions->AuthorizationHeader());
-        }
-
-        // send the request
-        $httpClient = new \Windwalker\Http\HttpClient();
-        $httpResponse = $httpClient->sendRequest($httpRequest);
+        $httpResponse = $this->sendHttpRequestForPact($providerName, $consumerName, $consumerVersion);
         $body = (string)$httpResponse->getBody();
 
         // map to pact object
@@ -225,30 +206,68 @@ class PactBrokerConnector
     }
 
     /**
-     * Wrapper used to validate the provider for this particular pact back to the broker
      *
      * @param $providerName
      * @param $consumerName
-     * @param $pactVersion
+     * @param string $consumerVersion
+     * @return mixed
+     */
+    private function sendHttpRequestForPact($providerName, $consumerName, $consumerVersion = "latest") {
+        $url = $this->_uriOptions->getBaseUri();
+        $path = '/pacts/provider/' . urlencode($providerName) . '/consumer/' . urlencode($consumerName);
+
+        if (strtolower($consumerVersion) == "latest") {
+            $path .= "/" . $consumerVersion;
+        } else {
+            $path .= '/version/' . $consumerVersion;
+        }
+
+        // build request
+        $uri = (new \Windwalker\Uri\PsrUri($url))
+            ->withPath($path);
+
+        $httpRequest = (new \Windwalker\Http\Request\Request())
+            ->withUri($uri)
+            ->withMethod("GET");
+
+        if ($this->_uriOptions->getUsername() && $this->_uriOptions->getPassword()) {
+            $httpRequest = $httpRequest->withAddedHeader("authorization", $this->_uriOptions->AuthorizationHeader());
+        }
+
+        // send the request
+        $httpClient = new \Windwalker\Http\HttpClient();
+        $httpResponse = $httpClient->sendRequest($httpRequest);
+
+        return $httpResponse;
+    }
+
+    /**
+     * Follow the HAL links to publish verification results of a Provider pact with a Consumer
+     *
      * @param bool $verificationState
-     * @param $providerVersion - generally a GUID
-     * @param $buildUrl
+     * @param string $buildUrl
+     * @param string $providerName
+     * @param string $providerVersion
+     * @param string $consumerName
+     * @param string $consumerVersion
      * @return bool
      */
-    public function verify($providerName, $consumerName, $pactVersion, bool $verificationState, $providerVersion, $buildUrl)
+    public function verify(bool $verificationState,  $buildUrl, $providerName, $providerVersion, $consumerName, $consumerVersion = 'latest')
     {
         if (!isset($this->_uriOptions)) {
             throw new \RuntimeException("Options is not set and needs to be \PhpPact\PactUriOptions.");
         }
 
-        if (!$pactVersion) {
-            throw new \RuntimeException("Version of the pact that you are testing is required");
+        $httpResponse = $this->sendHttpRequestForPact($providerName, $consumerName, $consumerVersion);
+        $body = (string)$httpResponse->getBody();
+
+        // extract HAL link to post verification
+        $jsonBody = \json_decode($body);
+        if (!isset($jsonBody->_links->{"pb:publish-verification-results"}->href)) {
+            throw new \RuntimeException("Unable to find HAL link to publish verification results.");
         }
 
-
-        $url = $this->_uriOptions->getBaseUri();
-        $path = '/pacts/provider/' . urlencode($providerName) . '/consumer/' . urlencode($consumerName) . '/pact-version/' . urlencode($pactVersion) . '/verification-results';
-
+        // results to publish
         $results = new \stdClass();
         $results->success = $verificationState;
         $results->providerApplicationVersion = $providerVersion;
@@ -256,6 +275,11 @@ class PactBrokerConnector
 
 
         // build request
+        $fullUrl = $jsonBody->_links->{"pb:publish-verification-results"}->href;
+        $urlParts = parse_url($fullUrl);
+        $url = $urlParts['scheme'] . '://' . $urlParts['host'];
+        $path = $urlParts['path'];
+
         $uri = (new \Windwalker\Uri\PsrUri($url))
             ->withPath($path);
 

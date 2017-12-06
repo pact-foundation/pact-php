@@ -425,16 +425,14 @@ error_log(\json_encode($pact,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
 ### Publishing verification results to Broker
 If the Provider is PHP, a simple wrapper exists in the connector to publish the verification back to the broker. 
-The complexities lies in passing the build version, build url, and pact version back.   Your CI tools should be able to provider this data.
+The complexities lies in passing the build version and build url among other things.   Your CI tools should be able to provider this data.
 
 ```php
 <?php
 
 $uriOptions = new \PhpPact\PactUriOptions("http://your-pact-broker" );
 $connector = new \PhpPact\PactBrokerConnector($uriOptions);
-
-$connector->verify("MockProvider", "MockConsumer", "cd3e2a61063e428b5bd4e91c5e6c5dee0c45cf99", true, '0.0.42', "http://your-ci-builder/api/pact-example-api/job/master/42/");
-
+$connector->verify(true, "http://your-ci-builder/api/pact-example-api/job/master/42/", "MockProvider", '0.0.42', 'MockConsumer', 'latest');
 ```
 
 
