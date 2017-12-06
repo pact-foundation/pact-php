@@ -299,7 +299,7 @@ class PactBrokerConnector
         $httpResponse = $httpClient->sendRequest($httpRequest);
         $statusCode = intval($httpResponse->getStatusCode());
 
-        if ($statusCode == 200) {
+        if ($statusCode >= 200 && $statusCode < 300) {
             return true;
         }
 
