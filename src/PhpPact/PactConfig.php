@@ -22,11 +22,13 @@ class PactConfig extends PactBaseConfig
 
     /**
      * @param string $pactDir
+     *
      * @return PactConfig
      */
     public function setPactDir(string $pactDir)
     {
         $this->_pactDir = $pactDir;
+
         return $this;
     }
 }

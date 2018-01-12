@@ -4,6 +4,10 @@ namespace PhpPact\Models;
 
 class PactDetails implements \JsonSerializable
 {
+    /**
+     * @var \Logger
+     */
+    protected $_logger;
 
     /**
      * @var Pacticipant
@@ -16,11 +20,6 @@ class PactDetails implements \JsonSerializable
     private $_consumer;
 
     /**
-     * @var \Logger $_logger
-     */
-    protected $_logger;
-
-    /**
      * @param \Logger $logger
      */
     public function setLogger($logger)
@@ -31,7 +30,7 @@ class PactDetails implements \JsonSerializable
     public function jsonSerialize()
     {
         // this _should_ cascade to child classes
-        $obj = new \stdClass();
+        $obj           = new \stdClass();
         $obj->provider = $this->_provider;
         $obj->consumer = $this->_consumer;
 
@@ -72,11 +71,12 @@ class PactDetails implements \JsonSerializable
 
     public function GeneratePactFileName()
     {
-        $fileName = sprintf(
-            "%s-%s.json",
-            $this->_consumer != null ? $this->_consumer->Name : "",
-            $this->_provider != null ? $this->_provider->Name : ""
+        $fileName = \sprintf(
+            '%s-%s.json',
+            $this->_consumer != null ? $this->_consumer->Name : '',
+            $this->_provider != null ? $this->_provider->Name : ''
         );
+
         return \PhpPact\Extensions\StringExtensions::ToLowerSnakeCase($fileName);
     }
 }

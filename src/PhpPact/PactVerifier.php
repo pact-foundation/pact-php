@@ -25,8 +25,8 @@ class PactVerifier implements IPactVerifier
     public function __construct($baseUri)
     {
         $this->_providerStates = new Models\ProviderStates();
-        $this->_httpClient = new \Windwalker\Http\HttpClient();
-        $this->_config = new PactVerifierConfig();
+        $this->_httpClient     = new \Windwalker\Http\HttpClient();
+        $this->_config         = new PactVerifierConfig();
         $this->_config->setBaseUri($baseUri);
     }
 
@@ -40,30 +40,31 @@ class PactVerifier implements IPactVerifier
 
     /**
      * @param PactVerifierConfig $config
+     *
      * @return PactVerifier
      */
     public function setConfig(PactVerifierConfig $config)
     {
         $this->_config = $config;
+
         return $this;
     }
-
-
 
     /**
      * Define a set up and/or tear down action for a specific state specified by the consumer.
      *
      * This is where you should set up test data, so that you can fulfil the contract outlined by a consumer.
      *
-     * @param $providerState the name of the provider state as defined by the consumer interaction, which lives in the Pact file.
-     * @param null $setUp A set up action that will be run before the interaction verify, if the provider has specified it in the interaction. If no action is required please use an empty lambda
+     * @param $providerState the name of the provider state as defined by the consumer interaction, which lives in the Pact file
+     * @param null $setUp    A set up action that will be run before the interaction verify, if the provider has specified it in the interaction. If no action is required please use an empty lambda
      * @param null $tearDown A tear down action that will be run after the interaction verify, if the provider has specified it in the interaction. If no action is required please use an empty lambda
+     *
      * @return PactVerifier $this
      */
     public function providerState($providerState, $setUp = null, $tearDown = null)
     {
         if (!$providerState) {
-            throw new \InvalidArgumentException("Please supply a non null or empty providerState");
+            throw new \InvalidArgumentException('Please supply a non null or empty providerState');
         }
 
         $providerStateItem = new Models\ProviderState($providerState, $setUp, $tearDown);
@@ -75,15 +76,15 @@ class PactVerifier implements IPactVerifier
     public function serviceProvider($providerName, $httpClient = null, $httpRequestSender = null)
     {
         if (!$providerName) {
-            throw new \InvalidArgumentException("Please supply a non null or empty providerName");
+            throw new \InvalidArgumentException('Please supply a non null or empty providerName');
         }
 
         if ($this->_providerName) {
-            throw new \InvalidArgumentException("ProviderName has already been supplied, please instantiate a new PactVerifier if you want to perform verification for a different provider");
+            throw new \InvalidArgumentException('ProviderName has already been supplied, please instantiate a new PactVerifier if you want to perform verification for a different provider');
         }
 
         if (!$httpRequestSender && !$httpClient) {
-            throw new \InvalidArgumentException("Please supply either a non null httpRequestSender or httpClient");
+            throw new \InvalidArgumentException('Please supply either a non null httpRequestSender or httpClient');
         }
 
         $this->_providerName = $providerName;
@@ -91,20 +92,20 @@ class PactVerifier implements IPactVerifier
         if ($httpRequestSender) {
             throw new \InvalidArgumentException('Overriding $httpRequestSender has not been implemented yet');
             // $this->_httpRequestSender = new CustomRequestSender(httpRequestSender);
-        } else {
-            $this->_httpRequestSender = new \PhpPact\Mocks\MockHttpService\HttpClientRequestSender($httpClient);
         }
+        $this->_httpRequestSender = new \PhpPact\Mocks\MockHttpService\HttpClientRequestSender($httpClient);
+
         return $this;
     }
 
     public function honoursPactWith($consumerName)
     {
         if (!$consumerName) {
-            throw new \InvalidArgumentException("Please supply a non null or empty consumerName");
+            throw new \InvalidArgumentException('Please supply a non null or empty consumerName');
         }
 
         if ($this->_consumerName) {
-            throw new \InvalidArgumentException("ConsumerName has already been supplied, please instantiate a new PactVerifier if you want to perform verification for a different consumer");
+            throw new \InvalidArgumentException('ConsumerName has already been supplied, please instantiate a new PactVerifier if you want to perform verification for a different consumer');
         }
 
         $this->_consumerName = $consumerName;
@@ -115,14 +116,14 @@ class PactVerifier implements IPactVerifier
     public function pactUri($uri, $options = null)
     {
         if (!$uri) {
-            throw new \InvalidArgumentException("Please supply a non null or empty consumerName");
+            throw new \InvalidArgumentException('Please supply a non null or empty consumerName');
         }
 
-        if (!filter_var($uri, FILTER_VALIDATE_URL) && !file_exists($uri)) {
-            throw new \InvalidArgumentException("URI does not exist on the file system or this is not a valid URI: " . $uri);
+        if (!\filter_var($uri, FILTER_VALIDATE_URL) && !\file_exists($uri)) {
+            throw new \InvalidArgumentException('URI does not exist on the file system or this is not a valid URI: ' . $uri);
         }
 
-        $this->_pactFileUri = $uri;
+        $this->_pactFileUri    = $uri;
         $this->_pactUriOptions = $options;
 
         return $this;
@@ -131,21 +132,21 @@ class PactVerifier implements IPactVerifier
     public function verify($description = null, $providerState = null)
     {
         if (!$this->_httpRequestSender) {
-            throw new \InvalidArgumentException("httpRequestSender has not been set, please supply a httpClient or httpRequestSenderFunc using the ServiceProvider method.");
+            throw new \InvalidArgumentException('httpRequestSender has not been set, please supply a httpClient or httpRequestSenderFunc using the ServiceProvider method.');
         }
 
         if (!$this->_pactFileUri) {
-            throw new \InvalidArgumentException("PactFileUri has not been set, please supply a uri using the PactUri method.");
+            throw new \InvalidArgumentException('PactFileUri has not been set, please supply a uri using the PactUri method.');
         }
 
-        $pactFileJson = file_get_contents($this->_pactFileUri);
+        $pactFileJson = \file_get_contents($this->_pactFileUri);
 
         if ($pactFileJson === false) {
             throw new \RuntimeException("Pact file cannot be found: {$this->_pactFileUri}");
         }
 
         $jsonDecoded = \json_decode($pactFileJson);
-        $mapper = new Mocks\MockHttpService\Mappers\ProviderServicePactMapper();
+        $mapper      = new Mocks\MockHttpService\Mappers\ProviderServicePactMapper();
 
         $pactFile = $mapper->convert($jsonDecoded);
 
@@ -158,16 +159,17 @@ class PactVerifier implements IPactVerifier
             $pactFile->filterInteractionsByProviderState($providerState);
         }
 
-        if (($description != null || $providerState != null) && count($pactFile->getInteractions()) == 0) {
-            throw new \InvalidArgumentException("The specified description and/or providerState filter yielded no interactions.");
+        if (($description != null || $providerState != null) && \count($pactFile->getInteractions()) == 0) {
+            throw new \InvalidArgumentException('The specified description and/or providerState filter yielded no interactions.');
         }
 
         try {
-            $reporter = new Reporters\Reporter($this->_config);
+            $reporter  = new Reporters\Reporter($this->_config);
             $validator = new Mocks\MockHttpService\Validators\ProviderServiceValidator($this->_httpRequestSender, $reporter, $this->_config);
             $validator->validate($pactFile, $this->_providerStates);
         } catch (\Exception $e) {
-            $this->_config->getLogger()->fatal("Unable to verify pact: " . $e->getMessage());
+            $this->_config->getLogger()->fatal('Unable to verify pact: ' . $e->getMessage());
+
             throw $e;
         }
     }

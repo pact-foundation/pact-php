@@ -4,7 +4,7 @@ namespace PhpPact\Matchers\Checkers;
 
 class MatcherCheck
 {
-    const PathPrefix = "$.";
+    const PathPrefix = '$.';
     private $_path;
 
     /**
@@ -17,15 +17,17 @@ class MatcherCheck
 
     /**
      * @param mixed $path
+     *
      * @return MatcherCheck
      */
     public function setPath($path)
     {
-        if (substr($path, 0, strlen(static::PathPrefix)) != static::PathPrefix) {
+        if (\substr($path, 0, \strlen(static::PathPrefix)) != static::PathPrefix) {
             $path = static::PathPrefix . $path;
         }
 
         $this->_path = $path;
+
         return $this;
     }
 }

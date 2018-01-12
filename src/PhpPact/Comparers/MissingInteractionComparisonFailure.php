@@ -9,13 +9,13 @@ class MissingInteractionComparisonFailure extends ComparisonFailure
     public function __construct($interaction)
     {
         /**
-         * @var $interaction \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction
+         * @var \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction
          */
-        $requestMethod = $interaction->getRequest() != null ? strtoupper($interaction->getRequest()->getMethod()) : "No Method";
-        $requestPath = $interaction->getRequest() != null ? $interaction->getRequest()->getPath() : "No Path";
+        $requestMethod = $interaction->getRequest() != null ? \strtoupper($interaction->getRequest()->getMethod()) : 'No Method';
+        $requestPath   = $interaction->getRequest() != null ? $interaction->getRequest()->getPath() : 'No Path';
 
-        $this->_requestDescription = sprintf("%s %s", $requestMethod, $requestPath);
-        $this->_result = sprintf(
+        $this->_requestDescription = \sprintf('%s %s', $requestMethod, $requestPath);
+        $this->_result             = \sprintf(
             "The interaction with description '%s' and provider state '%s', was not used by the test. Missing request %s.",
             $interaction->getDescription(),
             $interaction->getProviderState(),

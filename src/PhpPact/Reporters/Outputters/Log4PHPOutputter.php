@@ -2,8 +2,6 @@
 
 namespace PhpPact\Reporters\Outputters;
 
-use PHPUnit\Runner\Exception;
-
 class Log4PHPOutputter implements \PhpPact\Reporters\Outputters\IReportOutputter
 {
     /**
@@ -20,17 +18,17 @@ class Log4PHPOutputter implements \PhpPact\Reporters\Outputters\IReportOutputter
     {
         $this->_logger = $logger;
 
-        $this->_writeLevel = strtolower($writeLevel);
+        $this->_writeLevel = \strtolower($writeLevel);
     }
 
     public function write($report)
     {
         $writeLevel = $this->_writeLevel;
 
-        if (!method_exists($this->_logger, $this->_writeLevel)) {
-            throw new \Exception(sprintf("Unable to write report at `%s` level as `%s` is not a valid log4php level", $this->_writeLevel, $this->_writeLevel));
+        if (!\method_exists($this->_logger, $this->_writeLevel)) {
+            throw new \Exception(\sprintf('Unable to write report at `%s` level as `%s` is not a valid log4php level', $this->_writeLevel, $this->_writeLevel));
         }
 
-        $this->_logger->$writeLevel($report);
+        $this->_logger->{$writeLevel}($report);
     }
 }

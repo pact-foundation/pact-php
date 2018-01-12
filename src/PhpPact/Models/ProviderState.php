@@ -14,8 +14,8 @@ class ProviderState
     public function __construct($providerState, $setUp = null, $tearDown = null)
     {
         $this->ProviderStateDescription = $providerState;
-        $this->SetUp = $setUp;
-        $this->TearDown = $tearDown;
+        $this->SetUp                    = $setUp;
+        $this->TearDown                 = $tearDown;
     }
 
     public function __toString()

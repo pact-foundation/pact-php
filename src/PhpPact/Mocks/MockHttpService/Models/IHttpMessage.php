@@ -13,6 +13,7 @@ interface IHttpMessage
 
     /**
      * @param string $body
+     *
      * @return mixed
      */
     public function setBody($body);
@@ -29,6 +30,7 @@ interface IHttpMessage
 
     /**
      * @param array $headers
+     *
      * @return mixed
      */
     public function setHeaders($headers);
@@ -38,7 +40,7 @@ interface IHttpMessage
      *
      * False is returned if not set
      *
-     * @return mixed|bool
+     * @return bool|mixed
      */
     public function getContentType();
 
@@ -58,7 +60,9 @@ interface IHttpMessage
 
     /**
      * Set an array filled with MatchingRule
+     *
      * @param $matchingRules
+     *
      * @return mixed
      */
     public function setMatchingRules($matchingRules);
@@ -67,6 +71,7 @@ interface IHttpMessage
      * Add a single matching rule
      *
      * @param MatchingRule $matchingRule
+     *
      * @return mixed
      */
     public function addMatchingRule(MatchingRule $matchingRule);

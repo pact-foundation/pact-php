@@ -11,18 +11,18 @@ class ProviderStates
 
     public function __construct($setUp = null, $tearDown = null)
     {
-        $this->SetUp = $setUp;
+        $this->SetUp    = $setUp;
         $this->TearDown = $tearDown;
     }
 
     public function add($providerState)
     {
         if (!$this->_providerStates) {
-            $this->_providerStates = array();
+            $this->_providerStates = [];
         }
 
         if (isset($this->_providerStates["$providerState"])) {
-            throw new \InvalidArgumentException(sprintf("providerState '%s' has already been added", $providerState->ProviderStateDescription));
+            throw new \InvalidArgumentException(\sprintf("providerState '%s' has already been added", $providerState->ProviderStateDescription));
         }
 
         $this->_providerStates["$providerState"] = $providerState;
@@ -30,7 +30,7 @@ class ProviderStates
 
     public function count()
     {
-        return count($this->_providerStates);
+        return \count($this->_providerStates);
     }
 
     public function getProviderStates()
@@ -38,11 +38,10 @@ class ProviderStates
         return $this->_providerStates;
     }
 
-
     public function find($providerState)
     {
         if ($providerState == null) {
-            throw new \InvalidArgumentException("Please supply a non null providerState");
+            throw new \InvalidArgumentException('Please supply a non null providerState');
         }
 
         if ($this->_providerStates) {
@@ -53,10 +52,11 @@ class ProviderStates
 
             if (isset($this->_providerStates[$description])) {
                 $providerStateFromDescription = $this->_providerStates[$description];
+
                 return $providerStateFromDescription;
             }
         }
 
-        return null;
+        return;
     }
 }

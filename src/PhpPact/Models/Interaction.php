@@ -18,8 +18,8 @@ class Interaction implements \JsonSerializable
 
     public function jsonSerialize()
     {
-        $obj = new \stdClass();
-        $obj->description = $this->_description;
+        $obj                = new \stdClass();
+        $obj->description   = $this->_description;
         $obj->providerState = $this->_providerState;
 
         return $obj; // Encode this array instead of the current element
@@ -27,7 +27,7 @@ class Interaction implements \JsonSerializable
 
     public function AsJsonString()
     {
-        return json_encode($this, $this->_jsonSerializerSettings);
+        return \json_encode($this, $this->_jsonSerializerSettings);
     }
 
     /**
@@ -40,11 +40,13 @@ class Interaction implements \JsonSerializable
 
     /**
      * @param string $description
+     *
      * @return Interaction
      */
     public function setDescription($description)
     {
         $this->_description = $description;
+
         return $this;
     }
 
@@ -58,11 +60,13 @@ class Interaction implements \JsonSerializable
 
     /**
      * @param string $providerState
+     *
      * @return Interaction
      */
     public function setProviderState($providerState)
     {
         $this->_providerState = $providerState;
+
         return $this;
     }
 }

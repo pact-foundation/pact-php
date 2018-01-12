@@ -7,21 +7,20 @@ use PhpPact\Matchers\Rules\MatchingRule;
 
 class MatchingRuleMapper
 {
-
     /**
      * @param $obj \stdClass
      */
     public function convert($obj)
     {
-        $matchingRules = array();
+        $matchingRules = [];
         if (isset($obj->matchingRules)
             && (
-                (is_object($obj->matchingRules) || is_array($obj->matchingRules))
-                && count($obj->matchingRules) > 0
+                (\is_object($obj->matchingRules) || \is_array($obj->matchingRules))
+                && \count($obj->matchingRules) > 0
             )
         ) {
             foreach ($obj->matchingRules as $jsonPath => $matchingRule) {
-                $options = array();
+                $options = [];
                 if (isset($matchingRule->min)) {
                     $options[MatcherRuleTypes::MIN_COUNT] = $matchingRule->min;
                 }
@@ -38,7 +37,7 @@ class MatchingRuleMapper
                     $options[MatcherRuleTypes::REGEX_PATTERN] = $matchingRule->regex;
                 }
 
-                $matchingRuleVo = new MatchingRule($jsonPath, $options);
+                $matchingRuleVo                                = new MatchingRule($jsonPath, $options);
                 $matchingRules[$matchingRuleVo->getJsonPath()] = $matchingRuleVo;
             }
         }

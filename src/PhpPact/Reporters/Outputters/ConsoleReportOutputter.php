@@ -6,6 +6,6 @@ class ConsoleReportOutputter implements IReportOutputter
 {
     public function write($report)
     {
-        echo $report . "\n";
+        print $report . "\n";
     }
 }

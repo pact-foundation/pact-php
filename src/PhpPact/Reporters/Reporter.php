@@ -10,19 +10,18 @@ class Reporter implements IReporter
     private $_failureInfoCount;
     private $_failureCount;
 
-    private $_reportLines = array();
+    private $_reportLines = [];
 
-    public function __construct($config, $outputters = array())
+    public function __construct($config, $outputters = [])
     {
-        if (count($outputters) > 0) {
+        if (\count($outputters) > 0) {
             $this->_outputters = $outputters;
         } elseif ($config instanceof \PhpPact\PactVerifierConfig) {
             $this->_outputters = $config->getReportOutputters();
         } else {
-            throw new \Exception("Invalid parameters. Either provide a valid config or valid outputters");
+            throw new \Exception('Invalid parameters. Either provide a valid config or valid outputters');
         }
     }
-
 
     public function reportInfo($infoMessage)
     {
@@ -56,10 +55,10 @@ class Reporter implements IReporter
         }
 
         foreach ($this->_outputters as $outputter) {
-            /**
+            /*
              * @var \PhpPact\Reporters\Outputters\IReportOutputter $outputter
              */
-            $outputter->write(implode(PHP_EOL, $this->_reportLines));
+            $outputter->write(\implode(PHP_EOL, $this->_reportLines));
         }
     }
 
@@ -75,18 +74,18 @@ class Reporter implements IReporter
             $shallowFailureCount = $comparisonResult->shallowFailureCount();
 
             if ($shallowFailureCount > 0) {
-                $failureBuilder .= " (FAILED - ";
+                $failureBuilder .= ' (FAILED - ';
                 for ($i = 0; $i < $shallowFailureCount; $i++) {
                     $this->_failureInfoCount++;
 
                     $failureBuilder .= "{$this->_failureInfoCount}";
 
                     if ($i < $shallowFailureCount - 1) {
-                        $failureBuilder .= ", ";
+                        $failureBuilder .= ', ';
                     }
                 }
 
-                $failureBuilder .= ")";
+                $failureBuilder .= ')';
             }
 
             $this->addReportLine($comparisonResult->getMessage() . $failureBuilder, $this->_currentTabDepth + $tabDepth);
@@ -110,18 +109,18 @@ class Reporter implements IReporter
         }
 
         $this->addReportLine('', 0);
-        $this->addReportLine("Failures:", 0);
+        $this->addReportLine('Failures:', 0);
 
         foreach ($comparisonResult->failures() as $failure) {
             $this->addReportLine('', 0);
-            $this->addReportLine(sprintf("%s %s", $this->_failureCount, $failure->getResult()), 0);
+            $this->addReportLine(\sprintf('%s %s', $this->_failureCount, $failure->getResult()), 0);
         }
     }
 
     private function addReportLine($message, $tabDepth)
     {
-        $a = array_fill(0, $tabDepth * 2, ' '); //Each tab we want to be 2 space chars
-        $indentation = implode('', $a);
+        $a                    = \array_fill(0, $tabDepth * 2, ' '); //Each tab we want to be 2 space chars
+        $indentation          = \implode('', $a);
         $this->_reportLines[] = $indentation . $message;
     }
 }

@@ -8,6 +8,7 @@ class HttpResponseMessageMapper
 {
     /**
      * @param \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse $response
+     *
      * @return \Windwalker\Http\Response\Response
      */
     public function convert(ProviderServiceResponse $response)

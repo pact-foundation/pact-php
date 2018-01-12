@@ -2,8 +2,8 @@
 
 namespace PhpPact\Mocks\MockHttpService\Models;
 
-use PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer;
 use PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceRequestComparer;
+use PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer;
 
 class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonSerializable
 {
@@ -11,16 +11,16 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
 
     public function __construct()
     {
-        if (is_callable('parent::__construct')) {
+        if (\is_callable('parent::__construct')) {
             parent::__construct();
         }
 
-        $this->_interactions = array();
+        $this->_interactions = [];
     }
 
     public function jsonSerialize()
     {
-        $obj = parent::jsonSerialize();
+        $obj               = parent::jsonSerialize();
         $obj->interactions = $this->_interactions;
 
         return $obj;
@@ -29,26 +29,26 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
     public function setInteractions($interactionArray)
     {
         // initialize Interactions
-        $this->_interactions = array();
+        $this->_interactions = [];
 
-        if (!is_array($interactionArray)) {
-            throw new \InvalidArgumentException('$interactionArray is not an array: ' . get_class($interactionArray));
+        if (!\is_array($interactionArray)) {
+            throw new \InvalidArgumentException('$interactionArray is not an array: ' . \get_class($interactionArray));
         }
 
-        if (count($interactionArray) == 0) {
-            $this->_interactions = array();
+        if (\count($interactionArray) == 0) {
+            $this->_interactions = [];
+
             return $this->_interactions;
         }
 
         foreach ($interactionArray as $interactionObj) {
             if (!isset($interactionObj->description)) {
-                throw new \RuntimeException("description is not set");
+                throw new \RuntimeException('description is not set');
             }
 
             if (!isset($interactionObj->providerState) && !isset($interactionObj->provider_state)) {
-                throw new \RuntimeException("provider state is not set");
+                throw new \RuntimeException('provider state is not set');
             }
-
 
             $this->addInteraction($interactionObj);
         }
@@ -65,7 +65,7 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
 
             if (isset($interactionObj->providerState)) {
                 $interaction->setProviderState($interactionObj->providerState);
-            } else if (isset($interactionObj->provider_state)) {
+            } elseif (isset($interactionObj->provider_state)) {
                 $interaction->setProviderState($interactionObj->provider_state);
             }
 
@@ -80,32 +80,33 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
     public function getInteractions()
     {
         if (!$this->_interactions) {
-            return array();
+            return [];
         }
 
         return $this->_interactions;
     }
 
-
     /**
      * All interactions other than those matching this description will be removed
      *
      * @param $description
+     *
      * @return array
      */
     public function filterInteractionsByDescription($description)
     {
-        $filteredInteractions = array();
+        $filteredInteractions = [];
 
-        if (count($this->_interactions) > 0) {
+        if (\count($this->_interactions) > 0) {
             foreach ($this->_interactions as $interaction) {
-                if (strtolower($description) == strtolower($interaction->getDescription())) {
+                if (\strtolower($description) == \strtolower($interaction->getDescription())) {
                     $filteredInteractions[] = $interaction;
                 }
             }
         }
 
         $this->_interactions = $filteredInteractions;
+
         return $filteredInteractions;
     }
 
@@ -113,21 +114,23 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
      * All interactions other than those matching this provider state will be removed
      *
      * @param $state
+     *
      * @return array
      */
     public function filterInteractionsByProviderState($state)
     {
-        $filteredInteractions = array();
+        $filteredInteractions = [];
 
-        if (count($this->_interactions) > 0) {
+        if (\count($this->_interactions) > 0) {
             foreach ($this->_interactions as $interaction) {
-                if (strtolower($state) == strtolower($interaction->getProviderState())) {
+                if (\strtolower($state) == \strtolower($interaction->getProviderState())) {
                     $filteredInteractions[] = $interaction;
                 }
             }
         }
 
         $this->_interactions = $filteredInteractions;
+
         return $filteredInteractions;
     }
 
@@ -135,8 +138,10 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
      * Cycle through interaction to see if we compare to the passed in response.  Similar to filter functions except the object is not modified
      *
      * @param ProviderServiceResponse $response
-     * @return mixed|ProviderServiceInteraction
+     *
      * @throws \PhpPact\PactFailureException(
+     *
+     * @return mixed|ProviderServiceInteraction
      */
     public function findInteractionsByProviderServiceResponse(ProviderServiceResponse $response)
     {
@@ -144,25 +149,27 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
 
         foreach ($this->_interactions as $interaction) {
             /**
-             * @var $interaction ProviderServiceInteraction
+             * @var ProviderServiceInteraction
              */
             $interactionResponse = $interaction->getResponse();
-            $comparisionResults = $responseComparer->compare($interactionResponse, $response);
+            $comparisionResults  = $responseComparer->compare($interactionResponse, $response);
 
             if (!($comparisionResults->hasFailure())) {
                 return $interaction;
             }
         }
 
-        throw new \PhpPact\PactFailureException("No interaction found matching this respose");
+        throw new \PhpPact\PactFailureException('No interaction found matching this respose');
     }
 
     /**
      * Cycle through interaction to see if we compare to the passed in request.  Similar to filter functions except the object is not modified
      *
      * @param ProviderServiceRequest $request
-     * @return mixed|ProviderServiceInteraction
+     *
      * @throws \PhpPact\PactFailureException
+     *
+     * @return mixed|ProviderServiceInteraction
      */
     public function findInteractionByProviderServiceRequest(ProviderServiceRequest $request)
     {
@@ -170,7 +177,7 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
 
         foreach ($this->_interactions as $interaction) {
             /**
-             * @var $interaction ProviderServiceInteraction
+             * @var ProviderServiceInteraction
              */
             $interactionRequest = $interaction->getRequest();
             $comparisionResults = $requestComparer->compare($interactionRequest, $request);
@@ -181,12 +188,12 @@ class ProviderServicePactFile extends \PhpPact\Models\PactFile implements \JsonS
         }
 
         if (isset($this->_logger)) {
-            $msg = "Unable to find";
-            $msg .= "\nRequest:". print_r($request, true);
-            $msg .= "\nInteractions: " . print_r($this->_interactions, true);
+            $msg = 'Unable to find';
+            $msg .= "\nRequest:" . \print_r($request, true);
+            $msg .= "\nInteractions: " . \print_r($this->_interactions, true);
             $this->_logger->debug($msg);
         }
 
-        throw new \PhpPact\PactFailureException("No interaction found matching this request");
+        throw new \PhpPact\PactFailureException('No interaction found matching this request');
     }
 }

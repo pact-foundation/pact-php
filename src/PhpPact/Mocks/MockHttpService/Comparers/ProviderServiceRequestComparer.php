@@ -1,4 +1,5 @@
 <?php
+
 namespace PhpPact\Mocks\MockHttpService\Comparers;
 
 use PhpPact\Comparers;
@@ -13,11 +14,11 @@ class ProviderServiceRequestComparer
 
     public function __construct()
     {
-        $this->_httpMethodComparer = new HttpMethodComparer();
-        $this->_httpPathComparer = new HttpPathComparer();
+        $this->_httpMethodComparer      = new HttpMethodComparer();
+        $this->_httpPathComparer        = new HttpPathComparer();
         $this->_httpQueryStringComparer = new HttpQueryStringComparer();
-        $this->_httpHeaderComparer = new HttpHeaderComparer();
-        $this->_httpBodyComparer = new HttpBodyComparer();
+        $this->_httpHeaderComparer      = new HttpHeaderComparer();
+        $this->_httpBodyComparer        = new HttpBodyComparer();
     }
 
     /**
@@ -28,10 +29,11 @@ class ProviderServiceRequestComparer
      */
     public function compare($expected, $actual)
     {
-        $result = new Comparers\ComparisonResult("returns a response which");
+        $result = new Comparers\ComparisonResult('returns a response which');
 
         if (!$expected) {
-            $result->recordFailure(new Comparers\ErrorMessageComparisonFailure(__CLASS__ . ": Expected is null"));
+            $result->recordFailure(new Comparers\ErrorMessageComparisonFailure(__CLASS__ . ': Expected is null'));
+
             return $result;
         }
 
@@ -44,7 +46,7 @@ class ProviderServiceRequestComparer
         $queryResult = $this->_httpQueryStringComparer->compare($expected->getQuery(), $actual->getQuery());
         $result->addChildResult($queryResult);
 
-        if (count($expected->getHeaders()) > 0) {
+        if (\count($expected->getHeaders()) > 0) {
             $headerResult = $this->_httpHeaderComparer->compare($expected, $actual);
             $result->addChildResult($headerResult);
         }

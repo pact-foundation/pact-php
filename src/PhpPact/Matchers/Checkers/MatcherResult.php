@@ -8,10 +8,10 @@ class MatcherResult
 
     public function __construct($matcherCheck)
     {
-        if (is_array($matcherCheck)) {
+        if (\is_array($matcherCheck)) {
             $this->_matcherChecks = $matcherCheck;
         } else {
-            $this->_matcherChecks = array();
+            $this->_matcherChecks   = [];
             $this->_matcherChecks[] = $matcherCheck;
         }
     }

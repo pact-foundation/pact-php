@@ -4,14 +4,14 @@ namespace PhpPact;
 
 class PactUriOptions
 {
-    const AuthScheme = "Basic";
+    const AuthScheme = 'Basic';
     private $_baseUri;
     private $_username;
     private $_password;
 
-
     /**
      * PactUriOptions constructor.
+     *
      * @param $uri - note that ending / will be stripped
      * @param null $username
      * @param null $password
@@ -19,7 +19,7 @@ class PactUriOptions
     public function __construct($uri, $username = null, $password = null)
     {
         if (!$uri) {
-            throw new  \InvalidArgumentException("uri is null or empty.");
+            throw new  \InvalidArgumentException('uri is null or empty.');
         }
 
         if ($username) {
@@ -30,16 +30,13 @@ class PactUriOptions
             $this->_password = $password;
         }
 
-        if (substr($uri, -1) == '/') {
-            $uri = substr($uri, 0, strlen($uri) - 1);
+        if (\substr($uri, -1) == '/') {
+            $uri = \substr($uri, 0, \strlen($uri) - 1);
         }
 
         $this->_baseUri = $uri;
     }
 
-    /**
-     * @return null
-     */
     public function getUsername()
     {
         return isset($this->_username)?$this->_username:false;
@@ -47,25 +44,24 @@ class PactUriOptions
 
     /**
      * @param null $username
+     *
      * @return PactUriOptions
      */
     public function setUsername($username)
     {
         if (!$username) {
-            throw new \InvalidArgumentException("username is null or empty.");
+            throw new \InvalidArgumentException('username is null or empty.');
         }
 
-        if (stripos(":", $username) !== false) {
+        if (\stripos(':', $username) !== false) {
             throw new \InvalidArgumentException("username contains a ':' character, which is not allowed.");
         }
 
         $this->_username = $username;
+
         return $this;
     }
 
-    /**
-     * @return null
-     */
     public function getPassword()
     {
         return isset($this->_password)?$this->_password:false;
@@ -73,15 +69,17 @@ class PactUriOptions
 
     /**
      * @param null $password
+     *
      * @return PactUriOptions
      */
     public function setPassword($password)
     {
         if (!$password) {
-            throw new  \InvalidArgumentException("password is null or empty.");
+            throw new  \InvalidArgumentException('password is null or empty.');
         }
 
         $this->_password = $password;
+
         return $this;
     }
 
@@ -99,8 +97,9 @@ class PactUriOptions
     public function AuthorizationHeader()
     {
         if (!isset($this->_username) || !isset($this->_password)) {
-            throw new \RuntimeException("User name or password is not set");
+            throw new \RuntimeException('User name or password is not set');
         }
-        return  self::AuthScheme . ' ' . base64_encode(utf8_encode(sprintf("%s:%s", $this->_username, $this->_password)));
+
+        return  self::AuthScheme . ' ' . \base64_encode(\utf8_encode(\sprintf('%s:%s', $this->_username, $this->_password)));
     }
 }

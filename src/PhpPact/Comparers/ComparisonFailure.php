@@ -5,7 +5,7 @@ namespace PhpPact\Comparers;
 class ComparisonFailure
 {
     /**
-     * @var string describing the failure.
+     * @var string describing the failure
      */
     protected $_result;
 

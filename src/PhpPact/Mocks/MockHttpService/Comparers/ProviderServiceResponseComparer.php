@@ -14,10 +14,9 @@ class ProviderServiceResponseComparer
     public function __construct()
     {
         $this->_httpStatusCodeComparer = new HttpStatusCodeComparer();
-        $this->_httpHeaderComparer = new HttpHeaderComparer();
-        $this->_httpBodyComparer = new HttpBodyComparer();
+        $this->_httpHeaderComparer     = new HttpHeaderComparer();
+        $this->_httpBodyComparer       = new HttpBodyComparer();
     }
-
 
     /**
      * @param $expected \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse
@@ -27,16 +26,17 @@ class ProviderServiceResponseComparer
      */
     public function compare($expected, $actual)
     {
-        $result = new ComparisonResult("returns a response which");
+        $result = new ComparisonResult('returns a response which');
         if (!$expected) {
-            $result->recordFailure(new ErrorMessageComparisonFailure(__CLASS__ . ": Expected is null"));
+            $result->recordFailure(new ErrorMessageComparisonFailure(__CLASS__ . ': Expected is null'));
+
             return $result;
         }
 
         $statusResult = $this->_httpStatusCodeComparer->compare($expected->getStatus(), $actual->getStatus());
         $result->addChildResult($statusResult);
 
-        if (count($expected->getHeaders()) > 0) {
+        if (\count($expected->getHeaders()) > 0) {
             $headerResult = $this->_httpHeaderComparer->compare($expected, $actual);
             $result->addChildResult($headerResult);
         }

@@ -9,7 +9,7 @@ class HandledRequest
 
     public function __construct($actualRequest, $matchedInteraction)
     {
-        $this->_actualRequest = $actualRequest;
+        $this->_actualRequest      = $actualRequest;
         $this->_matchedInteraction = $matchedInteraction;
     }
 

@@ -13,47 +13,9 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     private $_bodyMatchers;
     private $_matchingRules;
 
-    /**
-     * @return mixed
-     */
-    public function getBody()
+    public function __construct($status = null, $headers = [], $body = null, $matchingRules = [])
     {
-        if (!isset($this->_body)) {
-            return false;
-        }
-        return $this->_body;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHeaders()
-    {
-        return $this->_headers;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function setHeaders($headers)
-    {
-        $this->_headers = $headers;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStatus()
-    {
-        return $this->_status;
-    }
-
-
-    public function __construct($status = null, $headers = array(), $body = null, $matchingRules = array())
-    {
-        $this->_status = $status;
+        $this->_status  = $status;
         $this->_headers = $headers;
 
         if ($body) {
@@ -66,11 +28,53 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     /**
      * @return mixed
      */
+    public function getBody()
+    {
+        if (!isset($this->_body)) {
+            return false;
+        }
+
+        return $this->_body;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeaders()
+    {
+        return $this->_headers;
+    }
+
+    /**
+     * @param mixed $headers
+     *
+     * @return mixed
+     */
+    public function setHeaders($headers)
+    {
+        $this->_headers = $headers;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->_status;
+    }
+
+    /**
+     * @param mixed $body
+     *
+     * @return mixed
+     */
     public function setBody($body)
     {
         $this->_bodyWasSet = true;
 
-        if (is_string($body) && strtolower($body) === "null") {
+        if (\is_string($body) && \strtolower($body) === 'null') {
             $body = null;
         }
 
@@ -97,7 +101,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
      */
     public function setMatchingRules($matchingRules)
     {
-        if (count($matchingRules) > 0) {
+        if (\count($matchingRules) > 0) {
             foreach ($matchingRules as $matchingRule) {
                 $this->addMatchingRule($matchingRule);
             }
@@ -113,7 +117,6 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
     {
         $this->_matchingRules[$matchingRule->getJsonPath()] = $matchingRule;
     }
-
 
     /**
      * @return mixed
@@ -131,57 +134,36 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
         $this->_bodyMatchers = $matchingRules;
     }
 
-
-    private function parseBodyMatchingRules($body)
-    {
-        $this->_bodyMatchers = array();
-
-        if ($this->getContentType() == "application/json") {
-            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatchChecker(true);
-        } elseif ($this->getContentType() == "text/plain") {
-            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatchChecker();
-        } elseif ($this->getContentType() == "application/xml") {
-            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatchChecker(true);
-        } else {
-            // make JSON the default based on specification tests
-            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatchChecker(true);
-        }
-
-        return $body;
-    }
-
     /**
      * Return the header value for Content-Type
      *
      * False is returned if not set
      *
-     * @return mixed|bool
+     * @return bool|mixed
      */
     public function getContentType()
     {
         $headers = $this->getHeaders();
-        $key = 'Content-Type';
+        $key     = 'Content-Type';
 
-        if (is_array($headers) && isset($headers[$key])) {
+        if (\is_array($headers) && isset($headers[$key])) {
             return $headers[$key];
         }
 
         return 'application/json';
     }
 
-
     public function jsonSerialize()
     {
         // this _should_ cascade to child classes
-        $obj = new \stdClass();
-        $obj->status = intval($this->_status);
+        $obj         = new \stdClass();
+        $obj->status = (int) ($this->_status);
 
         $header = $this->_headers;
-        if (is_array($header)) {
-            $header = (object)$header;
+        if (\is_array($header)) {
+            $header = (object) $header;
         }
         $obj->headers = $header;
-
 
         if ($this->_body) {
             if ($this->isJsonString($this->_body)) {
@@ -191,26 +173,46 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
             }
         }
 
-        if (count($this->_matchingRules) > 0) {
+        if (\count($this->_matchingRules) > 0) {
             $obj->matchingRules = new \stdClass();
-            foreach($this->_matchingRules as $matchingRuleVo) {
+            foreach ($this->_matchingRules as $matchingRuleVo) {
 
                 /**
-                 * @var $matchingRuleVo MatchingRule
+                 * @var MatchingRule
                  */
-                $jsonPath = $matchingRuleVo->getJsonPath();
-                $obj->matchingRules->$jsonPath = $matchingRuleVo->jsonSerialize();
+                $jsonPath                        = $matchingRuleVo->getJsonPath();
+                $obj->matchingRules->{$jsonPath} = $matchingRuleVo->jsonSerialize();
             }
         }
 
         return $obj;
     }
 
-    private function isJsonString($string) {
-        if (!is_string($string)) {
+    private function parseBodyMatchingRules($body)
+    {
+        $this->_bodyMatchers = [];
+
+        if ($this->getContentType() == 'application/json') {
+            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatchChecker(true);
+        } elseif ($this->getContentType() == 'text/plain') {
+            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatchChecker();
+        } elseif ($this->getContentType() == 'application/xml') {
+            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatchChecker(true);
+        } else {
+            // make JSON the default based on specification tests
+            $this->_bodyMatchers[] = new \PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatchChecker(true);
+        }
+
+        return $body;
+    }
+
+    private function isJsonString($string)
+    {
+        if (!\is_string($string)) {
             return false;
         }
         \json_decode($string);
-        return (\json_last_error() == JSON_ERROR_NONE);
+
+        return \json_last_error() == JSON_ERROR_NONE;
     }
 }

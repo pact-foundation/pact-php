@@ -2,18 +2,17 @@
 
 namespace PhpPact\Mocks\MockHttpService;
 
+use PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer;
+use PhpPact\Mocks\MockHttpService\Mappers\HttpRequestMessageMapper;
+use PhpPact\Mocks\MockHttpService\Mappers\HttpResponseMessageMapper;
 use PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceRequestMapper;
 use PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceResponseMapper;
-use PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer;
+use PhpPact\Mocks\MockHttpService\Models\HttpVerb;
+use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction;
 use PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile;
 use PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
 use PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
-use PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction;
-use PhpPact\Mocks\MockHttpService\Mappers\HttpRequestMessageMapper;
-use PhpPact\Mocks\MockHttpService\Mappers\HttpResponseMessageMapper;
-use PhpPact\Mocks\MockHttpService\MockProviderHost;
-use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
-use PhpPact\Mocks\MockHttpService\Models\HttpVerb;
 
 class MockProviderService implements IMockProviderService
 {
@@ -52,9 +51,9 @@ class MockProviderService implements IMockProviderService
 
     public function __construct($providerName, \PhpPact\PactConfig $config)
     {
-        $this->_config = $config;
+        $this->_config     = $config;
         $this->_httpClient = new \Windwalker\Http\HttpClient();
-        $this->_host = new MockProviderHost();
+        $this->_host       = new MockProviderHost();
 
         $pactFile = new ProviderServicePactFile();
         $this->setPactFile($pactFile);
@@ -112,12 +111,11 @@ class MockProviderService implements IMockProviderService
     public function setPactFile(&$pactFile)
     {
         if (!($pactFile instanceof ProviderServicePactFile)) {
-            throw new \RuntimeException("Expected pactFile");
+            throw new \RuntimeException('Expected pactFile');
         }
 
         $this->_pactFile = $pactFile;
     }
-
 
     /**
      * @param ProviderServiceInteraction $interactions
@@ -129,12 +127,13 @@ class MockProviderService implements IMockProviderService
 
     /**
      * @param string $providerState
+     *
      * @return $this
      */
     public function given($providerState)
     {
         if (!$providerState) {
-            throw new \InvalidArgumentException("Please supply a non null or empty providerState");
+            throw new \InvalidArgumentException('Please supply a non null or empty providerState');
         }
 
         $this->_providerState = $providerState;
@@ -144,12 +143,13 @@ class MockProviderService implements IMockProviderService
 
     /**
      * @param string $description
+     *
      * @return $this
      */
     public function uponReceiving($description)
     {
         if (!$description) {
-            throw new \InvalidArgumentException("Please supply a non null or empty description");
+            throw new \InvalidArgumentException('Please supply a non null or empty description');
         }
 
         $this->_description = $description;
@@ -159,25 +159,26 @@ class MockProviderService implements IMockProviderService
 
     /**
      * @param ProviderServiceRequest $request
+     *
      * @return $this
      */
     public function with($request)
     {
         if ($request == null || !($request instanceof ProviderServiceRequest)) {
-            throw new \InvalidArgumentException("Please supply a non null request");
+            throw new \InvalidArgumentException('Please supply a non null request');
         }
 
         $method = $request->getMethod();
-        if ((string)$method == (string)HttpVerb::NOTSET) {
-            throw new \InvalidArgumentException("Please supply a request Method");
+        if ((string) $method == (string) HttpVerb::NOTSET) {
+            throw new \InvalidArgumentException('Please supply a request Method');
         }
 
         if (!$request->getPath()) {
-            throw new \InvalidArgumentException("Please supply a request Path");
+            throw new \InvalidArgumentException('Please supply a request Path');
         }
 
         if (!$this->isContentTypeSpecifiedForBody($request)) {
-            throw new \InvalidArgumentException("Please supply a Content-Type request header");
+            throw new \InvalidArgumentException('Please supply a Content-Type request header');
         }
 
         $this->_request = $request;
@@ -187,20 +188,21 @@ class MockProviderService implements IMockProviderService
 
     /**
      * @param ProviderServiceResponse $response
+     *
      * @return $this
      */
     public function willRespondWith($response)
     {
         if ($response == null || !($response instanceof ProviderServiceResponse)) {
-            throw new \InvalidArgumentException("Please supply a non null response");
+            throw new \InvalidArgumentException('Please supply a non null response');
         }
 
         if ($response->getStatus() <= 0) {
-            throw new \InvalidArgumentException("Please supply a response Status");
+            throw new \InvalidArgumentException('Please supply a response Status');
         }
 
         if (!$this->isContentTypeSpecifiedForBody($response)) {
-            throw new \InvalidArgumentException("Please supply a Content-Type response header");
+            throw new \InvalidArgumentException('Please supply a Content-Type response header');
         }
 
         $this->_response = $response;
@@ -208,12 +210,11 @@ class MockProviderService implements IMockProviderService
         $this->ClearTransientState();
     }
 
-
     public function verifyInteractions()
     {
         $requestMapper = new ProviderServiceRequestMapper();
 
-        $responseMapper = new ProviderServiceResponseMapper();
+        $responseMapper   = new ProviderServiceResponseMapper();
         $responseComparer = new ProviderServiceResponseComparer();
 
         $comparisonResults = new \PhpPact\Comparers\ComparisonResult();
@@ -223,17 +224,17 @@ class MockProviderService implements IMockProviderService
         // cycle through all the requests we sent
         foreach ($this->_host->getRequestAndResponsePairs() as $pair) {
             if (!isset($pair[MockProviderHost::REQUEST_KEY])) {
-                throw new \RuntimeException("Request was not set: " . print_r($pair, true));
+                throw new \RuntimeException('Request was not set: ' . \print_r($pair, true));
             }
 
             if (!isset($pair[MockProviderHost::RESPONSE_KEY])) {
-                throw new \RuntimeException("Response was not set: " . print_r($pair, true));
+                throw new \RuntimeException('Response was not set: ' . \print_r($pair, true));
             }
 
-            $httpRequest = $pair[MockProviderHost::REQUEST_KEY];
+            $httpRequest  = $pair[MockProviderHost::REQUEST_KEY];
             $httpResponse = $pair[MockProviderHost::RESPONSE_KEY];
 
-            $request = $requestMapper->convert($httpRequest);
+            $request  = $requestMapper->convert($httpRequest);
             $response = $responseMapper->convert($httpResponse);
 
             // foreach request, check that request is in our list of interactions
@@ -241,13 +242,13 @@ class MockProviderService implements IMockProviderService
 
             // given that we got a response, does it look like the expected interactions response
             $matchingResponse = $matchingInteraction->getResponse();
-            $result = $responseComparer->compare($matchingResponse, $response);
+            $result           = $responseComparer->compare($matchingResponse, $response);
 
             $comparisonResults->addChildResult($result);
         }
 
         if ($comparisonResults->hasFailure()) {
-            throw new \PhpPact\PactFailureException("See test output or logs for failure details.");
+            throw new \PhpPact\PactFailureException('See test output or logs for failure details.');
         }
 
         return $comparisonResults;
@@ -275,28 +276,30 @@ class MockProviderService implements IMockProviderService
      */
     public function clearInteractions()
     {
-        $this->_pactFile->setInteractions(array());
+        $this->_pactFile->setInteractions([]);
     }
 
     /**
      * @param ProviderServiceRequest $providerServiceRequest
-     * @param string $baseUri
-     * @return ProviderServiceResponse
+     * @param string                 $baseUri
+     *
      * @throws \PhpPact\PactFailureException
+     *
+     * @return ProviderServiceResponse
      */
     public function sendMockRequest(ProviderServiceRequest $providerServiceRequest, $baseUri)
     {
         if ($this->_host == null) {
-            throw new \RuntimeException("Unable to perform operation because the mock provider service is not running.");
+            throw new \RuntimeException('Unable to perform operation because the mock provider service is not running.');
         }
 
         $responseContent = '';
 
-        $httpRequestMapper = new HttpRequestMessageMapper();
+        $httpRequestMapper  = new HttpRequestMessageMapper();
         $httpResponseMapper = new ProviderServiceResponseMapper();
 
-        $httpRequest = $httpRequestMapper->convert($providerServiceRequest, $baseUri);
-        $httpResponse = $this->_host->handle($httpRequest);
+        $httpRequest      = $httpRequestMapper->convert($providerServiceRequest, $baseUri);
+        $httpResponse     = $this->_host->handle($httpRequest);
         $providerResponse = $httpResponseMapper->convert($httpResponse);
 
         $responseStatusCode = $providerResponse->getStatus();
@@ -311,49 +314,16 @@ class MockProviderService implements IMockProviderService
         return $providerResponse;
     }
 
-
-    /**
-     * Register this interaction to the internal array
-     * Wipe the other temp variables.
-     *
-     */
-    private function registerInteraction()
-    {
-        if (!$this->_description) {
-            throw new \RuntimeException("description has not been set, please supply using the UponReceiving method.");
-        }
-
-        if (!$this->_request) {
-            throw new \RuntimeException("request has not been set, please supply using the With method.");
-        }
-
-        if (!$this->_response) {
-            throw new \RuntimeException("response has not been set, please supply using the WillRespondWith method.");
-        }
-
-        $interaction = new ProviderServiceInteraction();
-        $interaction->setProviderState($this->_providerState);
-        $interaction->setDescription($this->_description);
-        $interaction->setRequest($this->_request);
-        $interaction->setResponse($this->_response);
-
-        $this->addMockToServer($interaction);
-
-        // do we actually want to set the iteractions to the pact.  I think we want to do this after we verify or build.
-        $this->addInteractionToPact($interaction);
-    }
-
     /**
      * @param ProviderServiceInteraction $interaction
      */
     public function addMockToServer(ProviderServiceInteraction $interaction)
     {
         if ($this->_host == null) {
-            throw new \RuntimeException("Host has not been set.");
+            throw new \RuntimeException('Host has not been set.');
         }
 
         $server = $this->_host;
-
 
         /**
          * Needed to handle pathing: http://localhost/test.php in the \Jfalque\HttpMock\Server() library
@@ -363,15 +333,13 @@ class MockProviderService implements IMockProviderService
          * the path appended and another without the path appended.
          *
          * http://localhost/test.php != http://localhost/
-         *
          */
-        $pattern = '/' . str_replace("/", "\/", $this->getUri()) . "*/";
-        $server = $server->whenUri($pattern, true)
+        $pattern = '/' . \str_replace('/', "\/", $this->getUri()) . '*/';
+        $server  = $server->whenUri($pattern, true)
             ->andWhenMethod($interaction->getRequest()->getMethod())
             ->andWhenPath($interaction->getRequest()->getPath());
 
-
-        if (count($interaction->getRequest()->getHeaders()) > 0) {
+        if (\count($interaction->getRequest()->getHeaders()) > 0) {
             $server = $server->andWhenHeaders($interaction->getRequest()->getHeaders());
         }
 
@@ -384,12 +352,42 @@ class MockProviderService implements IMockProviderService
         }
 
         // work through a conversion to $mapper
-        $mapper = new HttpResponseMessageMapper();
+        $mapper       = new HttpResponseMessageMapper();
         $httpResponse = $mapper->convert($interaction->getResponse());
-        $server = $server->return($i = $httpResponse);
-        $server = $server->end();
+        $server       = $server->return($i = $httpResponse);
+        $server       = $server->end();
 
         $this->_host = $server;
+    }
+
+    /**
+     * Register this interaction to the internal array
+     * Wipe the other temp variables.
+     */
+    private function registerInteraction()
+    {
+        if (!$this->_description) {
+            throw new \RuntimeException('description has not been set, please supply using the UponReceiving method.');
+        }
+
+        if (!$this->_request) {
+            throw new \RuntimeException('request has not been set, please supply using the With method.');
+        }
+
+        if (!$this->_response) {
+            throw new \RuntimeException('response has not been set, please supply using the WillRespondWith method.');
+        }
+
+        $interaction = new ProviderServiceInteraction();
+        $interaction->setProviderState($this->_providerState);
+        $interaction->setDescription($this->_description);
+        $interaction->setRequest($this->_request);
+        $interaction->setResponse($this->_response);
+
+        $this->addMockToServer($interaction);
+
+        // do we actually want to set the iteractions to the pact.  I think we want to do this after we verify or build.
+        $this->addInteractionToPact($interaction);
     }
 
     /**
@@ -406,14 +404,15 @@ class MockProviderService implements IMockProviderService
      */
     private function clearTransientState()
     {
-        $this->_request = null;
-        $this->_response = null;
+        $this->_request       = null;
+        $this->_response      = null;
         $this->_providerState = null;
-        $this->_description = null;
+        $this->_description   = null;
     }
 
     /**
      * @param IHttpMessage $message
+     *
      * @return bool
      */
     private function isContentTypeSpecifiedForBody(IHttpMessage $message)
@@ -424,10 +423,10 @@ class MockProviderService implements IMockProviderService
         }
 
         $headers = null;
-        if (count($message->getHeaders()) > 0) {
+        if (\count($message->getHeaders()) > 0) {
             $headers = $message->getHeaders();
         }
 
-        return $headers != null && isset($headers["Content-Type"]);
+        return $headers != null && isset($headers['Content-Type']);
     }
 }

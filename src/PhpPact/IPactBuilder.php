@@ -1,4 +1,5 @@
 <?php
+
 namespace PhpPact;
 
 interface IPactBuilder

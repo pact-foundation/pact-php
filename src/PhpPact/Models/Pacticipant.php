@@ -15,7 +15,7 @@ class Pacticipant implements \JsonSerializable
 
     public function jsonSerialize()
     {
-        $obj = new \stdClass();
+        $obj       = new \stdClass();
         $obj->name = $this->_name;
 
         return $obj;
@@ -25,13 +25,16 @@ class Pacticipant implements \JsonSerializable
     {
         if (isset($obj->name)) {
             $this->_name = $obj->name;
+
             return $this->_name;
-        } elseif (is_string($obj)) {
+        }
+        if (\is_string($obj)) {
             $this->_name = $obj;
+
             return $this->_name;
         }
 
-        throw new \RuntimeException("Name is not in the appropriate format");
+        throw new \RuntimeException('Name is not in the appropriate format');
     }
 
     public function getName()

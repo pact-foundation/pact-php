@@ -2,8 +2,8 @@
 
 namespace PhpPact;
 
-use PhpPact\Models\Pacticipant;
 use PhpPact\Mocks\MockHttpService\Validators;
+use PhpPact\Models\Pacticipant;
 
 class PactBuilder implements IPactBuilder
 {
@@ -27,11 +27,10 @@ class PactBuilder implements IPactBuilder
      */
     private $_config;
 
-
     /**
      * PactBuilder constructor.
      *
-     * @param \PhpPact\PactConfig|null $config
+     * @param null|\PhpPact\PactConfig $config
      */
     public function __construct($config = null)
     {
@@ -72,6 +71,7 @@ class PactBuilder implements IPactBuilder
     public function setProviderName($providerName)
     {
         $this->_providerName = $providerName;
+
         return $this;
     }
 
@@ -93,7 +93,6 @@ class PactBuilder implements IPactBuilder
         return $this;
     }
 
-
     /**
      * @param $providerName
      * @param PactConfig $config
@@ -111,7 +110,7 @@ class PactBuilder implements IPactBuilder
     public function getMockService()
     {
         if (!$this->_mockProviderService) {
-            throw new \RuntimeException("Mock provider service has not been initialized");
+            throw new \RuntimeException('Mock provider service has not been initialized');
         }
 
         return $this->_mockProviderService;
@@ -119,12 +118,13 @@ class PactBuilder implements IPactBuilder
 
     /**
      * @param string $consumerName
+     *
      * @return $this
      */
     public function serviceConsumer($consumerName)
     {
         if (!$consumerName) {
-            throw new \RuntimeException("Please supply a non null or empty consumerName");
+            throw new \RuntimeException('Please supply a non null or empty consumerName');
         }
 
         $this->_consumerName = $consumerName;
@@ -132,15 +132,15 @@ class PactBuilder implements IPactBuilder
         return $this;
     }
 
-
     /**
      * @param string $providerName
+     *
      * @return $this
      */
     public function hasPactWith($providerName)
     {
         if (!$providerName) {
-            throw new \RuntimeException("Please supply a non null or empty providerName");
+            throw new \RuntimeException('Please supply a non null or empty providerName');
         }
 
         $this->_providerName = $providerName;
@@ -149,10 +149,8 @@ class PactBuilder implements IPactBuilder
             $this->setMockService($this->_providerName, $this->_config);
         }
 
-
         return $this;
     }
-
 
     /**
      * Validate and create the new pact file.
@@ -162,19 +160,19 @@ class PactBuilder implements IPactBuilder
     public function build($pactFile = false)
     {
         if (!$this->_mockProviderService) {
-            throw new \RuntimeException("The Pact file could not be saved because the mock provider service is not initialised. Please initialise by calling the MockService() method.");
+            throw new \RuntimeException('The Pact file could not be saved because the mock provider service is not initialised. Please initialise by calling the MockService() method.');
         }
 
         if (!$this->_consumerName) {
-            throw new \RuntimeException("ConsumerName has not been set, please supply a consumer name using the serviceConsumer method.");
+            throw new \RuntimeException('ConsumerName has not been set, please supply a consumer name using the serviceConsumer method.');
         }
 
         if (!$this->_providerName) {
-            throw new \RuntimeException("ProviderName has not been set, please supply a provider name using the HasPactWith method.");
+            throw new \RuntimeException('ProviderName has not been set, please supply a provider name using the HasPactWith method.');
         }
 
         if ($pactFile && !($pactFile instanceof Mocks\MockHttpService\Models\ProviderServicePactFile)) {
-            throw  new \RuntimeException("Pact file was passed in but not a valid object type");
+            throw  new \RuntimeException('Pact file was passed in but not a valid object type');
         }
 
         // set if it is not passed in
@@ -195,8 +193,8 @@ class PactBuilder implements IPactBuilder
      */
     private function persistPactFile(Models\PactFile $pactFile)
     {
-        $output = \json_encode($pactFile, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $output   = \json_encode($pactFile, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         $fileName = $this->_config->getPactDir() . '/' . $pactFile->getFileName();
-        file_put_contents($fileName, $output);
+        \file_put_contents($fileName, $output);
     }
 }

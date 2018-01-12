@@ -6,6 +6,6 @@ class StringExtensions
 {
     public static function ToLowerSnakeCase($input)
     {
-        return (!$input ? strtolower(str_replace(' ', '_', $input)) : '');
+        return !$input ? \strtolower(\str_replace(' ', '_', $input)) : '';
     }
 }

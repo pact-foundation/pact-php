@@ -9,14 +9,14 @@ class UnexpectedRequestComparisonFailure extends ComparisonFailure
     public function __construct($request)
     {
         /**
-         * @var $request \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction
+         * @var \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction
          */
-        $requestMethod = $request != null ? strtoupper($request->getMethod()) : "No Method";
-        $requestPath = $request != null ? $request->getPath() : "No Path";
+        $requestMethod = $request != null ? \strtoupper($request->getMethod()) : 'No Method';
+        $requestPath   = $request != null ? $request->getPath() : 'No Path';
 
-        $this->_requestDescription = sprintf("%s %s", $requestMethod, $requestPath);
-        $this->_result = sprintf(
-            "An unexpected request %s was seen by the mock provider service.",
+        $this->_requestDescription = \sprintf('%s %s', $requestMethod, $requestPath);
+        $this->_result             = \sprintf(
+            'An unexpected request %s was seen by the mock provider service.',
             $this->_requestDescription
         );
     }

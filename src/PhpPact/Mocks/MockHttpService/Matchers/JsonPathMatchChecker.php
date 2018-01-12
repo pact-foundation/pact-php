@@ -2,9 +2,9 @@
 
 namespace PhpPact\Mocks\MockHttpService\Matchers;
 
-use PhpPact\Matchers\Checkers\MatcherResult;
 use PhpPact\Matchers\Checkers\FailedMatcherCheck;
 use PhpPact\Matchers\Checkers\MatcherCheckFailureType;
+use PhpPact\Matchers\Checkers\MatcherResult;
 use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
 use PhpPact\Matchers\Rules\MatcherRuleTypes;
 use PhpPact\Matchers\Rules\MatchingRule;
@@ -19,58 +19,58 @@ class JsonPathMatchChecker
      * @param $matchingRules array[MatchingRules]
      * @param $allowExtraKeys bool
      * @param $matchingRules string
+     * @param mixed $matchingPrefix
      *
      * @return MatcherResult
      */
     public function match($path, $expected, $actual, $matchingRules, $allowExtraKeys = false, $matchingPrefix = '')
     {
-        if (count($matchingRules) < 1) {
-            throw new \Exception(sprintf('JsonPathMatchChecker should not be called if there are no matching rules: %s', $path));
+        if (\count($matchingRules) < 1) {
+            throw new \Exception(\sprintf('JsonPathMatchChecker should not be called if there are no matching rules: %s', $path));
         }
 
         if (!($expected instanceof IHttpMessage)) {
-            throw new \Exception("Expected is not an instance of IHttpMessage: " . print_r($expected, true));
+            throw new \Exception('Expected is not an instance of IHttpMessage: ' . \print_r($expected, true));
         }
 
         if (!($actual instanceof IHttpMessage)) {
-            throw new \Exception("Actual is not an instance of IHttpMessage: " . print_r($actual, true));
+            throw new \Exception('Actual is not an instance of IHttpMessage: ' . \print_r($actual, true));
         }
 
         $cloneExpected = clone $expected;
-        $cloneActual = clone $actual;
+        $cloneActual   = clone $actual;
 
-        if ($cloneExpected->getContentType() == "application/json") {
-            if (is_string($cloneExpected->getBody())) {
+        if ($cloneExpected->getContentType() == 'application/json') {
+            if (\is_string($cloneExpected->getBody())) {
                 $expectedBody = $cloneExpected->getBody();
                 $expectedBody = \json_decode($expectedBody);
                 $cloneExpected->setBody($expectedBody);
             }
-            if (is_string($cloneActual->getBody())) {
+            if (\is_string($cloneActual->getBody())) {
                 $actualBody = $cloneActual->getBody();
                 $actualBody = \json_decode($actualBody);
                 $cloneActual->setBody($actualBody);
             }
         }
 
-        $failedReasons = array();
+        $failedReasons = [];
         foreach ($matchingRules as $jsonPath => $matchingRule) {
             /**
-             * @var $matchingRule MatchingRule
+             * @var MatchingRule
              */
             $expectedResult = (new \Peekmo\JsonPath\JsonStore($cloneExpected))->get($jsonPath, false, true);
-            $actualResult = (new \Peekmo\JsonPath\JsonStore($cloneActual))->get($jsonPath,false, true);
+            $actualResult   = (new \Peekmo\JsonPath\JsonStore($cloneActual))->get($jsonPath, false, true);
 
             $ruleFailedReasons = $this->processMatchingRules($path, $matchingRule, $expectedResult, $actualResult, $jsonPath, $allowExtraKeys);
-            $failedReasons = array_merge($failedReasons, $ruleFailedReasons);
+            $failedReasons     = \array_merge($failedReasons, $ruleFailedReasons);
         }
 
-        if (count($failedReasons) > 0) {
+        if (\count($failedReasons) > 0) {
             return new MatcherResult($failedReasons);
         }
 
         return new MatcherResult(new SuccessfulMatcherCheck($path));
     }
-
 
     /**
      * @param MatchingRule $matchingRule
@@ -79,46 +79,46 @@ class JsonPathMatchChecker
      * @param $actual array
      * @param $JSONPath string
      * @param $allowExtraKeys bool
+     *
      * @return array
      */
     private function processMatchingRules($bodyChecker, MatchingRule $matchingRule, $expected, $actual, $JSONPath, $allowExtraKeys)
     {
-        $ruleFailedReasons = array();
+        $ruleFailedReasons = [];
 
         // if not match type is set, we look at array counts
         if (($matchingRule->getMin() || $matchingRule->getMax()) && !$matchingRule->getType()) {
-            if ($matchingRule->getMin() && (count($actual) < $matchingRule->getMin())) {
+            if ($matchingRule->getMin() && (\count($actual) < $matchingRule->getMin())) {
                 // add logger
                 // "JSONPath did not match the max number of array elements in the actual results. Rule: " . $JSONPath;
 
                 $ruleFailedReasons[] = new FailedMatcherCheck($bodyChecker, MatcherCheckFailureType::ValueDoesNotMatch);
             }
-            if ($matchingRule->getMax() && (count($actual) > $matchingRule->getMax())) {
+            if ($matchingRule->getMax() && (\count($actual) > $matchingRule->getMax())) {
                 // add logger
                 // "JSONPath did not match the max number of array elements in the actual results. Rule: " . $JSONPath;
                 $ruleFailedReasons[] = new FailedMatcherCheck($bodyChecker, MatcherCheckFailureType::AdditionalPropertyInObject);
             }
         } else {
             if ($matchingRule->getType() == MatcherRuleTypes::OBJECT_TYPE) {
-
-                $typeFailures = $this->processTypeCheck($bodyChecker, $matchingRule, $expected, $actual, $allowExtraKeys);
-                $ruleFailedReasons = array_merge($ruleFailedReasons, $typeFailures);
-
-            } else if ($matchingRule->getType() == MatcherRuleTypes::REGEX_TYPE && $matchingRule->getRegexPattern()) {
-                $regexFailures = $this->processRegexCheck($bodyChecker, $matchingRule, $expected, $actual, $allowExtraKeys);
-                $ruleFailedReasons = array_merge($ruleFailedReasons, $regexFailures);
+                $typeFailures      = $this->processTypeCheck($bodyChecker, $matchingRule, $expected, $actual, $allowExtraKeys);
+                $ruleFailedReasons = \array_merge($ruleFailedReasons, $typeFailures);
+            } elseif ($matchingRule->getType() == MatcherRuleTypes::REGEX_TYPE && $matchingRule->getRegexPattern()) {
+                $regexFailures     = $this->processRegexCheck($bodyChecker, $matchingRule, $expected, $actual, $allowExtraKeys);
+                $ruleFailedReasons = \array_merge($ruleFailedReasons, $regexFailures);
             }
         }
 
         return $ruleFailedReasons;
     }
 
-    private function processTypeCheck($bodyChecker, MatchingRule $matchingRule, $expected, $actual, $allowExtraKeys) {
-        $ruleFailedReasons = array();
+    private function processTypeCheck($bodyChecker, MatchingRule $matchingRule, $expected, $actual, $allowExtraKeys)
+    {
+        $ruleFailedReasons = [];
 
         // cycle through a list of results for expected
         // build an array of types
-        $expectedTypes = array();
+        $expectedTypes = [];
         foreach ($expected as $expectedKey => $expectedSingle) {
             $expectedTypes[\gettype($expectedSingle)] = true;
         }
@@ -127,14 +127,13 @@ class JsonPathMatchChecker
 
         // if min or max is set, keep track
         // if min or max are not set, throw an exception
-        $numOfMatches = 0;
+        $numOfMatches  = 0;
         $numOfFailures = 0;
         if ($allowExtraKeys) {
             $results = $this->allowExtraKeysCheck($actual, $expected, $expectedTypes, false);
             $numOfMatches += $results['numOfMatches'];
             $numOfFailures += $results['numOfFailures'];
-        }
-        else {
+        } else {
             foreach ($actual as $actualKey => $actualSingle) {
                 if (isset($expectedTypes[\gettype($actualSingle)])) {
                     $numOfMatches++;
@@ -148,12 +147,11 @@ class JsonPathMatchChecker
             // add logger
             //$ruleFailedReasons[] = "JSONPath min was set but not honored by type. Rule: " . $JSONPath;
             $ruleFailedReasons[] = new FailedMatcherCheck($bodyChecker, MatcherCheckFailureType::ValueDoesNotMatch);
-
-        } else if ($matchingRule->getMax() && $numOfMatches > $matchingRule->getMax()) {
+        } elseif ($matchingRule->getMax() && $numOfMatches > $matchingRule->getMax()) {
             // add logger
             //$ruleFailedReasons[] = "JSONPath max was set but not honored by type. Rule: " . $JSONPath;
             $ruleFailedReasons[] = new FailedMatcherCheck($bodyChecker, MatcherCheckFailureType::AdditionalPropertyInObject);
-        } else if (!$matchingRule->getMin() && !$matchingRule->getMax() && $numOfFailures != 0) {
+        } elseif (!$matchingRule->getMin() && !$matchingRule->getMax() && $numOfFailures != 0) {
             // add logger
             //$ruleFailedReasons[] = "JSONPath all actual results were not honored by type. Rule: " . $JSONPath;
             $ruleFailedReasons[] = new FailedMatcherCheck($bodyChecker, MatcherCheckFailureType::ValueDoesNotMatch);
@@ -162,22 +160,22 @@ class JsonPathMatchChecker
         return $ruleFailedReasons;
     }
 
-    private function processRegexCheck($bodyChecker, MatchingRule $matchingRule, $expected, $actual, $allowExtraKeys) {
-        $ruleFailedReasons = array();
+    private function processRegexCheck($bodyChecker, MatchingRule $matchingRule, $expected, $actual, $allowExtraKeys)
+    {
+        $ruleFailedReasons = [];
 
         // do we really care about expected here?
-        $numOfMatches = 0;
+        $numOfMatches  = 0;
         $numOfFailures = 0;
-        $regexPattern = '/' . str_replace('/', '\/', $matchingRule->getRegexPattern()) . '/';
+        $regexPattern  = '/' . \str_replace('/', '\/', $matchingRule->getRegexPattern()) . '/';
 
         if ($allowExtraKeys) {
-            $results = $this->allowExtraKeysCheck($actual, $expected, array(), $regexPattern );
+            $results = $this->allowExtraKeysCheck($actual, $expected, [], $regexPattern);
             $numOfMatches += $results['numOfMatches'];
             $numOfFailures += $results['numOfFailures'];
-        }
-        else {
+        } else {
             foreach ($actual as $actualKey => $actualSingle) {
-                $actualMatches = array();
+                $actualMatches     = [];
                 $actualRegexResult = \preg_match($regexPattern, $actualSingle, $actualMatches);
 
                 if ($actualRegexResult) {
@@ -201,12 +199,11 @@ class JsonPathMatchChecker
             // add logger
             //$ruleFailedReasons[] = "JSONPath min was set but not honored by type. Rule: " . $JSONPath;
             $ruleFailedReasons[] = new FailedMatcherCheck($bodyChecker, MatcherCheckFailureType::ValueDoesNotMatch);
-
-        } else if ($matchingRule->getMax() && $numOfMatches > $matchingRule->getMax()) {
+        } elseif ($matchingRule->getMax() && $numOfMatches > $matchingRule->getMax()) {
             // add logger
             //$ruleFailedReasons[] = "JSONPath max was set but not honored by type. Rule: " . $JSONPath;
             $ruleFailedReasons[] = new FailedMatcherCheck($bodyChecker, MatcherCheckFailureType::AdditionalPropertyInObject);
-        } else if (!$matchingRule->getMin() && !$matchingRule->getMax() && $numOfFailures != 0) {
+        } elseif (!$matchingRule->getMin() && !$matchingRule->getMax() && $numOfFailures != 0) {
             // add logger
             //$ruleFailedReasons[] = "JSONPath all actual results were not honored by type. Rule: " . $JSONPath;
             $ruleFailedReasons[] = new FailedMatcherCheck($bodyChecker, MatcherCheckFailureType::ValueDoesNotMatch);
@@ -220,49 +217,48 @@ class JsonPathMatchChecker
      *
      * @param array $actual
      * @param array $expected
+     * @param mixed $expectedTypes
+     * @param mixed $regexPattern
+     * @param mixed $isParentArray
+     *
      * @return array
      */
-    private function allowExtraKeysCheck($actual, $expected, $expectedTypes = array(), $regexPattern = false, $isParentArray = false)
+    private function allowExtraKeysCheck($actual, $expected, $expectedTypes = [], $regexPattern = false, $isParentArray = false)
     {
         $numOfFailures = 0;
-        $numOfMatches = 0;
+        $numOfMatches  = 0;
 
         // loosely derive arrays by having the end nodes completely numeric;
         // this seems like a terrible idea, please help me.
-        $arraysActual = array();
-        $nonArraysActual = array();
+        $arraysActual    = [];
+        $nonArraysActual = [];
 
         if ($isParentArray) {
             $arraysActual = $actual;
-        }
-        else {
-            foreach($actual as $actualKey => $actualValue) {
-                $keys = \explode("|", $actualKey);
-                $lastKey = array_pop($keys);
+        } else {
+            foreach ($actual as $actualKey => $actualValue) {
+                $keys    = \explode('|', $actualKey);
+                $lastKey = \array_pop($keys);
 
-                if (preg_match('/^[0-9]*$/', $lastKey)) {
+                if (\preg_match('/^[0-9]*$/', $lastKey)) {
                     $arraysActual[$actualKey] = $actualValue;
-                }
-                else {
+                } else {
                     $nonArraysActual[$actualKey] = $actualValue;
                 }
             }
         }
 
         // now we walk through only arrays
-        if ($isParentArray && count($expectedTypes) > 0 && count($arraysActual) == 0) {
+        if ($isParentArray && \count($expectedTypes) > 0 && \count($arraysActual) == 0) {
             $numOfFailures++;
         } else {
-
-
             foreach ($arraysActual as $actualKey => $actualValue) {
                 // it's a type check
                 if ($regexPattern == false) {
                     // if the value is an array by itself, ensure it matches
-                    if (is_array($actualValue)) {
-
-                        $similarExpected = $this->findSimilarValuesWithSubkeys($expected, $actualKey);
-                        $similarExpectedTypes = array();
+                    if (\is_array($actualValue)) {
+                        $similarExpected      = $this->findSimilarValuesWithSubkeys($expected, $actualKey);
+                        $similarExpectedTypes = [];
                         foreach ($similarExpected as $expectedKey => $expectedSingle) {
                             foreach ($expectedSingle as $expectedSingleKey => $expectedSingleValue) {
                                 $similarExpectedTypes[\gettype($expectedSingleValue)] = true;
@@ -279,7 +275,7 @@ class JsonPathMatchChecker
                         $numOfFailures++;
                     }
                 } else {
-                    $actualMatches = array();
+                    $actualMatches     = [];
                     $actualRegexResult = \preg_match($regexPattern, $actualValue, $actualMatches);
 
                     if ($actualRegexResult) {
@@ -297,36 +293,35 @@ class JsonPathMatchChecker
             if ($regexPattern == false) {
                 if (isset($expected[$actualKey]) && \gettype($expected[$actualKey]) != \gettype($actualValue)) {
                     $numOfFailures++;
-                } else if (isset($expected[$actualKey])) {
+                } elseif (isset($expected[$actualKey])) {
                     $numOfMatches++;
                 }
-            }
-            else {
-                $actualMatches = array();
+            } else {
+                $actualMatches     = [];
                 $actualRegexResult = \preg_match($regexPattern, $actualValue, $actualMatches);
                 if (isset($expected[$actualKey]) && $actualRegexResult) {
                     $numOfMatches++;
-                }
-                else if (isset($expected[$actualKey])) {
+                } elseif (isset($expected[$actualKey])) {
                     $numOfFailures++;
                 }
             }
         }
 
-        return array(
+        return [
             'numOfFailures' => $numOfFailures,
-            'numOfMatches' => $numOfMatches
-        );
+            'numOfMatches'  => $numOfMatches
+        ];
     }
 
-    private function findSimilarValuesWithSubkeys($assocArr, $keys) {
-        $explodeKeys = \explode("|", $keys);
-        array_pop($explodeKeys);
-        $keys = implode("|", $explodeKeys);
+    private function findSimilarValuesWithSubkeys($assocArr, $keys)
+    {
+        $explodeKeys = \explode('|', $keys);
+        \array_pop($explodeKeys);
+        $keys = \implode('|', $explodeKeys);
 
-        $newAssocArr = array();
-        foreach($assocArr as $arrKey => $value) {
-            if (stripos($arrKey, $keys) !== false) {
+        $newAssocArr = [];
+        foreach ($assocArr as $arrKey => $value) {
+            if (\stripos($arrKey, $keys) !== false) {
                 $newAssocArr[$arrKey] = $value;
             }
         }

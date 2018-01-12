@@ -13,7 +13,7 @@ class PactVerifierConfig extends PactBaseConfig
     {
         parent::__construct();
 
-        $this->_reportOutputters = array();
+        $this->_reportOutputters   = [];
         $this->_reportOutputters[] = new \PhpPact\Reporters\Outputters\Log4PHPOutputter($this->_logger);
     }
 

@@ -8,13 +8,14 @@ use PhpPact\Models\Pacticipant;
 class ProviderServicePactMapper implements \PhpPact\Mappers\IMapper
 {
     /**
-     *
      * @param \stdClass $json
+     * @param mixed     $request
+     *
      * @return ProviderServicePactFile
      */
     public function convert($request)
     {
-        if (is_string($request)) {
+        if (\is_string($request)) {
             $request = \json_decode($request);
         }
 
