@@ -17,9 +17,9 @@ init:
 clone_folder: c:\projects\pact-php
 
 install:
-  - cinst php --version 7.0
-  - cmd: C:\tools\php71\php.exe -i
-  - cmd: copy /Y .\test\php.ini C:\tools\php71\
+  - cinst php --version 7.0.27
+  - cmd: C:\tools\php70\php.exe -i
+  - cmd: copy /Y .\tests\PhpPact\php.ini C:\tools\php70\
   - appveyor DownloadFile https://getcomposer.org/composer.phar
   - cmd: C:\tools\php70\php.exe .\composer.phar update
 
