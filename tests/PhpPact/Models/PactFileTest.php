@@ -13,46 +13,50 @@ class PactFileTest extends TestCase
         $f = new PactFile();
 
         $m = $f->getMetadata();
-        $this->assertTrue(isset($m->pactSpecificationVersion), "Ensure pact specification is set");
+        $this->assertTrue(isset($m->pactSpecificationVersion), 'Ensure pact specification is set');
 
         $thrownException = false;
+
         try {
-            $f->setMetadata("fail now");
+            $f->setMetadata('fail now');
         } catch (\Exception $e) {
             $thrownException = true;
         }
-        $this->assertTrue($thrownException, "Ensure an exception is thrown if the proper object is not passed");
+        $this->assertTrue($thrownException, 'Ensure an exception is thrown if the proper object is not passed');
 
         $thrownException = false;
+
         try {
             $o = new \stdClass();
             $f->setMetadata($o);
         } catch (\Exception $e) {
             $thrownException = true;
         }
-        $this->assertTrue($thrownException, "Ensure an exception is thrown if the proper object is without a pactSpecificationVersion");
+        $this->assertTrue($thrownException, 'Ensure an exception is thrown if the proper object is without a pactSpecificationVersion');
 
         $thrownException = false;
+
         try {
-            $o = new \stdClass();
+            $o                           = new \stdClass();
             $o->pactSpecificationVersion = '2.0';
-            $m = $f->setMetadata($o);
+            $m                           = $f->setMetadata($o);
         } catch (\Exception $e) {
             $thrownException = true;
         }
-        $this->assertFalse($thrownException, "A proper object is set");
-        $this->assertEquals('2.0', $m->pactSpecificationVersion, "Checks that the metadata we checked appropriately");
+        $this->assertFalse($thrownException, 'A proper object is set');
+        $this->assertEquals('2.0', $m->pactSpecificationVersion, 'Checks that the metadata we checked appropriately');
 
         $thrownException = false;
+
         try {
-            $o = new \stdClass();
-            $o->metadata = new \stdClass();
+            $o                                     = new \stdClass();
+            $o->metadata                           = new \stdClass();
             $o->metadata->pactSpecificationVersion = '3.0';
-            $m = $f->setMetadata($o);
+            $m                                     = $f->setMetadata($o);
         } catch (\Exception $e) {
             $thrownException = true;
         }
-        $this->assertFalse($thrownException, "A proper object is set");
-        $this->assertEquals('3.0', $m->pactSpecificationVersion, "Checks that the metadata we checked appropriately");
+        $this->assertFalse($thrownException, 'A proper object is set');
+        $this->assertEquals('3.0', $m->pactSpecificationVersion, 'Checks that the metadata we checked appropriately');
     }
 }

@@ -138,7 +138,6 @@ return PhpCsFixer\Config::create()
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->files()
-            ->in(__DIR__ . '/src')
             ->in(__DIR__ . '/tests')
             ->name('*.php')
     );

@@ -2,10 +2,10 @@
 
 namespace PhpPactTest\IntegrationTests\Models;
 
+use PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceRequestComparer;
+use PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceRequestMapper;
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
 use PHPUnit\Framework\TestCase;
-use \PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceRequestComparer;
-use \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
-use \PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceRequestMapper;
 
 class RequestTestCase extends TestCase
 {
@@ -29,6 +29,7 @@ class RequestTestCase extends TestCase
 
     /**
      * Using this function to avoid overriding PHPUnitTestCase constructors
+     *
      * @param $json
      */
     public function initialize($json)
@@ -66,11 +67,13 @@ class RequestTestCase extends TestCase
 
     /**
      * @param mixed $match
+     *
      * @return RequestTestCase
      */
     public function setMatch($match)
     {
         $this->_match = $match;
+
         return $this;
     }
 
@@ -84,11 +87,13 @@ class RequestTestCase extends TestCase
 
     /**
      * @param mixed $comment
+     *
      * @return RequestTestCase
      */
     public function setComment($comment)
     {
         $this->_comment = $comment;
+
         return $this;
     }
 
@@ -102,11 +107,13 @@ class RequestTestCase extends TestCase
 
     /**
      * @param ProviderServiceRequest $expected
+     *
      * @return RequestTestCase
      */
-    public function setExpected(ProviderServiceRequest $expected): RequestTestCase
+    public function setExpected(ProviderServiceRequest $expected): self
     {
         $this->_expected = $expected;
+
         return $this;
     }
 
@@ -120,14 +127,15 @@ class RequestTestCase extends TestCase
 
     /**
      * @param ProviderServiceRequest $actual
+     *
      * @return RequestTestCase
      */
-    public function setActual(ProviderServiceRequest $actual): RequestTestCase
+    public function setActual(ProviderServiceRequest $actual): self
     {
         $this->_actual = $actual;
+
         return $this;
     }
-
 
     /**
      * @param $filePath
@@ -137,9 +145,9 @@ class RequestTestCase extends TestCase
         $result = $this->_requestComparer->compare($this->_expected, $this->_actual);
 
         if ($this->_match) {
-            $this->assertFalse($result->hasFailure(), "There should not be any errors" . $filePath);
+            $this->assertFalse($result->hasFailure(), 'There should not be any errors' . $filePath);
         } else {
-            $this->assertGreaterThanOrEqual(1, count($result->failures()), "There should be at least one failure: " . $filePath);
+            $this->assertGreaterThanOrEqual(1, \count($result->failures()), 'There should be at least one failure: ' . $filePath);
         }
     }
 }

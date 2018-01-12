@@ -2,10 +2,10 @@
 
 namespace PhpPactTest\IntegrationTests\Models;
 
+use PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer;
+use PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceResponseMapper;
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
 use PHPUnit\Framework\TestCase;
-use \PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer;
-use \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
-use \PhpPact\Mocks\MockHttpService\Mappers\ProviderServiceResponseMapper;
 
 class ResponseTestCase extends TestCase
 {
@@ -29,6 +29,7 @@ class ResponseTestCase extends TestCase
 
     /**
      * Using this function to avoid overriding PHPUnitTestCase constructors
+     *
      * @param $json
      */
     public function initialize($json)
@@ -128,9 +129,9 @@ class ResponseTestCase extends TestCase
         $result = $this->_responseComparer->compare($this->_expected, $this->_actual);
 
         if ($this->_match) {
-            $this->assertFalse($result->hasFailure(), "There should not be any errors" . $filePath);
+            $this->assertFalse($result->hasFailure(), 'There should not be any errors' . $filePath);
         } else {
-            $this->assertGreaterThanOrEqual(1, count($result->failures()), "There should be at least one failure: " . $filePath);
+            $this->assertGreaterThanOrEqual(1, \count($result->failures()), 'There should be at least one failure: ' . $filePath);
         }
     }
 }
