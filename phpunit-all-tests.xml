@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="./test/bootstrap.php">
+<phpunit bootstrap="./tests/PhpPact/bootstrap.php">
   <testsuites>
   	<testsuite name="PhpPact Core Test Suite">
-      <directory>./test</directory>
+      <directory>./tests/PhpPact</directory>
     </testsuite>
   	<testsuite name="PhpPact Example Test Suite">
       <directory>./example/test/</directory>

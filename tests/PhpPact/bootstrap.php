@@ -1,7 +1,7 @@
 <?php
 spl_autoload_register('pact_php_native_src_autoloader');
 
-require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     $command = CraftCommand(WEB_SERVER_HOST, WEB_SERVER_PORT, WEB_SERVER_DOCROOT);
