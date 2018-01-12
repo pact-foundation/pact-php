@@ -18,15 +18,16 @@ clone_folder: c:\projects\pact-php
 
 install:
   - cinst php --version 7.0.27
-  - cmd: C:\tools\php70\php.exe -i
+  - set PATH=C:\tools\php70;%PATH%
   - cmd: copy /Y .\tests\PhpPact\php.ini C:\tools\php70\
+  - cmd: php -i
   - appveyor DownloadFile https://getcomposer.org/composer.phar
-  - cmd: C:\tools\php70\php.exe .\composer.phar update
+  - cmd: php .\composer.phar update
 
 build: off
 
 test_script:
-  - cmd: C:\tools\php70\php.exe .\composer.phar test
+  - cmd: php .\composer.phar test
 
 on_success:
   - echo Success
