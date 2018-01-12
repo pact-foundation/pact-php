@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="./tests/PhpPact/bootstrap.php">
+<phpunit bootstrap="./vendor/autoload.php">
   <testsuites>
   	<testsuite name="PhpPact Core Test Suite">
       <directory>./tests/PhpPact</directory>
     </testsuite>
-  	<testsuite name="PhpPact Example Test Suite">
-      <directory>./example/test/</directory>
-    </testsuite>
-    <testsuite name="PhpPact Specification Test Suite">
-      <file>./test/IntegrationTests/MockHttpServiceSpecificationTests.php</file>
+    <testsuite name="PhpPact Example Tests">
+      <directory>./example/tests/Consumer</directory>
     </testsuite>
   </testsuites>
+  <listeners>
+    <listener class="PhpPact\Consumer\PactTestListener">
+      <arguments>
+        <array>
+          <element>
+            <string>PhpPact Example Tests</string>
+          </element>
+        </array>
+      </arguments>
+    </listener>
+  </listeners>
   <php>
-    <const name="WEB_SERVER_HOST" value="localhost" />
-    <const name="WEB_SERVER_PORT" value="1349" />
-    <const name="WEB_SERVER_DOCROOT" value="./example/site" />
     <env name="PACT_MOCK_SERVER_HOST" value="localhost"/>
     <env name="PACT_MOCK_SERVER_PORT" value="7200"/>
     <env name="PACT_CONSUMER_NAME" value="someConsumer"/>

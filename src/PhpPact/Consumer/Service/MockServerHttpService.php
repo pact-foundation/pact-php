@@ -2,7 +2,6 @@
 
 namespace PhpPact\Consumer\Service;
 
-use GuzzleHttp\Exception\ServerException;
 use PhpPact\Consumer\MockServerConfig;
 use PhpPact\Consumer\MockServerConfigInterface;
 use PhpPact\Core\Exception\ConnectionException;

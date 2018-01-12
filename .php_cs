@@ -35,7 +35,7 @@ return PhpCsFixer\Config::create()
             'indentation_type' => true,
             'line_ending' => true,
             'linebreak_after_opening_tag' => true,
-            'list_syntax' => ['syntax' => 'short'],
+            'list_syntax' => ['syntax' => 'long'],
             'lowercase_cast' => true,
             'lowercase_constants' => true,
             'lowercase_keywords' => true,
@@ -140,5 +140,6 @@ return PhpCsFixer\Config::create()
             ->files()
             ->in(__DIR__ . '/src')
             ->in(__DIR__ . '/tests')
+            ->in(__DIR__ . '/example')
             ->name('*.php')
     );

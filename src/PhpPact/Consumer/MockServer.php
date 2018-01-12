@@ -45,7 +45,7 @@ class MockServer
     {
         $scripts = $this->binaryManager->install();
 
-        $builder = new ProcessBuilder();
+        $builder       = new ProcessBuilder();
         $this->process = $builder
             ->setPrefix($scripts->getMockService())
             ->setArguments($this->buildParameters())
@@ -54,11 +54,7 @@ class MockServer
             ->setIdleTimeout(60);
 
         $this->process->start(function ($type, $buffer) {
-            if (Process::ERR === $type) {
-                echo 'ERR > '.$buffer;
-            } else {
-                echo 'OUT > '.$buffer;
-            }
+            print $buffer;
         });
         \sleep(1);
 
@@ -98,7 +94,7 @@ class MockServer
     {
         $results = [];
 
-        $results[] = "service";
+        $results[] = 'service';
         $results[] = "--consumer={$this->config->getConsumer()}";
         $results[] = "--provider={$this->config->getProvider()}";
         $results[] = "--pact-dir={$this->config->getPactDir()}";
@@ -133,8 +129,10 @@ class MockServer
         $maxTries = 10;
         do {
             $tries++;
+
             try {
                 $status = $service->healthCheck();
+
                 return $status;
             } catch (ConnectException $e) {
                 \sleep(1);
