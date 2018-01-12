@@ -20,7 +20,7 @@ install:
   - cinst php --version 7.0.27
   - set PATH=C:\tools\php70;%PATH%
   - cmd: copy /Y .\tests\PhpPact\php.ini C:\tools\php70\
-  - cmd: php -i
+  - cmd: php -v
   - appveyor DownloadFile https://getcomposer.org/composer.phar
   - cmd: php .\composer.phar update
 

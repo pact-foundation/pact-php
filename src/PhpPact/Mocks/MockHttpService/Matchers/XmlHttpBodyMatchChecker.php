@@ -267,7 +267,7 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
                 $type                 = $childNode->nodeName;
                 $expectedTypes[$type] = true;
 
-                /**
+                /*
                  * @var \DOMNode
                  */
                 if ($childNode->hasChildNodes()) {

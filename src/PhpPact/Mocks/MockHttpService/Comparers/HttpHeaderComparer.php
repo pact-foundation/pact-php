@@ -127,7 +127,7 @@ class HttpHeaderComparer
      */
     private function arrayDiffOrder($array1, $array2)
     {
-        while (([$key1, $val1] = \each($array1)) && ([$key2, $val2] = \each($array2))) {
+        while ((list($key1, $val1) = \each($array1)) && (list($key2, $val2) = \each($array2))) {
             if ($key1 != $key2 || $val1 != $val2) {
                 return false;
             }

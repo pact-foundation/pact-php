@@ -20,7 +20,7 @@ class PactBaseConfig
     protected $_baseUrn;
 
     /**
-     * @var integer|string
+     * @var int|string
      */
     protected $_port;
 
