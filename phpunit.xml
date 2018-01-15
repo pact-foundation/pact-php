@@ -8,6 +8,17 @@
       <directory>./example/tests/Consumer</directory>
     </testsuite>
   </testsuites>
+  <listeners>
+    <listener class="PhpPact\Consumer\PactTestListener">
+      <arguments>
+        <array>
+          <element>
+            <string>PhpPact Example Tests</string>
+          </element>
+        </array>
+      </arguments>
+    </listener>
+  </listeners>
   <php>
     <env name="PACT_MOCK_SERVER_HOST" value="localhost"/>
     <env name="PACT_MOCK_SERVER_PORT" value="7200"/>
