@@ -19,17 +19,12 @@ install:
   - set PATH=C:\tools\php70;%PATH%
   - cmd: copy /Y .\tests\PhpPact\php.ini C:\tools\php70\
   - cmd: php -v
-  - docker version
-  - cinst docker-compose
-  - docker-compose version
   - appveyor DownloadFile https://getcomposer.org/composer.phar
   - cmd: php .\composer.phar update
 
 build: off
 
 test_script:
-  - ps: Get-NetNat
-  - cmd: docker-compose up -d
   - cmd: php .\composer.phar test
 
 on_success:
