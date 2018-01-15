@@ -21,7 +21,7 @@ install:
   - cmd: php -v
   - docker version
   - cinst docker-compose
-  - docker-composer version
+  - docker-compose version
   - appveyor DownloadFile https://getcomposer.org/composer.phar
   - cmd: php .\composer.phar update
 
