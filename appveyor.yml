@@ -29,7 +29,6 @@ build: off
 
 test_script:
   - ps: Get-NetNat
-  - ps: Get-NetNat | Remove-NetNat
   - cmd: docker-compose up -d
   - cmd: php .\composer.phar test
 
