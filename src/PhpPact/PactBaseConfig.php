@@ -2,10 +2,12 @@
 
 namespace PhpPact;
 
+use Logger;
+
 class PactBaseConfig
 {
     /**
-     * @var \Logger
+     * @var Logger
      */
     protected $_logger;
 
@@ -32,7 +34,7 @@ class PactBaseConfig
 
     public function setLogConfig($array)
     {
-        \Logger::configure($array);
+        Logger::configure($array);
 
         return $this;
     }
@@ -40,11 +42,11 @@ class PactBaseConfig
     /**
      * @param string $name
      *
-     * @return \Logger
+     * @return Logger
      */
     public function getLogger($name = 'rootLogger')
     {
-        $this->_logger = \Logger::getLogger($name);
+        $this->_logger = Logger::getLogger($name);
 
         return $this->_logger;
     }
@@ -183,7 +185,7 @@ class PactBaseConfig
             }
         }
 
-        \Logger::configure([
+        Logger::configure([
             'rootLogger' => [
                 'appenders' => \array_keys($appenders),
                 'level'     => 'DEBUG'
@@ -191,7 +193,7 @@ class PactBaseConfig
             'appenders' => $appenders
         ]);
 
-        $this->_logger = \Logger::getLogger('rootLogger');
+        $this->_logger = Logger::getLogger('rootLogger');
 
         return $this;
     }
