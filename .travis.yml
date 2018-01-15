@@ -16,3 +16,5 @@ services:
 install:
   - composer install
   - docker-compose up -d
+
+script: phpunit --configuration phpunit.xml --debug
