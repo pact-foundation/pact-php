@@ -29,6 +29,7 @@ install:
 build: off
 
 test_script:
+  - cmd: docker network create nat
   - cmd: docker-compose up -d
   - cmd: php .\composer.phar test
 
