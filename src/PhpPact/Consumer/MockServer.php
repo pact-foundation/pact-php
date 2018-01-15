@@ -62,11 +62,9 @@ class MockServer
             throw new ProcessFailedException($this->process);
         }
 
-        $pid = $this->process->getPid();
-
         $this->verifyHealthCheck();
 
-        return $pid;
+        return $this->process->getPid();
     }
 
     /**
@@ -74,13 +72,13 @@ class MockServer
      *
      * @throws Exception
      *
-     * @return bool Did the Mock Server process stop correctly?
+     * @return bool Was stopping successful?
      */
     public function stop(): bool
     {
-        if ($this->process instanceof Process) {
-            $this->process->stop(1);
-        }
+        $exitCode = $this->process->stop();
+
+        print "Process stopped with exit code: {$exitCode}\n";
 
         return true;
     }

@@ -21,7 +21,7 @@
   </listeners>
   <php>
     <env name="PACT_MOCK_SERVER_HOST" value="localhost"/>
-    <env name="PACT_MOCK_SERVER_PORT" value="59632"/>
+    <env name="PACT_MOCK_SERVER_PORT" value="7200"/>
     <env name="PACT_CONSUMER_NAME" value="someConsumer"/>
     <env name="PACT_CONSUMER_VERSION" value="1.0.0"/>
     <env name="PACT_PROVIDER_NAME" value="someProvider"/>
