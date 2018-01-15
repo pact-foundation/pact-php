@@ -14,22 +14,22 @@ image: Visual Studio 2017
 init:
   - git config --global core.autocrlf input
 
-clone_folder: c:\projects\pact-php
-
 install:
   - cinst php --version 7.0.27
   - set PATH=C:\tools\php70;%PATH%
   - cmd: copy /Y .\tests\PhpPact\php.ini C:\tools\php70\
   - cmd: php -v
-  - cinst docker-compose
   - docker version
+  - cinst docker-compose
+  - docker-composer version
   - appveyor DownloadFile https://getcomposer.org/composer.phar
   - cmd: php .\composer.phar update
 
 build: off
 
 test_script:
-  - cmd: docker network create nat
+  - ps: Get-NetNat
+  - ps: Get-NetNat | Remove-NetNat
   - cmd: docker-compose up -d
   - cmd: php .\composer.phar test
 
