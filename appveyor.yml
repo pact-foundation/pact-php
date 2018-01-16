@@ -17,6 +17,7 @@ init:
 install:
   - cinst php --version 7.0.27
   - set PATH=C:\tools\php70;%PATH%
+  - cmd: copy /Y .\tests\PhpPact\php.ini C:\tools\php70\
   - cmd: php -v
   - docker version
   - docker-compose version
