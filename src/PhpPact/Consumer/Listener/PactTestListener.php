@@ -38,7 +38,7 @@ class PactTestListener implements TestListener
     /**
      * PactTestListener constructor.
      *
-     * @param string[] $testSuiteNames test Suite names that need evaluated with the listener
+     * @param string[] $testSuiteNames test suite names that need evaluated with the listener
      */
     public function __construct(array $testSuiteNames)
     {
@@ -61,8 +61,6 @@ class PactTestListener implements TestListener
      * Publish JSON results to PACT Broker and stop the Mock Server.
      *
      * @param TestSuite $suite
-     *
-     * @throws \Exception
      */
     public function endTestSuite(TestSuite $suite)
     {

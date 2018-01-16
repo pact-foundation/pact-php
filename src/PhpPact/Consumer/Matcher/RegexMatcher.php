@@ -2,6 +2,10 @@
 
 namespace PhpPact\Consumer\Matcher;
 
+/**
+ * Class RegexMatcher
+ * @package PhpPact\Consumer\Matcher
+ */
 class RegexMatcher implements MatcherInterface
 {
     /** @var mixed */
@@ -10,7 +14,12 @@ class RegexMatcher implements MatcherInterface
     /** @var string */
     private $regex;
 
-    public function __construct($value, $regex)
+    /**
+     * RegexMatcher constructor.
+     * @param int|float|string $value value that will be matched
+     * @param string $regex regex to be used
+     */
+    public function __construct($value, string $regex)
     {
         $this->value = $value;
         $this->regex = $regex;

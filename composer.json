@@ -72,5 +72,9 @@
             "php-cs-fixer fix --config .php_cs",
             "phpunit --configuration=phpunit.xml --debug"
         ]
+    },
+    "suggest": {
+        "ext-xml": "Needed to support XML format",
+        "ext-openssl": "Needed for SSL enabled Pact Broker"
     }
 }

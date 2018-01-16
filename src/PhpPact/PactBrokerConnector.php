@@ -40,6 +40,7 @@ class PactBrokerConnector
     }
 
     /**
+     * @deprecated This will be removed in the next major release. @see BrokerHttpService::publishJson for the replacement.
      * Read a file and post it appropriately.
      *
      * @param $file - file location of pact
@@ -57,6 +58,7 @@ class PactBrokerConnector
     }
 
     /**
+     * @deprecated This will be removed in the next major release. @see BrokerHttpService::publishJson for the replacement.
      * @param string $json
      * @param $version
      */
@@ -70,6 +72,7 @@ class PactBrokerConnector
     }
 
     /**
+     * @deprecated This will be removed in the next major release. @see BrokerHttpService::publishJson for the replacement.
      * @param Mocks\MockHttpService\Models\ProviderServicePactFile $pact
      * @param $version
      *

@@ -7,19 +7,13 @@
 PHP version of Pact. Enables consumer driven contract testing, providing a mock service and DSL for the consumer project, and interaction playback and verification for the service provider project.
 
 This is a project to provide Pact functionality completely in PHP. This started as a straight port of 
-[Pact.Net](https://github.com/SEEK-Jobs/pact-net) on the 1.1 specification. Overtime, the project adjusted to a more 
-PHP way of doing things.  This project now supports the 2.0 pact specification and associated tests. 
+[Pact.Net](https://github.com/pact-foundation/pact-net) on the 1.1 specification. Overtime, the project
+adjusted to a more PHP way of doing things.  This project now supports the 2.0 pact specification and
+associated tests.
 
-The namespace is PhpPact as [Pact-PHP](https://github.com/andykelk/pact-php) uses the namespace of PactPhp.
+The project is now evolving into a wrapper around the [Ruby Pact Standalone](https://github.com/pact-foundation/pact-ruby-standalone) project. The consumer Mock Server is complete.
 
-
-## Composer
-If you want to run this on Windows, because of dependencies in PHP Unit and prettier output, certain libraries had to be included.
-Thus, there are two ways to run composer update on Windows
- 1. `composer update --ignore-platform-reqs`
- 2. `composer update --no-dev`
-
-### Pact-PHP 2.0
+### Pre-requisites
 For Pact-PHP 2.0, there is a need to run min-stability dev and pull from a feature addition to [Peekmo/jsonpath](https://github.com/Peekmo/JsonPath), you will need to use the following composer.json
 ```json
 {
@@ -30,192 +24,212 @@ For Pact-PHP 2.0, there is a need to run min-stability dev and pull from a featu
 			"type": "vcs",
 			"url": "https://github.com/mattermack/JsonPath"
 		}
-	],
-	"require":
-	{
-		"mattersight/phppact": "^2.0"
-	}
+	]
 }
 ```
 
-## PHP Extentions
-To support XML, you need the `php_xsl` extension.
-  
-To support PactBrokerConnector, you need `php_curl` extension and possibly `php_openssl`
- 
+## Install with Composer
+`composer require mattersight/phppact --dev`
 
 ## Pull Requests
 This project is actively taking pull requests and appreciate the contribution.   The code needs to pass the CI validation 
 which can be found at [AppVeyor](https://ci.appveyor.com/project/mattermack/pact-php)
 
-All code needs to pass a PSR-2 lint check, which is wrapped into a Powerscript to download php-cs-fixer-v2.phar and run 
-the lint checker against the same command as the CI tool.
-
-To have the lint checker auto correct your code, run locally using the Powershell command: `.\linter.ps1 -fix $true`
+A code fixer will run prior to running unit tests in CI. Please run `composer test` before making a PR to verify that it is working.
 
 ## Service Consumer
 
-### 1. Build your client
-This is either a net new green field client you are writing in PHP or a legacy application. The key part is your client 
-will need to inject a "mock server".   To provide Windows support, this project leverages [julienfalque/http-mock
-](https://github.com/julienfalque/http-mock).   
+#### 1. Add Pact Listener to PHPUnit Configuration
 
-```php
-<?php
-/**
- * Class MockApiConsumer
- *
- * Example consumer API client.  Note that if you will need to pass in the host  Note
- */
-class MockApiConsumer
-{
-    /**
-     * @var \PhpPact\Mocks\MockHttpService\MockProviderHost
-     */
-    private $_mockHost;
+The default PACT listener requires that you use environment variables to set up the mock server configuration. You can extend or implement another listener if need be.
 
+The listener accomplishes a few necessary functions. It starts the mock server, it publishes the results for you, and it stops the mock server after the test suite is complete.
+
+For this to function properly, you need to create a Test Suite, add a listener section, with an argument of the Test Suite name, and the necessary environment variables.
+
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <phpunit bootstrap="../vendor/autoload.php">
+       <testsuites>
+           <testsuite name="PhpPact Example Tests">
+               <directory>./tests/Consumer</directory>
+           </testsuite>
+       </testsuites>
+       <listeners>
+           <listener class="PhpPact\Consumer\Listener\PactTestListener">
+               <arguments>
+                   <array>
+                       <element>
+                           <string>PhpPact Example Tests</string>
+                       </element>
+                   </array>
+               </arguments>
+           </listener>
+       </listeners>
+       <php>
+           <env name="PACT_MOCK_SERVER_HOST" value="localhost"/>
+           <env name="PACT_MOCK_SERVER_PORT" value="7200"/>
+           <env name="PACT_CONSUMER_NAME" value="someConsumer"/>
+           <env name="PACT_CONSUMER_VERSION" value="1.0.0"/>
+           <env name="PACT_PROVIDER_NAME" value="someProvider"/>
+           <env name="PACT_BROKER_URI" value="http://localhost"/>
+       </php>
+   </phpunit>
+   ```
+
+Here is the included listener.
+
+   ```php
+    <?php
+    
+    namespace PhpPact\Consumer\Listener;
+    
+    use GuzzleHttp\Psr7\Uri;
+    use PhpPact\Broker\Service\BrokerHttpService;
+    use PhpPact\Http\GuzzleClient;
+    use PhpPact\Standalone\Installer\InstallManager;
+    use PhpPact\Standalone\MockServer\MockServer;
+    use PhpPact\Standalone\MockServer\MockServerConfigInterface;
+    use PhpPact\Standalone\MockServer\MockServerEnvConfig;
+    use PhpPact\Standalone\MockServer\Service\MockServerHttpService;
+    use PHPUnit\Framework\TestListener;
+    use PHPUnit\Framework\TestListenerDefaultImplementation;
+    use PHPUnit\Framework\TestSuite;
+    
     /**
-     * @param $host
-     */
-    public function setMockHost(&$host)
+    * PACT listener that can be used with environment variables and easily attached to PHPUnit configuration.
+    * Class PactTestListener
+    */
+    class PactTestListener implements TestListener
     {
-        $this->_mockHost = $host;
-    }
-
-
+    use TestListenerDefaultImplementation;
+    
+    /** @var MockServer */
+    private $server;
+    
     /**
-     * Mock out a basic GET.  Assume it returns some business value to be used in other parts of this mock api consumer/client
+     * Name of the test suite configured in your phpunit config.
      *
-     * @param $uri string
-     * @return mixed
+     * @var string
      */
-    public function getBasic($url)
-    {
-        $uri = (new \Windwalker\Uri\PsrUri($url))
-            ->withPath("/");
-
-        $httpRequest = (new \Windwalker\Http\Request\Request())
-            ->withUri($uri)
-            ->withAddedHeader("Content-Type", "application/json")
-            ->withMethod("get");
-
-
-        $response = $this->sendRequest($httpRequest);
-        return $response;
-    }
-	
-	/*
-		Other examples in examples/test/MockApiConsumer.php
-	*/
-	
-	/**
-     * Encapsulate your calls to the actual api. This allows mock out of server calls
+    private $testSuiteNames;
+    
+    /** @var MockServerConfigInterface */
+    private $mockServerConfig;
+    
+    /**
+     * PactTestListener constructor.
      *
-     * @param \Psr\Http\Message\RequestInterface $httpRequest
-     * @return callable|null|\Psr\Http\Message\ResponseInterface
-     * @throws Exception
+     * @param string[] $testSuiteNames test suite names that need evaluated with the listener
      */
-    private function sendRequest(\Psr\Http\Message\RequestInterface $httpRequest)
+    public function __construct(array $testSuiteNames)
     {
-        // handle mock server
-        if (isset($this->_mockHost)) {
-            return $this->_mockHost->handle($httpRequest);
+        $this->testSuiteNames   = $testSuiteNames;
+        $this->mockServerConfig = new MockServerEnvConfig();
+    }
+    
+    /**
+     * @param TestSuite $suite
+     */
+    public function startTestSuite(TestSuite $suite)
+    {
+        if (\in_array($suite->getName(), $this->testSuiteNames)) {
+            $this->server = new MockServer($this->mockServerConfig, new InstallManager());
+            $this->server->start();
         }
-
-        // make actual call to the client
-        throw new \Exception("Since this is a mock api client, there is no 'real' server.  This is where you put your app logic.");
     }
-}
-```
-
+    
+    /**
+     * Publish JSON results to PACT Broker and stop the Mock Server.
+     *
+     * @param TestSuite $suite
+     */
+    public function endTestSuite(TestSuite $suite)
+    {
+        if (\in_array($suite->getName(), $this->testSuiteNames)) {
+            try {
+                $httpService = new MockServerHttpService(new GuzzleClient(), $this->mockServerConfig);
+                $httpService->verifyInteractions();
+    
+                $json = $httpService->getPactJson();
+            } finally {
+                $this->server->stop();
+            }
+    
+            $brokerHttpService = new BrokerHttpService(new GuzzleClient(), new Uri(\getenv('PACT_BROKER_URI')));
+            $brokerHttpService->publishJson($json, \getenv('PACT_CONSUMER_VERSION'));
+        }
+    }
+    }
+   ```
+    
 ### 2. Write your tests
 Create a new test case within your service consumer test project, using whatever test framework you like (in this case we used phpUnit). 
 Then implement your tests.
 
-```php
-<?php
-
-require_once( __DIR__ . '/MockApiConsumer.php');
-
-use PHPUnit\Framework\TestCase;
-
-class ConsumerTest extends TestCase
-{
-
-    /**
-     * @var \PhpPact\PactBuilder
-     */
-    protected $_build;
-
-    const CONSUMER_NAME = "MockApiConsumer";
-    const PROVIDER_NAME = "MockApiProvider";
-
-
-    /**
-     * Before each test, rebuild the builder
-     */
-    protected function setUp()
+   ```php
+    <?php
+    
+    namespace Consumer\Service;
+    
+    use PhpPact\Consumer\InteractionBuilder;
+    use PhpPact\Consumer\Matcher\RegexMatcher;
+    use PhpPact\Consumer\Model\ConsumerRequest;
+    use PhpPact\Consumer\Model\ProviderResponse;
+    use PhpPact\Standalone\MockServer\MockServerEnvConfig;
+    use PHPUnit\Framework\TestCase;
+    
+    class ConsumerServiceHelloTest extends TestCase
     {
-        parent::setUp();
-        $this->_build = new \PhpPact\PactBuilder();
-        $this->_build->serviceConsumer(self::CONSUMER_NAME)
-            ->hasPactWith(self::PROVIDER_NAME);
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
-        unset($this->_build);
-    }
-
-    public function testGetBasic()
-    {
-        // build the request
-        $reqHeaders = array();
-        $reqHeaders["Content-Type"] = "application/json";
-        $request = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest(\PhpPact\Mocks\MockHttpService\Models\HttpVerb::GET, "/", $reqHeaders);
-
-        // build the response
-        $resHeaders = array();
-        $resHeaders["Content-Type"] = "application/json";
-        $resHeaders["AnotherHeader"] = "my-header";
-
-        $response = new \PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse('200', $resHeaders);
-        $response->setBody("{\"msg\" : \"I am the walrus\"}");
-
-        // build up the expected results and appropriate responses
-        $mockService = $this->_build->getMockService();
-        $mockService->given("Basic Get Request")
-            ->uponReceiving("A GET request with a base / path and a content type of json")
-            ->with($request)
-            ->willRespondWith($response);
-
-        // build system under test
-        $host = $mockService->getHost();
-
-        $clientUnderTest = new MockApiConsumer();
-        $clientUnderTest->setMockHost($host);
-        $receivedResponse = $clientUnderTest->getBasic("http://localhost");
-
-        // do some asserts on the return
-        $this->assertEquals('200', $receivedResponse->getStatusCode(), "Let's make sure we have an OK response");
-
-        // verify the interactions
-        $hasException = false;
-        try {
-            $results = $mockService->verifyInteractions();
-
-        } catch (\PhpPact\PactFailureException $e) {
-            $hasException = true;
+        /**
+         * Example PACT test.
+         */
+        public function testGetHelloString()
+        {
+            // Create your expected request from the consumer.
+            $request = new ConsumerRequest();
+            $request
+                ->setMethod('GET')
+                ->setPath('/hello/Bob')
+                ->addHeader('Content-Type', 'application/json');
+    
+            // Create your expected response from the provider.
+            $response = new ProviderResponse();
+            $response
+                ->setStatus(200)
+                ->addHeader('Content-Type', 'application/json')
+                ->setBody([
+                    'message' => new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]') // Use matches directly in the body. These will get parsed into JSON automatically before being sent to the PACT Broker.
+                ]);
+    
+            // Create a configuration that reflects the server that was started. You can create a custom MockServerConfigInterface if needed.
+            $config      = new MockServerEnvConfig();
+            $mockService = new InteractionBuilder($config);
+            $mockService
+                ->given('Get Hello')
+                ->uponReceiving('A get request to /hello/{name}')
+                ->with($request)
+                ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
+    
+            $service = new HttpService($config->getBaseUri()); // Pass in the URL to the Mock Server.
+            $result  = $service->getHelloString('Bob'); // Make the real API request against the Mock Server.
+    
+            $this->assertEquals('Hello, Bob', $result); // Make your assertions.
         }
-        $this->assertFalse($hasException, "This basic get should verify the interactions and not throw an exception");
     }
-}
-```
+   ```
+   
+Right now there are 2 Available Matches. These matches can be used directly in the setBody function.
+
+Matcher | Explanation | Example
+---|---|---
+PhpPact\Consumer\Matcher\RegexMatcher | Match a value against a regex pattern. | new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
+PhpPact\Consumer\Matcher\RegexMatcher | Match a value against its data type. | new TypeMatch(12)
+   
 
 ### 3. Run the test
-Everything should be green
+Everything should be green and your PACT file should be published to the broker as expected.
 
 
 ## Service Provider
@@ -228,7 +242,7 @@ examples/test/bootstrap.php for a local server on Windows.
 ### 2. Configure PHP unit
 Bootstrap PHPUnit with appropriate composer and autoloaders.   Optionally, add a bootstrap api from the *Build API* section.   
 
-### 3. Tell the provider it needs to honour the pact
+### 3. Tell the provider it needs to honor the pact
 ```php
 <?php
 
@@ -243,17 +257,9 @@ $pactVerifier->providerState("A GET request to get types")
 ```
 
 ### 4. Run the test
-Everything should be green
+Everything should be green and the pact file should be published to the broker.
 
-
-## Other Notes
-This was tested and used on Windows 10.  Below are the versions of PHP:
-
-- PHPUnit 6.2.2
-- PHP 7.1.4
-
-## Key Examples
-
+## Examples
 ### Provider setUp and tearDown
 The setUp and tearDown on a per Provider test basis needs to use closures
 
@@ -340,67 +346,37 @@ $pactVerifier->providerState("Test State")
   
 ```
 
-### Matchers
-This is a PHP specific implementation of Matchers.  This was derived from the [JVM Matching Instructions.](https://github.com/DiUS/pact-jvm/wiki/Matching)   
-While all [Pact Specifications under v2](https://github.com/pact-foundation/pact-specification/tree/version-2) are implemented and passing, I do not 
-believe the spirit of some of the cases are not honored.   Refactoring will certainly need to be done in some cases.
-
-All matchers need to be defined by a JSONPath and attached to either the Request or Response object.  There are all kinds of gotchas,
-which have been documented on [Matching Gotchas](https://github.com/realestate-com-au/pact/wiki/Matching-gotchas)
-
-For PHP gotchas, the Pact-PHP added the first and last backslash ( / ).   For example, if you wanted to have a regex for just words instead of 
-`/\w+/`, you would just put in `\w+`.  
-
-Responser body matchers need to follow Postel's law.   Below there are two matchers:
-1. Confirm that all responses have the same type
-2. Confirm `walrus` is in the response body
-```php
-<?php 
-$resHeaders = array();
-$resHeaders["Content-Type"] = "application/json";
-$resHeaders["AnotherHeader"] = "my-header";
-
-$response = new ProviderServiceResponse('200', $resHeaders);
-$response->setBody("{\"msg\" : \"I am almost a walrus\"}");
-
-$resMatchers = array();
-$resMatchers['$.body.msg'] = new MatchingRule('$.body.msg', array(
-    MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::REGEX_TYPE,
-    MatcherRuleTypes::REGEX_PATTERN => 'walrus')
-);
-$resMatchers['$.body.*'] = new MatchingRule('$.body.*', array(
-    MatcherRuleTypes::RULE_TYPE => MatcherRuleTypes::OBJECT_TYPE)
-);
-$response->setMatchingRules($resMatchers);
-```
-
 ## Pact Broker Integration
-To integrate with your pact broker host, there are several options. This section focuses on the ```PactBrokerConnector```.  To be fair, the pact broker authentication is currently untested but mirrors the implementation in pact-js.
+To integrate with your pact broker host, there are several options. This section focuses on the `PactBrokerConnector`.  To be fair, the pact broker authentication is currently untested but mirrors the implementation in pact-js.
  
 ### Publishing Pacts
-There are several hopefully self explanatory functions in ```PactBrokerConnector```:
+The PACT file should be sent automatically using the PactTestListener.
 
-- publishFile - reads the JSON from a file
-- publishJson - publishes from a JSON string
-- publish - publishes from a ```ProviderServicePactFile``` object
+Here is an example of publishing manually.
 
-```php
-<?php
-
-// create your options
-$uriOptions = new \PhpPact\PactUriOptions("http://your-pact-broker" );
-$connector = new \PhpPact\PactBrokerConnector($uriOptions);
-
-// Use the appropriate function to read from a file, JSON string, or ProviderServicePactFile object
-$file = __DIR__ . '/../example/pact/mockapiconsumer-mockapiprovider.json';
-$statusCode = $connector->publishFile($file, '1.0.3');
-
-```
+   ```php
+    <?php
+    
+    use GuzzleHttp\Psr7\Uri;
+    use PhpPact\Broker\Service\BrokerHttpService;
+    use PhpPact\Http\GuzzleClient;
+    
+    require_once __DIR__ . '/../../../vendor/autoload.php';
+    
+    $httpService = new BrokerHttpService(new GuzzleClient(), new Uri('http://localhost:80/'));
+    
+    $json = json_encode([
+        "consumer" => "someConsumer",
+        "provider" => "someProvider"
+    ]);
+    
+    $httpService->publishJson($json, '1.0.0');
+   ```
 
 ### Retrieving Pacts
-If you have an open pact broker, ```$pactVerifier->PactUri``` uses ```file_get_contents``` which accepts a URL.  You could simply use this technique in those cases.
+If you have an open pact broker, `$pactVerifier->PactUri` uses `file_get_contents` which accepts a URL.  You could simply use this technique in those cases.
 
-To do some more robust interactions, There are several hopefully self explanatory functions in ```PactBrokerConnector```:
+To do some more robust interactions, There are several hopefully self explanatory functions in `PactBrokerConnector`:
 
 - retrieveLatestProviderPacts - retrieve all the latest pacts associated with this provider
 - retrievePact - retrieve particular pact
@@ -435,14 +411,8 @@ $connector = new \PhpPact\PactBrokerConnector($uriOptions);
 $connector->verify(true, "http://your-ci-builder/api/pact-example-api/job/master/42/", "MockProvider", '0.0.42', 'MockConsumer', 'latest');
 ```
 
-
 ## Project Tests
-To run Pact-Php-Native tests, there are several phpunit.xml files.   The provider tests use a Windows method to shutdown the mock server.
-Root is expected to be the root of Pact Php Native
-
-- All tests: `php .\vendor\phpunit\phpunit\phpunit -c .\phpunit-all-tests.xml`
-- Provider Example: `php .\vendor\phpunit\phpunit\phpunit -c .\phpunit-provider-test.xml`
-- Consumer Example: `php .\vendor\phpunit\phpunit\phpunit -c .\phpunit-consumer-test.xml`
+To run the projects tests run `composer test`.
 
 ## Related Projects
 - [Pact.Net](https://github.com/SEEK-Jobs/pact-net)
