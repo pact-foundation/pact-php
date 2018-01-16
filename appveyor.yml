@@ -27,8 +27,6 @@ install:
 build: off
 
 test_script:
-  - ps: Get-NetNat
-  - cmd: docker-compose up -d
   - cmd: php .\composer.phar test
 
 on_success:

@@ -79,7 +79,7 @@ class MockServer
         $exitCode = $this->process->stop();
 
         print "Process stopped with exit code: {$exitCode}\n";
-        echo $this->process->getOutput();
+        print $this->process->getExitCodeText();
 
         return true;
     }
