@@ -6,7 +6,7 @@ use PhpPact\Mappers\MatchingRuleMapper;
 use PhpPact\Mocks\MockHttpService\Models\HttpVerb;
 use PhpPact\Mocks\MockHttpService\Models\ProviderServiceRequest;
 
-class ProviderServiceRequestMapper implements \PhpPact\Mappers\IMapper
+class ProviderServiceRequestMapper implements \PhpPact\Mappers\MapperInterface
 {
     /**
      * @param $request

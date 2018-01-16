@@ -2,7 +2,7 @@
 
 namespace PhpPact\Reporters\Outputters;
 
-class Log4PHPOutputter implements \PhpPact\Reporters\Outputters\IReportOutputter
+class Log4PHPOutputter implements ReportOutputterInterface
 {
     /**
      * @var \Logger

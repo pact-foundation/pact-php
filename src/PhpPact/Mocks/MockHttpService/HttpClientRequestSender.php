@@ -2,7 +2,7 @@
 
 namespace PhpPact\Mocks\MockHttpService;
 
-class HttpClientRequestSender implements IHttpRequestSender
+class HttpClientRequestSender implements HttpRequestSenderInterface
 {
     /**
      * @var \Windwalker\Http\HttpClient

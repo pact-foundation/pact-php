@@ -2,7 +2,7 @@
 
 namespace PhpPact;
 
-class PactVerifier implements IPactVerifier
+class PactVerifier implements PactVerifierInterface
 {
     private $_httpClient;
 
@@ -12,7 +12,7 @@ class PactVerifier implements IPactVerifier
     private $_config;
 
     /**
-     * @var Mocks\MockHttpService\IHttpRequestSender
+     * @var Mocks\MockHttpService\HttpRequestSenderInterface
      */
     private $_httpRequestSender;
 

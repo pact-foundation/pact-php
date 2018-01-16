@@ -4,24 +4,30 @@ namespace PhpPact\Mocks\MockHttpService\Validators;
 
 use PhpPact\Comparers\ComparisonResult;
 use PhpPact\Mocks\MockHttpService;
+use PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer;
+use PhpPact\Mocks\MockHttpService\HttpClientRequestSender;
+use PhpPact\Mocks\MockHttpService\HttpRequestSenderInterface;
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction;
+use PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile;
 use PhpPact\Models\ProviderStates;
+use PhpPact\PactFailureException;
 use PhpPact\PactVerifierConfig;
 use PhpPact\Reporters\Reporter;
 
 class ProviderServiceValidator
 {
     /**
-     * @var \PhpPact\Mocks\MockHttpService\Comparers\ProviderServiceResponseComparer
+     * @var ProviderServiceResponseComparer
      */
     private $_providerServiceResponseComparer;
 
     /**
-     * @var \PhpPact\Mocks\MockHttpService\HttpClientRequestSender
+     * @var HttpClientRequestSender
      */
     private $_httpRequestSender;
 
     /**
-     * @var \PhpPact\Reporters\Reporter
+     * @var Reporter
      */
     private $_reporter;
 
@@ -30,7 +36,7 @@ class ProviderServiceValidator
      */
     private $_config;
 
-    public function __construct(MockHttpService\IHttpRequestSender $httpRequestSender, Reporter $reporter, PactVerifierConfig $config)
+    public function __construct(HttpRequestSenderInterface $httpRequestSender, Reporter $reporter, PactVerifierConfig $config)
     {
         $this->_providerServiceResponseComparer = new MockHttpService\Comparers\ProviderServiceResponseComparer();
         $this->_httpRequestSender               = $httpRequestSender;
@@ -41,13 +47,13 @@ class ProviderServiceValidator
     /**
      * Validate the pact file and send a request to a mock server
      *
-     * @param \PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile $pactFile
-     * @param \PhpPact\Models\ProviderStates                                $providerStates
+     * @param ProviderServicePactFile $pactFile
+     * @param ProviderStates                                $providerStates
      *
      * @throws \Exception
      * @throws \PhpPact\PactFailureException
      */
-    public function validate(MockHttpService\Models\ProviderServicePactFile $pactFile, ProviderStates $providerStates)
+    public function validate(ProviderServicePactFile $pactFile, ProviderStates $providerStates)
     {
         if (!$pactFile->getConsumer()) {
             throw new \InvalidArgumentException('Please supply a non null or empty Consumer name in the pactFile');
@@ -114,17 +120,17 @@ class ProviderServiceValidator
             $this->_reporter->flush();
 
             if ($comparisonResult->hasFailure()) {
-                throw new \PhpPact\PactFailureException('See test output or logs for failure details.');
+                throw new PactFailureException('See test output or logs for failure details.');
             }
         }
     }
 
     /**
-     * @param ProviderServiceInteraction $
+     * @param ProviderServiceInteraction $interaction
      *
-     * @return \PhpPact\Comparers\ComparisonResult ComparisonResult
+     * @return ComparisonResult ComparisonResult
      */
-    private function validateInteraction(\PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction $interaction)
+    private function validateInteraction(ProviderServiceInteraction $interaction)
     {
         $expectedResponse = $interaction->getResponse();
         $actualResponse   = $this->_httpRequestSender->Send($interaction->getRequest(), $this->_config->getBaseUri());
@@ -133,7 +139,7 @@ class ProviderServiceValidator
         return $results;
     }
 
-    private function invokePactSetUpIfApplicable(\PhpPact\Models\ProviderStates $providerStates)
+    private function invokePactSetUpIfApplicable(ProviderStates $providerStates)
     {
         if ($providerStates->count() > 0 && $providerStates->SetUp != null) {
             $func = $providerStates->SetUp;

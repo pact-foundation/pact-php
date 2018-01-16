@@ -3,13 +3,13 @@
 namespace PhpPact\Mocks\MockHttpService\Matchers;
 
 use PhpPact\Matchers\Checkers\FailedMatcherCheck;
-use PhpPact\Matchers\Checkers\IMatchChecker;
+use PhpPact\Matchers\Checkers\MatchCheckerInterface;
 use PhpPact\Matchers\Checkers\MatcherCheckFailureType;
 use PhpPact\Matchers\Checkers\MatcherResult;
 use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
-use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
+use PhpPact\Mocks\MockHttpService\Models\HttpMessageInterface;
 
-class JsonHttpBodyMatchChecker implements IMatchChecker
+class JsonHttpBodyMatchChecker implements MatchCheckerInterface
 {
     const PATH_PREFIX = 'body';
 
@@ -34,11 +34,11 @@ class JsonHttpBodyMatchChecker implements IMatchChecker
      */
     public function match($path, $expected, $actual, $matchingRules = [])
     {
-        if (!($expected instanceof IHttpMessage)) {
+        if (!($expected instanceof HttpMessageInterface)) {
             throw new \Exception('Expected is not an instance of IHttpMessage: ' . \print_r($expected, true));
         }
 
-        if (!($actual instanceof IHttpMessage)) {
+        if (!($actual instanceof HttpMessageInterface)) {
             throw new \Exception('Actual is not an instance of IHttpMessage: ' . \print_r($actual, true));
         }
 

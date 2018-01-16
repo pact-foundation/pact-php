@@ -2,6 +2,8 @@
 
 namespace PhpPact\Comparers;
 
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction;
+
 class UnexpectedRequestComparisonFailure extends ComparisonFailure
 {
     public $_requestDescription;
@@ -9,7 +11,7 @@ class UnexpectedRequestComparisonFailure extends ComparisonFailure
     public function __construct($request)
     {
         /**
-         * @var \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction
+         * @var ProviderServiceInteraction
          */
         $requestMethod = $request != null ? \strtoupper($request->getMethod()) : 'No Method';
         $requestPath   = $request != null ? $request->getPath() : 'No Path';

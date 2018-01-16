@@ -8,7 +8,7 @@ use PhpPact\Matchers\Checkers\MatcherResult;
 use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
 use PhpPact\Matchers\Rules\MatcherRuleTypes;
 use PhpPact\Matchers\Rules\MatchingRule;
-use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
+use PhpPact\Mocks\MockHttpService\Models\HttpMessageInterface;
 
 class JsonPathMatchChecker
 {
@@ -29,11 +29,11 @@ class JsonPathMatchChecker
             throw new \Exception(\sprintf('JsonPathMatchChecker should not be called if there are no matching rules: %s', $path));
         }
 
-        if (!($expected instanceof IHttpMessage)) {
+        if (!($expected instanceof HttpMessageInterface)) {
             throw new \Exception('Expected is not an instance of IHttpMessage: ' . \print_r($expected, true));
         }
 
-        if (!($actual instanceof IHttpMessage)) {
+        if (!($actual instanceof HttpMessageInterface)) {
             throw new \Exception('Actual is not an instance of IHttpMessage: ' . \print_r($actual, true));
         }
 

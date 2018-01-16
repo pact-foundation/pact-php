@@ -2,11 +2,12 @@
 
 namespace PhpPact\Consumer;
 
-use PhpPact\Consumer\Service\MockServerHttpService;
-use PhpPact\Core\Http\GuzzleClient;
-use PhpPact\Core\Model\ConsumerRequest;
-use PhpPact\Core\Model\Interaction;
-use PhpPact\Core\Model\ProviderResponse;
+use PhpPact\Consumer\Model\ConsumerRequest;
+use PhpPact\Consumer\Model\Interaction;
+use PhpPact\Consumer\Model\ProviderResponse;
+use PhpPact\Http\GuzzleClient;
+use PhpPact\Standalone\MockServer\MockServerConfigInterface;
+use PhpPact\Standalone\MockServer\Service\MockServerHttpService;
 
 /**
  * Build an interaction and send it to the Ruby Standalone Mock Service
@@ -17,7 +18,7 @@ class InteractionBuilder implements InteractionBuilderInterface
     /** @var Interaction */
     private $interaction;
 
-    /** @var MockServerConfig */
+    /** @var MockServerConfigInterface */
     private $config;
 
     /**

@@ -2,7 +2,7 @@
 
 namespace PhpPact\Reporters\Outputters;
 
-class ConsoleReportOutputter implements IReportOutputter
+class ConsoleReportOutputter implements ReportOutputterInterface
 {
     public function write($report)
     {

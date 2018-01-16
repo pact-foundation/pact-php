@@ -5,14 +5,14 @@ namespace PhpPact\Mocks\MockHttpService\Comparers;
 use PhpPact\Comparers\ComparisonResult;
 use PhpPact\Comparers\DiffComparisonFailure;
 use PhpPact\Matchers\Checkers\FailedMatcherCheck;
-use PhpPact\Matchers\Checkers\IMatchChecker;
+use PhpPact\Matchers\Checkers\MatchCheckerInterface;
 use PhpPact\Matchers\Checkers\MatcherResult;
 
 class HttpBodyComparer
 {
     /**
-     * @param $expected \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
-     * @param $actual \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
+     * @param $expected \PhpPact\Mocks\MockHttpService\Models\HttpMessageInterface
+     * @param $actual \PhpPact\Mocks\MockHttpService\Models\HttpMessageInterface
      *
      * @return ComparisonResult
      */
@@ -37,7 +37,7 @@ class HttpBodyComparer
         foreach ($bodyMatcherCheckers as $bodyMatcherCheckerKey => $bodyMatcherChecker) {
 
             /**
-             * @var IMatchChecker
+             * @var MatchCheckerInterface
              */
             $results = $bodyMatcherChecker->match($bodyMatcherCheckerKey, $expected, $actual, $matchingRules);
 

@@ -70,7 +70,7 @@ class PactBaseConfig
      *
      * return $this
      */
-    public function setBaseUri($baseUri, $port = \PhpPact\Constants::DEFAULT_PORT, $protocol = 'http')
+    public function setBaseUri($baseUri, $port = Constants::DEFAULT_PORT, $protocol = 'http')
     {
         // handle backslash
         if (\substr($baseUri, -1) == '/') {

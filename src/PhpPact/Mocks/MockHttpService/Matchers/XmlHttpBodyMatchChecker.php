@@ -7,10 +7,10 @@ use PhpPact\Matchers\Checkers\MatcherCheckFailureType;
 use PhpPact\Matchers\Checkers\MatcherResult;
 use PhpPact\Matchers\Checkers\SuccessfulMatcherCheck;
 use PhpPact\Matchers\Rules\MatchingRule;
-use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
+use PhpPact\Mocks\MockHttpService\Models\HttpMessageInterface;
 use Zend\Xml2Json\Xml2Json;
 
-class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecker
+class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\MatchCheckerInterface
 {
     const PATH_PREFIX = 'body';
 
@@ -35,11 +35,11 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
      */
     public function match($path, $expected, $actual, $matchingRules = [])
     {
-        if (!($expected instanceof IHttpMessage)) {
+        if (!($expected instanceof HttpMessageInterface)) {
             throw new \Exception('Expected is not an instance of IHttpMessage: ' . \print_r($expected, true));
         }
 
-        if (!($actual instanceof IHttpMessage)) {
+        if (!($actual instanceof HttpMessageInterface)) {
             throw new \Exception('Actual is not an instance of IHttpMessage: ' . \print_r($actual, true));
         }
 
@@ -243,8 +243,8 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
     }
 
     /**
-     * @param $expected IHttpMessage
-     * @param $actual IHttpMessage
+     * @param $expected HttpMessageInterface
+     * @param $actual HttpMessageInterface
      * @param $jsonPath
      *
      * @return bool

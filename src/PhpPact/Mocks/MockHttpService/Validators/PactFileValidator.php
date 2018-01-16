@@ -1,6 +1,9 @@
 <?php
 
 namespace PhpPact\Mocks\MockHttpService\Validators;
+use JsonSchema\Validator;
+use PhpPact\Models\PactFile;
+use PhpPact\PactFailureException;
 
 /**
  * Class PactFileValidator
@@ -10,17 +13,17 @@ namespace PhpPact\Mocks\MockHttpService\Validators;
 class PactFileValidator
 {
     /**
-     * @param \PhpPact\Models\PactFile $pactFile
+     * @param PactFile $pactFile
      *
-     * @throws \PhpPact\PactFailureException
+     * @throws PactFailureException
      *
      * @return bool
      */
-    public function validate(\PhpPact\Models\PactFile $pactFile)
+    public function validate(PactFile $pactFile)
     {
         $data = \json_decode(\json_encode($pactFile));
 
-        $validator = new \JsonSchema\Validator;
+        $validator = new Validator;
         $validator->validate($data, (object) ['$ref' => 'file://' . $this->huntForSchema($pactFile)]);
 
         if (!$validator->isValid()) {
@@ -29,13 +32,13 @@ class PactFileValidator
                 $msg .= \sprintf("[%s] %s\n", $error['property'], $error['message']);
             }
 
-            throw new \PhpPact\PactFailureException($msg);
+            throw new PactFailureException($msg);
         }
 
         return true;
     }
 
-    private function huntForSchema(\PhpPact\Models\PactFile $pactFile)
+    private function huntForSchema(PactFile $pactFile)
     {
         $fileName    = 'pact-file-schema.json';
         $currentDir  = __DIR__;

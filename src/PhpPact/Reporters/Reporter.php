@@ -2,7 +2,7 @@
 
 namespace PhpPact\Reporters;
 
-class Reporter implements IReporter
+class Reporter implements ReporterInterface
 {
     private $_outputters;
 

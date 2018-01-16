@@ -4,7 +4,7 @@ namespace PhpPact\Mocks\MockHttpService\Models;
 
 use PhpPact\Matchers\Rules\MatchingRule;
 
-class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockHttpService\Models\IHttpMessage
+class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockHttpService\Models\HttpMessageInterface
 {
     private $_bodyWasSet;
     private $_body;

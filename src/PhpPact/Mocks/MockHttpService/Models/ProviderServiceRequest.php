@@ -7,7 +7,7 @@ use PhpPact\Mocks\MockHttpService\Matchers\JsonHttpBodyMatchChecker;
 use PhpPact\Mocks\MockHttpService\Matchers\SerializeHttpBodyMatchChecker;
 use PhpPact\Mocks\MockHttpService\Matchers\XmlHttpBodyMatchChecker;
 
-class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
+class ProviderServiceRequest implements \JsonSerializable, HttpMessageInterface
 {
     private $_bodyWasSet;
     private $_body;

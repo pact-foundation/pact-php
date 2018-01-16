@@ -2,6 +2,8 @@
 
 namespace PhpPact\Comparers;
 
+use PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction;
+
 class MissingInteractionComparisonFailure extends ComparisonFailure
 {
     public $_requestDescription;
@@ -9,7 +11,7 @@ class MissingInteractionComparisonFailure extends ComparisonFailure
     public function __construct($interaction)
     {
         /**
-         * @var \PhpPact\Mocks\MockHttpService\Models\ProviderServiceInteraction
+         * @var ProviderServiceInteraction
          */
         $requestMethod = $interaction->getRequest() != null ? \strtoupper($interaction->getRequest()->getMethod()) : 'No Method';
         $requestPath   = $interaction->getRequest() != null ? $interaction->getRequest()->getPath() : 'No Path';

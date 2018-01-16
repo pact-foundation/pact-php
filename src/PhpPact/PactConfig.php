@@ -9,7 +9,7 @@ class PactConfig extends PactBaseConfig
     public function __construct()
     {
         parent::__construct();
-        $this->_pactDir = \PhpPact\Constants::DEFAULT_PACT_DIR;
+        $this->_pactDir = Constants::DEFAULT_PACT_DIR;
     }
 
     /**

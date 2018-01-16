@@ -5,25 +5,25 @@ namespace PhpPact\Mocks\MockHttpService\Comparers;
 use PhpPact\Comparers;
 use PhpPact\Matchers\Checkers\FailedMatcherCheck;
 use PhpPact\Mocks\MockHttpService\Matchers\JsonPathMatchChecker;
-use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
+use PhpPact\Mocks\MockHttpService\Models\HttpMessageInterface;
 
 class HttpHeaderComparer
 {
     const PATH_PREFIX = 'headers';
 
     /**
-     * @param $expected IHttpMessage
-     * @param $actual IHttpMessage
+     * @param $expected HttpMessageInterface
+     * @param $actual HttpMessageInterface
      *
      * @return \PhpPact\Comparers\ComparisonResult
      */
     public function compare($expected, $actual)
     {
-        if (!($expected instanceof IHttpMessage)) {
+        if (!($expected instanceof HttpMessageInterface)) {
             throw new \Exception('Expected is not an instance of IHttpMessage: ' . \print_r($expected, true));
         }
 
-        if (!($actual instanceof IHttpMessage)) {
+        if (!($actual instanceof HttpMessageInterface)) {
             throw new \Exception('Actual is not an instance of IHttpMessage: ' . \print_r($actual, true));
         }
 

@@ -2,6 +2,8 @@
 
 namespace PhpPact;
 
+use PhpPact\Reporters\Outputters\Log4PHPOutputter;
+
 class PactVerifierConfig extends PactBaseConfig
 {
     /**
@@ -14,7 +16,7 @@ class PactVerifierConfig extends PactBaseConfig
         parent::__construct();
 
         $this->_reportOutputters   = [];
-        $this->_reportOutputters[] = new \PhpPact\Reporters\Outputters\Log4PHPOutputter($this->_logger);
+        $this->_reportOutputters[] = new Log4PHPOutputter($this->_logger);
     }
 
     /**

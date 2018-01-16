@@ -5,7 +5,7 @@ namespace PhpPact\Mocks\MockHttpService\Mappers;
 use PhpPact\Mocks\MockHttpService\Models\ProviderServicePactFile;
 use PhpPact\Models\Pacticipant;
 
-class ProviderServicePactMapper implements \PhpPact\Mappers\IMapper
+class ProviderServicePactMapper implements \PhpPact\Mappers\MapperInterface
 {
     /**
      * @param \stdClass $json

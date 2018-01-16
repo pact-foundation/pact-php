@@ -3,12 +3,14 @@
 namespace PhpPact\Consumer;
 
 use PhpPact\Consumer\Matcher\LikeMatcher;
-use PhpPact\Consumer\Service\MockServerHttpService;
-use PhpPact\Consumer\Service\MockServerHttpServiceInterface;
-use PhpPact\Core\Http\GuzzleClient;
-use PhpPact\Core\Model\ConsumerRequest;
-use PhpPact\Core\Model\ProviderResponse;
+use PhpPact\Consumer\Model\ConsumerRequest;
+use PhpPact\Consumer\Model\ProviderResponse;
+use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Installer\InstallManager;
+use PhpPact\Standalone\MockServer\MockServer;
+use PhpPact\Standalone\MockServer\MockServerEnvConfig;
+use PhpPact\Standalone\MockServer\Service\MockServerHttpService;
+use PhpPact\Standalone\MockServer\Service\MockServerHttpServiceInterface;
 use PHPUnit\Framework\TestCase;
 
 class InteractionBuilderTest extends TestCase

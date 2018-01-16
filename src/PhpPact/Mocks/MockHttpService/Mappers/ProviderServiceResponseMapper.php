@@ -5,7 +5,7 @@ namespace PhpPact\Mocks\MockHttpService\Mappers;
 use PhpPact\Mappers\MatchingRuleMapper;
 use PhpPact\Mocks\MockHttpService\Models\ProviderServiceResponse;
 
-class ProviderServiceResponseMapper implements \PhpPact\Mappers\IMapper
+class ProviderServiceResponseMapper implements \PhpPact\Mappers\MapperInterface
 {
     /**
      * @param $response

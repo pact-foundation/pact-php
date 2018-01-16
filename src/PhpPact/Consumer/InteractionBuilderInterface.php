@@ -1,9 +1,8 @@
 <?php
 
 namespace PhpPact\Consumer;
-
-use PhpPact\Core\Model\ConsumerRequest;
-use PhpPact\Core\Model\ProviderResponse;
+use PhpPact\Consumer\Model\ConsumerRequest;
+use PhpPact\Consumer\Model\ProviderResponse;
 
 /**
  * Interface InteractionBuilderInterface
