@@ -3,8 +3,8 @@
 namespace PhpPact\Consumer\Listener;
 
 use GuzzleHttp\Psr7\Uri;
-use PhpPact\Core\Broker\Service\HttpService;
-use PhpPact\Core\Http\GuzzleClient;
+use PhpPact\Broker\Service\BrokerHttpService;
+use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\MockServer\MockServer;
 use PhpPact\Standalone\MockServer\MockServerConfigInterface;
@@ -76,7 +76,7 @@ class PactTestListener implements TestListener
                 $this->server->stop();
             }
 
-            $brokerHttpService = new HttpService(new GuzzleClient(), new Uri(\getenv('PACT_BROKER_URI')));
+            $brokerHttpService = new BrokerHttpService(new GuzzleClient(), new Uri(\getenv('PACT_BROKER_URI')));
             $brokerHttpService->publishJson($json, \getenv('PACT_CONSUMER_VERSION'));
         }
     }

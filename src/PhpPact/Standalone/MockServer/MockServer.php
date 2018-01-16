@@ -16,7 +16,6 @@ use Symfony\Component\Process\ProcessBuilder;
 /**
  * Ruby Standalone Mock Server Wrapper
  * Class MockServer
- * @package PhpPact\Standalone\MockServer
  */
 class MockServer
 {
@@ -61,7 +60,7 @@ class MockServer
         $this->process->start(function ($type, $buffer) {
             print $buffer;
         });
-        sleep(1);
+        \sleep(1);
 
         if ($this->process->isStarted() !== true || $this->process->isRunning() !== true) {
             throw new ProcessFailedException($this->process);

@@ -70,7 +70,7 @@
         "start-consumer": "php -S localhost:8080 -t example/src/Provider/public/",
         "test": [
             "php-cs-fixer fix --config .php_cs",
-            "phpunit --configuration=phpunit-all-tests.xml --debug"
+            "phpunit --configuration=phpunit.xml --debug"
         ]
     }
 }

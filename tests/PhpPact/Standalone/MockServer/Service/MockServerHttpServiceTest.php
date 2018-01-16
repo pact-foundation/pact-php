@@ -145,7 +145,7 @@ class MockServerHttpServiceTest extends TestCase
         ]);
 
         $body = $response->getBody()->getContents();
-        $this->assertEquals(json_encode($expectedResponseBody), $body);
+        $this->assertEquals(\json_encode($expectedResponseBody), $body);
         $this->assertEquals(200, $response->getStatusCode());
     }
 }

@@ -5,6 +5,16 @@
       <directory>./tests/PhpPact</directory>
     </testsuite>
   </testsuites>
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">./src/PhpPact</directory>
+    </whitelist>
+  </filter>
+  <logging>
+    <log type="coverage-html" target="./test_results/coverage/" lowUpperBound="70" />
+    <log type="junit" target="./test_results/reports/unit_test_results.xml" lowUpperBound="70" />
+    <log type="coverage-clover" target="./test_results/reports/test_coverage_results.xml" lowUpperBound="70" />
+  </logging>
   <php>
     <env name="PACT_MOCK_SERVER_HOST" value="localhost"/>
     <env name="PACT_MOCK_SERVER_PORT" value="7200"/>

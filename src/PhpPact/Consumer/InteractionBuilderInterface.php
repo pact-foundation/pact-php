@@ -1,6 +1,7 @@
 <?php
 
 namespace PhpPact\Consumer;
+
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
 

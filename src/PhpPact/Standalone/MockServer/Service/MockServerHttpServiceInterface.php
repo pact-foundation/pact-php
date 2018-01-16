@@ -1,8 +1,8 @@
 <?php
 
 namespace PhpPact\Standalone\MockServer\Service;
-use PhpPact\Consumer\Model\Interaction;
 
+use PhpPact\Consumer\Model\Interaction;
 
 /**
  * Interface MockServerHttpServiceInterface

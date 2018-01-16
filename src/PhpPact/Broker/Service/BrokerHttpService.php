@@ -8,7 +8,6 @@ use Psr\Http\Message\UriInterface;
 /**
  * Http Service Wrapper for Pact Broker
  * Class BrokerHttpService
- * @package PhpPact\Broker\Service
  */
 class BrokerHttpService implements BrokerHttpServiceInterface
 {

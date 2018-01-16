@@ -48,7 +48,7 @@ class ProviderServiceValidator
      * Validate the pact file and send a request to a mock server
      *
      * @param ProviderServicePactFile $pactFile
-     * @param ProviderStates                                $providerStates
+     * @param ProviderStates          $providerStates
      *
      * @throws \Exception
      * @throws \PhpPact\PactFailureException

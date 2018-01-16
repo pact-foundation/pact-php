@@ -1,6 +1,7 @@
 <?php
 
 namespace PhpPact\Mocks\MockHttpService\Validators;
+
 use JsonSchema\Validator;
 use PhpPact\Models\PactFile;
 use PhpPact\PactFailureException;

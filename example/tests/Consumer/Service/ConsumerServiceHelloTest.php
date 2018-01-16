@@ -4,9 +4,9 @@ namespace Consumer\Service;
 
 use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Matcher\RegexMatcher;
-use PhpPact\Consumer\MockServerEnvConfig;
-use PhpPact\Core\Model\ConsumerRequest;
-use PhpPact\Core\Model\ProviderResponse;
+use PhpPact\Consumer\Model\ConsumerRequest;
+use PhpPact\Consumer\Model\ProviderResponse;
+use PhpPact\Standalone\MockServer\MockServerEnvConfig;
 use PHPUnit\Framework\TestCase;
 
 class ConsumerServiceHelloTest extends TestCase
