@@ -74,7 +74,6 @@
         ]
     },
     "suggest": {
-        "ext-xml": "Needed to support XML format",
-        "ext-openssl": "Needed for SSL enabled Pact Broker"
+        "ext-xml": "Needed to support XML format"
     }
 }
