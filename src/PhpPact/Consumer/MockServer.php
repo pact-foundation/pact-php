@@ -6,8 +6,8 @@ use Exception;
 use GuzzleHttp\Exception\ConnectException;
 use PhpPact\Consumer\Exception\HealthCheckFailedException;
 use PhpPact\Consumer\Service\MockServerHttpService;
-use PhpPact\Core\BinaryManager\BinaryManager;
 use PhpPact\Core\Http\GuzzleClient;
+use PhpPact\Standalone\Installer\InstallManager;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -18,8 +18,8 @@ class MockServer
     /** @var MockServerConfig */
     private $config;
 
-    /** @var BinaryManager */
-    private $binaryManager;
+    /** @var InstallManager */
+    private $installManager;
 
     /** @var Process */
     private $process;
@@ -27,23 +27,23 @@ class MockServer
     /** @var Filesystem */
     private $fileSystem;
 
-    public function __construct(MockServerConfig $config, BinaryManager $binaryManager)
+    public function __construct(MockServerConfig $config, InstallManager $installManager)
     {
-        $this->config        = $config;
-        $this->binaryManager = $binaryManager;
-        $this->fileSystem    = new Filesystem();
+        $this->config         = $config;
+        $this->installManager = $installManager;
+        $this->fileSystem     = new Filesystem();
     }
 
     /**
      * Start the Mock Server. Verify that it is running.
      *
-     * @throws Exception
+     * @throws ProcessFailedException
      *
      * @return int process ID of the started Mock Server
      */
     public function start(): int
     {
-        $scripts = $this->binaryManager->install();
+        $scripts = $this->installManager->install();
 
         $builder       = new ProcessBuilder();
         $this->process = $builder
@@ -56,7 +56,6 @@ class MockServer
         $this->process->start(function ($type, $buffer) {
             print $buffer;
         });
-        \sleep(1);
 
         if ($this->process->isStarted() !== true || $this->process->isRunning() !== true) {
             throw new ProcessFailedException($this->process);
@@ -70,16 +69,12 @@ class MockServer
     /**
      * Stop the Mock Server process.
      *
-     * @throws Exception
-     *
      * @return bool Was stopping successful?
      */
     public function stop(): bool
     {
         $exitCode = $this->process->stop();
-
-        print "Process stopped with exit code: {$exitCode}\n";
-        print $this->process->getExitCodeText();
+        print "Process exited with code {$exitCode}\n";
 
         return true;
     }
@@ -134,7 +129,6 @@ class MockServer
 
                 return $status;
             } catch (ConnectException $e) {
-                \sleep(1);
             }
         } while ($tries <= $maxTries);
 

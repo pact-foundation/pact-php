@@ -5,10 +5,10 @@ namespace PhpPact\Consumer;
 use PhpPact\Consumer\Matcher\LikeMatcher;
 use PhpPact\Consumer\Service\MockServerHttpService;
 use PhpPact\Consumer\Service\MockServerHttpServiceInterface;
-use PhpPact\Core\BinaryManager\BinaryManager;
 use PhpPact\Core\Http\GuzzleClient;
 use PhpPact\Core\Model\ConsumerRequest;
 use PhpPact\Core\Model\ProviderResponse;
+use PhpPact\Standalone\Installer\InstallManager;
 use PHPUnit\Framework\TestCase;
 
 class InteractionBuilderTest extends TestCase
@@ -21,9 +21,9 @@ class InteractionBuilderTest extends TestCase
 
     protected function setUp()
     {
-        $config           = new MockServerEnvConfig();
-        $binaryManager    = new BinaryManager();
-        $this->mockServer = new MockServer($config, $binaryManager);
+        $config            = new MockServerEnvConfig();
+        $installManager    = new InstallManager();
+        $this->mockServer  = new MockServer($config, $installManager);
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $config);
     }

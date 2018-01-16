@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Core\BinaryManager\Exception;
+namespace PhpPact\Standalone\Installer\Exception;
 
 use Exception;
 

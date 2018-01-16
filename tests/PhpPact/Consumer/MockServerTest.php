@@ -2,7 +2,7 @@
 
 namespace PhpPact\Consumer;
 
-use PhpPact\Core\BinaryManager\BinaryManager;
+use PhpPact\Standalone\Installer\InstallManager;
 use PHPUnit\Framework\TestCase;
 
 class MockServerTest extends TestCase
@@ -10,7 +10,7 @@ class MockServerTest extends TestCase
     public function testStartAndStop()
     {
         try {
-            $mockServer = new MockServer(new MockServerEnvConfig(), new BinaryManager());
+            $mockServer = new MockServer(new MockServerEnvConfig(), new InstallManager());
             $pid        = $mockServer->start();
             $this->assertTrue(\is_int($pid));
         } finally {

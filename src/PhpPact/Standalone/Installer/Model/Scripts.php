@@ -1,12 +1,12 @@
 <?php
 
-namespace PhpPact\Core\BinaryManager\Model;
+namespace PhpPact\Standalone\Installer\Model;
 
 /**
  * Represents locations of Ruby Standalone full path and scripts.
  * Class BinaryScripts
  */
-class BinaryScripts
+class Scripts
 {
     /**
      * Path to PhpPact Mock Service

@@ -1,27 +1,27 @@
 <?php
 
-namespace PhpPact\Core\BinaryManager\Downloader;
+namespace PhpPact\Standalone\Installer\Service;
 
-use PhpPact\Core\BinaryManager\Model\BinaryScripts;
+use PhpPact\Standalone\Installer\Model\Scripts;
 
 /**
  * Interface BinaryDownloaderInterface
  */
-interface BinaryDownloaderInterface
+interface InstallerInterface
 {
     /**
      * Verify if the downloader works for the current environment.
      *
      * @return bool
      */
-    public function checkEligibility(): bool;
+    public function isEligible(): bool;
 
     /**
      * Download the file and install it in the necessary directory.
      *
      * @param string $destinationDir folder path to put the binaries
      *
-     * @return BinaryScripts
+     * @return Scripts
      */
-    public function install(string $destinationDir): BinaryScripts;
+    public function install(string $destinationDir): Scripts;
 }

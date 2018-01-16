@@ -6,11 +6,11 @@ use GuzzleHttp\Exception\ServerException;
 use PhpPact\Consumer\MockServer;
 use PhpPact\Consumer\MockServerConfigInterface;
 use PhpPact\Consumer\MockServerEnvConfig;
-use PhpPact\Core\BinaryManager\BinaryManager;
 use PhpPact\Core\Http\GuzzleClient;
 use PhpPact\Core\Model\ConsumerRequest;
 use PhpPact\Core\Model\Interaction;
 use PhpPact\Core\Model\ProviderResponse;
+use PhpPact\Standalone\Installer\InstallManager;
 use PHPUnit\Framework\TestCase;
 
 class MockServerHttpServiceTest extends TestCase
@@ -27,7 +27,7 @@ class MockServerHttpServiceTest extends TestCase
     protected function setUp()
     {
         $this->config     = new MockServerEnvConfig();
-        $this->mockServer = new MockServer($this->config, new BinaryManager());
+        $this->mockServer = new MockServer($this->config, new InstallManager());
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $this->config);
     }

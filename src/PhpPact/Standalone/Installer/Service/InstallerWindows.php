@@ -1,31 +1,36 @@
 <?php
 
-namespace PhpPact\Core\BinaryManager\Downloader;
+namespace PhpPact\Standalone\Installer\Service;
 
-use Exception;
-use PhpPact\Core\BinaryManager\Model\BinaryScripts;
+use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
+use PhpPact\Standalone\Installer\Model\Scripts;
 use Symfony\Component\Filesystem\Filesystem;
+use ZipArchive;
 
-class BinaryDownloaderMac implements BinaryDownloaderInterface
+/**
+ * Download the Ruby Standalone binaries for Windows.
+ * Class BinaryDownloaderWindows
+ */
+class InstallerWindows implements InstallerInterface
 {
     /**
      * @inheritDoc
      */
-    public function checkEligibility(): bool
+    public function isEligible(): bool
     {
-        return PHP_OS === 'Darwin';
+        return \strtoupper(\substr(PHP_OS, 0, 3)) === 'WIN';
     }
 
     /**
      * @inheritDoc
      */
-    public function install(string $destinationDir): BinaryScripts
+    public function install(string $destinationDir): Scripts
     {
         $fs = new Filesystem();
 
         if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
             $version      = '1.22.1';
-            $fileName     = "pact-{$version}-osx.tar.gz";
+            $fileName     = "pact-{$version}-win32.zip";
             $tempFilePath = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
 
             $this
@@ -34,8 +39,9 @@ class BinaryDownloaderMac implements BinaryDownloaderInterface
                 ->deleteCompressed($tempFilePath);
         }
 
-        $scripts = new BinaryScripts(
-            "{$destinationDir}/pact/bin/pact-mock-service"
+        $binDir  = $destinationDir . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR . 'bin';
+        $scripts = new Scripts(
+             $binDir . DIRECTORY_SEPARATOR . 'pact-mock-service.bat'
         );
 
         return $scripts;
@@ -47,9 +53,9 @@ class BinaryDownloaderMac implements BinaryDownloaderInterface
      * @param string $fileName     name of the file to be downloaded
      * @param string $tempFilePath location to download the file
      *
-     * @throws Exception
+     * @throws FileDownloadFailureException
      *
-     * @return BinaryDownloaderMac
+     * @return InstallerWindows
      */
     private function download(string $fileName, string $tempFilePath): self
     {
@@ -59,7 +65,7 @@ class BinaryDownloaderMac implements BinaryDownloaderInterface
         $result = \file_put_contents($tempFilePath, $data);
 
         if ($result === false) {
-            throw new Exception('Failed to download file.');
+            throw new FileDownloadFailureException('Failed to download file.');
         }
 
         return $this;
@@ -71,13 +77,17 @@ class BinaryDownloaderMac implements BinaryDownloaderInterface
      * @param string $sourceFile
      * @param string $destinationDir
      *
-     * @return BinaryDownloaderMac
+     * @return InstallerWindows
      * @return string
      */
     private function extract(string $sourceFile, string $destinationDir): self
     {
-        $p = new \PharData($sourceFile);
-        $p->extractTo($destinationDir);
+        $zip = new ZipArchive();
+
+        if ($zip->open($sourceFile)) {
+            $zip->extractTo($destinationDir);
+            $zip->close();
+        }
 
         return $this;
     }
@@ -87,7 +97,7 @@ class BinaryDownloaderMac implements BinaryDownloaderInterface
      *
      * @param string $filePath
      *
-     * @return BinaryDownloaderMac
+     * @return InstallerWindows
      */
     private function deleteCompressed(string $filePath): self
     {

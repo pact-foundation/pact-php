@@ -1,36 +1,31 @@
 <?php
 
-namespace PhpPact\Core\BinaryManager\Downloader;
+namespace PhpPact\Standalone\Installer\Service;
 
-use Exception;
-use PhpPact\Core\BinaryManager\Model\BinaryScripts;
+use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
+use PhpPact\Standalone\Installer\Model\Scripts;
 use Symfony\Component\Filesystem\Filesystem;
-use ZipArchive;
 
-/**
- * Download the Ruby Standalone binaries for Windows.
- * Class BinaryDownloaderWindows
- */
-class BinaryDownloaderWindows implements BinaryDownloaderInterface
+class InstallerLinux implements InstallerInterface
 {
     /**
      * @inheritDoc
      */
-    public function checkEligibility(): bool
+    public function isEligible(): bool
     {
-        return \strtoupper(\substr(PHP_OS, 0, 3)) === 'WIN';
+        return PHP_OS === 'Linux';
     }
 
     /**
      * @inheritDoc
      */
-    public function install(string $destinationDir): BinaryScripts
+    public function install(string $destinationDir): Scripts
     {
         $fs = new Filesystem();
 
         if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
             $version      = '1.22.1';
-            $fileName     = "pact-{$version}-win32.zip";
+            $fileName     = "pact-{$version}-linux-x86_64.tar.gz";
             $tempFilePath = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
 
             $this
@@ -39,9 +34,8 @@ class BinaryDownloaderWindows implements BinaryDownloaderInterface
                 ->deleteCompressed($tempFilePath);
         }
 
-        $binDir  = $destinationDir . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR . 'bin';
-        $scripts = new BinaryScripts(
-             $binDir . DIRECTORY_SEPARATOR . 'pact-mock-service.bat'
+        $scripts = new Scripts(
+            "{$destinationDir}/pact/bin/pact-mock-service"
         );
 
         return $scripts;
@@ -53,9 +47,9 @@ class BinaryDownloaderWindows implements BinaryDownloaderInterface
      * @param string $fileName     name of the file to be downloaded
      * @param string $tempFilePath location to download the file
      *
-     * @throws Exception
+     * @throws FileDownloadFailureException
      *
-     * @return BinaryDownloaderWindows
+     * @return InstallerLinux
      */
     private function download(string $fileName, string $tempFilePath): self
     {
@@ -65,7 +59,7 @@ class BinaryDownloaderWindows implements BinaryDownloaderInterface
         $result = \file_put_contents($tempFilePath, $data);
 
         if ($result === false) {
-            throw new Exception('Failed to download file.');
+            throw new FileDownloadFailureException('Failed to download file.');
         }
 
         return $this;
@@ -77,17 +71,13 @@ class BinaryDownloaderWindows implements BinaryDownloaderInterface
      * @param string $sourceFile
      * @param string $destinationDir
      *
-     * @return BinaryDownloaderWindows
+     * @return InstallerLinux
      * @return string
      */
     private function extract(string $sourceFile, string $destinationDir): self
     {
-        $zip = new ZipArchive();
-
-        if ($zip->open($sourceFile)) {
-            $zip->extractTo($destinationDir);
-            $zip->close();
-        }
+        $p = new \PharData($sourceFile);
+        $p->extractTo($destinationDir);
 
         return $this;
     }
@@ -97,7 +87,7 @@ class BinaryDownloaderWindows implements BinaryDownloaderInterface
      *
      * @param string $filePath
      *
-     * @return BinaryDownloaderWindows
+     * @return InstallerLinux
      */
     private function deleteCompressed(string $filePath): self
     {
