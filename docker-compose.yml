@@ -21,3 +21,8 @@ services:
       PACT_BROKER_DATABASE_PASSWORD: password
       PACT_BROKER_DATABASE_HOST: localhost
       PACT_BROKER_DATABASE_NAME: postgres
+
+networks:
+  default:
+    external:
+      name: nat
