@@ -4,7 +4,6 @@ namespace PhpPact\Consumer\Matcher;
 
 /**
  * Class RegexMatcher
- * @package PhpPact\Consumer\Matcher
  */
 class RegexMatcher implements MatcherInterface
 {
@@ -16,8 +15,9 @@ class RegexMatcher implements MatcherInterface
 
     /**
      * RegexMatcher constructor.
-     * @param int|float|string $value value that will be matched
-     * @param string $regex regex to be used
+     *
+     * @param array|float|int|string $value value that will be matched
+     * @param string                 $regex regex to be used
      */
     public function __construct($value, string $regex)
     {

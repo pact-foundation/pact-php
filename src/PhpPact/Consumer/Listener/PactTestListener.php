@@ -10,6 +10,7 @@ use PhpPact\Standalone\MockServer\MockServer;
 use PhpPact\Standalone\MockServer\MockServerConfigInterface;
 use PhpPact\Standalone\MockServer\MockServerEnvConfig;
 use PhpPact\Standalone\MockServer\Service\MockServerHttpService;
+use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestListener;
 use PHPUnit\Framework\TestListenerDefaultImplementation;
 use PHPUnit\Framework\TestSuite;
@@ -35,6 +36,9 @@ class PactTestListener implements TestListener
     /** @var MockServerConfigInterface */
     private $mockServerConfig;
 
+    /** @var bool */
+    private $failed;
+
     /**
      * PactTestListener constructor.
      *
@@ -58,6 +62,18 @@ class PactTestListener implements TestListener
     }
 
     /**
+     * Mark the test suite as a failure so that the PACT file does not get pushed to the broker.
+     * @param Test $test
+     * @param float $time
+     */
+    public function endTest(Test $test, $time)
+    {
+        if ($test->hasFailed() === true) {
+            $this->failed = true;
+        }
+    }
+
+    /**
      * Publish JSON results to PACT Broker and stop the Mock Server.
      *
      * @param TestSuite $suite
@@ -74,8 +90,16 @@ class PactTestListener implements TestListener
                 $this->server->stop();
             }
 
-            $brokerHttpService = new BrokerHttpService(new GuzzleClient(), new Uri(\getenv('PACT_BROKER_URI')));
-            $brokerHttpService->publishJson($json, \getenv('PACT_CONSUMER_VERSION'));
+            if ($this->failed === true) {
+                print "A unit test has failed. Skipping PACT file upload.";
+            } elseif (!($pactBrokerUri = \getenv('PACT_BROKER_URI'))) {
+                print "PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.";
+            } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_VERSION'))) {
+                print "PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.";
+            } else {
+                $brokerHttpService = new BrokerHttpService(new GuzzleClient(), new Uri($pactBrokerUri));
+                $brokerHttpService->publishJson($json, $consumerVersion);
+            }
         }
     }
 }

@@ -2,40 +2,39 @@
 
 namespace PhpPact\Consumer\Matcher;
 
-use Traversable;
-
 /**
  * Generate matching rules from a request or response body.
  * Class MatchParser
  */
 class MatchParser
 {
-    /** @var MatcherInterface */
+    /** @var MatcherInterface[] */
     private $matchingRules;
 
     /**
      * Generate matching rules from a request or response body.
      *
-     * @param $body
-     * @param string $jsonPath
+     * @param array|float|int|string $body
+     * @param string                 $jsonPath
      *
-     * @return mixed
+     * @return MatcherInterface[]
      */
-    public function matchParser(&$body, string $jsonPath = '$.body')
+    public function parse(&$body, string &$jsonPath = '$.body')
     {
-        if (\is_array($body) || $body instanceof Traversable) {
+        if (\is_array($body)) {
             foreach ($body as $key => &$item) {
-                if ($item instanceof MatcherInterface) {
+                if (\is_int($key)) {
+                    $path = "{$jsonPath}[*]";
+                } else {
                     $path = "{$jsonPath}.{$key}";
+                }
 
-                    if (\is_array($item->getValue())) {
-                        $path .= '[*]';
-                    }
+                if ($item instanceof MatcherInterface) {
+                    $this->parseMatcher($item, $path);
 
-                    $this->addMatchingRule($path, $item);
                     $item = $item->getValue();
                 } else {
-                    $this->matchParser($item, $jsonPath);
+                    $this->parse($item, $path);
                 }
             }
         }
@@ -43,6 +42,37 @@ class MatchParser
         return $this->matchingRules;
     }
 
+    /**
+     * If the matcher has children, add a matcher pattern for each.
+     *
+     * @param MatcherInterface $matcher
+     * @param string           $jsonPath
+     */
+    private function parseMatcher(MatcherInterface $matcher, string $jsonPath)
+    {
+        if (\is_array($matcher->getValue())) {
+            foreach ($matcher->getValue() as $key => $value) {
+                if (\is_int($key)) {
+                    $path = "{$jsonPath}[*]";
+                } else {
+                    $path = "{$jsonPath}.{$key}";
+                }
+
+                $this->addMatchingRule($path, $matcher);
+            }
+        } else {
+            $this->addMatchingRule($jsonPath, $matcher);
+        }
+    }
+
+    /**
+     * Add a matching rule to the array stack.
+     *
+     * @param string           $path
+     * @param MatcherInterface $matchingRule
+     *
+     * @return MatchParser
+     */
     private function addMatchingRule(string $path, MatcherInterface $matchingRule): self
     {
         $this->matchingRules[$path] = $matchingRule;

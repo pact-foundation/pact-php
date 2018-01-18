@@ -31,7 +31,7 @@ class MockServer
     /** @var Filesystem */
     private $fileSystem;
 
-    public function __construct(MockServerConfig $config, InstallManager $installManager)
+    public function __construct(MockServerConfigInterface $config, InstallManager $installManager)
     {
         $this->config         = $config;
         $this->installManager = $installManager;

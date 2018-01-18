@@ -5,6 +5,10 @@ namespace Consumer\Service;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
 
+/**
+ * Example HTTP Service
+ * Class HttpService
+ */
 class HttpService
 {
     /** @var Client */
@@ -19,9 +23,16 @@ class HttpService
         $this->baseUri    = $baseUri;
     }
 
+    /**
+     * Get Hello String
+     *
+     * @param string $name
+     *
+     * @return string
+     */
     public function getHelloString(string $name): string
     {
-        $response = $this->httpClient->request('GET', new Uri("{$this->baseUri}/hello/{$name}"), [
+        $response = $this->httpClient->get(new Uri("{$this->baseUri}/hello/{$name}"), [
             'headers' => ['Content-Type' => 'application/json']
         ]);
         $body   = $response->getBody();
@@ -30,9 +41,16 @@ class HttpService
         return $object->message;
     }
 
+    /**
+     * Get Goodbye String
+     *
+     * @param string $name
+     *
+     * @return string
+     */
     public function getGoodbyeString(string $name): string
     {
-        $response = $this->httpClient->request('GET', "{$this->baseUri}/goodbye/{$name}", [
+        $response = $this->httpClient->get("{$this->baseUri}/goodbye/{$name}", [
             'headers' => ['Content-Type' => 'application/json']
         ]);
         $body   = $response->getBody();

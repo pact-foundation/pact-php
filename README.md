@@ -48,76 +48,80 @@ The listener accomplishes a few necessary functions. It starts the mock server, 
 For this to function properly, you need to create a Test Suite, add a listener section, with an argument of the Test Suite name, and the necessary environment variables.
 
 
-   ```xml
-   <?xml version="1.0" encoding="UTF-8"?>
-   <phpunit bootstrap="../vendor/autoload.php">
-       <testsuites>
-           <testsuite name="PhpPact Example Tests">
-               <directory>./tests/Consumer</directory>
-           </testsuite>
-       </testsuites>
-       <listeners>
-           <listener class="PhpPact\Consumer\Listener\PactTestListener">
-               <arguments>
-                   <array>
-                       <element>
-                           <string>PhpPact Example Tests</string>
-                       </element>
-                   </array>
-               </arguments>
-           </listener>
-       </listeners>
-       <php>
-           <env name="PACT_MOCK_SERVER_HOST" value="localhost"/>
-           <env name="PACT_MOCK_SERVER_PORT" value="7200"/>
-           <env name="PACT_CONSUMER_NAME" value="someConsumer"/>
-           <env name="PACT_CONSUMER_VERSION" value="1.0.0"/>
-           <env name="PACT_PROVIDER_NAME" value="someProvider"/>
-           <env name="PACT_BROKER_URI" value="http://localhost"/>
-       </php>
-   </phpunit>
-   ```
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="../vendor/autoload.php">
+   <testsuites>
+       <testsuite name="PhpPact Example Tests">
+           <directory>./tests/Consumer</directory>
+       </testsuite>
+   </testsuites>
+   <listeners>
+       <listener class="PhpPact\Consumer\Listener\PactTestListener">
+           <arguments>
+               <array>
+                   <element>
+                       <string>PhpPact Example Tests</string>
+                   </element>
+               </array>
+           </arguments>
+       </listener>
+   </listeners>
+   <php>
+       <env name="PACT_MOCK_SERVER_HOST" value="localhost"/>
+       <env name="PACT_MOCK_SERVER_PORT" value="7200"/>
+       <env name="PACT_CONSUMER_NAME" value="someConsumer"/>
+       <env name="PACT_CONSUMER_VERSION" value="1.0.0"/>
+       <env name="PACT_PROVIDER_NAME" value="someProvider"/>
+       <env name="PACT_BROKER_URI" value="http://localhost"/>
+   </php>
+</phpunit>
+```
 
 Here is the included listener.
 
-   ```php
-    <?php
-    
-    namespace PhpPact\Consumer\Listener;
-    
-    use GuzzleHttp\Psr7\Uri;
-    use PhpPact\Broker\Service\BrokerHttpService;
-    use PhpPact\Http\GuzzleClient;
-    use PhpPact\Standalone\Installer\InstallManager;
-    use PhpPact\Standalone\MockServer\MockServer;
-    use PhpPact\Standalone\MockServer\MockServerConfigInterface;
-    use PhpPact\Standalone\MockServer\MockServerEnvConfig;
-    use PhpPact\Standalone\MockServer\Service\MockServerHttpService;
-    use PHPUnit\Framework\TestListener;
-    use PHPUnit\Framework\TestListenerDefaultImplementation;
-    use PHPUnit\Framework\TestSuite;
-    
-    /**
-    * PACT listener that can be used with environment variables and easily attached to PHPUnit configuration.
-    * Class PactTestListener
-    */
-    class PactTestListener implements TestListener
-    {
+```php
+<?php
+
+namespace PhpPact\Consumer\Listener;
+
+use GuzzleHttp\Psr7\Uri;
+use PhpPact\Broker\Service\BrokerHttpService;
+use PhpPact\Http\GuzzleClient;
+use PhpPact\Standalone\Installer\InstallManager;
+use PhpPact\Standalone\MockServer\MockServer;
+use PhpPact\Standalone\MockServer\MockServerConfigInterface;
+use PhpPact\Standalone\MockServer\MockServerEnvConfig;
+use PhpPact\Standalone\MockServer\Service\MockServerHttpService;
+use PHPUnit\Framework\Test;
+use PHPUnit\Framework\TestListener;
+use PHPUnit\Framework\TestListenerDefaultImplementation;
+use PHPUnit\Framework\TestSuite;
+
+/**
+ * PACT listener that can be used with environment variables and easily attached to PHPUnit configuration.
+ * Class PactTestListener
+ */
+class PactTestListener implements TestListener
+{
     use TestListenerDefaultImplementation;
-    
+
     /** @var MockServer */
     private $server;
-    
+
     /**
      * Name of the test suite configured in your phpunit config.
      *
      * @var string
      */
     private $testSuiteNames;
-    
+
     /** @var MockServerConfigInterface */
     private $mockServerConfig;
-    
+
+    /** @var bool */
+    private $failed;
+
     /**
      * PactTestListener constructor.
      *
@@ -128,7 +132,7 @@ Here is the included listener.
         $this->testSuiteNames   = $testSuiteNames;
         $this->mockServerConfig = new MockServerEnvConfig();
     }
-    
+
     /**
      * @param TestSuite $suite
      */
@@ -139,7 +143,19 @@ Here is the included listener.
             $this->server->start();
         }
     }
-    
+
+    /**
+     * Mark the test suite as a failure so that the PACT file does not get pushed to the broker.
+     * @param Test $test
+     * @param float $time
+     */
+    public function endTest(Test $test, $time)
+    {
+        if ($test->hasFailed() === true) {
+            $this->failed = true;
+        }
+    }
+
     /**
      * Publish JSON results to PACT Broker and stop the Mock Server.
      *
@@ -151,93 +167,101 @@ Here is the included listener.
             try {
                 $httpService = new MockServerHttpService(new GuzzleClient(), $this->mockServerConfig);
                 $httpService->verifyInteractions();
-    
+
                 $json = $httpService->getPactJson();
             } finally {
                 $this->server->stop();
             }
-    
-            $brokerHttpService = new BrokerHttpService(new GuzzleClient(), new Uri(\getenv('PACT_BROKER_URI')));
-            $brokerHttpService->publishJson($json, \getenv('PACT_CONSUMER_VERSION'));
+
+            if ($this->failed === true) {
+                print "A unit test has failed. Skipping PACT file upload.";
+            } elseif (!($pactBrokerUri = \getenv('PACT_BROKER_URI'))) {
+                print "PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.";
+            } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_VERSION'))) {
+                print "PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.";
+            } else {
+                $brokerHttpService = new BrokerHttpService(new GuzzleClient(), new Uri($pactBrokerUri));
+                $brokerHttpService->publishJson($json, $consumerVersion);
+            }
         }
     }
-    }
-   ```
+}
+```
     
 ### 2. Write your tests
 Create a new test case within your service consumer test project, using whatever test framework you like (in this case we used phpUnit). 
 Then implement your tests.
 
-   ```php
-    <?php
-    
-    namespace Consumer\Service;
-    
-    use PhpPact\Consumer\InteractionBuilder;
-    use PhpPact\Consumer\Matcher\RegexMatcher;
-    use PhpPact\Consumer\Model\ConsumerRequest;
-    use PhpPact\Consumer\Model\ProviderResponse;
-    use PhpPact\Standalone\MockServer\MockServerEnvConfig;
-    use PHPUnit\Framework\TestCase;
-    
-    class ConsumerServiceHelloTest extends TestCase
+```php
+<?php
+
+namespace Consumer\Service;
+
+use PhpPact\Consumer\InteractionBuilder;
+use PhpPact\Consumer\Matcher\RegexMatcher;
+use PhpPact\Consumer\Model\ConsumerRequest;
+use PhpPact\Consumer\Model\ProviderResponse;
+use PhpPact\Standalone\MockServer\MockServerEnvConfig;
+use PHPUnit\Framework\TestCase;
+
+class ConsumerServiceHelloTest extends TestCase
+{
+    /**
+     * Example PACT test.
+     */
+    public function testGetHelloString()
     {
-        /**
-         * Example PACT test.
-         */
-        public function testGetHelloString()
-        {
-            // Create your expected request from the consumer.
-            $request = new ConsumerRequest();
-            $request
-                ->setMethod('GET')
-                ->setPath('/hello/Bob')
-                ->addHeader('Content-Type', 'application/json');
-    
-            // Create your expected response from the provider.
-            $response = new ProviderResponse();
-            $response
-                ->setStatus(200)
-                ->addHeader('Content-Type', 'application/json')
-                ->setBody([
-                    'message' => new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]') // Use matches directly in the body. These will get parsed into JSON automatically before being sent to the PACT Broker.
-                ]);
-    
-            // Create a configuration that reflects the server that was started. You can create a custom MockServerConfigInterface if needed.
-            $config      = new MockServerEnvConfig();
-            $mockService = new InteractionBuilder($config);
-            $mockService
-                ->given('Get Hello')
-                ->uponReceiving('A get request to /hello/{name}')
-                ->with($request)
-                ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
-    
-            $service = new HttpService($config->getBaseUri()); // Pass in the URL to the Mock Server.
-            $result  = $service->getHelloString('Bob'); // Make the real API request against the Mock Server.
-    
-            $this->assertEquals('Hello, Bob', $result); // Make your assertions.
-        }
+        // Create your expected request from the consumer.
+        $request = new ConsumerRequest();
+        $request
+            ->setMethod('GET')
+            ->setPath('/hello/Bob')
+            ->addHeader('Content-Type', 'application/json');
+
+        // Create your expected response from the provider.
+        $response = new ProviderResponse();
+        $response
+            ->setStatus(200)
+            ->addHeader('Content-Type', 'application/json')
+            ->setBody([
+                'message' => new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]') // Use matches directly in the body. These will get parsed into JSON automatically before being sent to the PACT Broker.
+            ]);
+
+        // Create a configuration that reflects the server that was started. You can create a custom MockServerConfigInterface if needed.
+        $config      = new MockServerEnvConfig();
+        $mockService = new InteractionBuilder($config);
+        $mockService
+            ->given('Get Hello')
+            ->uponReceiving('A get request to /hello/{name}')
+            ->with($request)
+            ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
+
+        $service = new HttpService($config->getBaseUri()); // Pass in the URL to the Mock Server.
+        $result  = $service->getHelloString('Bob'); // Make the real API request against the Mock Server.
+
+        $this->assertEquals('Hello, Bob', $result); // Make your assertions.
     }
-   ```
+}
+```
    
 Right now there are 2 Available Matches. These matches can be used directly in the setBody function.
 
-Matcher | Explanation | Example
----|---|---
-PhpPact\Consumer\Matcher\RegexMatcher | Match a value against a regex pattern. | new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
-PhpPact\Consumer\Matcher\RegexMatcher | Match a value against its data type. | new TypeMatch(12)
-   
+Matcher | Explanation | Parameters | Example
+---|---|---|---
+PhpPact\Consumer\Matcher\RegexMatcher | Match a value against a regex pattern. | Value, Regex Pattern | new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
+PhpPact\Consumer\Matcher\TypeMatcher | Match a value against its data type. | Value, Min (Optional), Max (Optional) | new TypeMatcher(12, 0, 100)
 
 ### 3. Run the test
 Everything should be green and your PACT file should be published to the broker as expected.
 
-
 ## Service Provider
 
 ### 1. Build API
-Get an instance of the API up and running.  If your API support PHP's [built-in web server](http://php.net/manual/en/features.commandline.webserver.php), see [this great tutorial](http://tech.vg.no/2013/07/19/using-phps-built-in-web-server-in-your-test-suites/) on 
-bootstrapping phpunit to spin up the API, run tests, and tear down the API.   See examples/site/provider.php and 
-examples/test/bootstrap.php for a local server on Windows.
+Get an instance of the API up and running. You can use the built in PHP server to accomplish this. The Symfony Process library can be used to run the process asynchronous.
+
+[PHP Server](http://php.net/manual/en/features.commandline.webserver.php)
+
+[Symfony Process](https://symfony.com/doc/current/components/process.html)
 
 ### 2. Configure PHP unit
 Bootstrap PHPUnit with appropriate composer and autoloaders.   Optionally, add a bootstrap api from the *Build API* section.   
@@ -249,11 +273,12 @@ Bootstrap PHPUnit with appropriate composer and autoloaders.   Optionally, add a
 // Pick your PSR client.  Guzzle should work as well.
 $httpClient = new \Windwalker\Http\HttpClient();
 
-$pactVerifier->providerState("A GET request to get types")
-                ->serviceProvider("MockApiProvider", $httpClient)
-                ->honoursPactWith("MockApiConsumer")
-                ->pactUri('../pact/mockapiconsumer-mockapiprovider.json')
-                ->verify();
+$pactVerifier
+    ->providerState("A GET request to get types")
+    ->serviceProvider("MockApiProvider", $httpClient)
+    ->honoursPactWith("MockApiConsumer")
+    ->pactUri('../pact/mockapiconsumer-mockapiprovider.json')
+    ->verify();
 ```
 
 ### 4. Run the test
