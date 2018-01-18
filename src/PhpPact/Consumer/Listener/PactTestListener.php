@@ -63,7 +63,8 @@ class PactTestListener implements TestListener
 
     /**
      * Mark the test suite as a failure so that the PACT file does not get pushed to the broker.
-     * @param Test $test
+     *
+     * @param Test  $test
      * @param float $time
      */
     public function endTest(Test $test, $time)
@@ -91,11 +92,11 @@ class PactTestListener implements TestListener
             }
 
             if ($this->failed === true) {
-                print "A unit test has failed. Skipping PACT file upload.";
+                print 'A unit test has failed. Skipping PACT file upload.';
             } elseif (!($pactBrokerUri = \getenv('PACT_BROKER_URI'))) {
-                print "PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.";
+                print 'PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.';
             } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_VERSION'))) {
-                print "PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.";
+                print 'PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.';
             } else {
                 $brokerHttpService = new BrokerHttpService(new GuzzleClient(), new Uri($pactBrokerUri));
                 $brokerHttpService->publishJson($json, $consumerVersion);
