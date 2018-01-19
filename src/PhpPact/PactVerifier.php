@@ -55,9 +55,9 @@ class PactVerifier implements PactVerifierInterface
      *
      * This is where you should set up test data, so that you can fulfil the contract outlined by a consumer.
      *
-     * @param $providerState the name of the provider state as defined by the consumer interaction, which lives in the Pact file
-     * @param null $setUp    A set up action that will be run before the interaction verify, if the provider has specified it in the interaction. If no action is required please use an empty lambda
-     * @param null $tearDown A tear down action that will be run after the interaction verify, if the provider has specified it in the interaction. If no action is required please use an empty lambda
+     * @param string $providerState the name of the provider state as defined by the consumer interaction, which lives in the Pact file
+     * @param null   $setUp         A set up action that will be run before the interaction verify, if the provider has specified it in the interaction. If no action is required please use an empty lambda
+     * @param null   $tearDown      A tear down action that will be run after the interaction verify, if the provider has specified it in the interaction. If no action is required please use an empty lambda
      *
      * @return PactVerifier $this
      */

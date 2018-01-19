@@ -100,7 +100,7 @@ class ProviderResponse implements \JsonSerializable
     public function setBody($body): self
     {
         $parser              = new MatchParser();
-        $this->matchingRules = $parser->matchParser($body);
+        $this->matchingRules = $parser->parse($body);
         $this->body          = $body;
 
         return $this;

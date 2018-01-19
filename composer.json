@@ -52,6 +52,10 @@
         "mockery/mockery": "^1.0",
         "slim/slim": "^3.9"
     },
+    "suggest": {
+        "ext-xml": "Needed to support XML format",
+        "ext-openssl": "Needed for SSL enabled Pact Broker"
+    },
     "autoload": {
         "psr-4": {
             "PhpPact\\": "src/PhpPact"
@@ -72,9 +76,5 @@
             "php-cs-fixer fix --config .php_cs",
             "phpunit --configuration=phpunit.xml --debug"
         ]
-    },
-    "suggest": {
-        "ext-xml": "Needed to support XML format",
-        "ext-openssl": "Needed for SSL enabled Pact Broker"
     }
 }

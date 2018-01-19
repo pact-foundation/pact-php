@@ -130,7 +130,7 @@ class ConsumerRequest implements \JsonSerializable
     public function setBody($body)
     {
         $parser              = new MatchParser();
-        $this->matchingRules = $parser->matchParser($body);
+        $this->matchingRules = $parser->parse($body);
         $this->body          = $body;
 
         return $this;
