@@ -11,7 +11,6 @@ use Symfony\Component\Process\ProcessBuilder;
 /**
  * Verify
  * Class VerifierServer
- * @package PhpPact\Standalone\Provider
  */
 class Verifier
 {
@@ -28,7 +27,7 @@ class Verifier
     {
         $this->config            = $config;
         $this->brokerHttpService = $brokerHttpService;
-        $this->installManager = $installManager;
+        $this->installManager    = $installManager;
     }
 
     /**
@@ -91,9 +90,9 @@ class Verifier
 
         $process->mustRun(function ($type, $buffer) {
             if (Process::ERR === $type) {
-                echo 'ERR > '.$buffer;
+                print 'ERR > ' . $buffer;
             } else {
-                echo 'OUT > '.$buffer;
+                print 'OUT > ' . $buffer;
             }
         });
     }

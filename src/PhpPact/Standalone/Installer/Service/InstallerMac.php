@@ -35,7 +35,8 @@ class InstallerMac implements InstallerInterface
         }
 
         $scripts = new Scripts(
-            "{$destinationDir}/pact/bin/pact-mock-service"
+            "{$destinationDir}/pact/bin/pact-mock-service",
+            "{$destinationDir}/pact/bin/pact-provider-verifier"
         );
 
         return $scripts;

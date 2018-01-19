@@ -34,6 +34,6 @@ class VerifierTest extends TestCase
 
         $this->assertTrue(\in_array('http://something:1234/something', $parameters));
         $this->assertTrue(\in_array('http://example.com/stuff', $parameters));
-        $this->assertTrue(in_array("--provider-base-url=http://myprovider:1234", $parameters));
+        $this->assertTrue(\in_array('--provider-base-url=http://myprovider:1234', $parameters));
     }
 }
