@@ -21,7 +21,7 @@ class ConsumerServiceGoodbyeTest extends TestCase
         $response = new ProviderResponse();
         $response
             ->setStatus(200)
-            ->addHeader('Content-Type', 'application/json')
+            ->addHeader('Content-Type', 'application/json;charset=utf-8')
             ->setBody([
                 'message' => 'Goodbye, Bob'
             ]);

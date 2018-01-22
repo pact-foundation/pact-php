@@ -76,6 +76,9 @@ class Verifier
         return $parameters;
     }
 
+    /**
+     * Make the request to the PACT broker to run the tests.
+     */
     public function verify()
     {
         $scripts = $this->installManager->install();
@@ -85,8 +88,8 @@ class Verifier
             ->setPrefix($scripts->getProviderVerifier())
             ->setArguments($this->getParameters())
             ->getProcess()
-            ->setTimeout(600)
-            ->setIdleTimeout(60);
+            ->setTimeout(60)
+            ->setIdleTimeout(10);
 
         $process->mustRun(function ($type, $buffer) {
             if (Process::ERR === $type) {

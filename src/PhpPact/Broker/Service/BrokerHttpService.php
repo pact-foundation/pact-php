@@ -51,7 +51,7 @@ class BrokerHttpService implements BrokerHttpServiceInterface
      */
     public function getAllConsumerUrls(string $provider, string $version = 'latest'): array
     {
-        $uri = $this->baseUri->withPath("pacts/provider/{$provider}/version/{$version}");
+        $uri = $this->baseUri->withPath("pacts/provider/{$provider}/latest");
 
         $response = $this->httpClient->get($uri, [
             'headers' => [
