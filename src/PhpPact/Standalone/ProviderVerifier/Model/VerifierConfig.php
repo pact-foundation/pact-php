@@ -2,9 +2,11 @@
 
 namespace PhpPact\Standalone\ProviderVerifier\Model;
 
+use Psr\Http\Message\UriInterface;
+
 class VerifierConfig implements VerifierConfigInterface
 {
-    /** @var string */
+    /** @var UriInterface */
     private $providerBaseUrl;
 
     /** @var null|string */
@@ -18,6 +20,9 @@ class VerifierConfig implements VerifierConfigInterface
 
     /** @var bool */
     private $publishResults = false;
+
+    /** @var UriInterface */
+    private $brokerUri;
 
     /** @var null|string */
     private $brokerUsername;
@@ -34,23 +39,20 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var string */
     private $format;
 
-    /** @var string[] */
-    private $pactUrls;
-
     /**
-     * @return string
+     * @return UriInterface
      */
-    public function getProviderBaseUrl(): string
+    public function getProviderBaseUrl(): UriInterface
     {
         return $this->providerBaseUrl;
     }
 
     /**
-     * @param string $providerBaseUrl
+     * @param UriInterface $providerBaseUrl
      *
      * @return VerifierConfigInterface
      */
-    public function setProviderBaseUrl(string $providerBaseUrl): VerifierConfigInterface
+    public function setProviderBaseUrl(UriInterface $providerBaseUrl): VerifierConfigInterface
     {
         $this->providerBaseUrl = $providerBaseUrl;
 
@@ -134,6 +136,24 @@ class VerifierConfig implements VerifierConfigInterface
     {
         $this->publishResults = $publishResults;
 
+        return $this;
+    }
+
+    /**
+     * @return UriInterface
+     */
+    public function getBrokerUri(): UriInterface
+    {
+        return $this->brokerUri;
+    }
+
+    /**
+     * @param UriInterface $brokerUri
+     * @return VerifierConfig
+     */
+    public function setBrokerUri(UriInterface $brokerUri): VerifierConfig
+    {
+        $this->brokerUri = $brokerUri;
         return $this;
     }
 
@@ -256,17 +276,5 @@ class VerifierConfig implements VerifierConfigInterface
     public function getPactUrls(): array
     {
         return $this->pactUrls;
-    }
-
-    /**
-     * @param string[] $pactUrls
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setPactUrls(array $pactUrls): VerifierConfigInterface
-    {
-        $this->pactUrls = $pactUrls;
-
-        return $this;
     }
 }

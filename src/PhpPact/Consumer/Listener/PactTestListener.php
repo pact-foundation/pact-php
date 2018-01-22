@@ -97,9 +97,12 @@ class PactTestListener implements TestListener
                 print 'PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.';
             } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_VERSION'))) {
                 print 'PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.';
+            } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_TAG'))) {
+                print 'PACT_CONSUMER_TAG environment variable was not set. Skipping PACT file upload.';
             } else {
                 $brokerHttpService = new BrokerHttpService(new GuzzleClient(), new Uri($pactBrokerUri));
                 $brokerHttpService->publishJson($json, $consumerVersion);
+                $brokerHttpService->tag($this->mockServerConfig->getConsumer(), $consumerVersion, getenv('PACT_CONSUMER_TAG'));
             }
         }
     }

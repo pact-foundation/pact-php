@@ -58,7 +58,11 @@ class MockServer
             ->setIdleTimeout(60);
 
         $this->process->start(function ($type, $buffer) {
-            print $buffer;
+            if (Process::ERR === $type) {
+                print 'ERR > ' . $buffer;
+            } else {
+                print 'OUT > ' . $buffer;
+            }
         });
         \sleep(1);
 
@@ -134,6 +138,7 @@ class MockServer
 
                 return $status;
             } catch (ConnectException $e) {
+                \sleep(1);
             }
         } while ($tries <= $maxTries);
 

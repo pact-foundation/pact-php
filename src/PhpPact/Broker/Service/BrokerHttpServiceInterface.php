@@ -28,6 +28,16 @@ interface BrokerHttpServiceInterface
     public function publishJson(string $version, string $json);
 
     /**
+     * Tag a consumer version with a tag.
+     *
+     * @param string $consumer
+     * @param string $version
+     * @param string $tag
+     * @return mixed
+     */
+    public function tag(string $consumer, string $version, string $tag);
+
+    /**
      * Get all Pact urls for the consumer.
      *
      * @param string $provider provider name

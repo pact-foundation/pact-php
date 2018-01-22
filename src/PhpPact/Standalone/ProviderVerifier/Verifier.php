@@ -33,11 +33,8 @@ class Verifier
     /**
      * @return array parameters to be passed into the process
      */
-    public function getParameters(): array
+    public function getArguments(): array
     {
-        // Get the URLs of the Pact Files from the broker.
-        $parameters = $this->brokerHttpService->getAllConsumerUrls($this->config->getProviderName(), $this->config->getProviderVersion());
-
         // Required Parameters
         $parameters[] = "--provider-base-url={$this->config->getProviderBaseUrl()}";
         $parameters[] = "--provider-app-version={$this->config->getProviderVersion()}";
@@ -77,16 +74,48 @@ class Verifier
     }
 
     /**
-     * Make the request to the PACT broker to run the tests.
+     * Make the request to the PACT Verifier Service to run the tests.
+     * @param string $consumerName
+     * @param string $tag
+     * @return self
      */
-    public function verify()
+    public function verify(string $consumerName, string $tag): self
+    {
+        $uri = $this->config->getBrokerUri()
+            ->withPath("pacts/provider/{$this->config->getProviderName()}/consumer/{$consumerName}/latest/{$tag}")
+            ->__toString();
+
+        $arguments = array_merge([$uri], $this->getArguments());
+
+        $this->verifyAction($arguments);
+
+        return $this;
+    }
+
+    /**
+     * Verify all Pacts for the Provider are valid.
+     */
+    public function verifyAll()
+    {
+        $arguments = $this->brokerHttpService->getAllConsumerUrls($this->config->getProviderName(), $this->config->getProviderVersion());
+
+        $arguments = array_merge($arguments, $this->getArguments());
+
+        $this->verifyAction($arguments);
+    }
+
+    /**
+     * Execute the Pact Verifier Service.
+     * @param array $arguments
+     */
+    private function verifyAction(array $arguments)
     {
         $scripts = $this->installManager->install();
 
         $builder = new ProcessBuilder();
         $process = $builder
             ->setPrefix($scripts->getProviderVerifier())
-            ->setArguments($this->getParameters())
+            ->setArguments($arguments)
             ->getProcess()
             ->setTimeout(60)
             ->setIdleTimeout(10);

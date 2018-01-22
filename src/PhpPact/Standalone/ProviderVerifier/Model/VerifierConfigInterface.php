@@ -2,6 +2,8 @@
 
 namespace PhpPact\Standalone\ProviderVerifier\Model;
 
+use Psr\Http\Message\UriInterface;
+
 /**
  * Configuration to use with the verifier server.
  * Interface VerifierServerConfigInterface
@@ -9,16 +11,16 @@ namespace PhpPact\Standalone\ProviderVerifier\Model;
 interface VerifierConfigInterface
 {
     /**
-     * @return string Providers base url
+     * @return UriInterface Providers base url
      */
-    public function getProviderBaseUrl(): string;
+    public function getProviderBaseUrl(): UriInterface;
 
     /**
-     * @param string $providerBaseUrl providers base url
+     * @param UriInterface $providerBaseUrl providers base url
      *
      * @return VerifierConfigInterface
      */
-    public function setProviderBaseUrl(string $providerBaseUrl): self;
+    public function setProviderBaseUrl(UriInterface $providerBaseUrl): self;
 
     /**
      * @return null|string
@@ -67,6 +69,17 @@ interface VerifierConfigInterface
      * @return VerifierConfigInterface
      */
     public function setPublishResults(bool $publishResults): self;
+
+    /**
+     * @return UriInterface
+     */
+    public function getBrokerUri(): UriInterface;
+
+    /**
+     * @param UriInterface $brokerUri
+     * @return VerifierConfig
+     */
+    public function setBrokerUri(UriInterface $brokerUri): VerifierConfig;
 
     /**
      * @return null|string

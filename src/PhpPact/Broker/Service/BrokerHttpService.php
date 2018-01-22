@@ -47,6 +47,21 @@ class BrokerHttpService implements BrokerHttpServiceInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function tag(string $consumer, string $version, string $tag)
+    {
+        /** @var UriInterface $uri */
+        $uri = $this->baseUri->withPath("pacticipants/{$consumer}/versions/{$version}/tags/{$tag}");
+
+        $this->httpClient->put($uri, [
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ]
+        ]);
+    }
+
+    /**
      * @inheritDoc
      */
     public function getAllConsumerUrls(string $provider, string $version = 'latest'): array
