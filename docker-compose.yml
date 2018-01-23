@@ -1,23 +1,22 @@
-version: '3.2'
+version: '3'
+
 services:
   postgres:
-    container_name: postgres
     image: postgres
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: postgres
-  pact-broker:
-    container_name: pact-broker
+  broker_app:
     image: dius/pact-broker
     ports:
-      - 80:80
+      - "80:80"
     links:
       - postgres
     environment:
       PACT_BROKER_DATABASE_USERNAME: postgres
       PACT_BROKER_DATABASE_PASSWORD: password
-      PACT_BROKER_DATABASE_HOST: localhost
+      PACT_BROKER_DATABASE_HOST: postgres
       PACT_BROKER_DATABASE_NAME: postgres

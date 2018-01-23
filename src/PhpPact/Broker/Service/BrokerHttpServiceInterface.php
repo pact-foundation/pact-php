@@ -26,4 +26,25 @@ interface BrokerHttpServiceInterface
      * @param string $json    PACT File JSON
      */
     public function publishJson(string $version, string $json);
+
+    /**
+     * Tag a consumer version with a tag.
+     *
+     * @param string $consumer
+     * @param string $version
+     * @param string $tag
+     *
+     * @return mixed
+     */
+    public function tag(string $consumer, string $version, string $tag);
+
+    /**
+     * Get all Pact urls for the consumer.
+     *
+     * @param string $provider provider name
+     * @param string $version  version of the provider
+     *
+     * @return string[]
+     */
+    public function getAllConsumerUrls(string $provider, string $version = 'latest'): array;
 }

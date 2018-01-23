@@ -3,15 +3,11 @@
     "keywords": [
         "mattersight",
         "pact",
-        "pact-php",
-        "pact-php-native",
-        "php-mock"
+        "pact-php"
     ],
     "homepage": "https://github.com/Mattersight/php-pact",
     "description": "Enables consumer driven contract testing, following the PACT foundation principles.",
     "license": "MIT",
-    "prefer-stable": true,
-    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Mattermack",
@@ -27,21 +23,9 @@
             "php": "7.0"
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/mattermack/JsonPath"
-        }
-    ],
     "require": {
         "php": "^7.0",
         "ext-curl": "*",
-        "windwalker/http": "~3.0",
-        "apache/log4php": "^2.3",
-        "justinrainbow/json-schema": "5.2.1",
-        "lukascivil/treewalker": "dev-master",
-        "peekmo/jsonpath": "dev-feature_pathing_retention",
-        "zendframework/zend-xml2json": "^3.1",
         "symfony/process": "^3.0",
         "symfony/filesystem": "^3.0",
         "guzzlehttp/guzzle": "^6.3"
@@ -51,10 +35,6 @@
         "friendsofphp/php-cs-fixer": "^2.10",
         "mockery/mockery": "^1.0",
         "slim/slim": "^3.9"
-    },
-    "suggest": {
-        "ext-xml": "Needed to support XML format",
-        "ext-openssl": "Needed for SSL enabled Pact Broker"
     },
     "autoload": {
         "psr-4": {
@@ -71,10 +51,10 @@
         }
     },
     "scripts": {
-        "start-consumer": "php -S localhost:8080 -t example/src/Provider/public/",
+        "start-consumer": "php -S localhost:58000 -t example/src/Provider/public/",
         "test": [
             "php-cs-fixer fix --config .php_cs",
-            "phpunit --configuration=phpunit.xml --debug"
+            "phpunit --debug"
         ]
     }
 }

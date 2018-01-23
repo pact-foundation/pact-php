@@ -6,10 +6,10 @@ use GuzzleHttp\Psr7\Uri;
 use PhpPact\Broker\Service\BrokerHttpService;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Installer\InstallManager;
-use PhpPact\Standalone\MockServer\MockServer;
-use PhpPact\Standalone\MockServer\MockServerConfigInterface;
-use PhpPact\Standalone\MockServer\MockServerEnvConfig;
-use PhpPact\Standalone\MockServer\Service\MockServerHttpService;
+use PhpPact\Standalone\MockService\MockServer;
+use PhpPact\Standalone\MockService\MockServerConfigInterface;
+use PhpPact\Standalone\MockService\MockServerEnvConfig;
+use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestListener;
 use PHPUnit\Framework\TestListenerDefaultImplementation;
@@ -97,9 +97,13 @@ class PactTestListener implements TestListener
                 print 'PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.';
             } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_VERSION'))) {
                 print 'PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.';
+            } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_TAG'))) {
+                print 'PACT_CONSUMER_TAG environment variable was not set. Skipping PACT file upload.';
             } else {
                 $brokerHttpService = new BrokerHttpService(new GuzzleClient(), new Uri($pactBrokerUri));
                 $brokerHttpService->publishJson($json, $consumerVersion);
+                $brokerHttpService->tag($this->mockServerConfig->getConsumer(), $consumerVersion, \getenv('PACT_CONSUMER_TAG'));
+                print 'Pact file has been uploaded to the Broker successfully.';
             }
         }
     }

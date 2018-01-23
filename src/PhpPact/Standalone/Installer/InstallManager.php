@@ -100,6 +100,7 @@ class InstallManager
          */
         $installers = \array_reverse($this->installers);
         foreach ($installers as $installer) {
+            /** @var InstallerInterface $installer */
             if ($installer->isEligible()) {
                 return $installer;
             }

@@ -2,11 +2,12 @@
 
 namespace Provider;
 
-use GuzzleHttp\Client;
-use PhpPact\PactBrokerConnector;
-use PhpPact\PactUriOptions;
-use PhpPact\PactVerifier;
-use PhpPact\PactVerifierConfig;
+use GuzzleHttp\Psr7\Uri;
+use PhpPact\Broker\Service\BrokerHttpService;
+use PhpPact\Http\GuzzleClient;
+use PhpPact\Standalone\Installer\InstallManager;
+use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
+use PhpPact\Standalone\ProviderVerifier\Verifier;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
 
@@ -24,8 +25,9 @@ class PactVerifyTest extends TestCase
      */
     protected function setUp()
     {
-        $this->process = new Process('php -S localhost:8080 -t ../../src/Provider/public/');
+        $this->process = new Process('php -S localhost:58000 -t ../../src/Provider/public/');
         $this->process->start();
+        \sleep(1);
     }
 
     /**
@@ -39,25 +41,19 @@ class PactVerifyTest extends TestCase
     /**
      * This test will run after the web server is started.
      */
-    public function testPactVerify()
+    public function testPactVerifyConsumer()
     {
+        $config = new VerifierConfig();
+        $config
+            ->setProviderName('SomeProvider')
+            ->setProviderVersion('1.0.0')
+            ->setProviderBaseUrl(new Uri('http://localhost:58000'))
+            ->setBrokerUri(new Uri('http://localhost'))
+            ->setPublishResults(true);
+
         // Download the Pact File.
-        $uriOptions = new PactUriOptions('http://your-pact-broker');
-        $connector  = new PactBrokerConnector($uriOptions);
-        $pact       = $connector->retrievePact('MockApiProvider', 'MockApiConsumer', 'latest');
-
-        // Verify that the PACTs are successful against your API.
-        $httpClient = new Client();
-        $config     = new PactVerifierConfig();
-        $config->setBaseUri('http://localhost:8080');
-        $pactVerifier = new PactVerifier($config);
-
-        $pactVerifier
-            ->providerState('A GET request to get types')
-            ->serviceProvider('MockApiProvider', $httpClient)
-            ->honoursPactWith('MockApiConsumer')
-            ->pactUri($pact)
-            ->verify();
+        $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()), new InstallManager());
+        $verifier->verify('SomeConsumer', 'standalone-provider');
 
         // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
         $this->assertTrue(true, 'Pact Verification has failed.');

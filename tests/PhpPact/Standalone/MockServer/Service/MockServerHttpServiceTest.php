@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Standalone\MockServer\Service;
+namespace PhpPact\Standalone\MockService\Service;
 
 use GuzzleHttp\Exception\ServerException;
 use PhpPact\Consumer\Model\ConsumerRequest;
@@ -8,9 +8,9 @@ use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Installer\InstallManager;
-use PhpPact\Standalone\MockServer\MockServer;
-use PhpPact\Standalone\MockServer\MockServerConfigInterface;
-use PhpPact\Standalone\MockServer\MockServerEnvConfig;
+use PhpPact\Standalone\MockService\MockServer;
+use PhpPact\Standalone\MockService\MockServerConfigInterface;
+use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PHPUnit\Framework\TestCase;
 
 class MockServerHttpServiceTest extends TestCase
