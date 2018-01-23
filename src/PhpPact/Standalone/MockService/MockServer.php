@@ -49,13 +49,18 @@ class MockServer
     {
         $scripts = $this->installManager->install();
 
-        $builder       = new ProcessBuilder();
-        $this->process = $builder
-            ->setPrefix($scripts->getMockService())
-            ->setArguments($this->buildParameters())
-            ->getProcess()
+        $this->process = new Process(array_merge([$scripts->getMockService()], $this->buildParameters()));
+        $this->process
             ->setTimeout(600)
             ->setIdleTimeout(60);
+
+//        $builder       = new ProcessBuilder();
+//        $this->process = $builder
+//            ->setPrefix($scripts->getMockService())
+//            ->setArguments($this->buildParameters())
+//            ->getProcess()
+//            ->setTimeout(600)
+//            ->setIdleTimeout(60);
 
         $this->process->start(function ($type, $buffer) {
             if (Process::ERR === $type) {
