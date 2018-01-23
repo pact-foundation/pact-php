@@ -1,518 +1,216 @@
 # Pact PHP
 
-[![Build status](https://ci.appveyor.com/api/projects/status/o18awsc0chcw184d/branch/master?svg=true)](https://ci.appveyor.com/project/mattermack/pact-php/branch/master)
+[![AppVeyor](https://img.shields.io/appveyor/ci/mattermack/pact-php.svg?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/mattermack/pact-php/branch/master)
+[![Travis](https://img.shields.io/travis/pact-foundation/pact-php.svg?style=flat-square&logo=travis)](https://travis-ci.org/pact-foundation/pact-php)
+[![Packagist](https://img.shields.io/packagist/v/mattersight/phppact.svg?style=flat-square&label=stable)](https://packagist.org/packages/mattersight/phppact)
+[![Packagist Pre Release](https://img.shields.io/packagist/vpre/mattersight/phppact.svg?style=flat-square&label=unstable)](https://packagist.org/packages/mattersight/phppact)
 
-![Pact-PHP](https://raw.githubusercontent.com/pact-foundation/pact-php/master/pact-php.png)
+[![Downloads](https://img.shields.io/packagist/dt/mattersight/phppact.svg?style=flat-square)](https://packagist.org/packages/mattersight/phppact)
+[![Downloads This Month](https://img.shields.io/packagist/dm/mattersight/phppact.svg?style=flat-square)](https://packagist.org/packages/mattersight/phppact)
+[![Downloads Today](https://img.shields.io/packagist/dd/mattersight/phppact.svg?style=flat-square)](https://packagist.org/packages/mattersight/phppact)
 
-PHP version of Pact. Enables consumer driven contract testing, providing a mock service and DSL for the consumer project, and interaction playback and verification for the service provider project.
+PHP version of [Pact](https://pact.io). Enables consumer driven contract testing. Please read the [Pact.io](https://pact.io) for specific information about PACT.
 
-This is a project to provide Pact functionality completely in PHP. This started as a straight port of 
-[Pact.Net](https://github.com/pact-foundation/pact-net) on the 1.1 specification. Overtime, the project
-adjusted to a more PHP way of doing things.  This project now supports the 2.0 pact specification and
-associated tests.
+## Installation
 
-The project is now evolving into a wrapper around the [Ruby Pact Standalone](https://github.com/pact-foundation/pact-ruby-standalone) project. The consumer Mock Server is complete.
+Install the latest version with:
 
-### Pre-requisites
-For Pact-PHP 2.0, there is a need to run min-stability dev and pull from a feature addition to [Peekmo/jsonpath](https://github.com/Peekmo/JsonPath), you will need to use the following composer.json
-```json
-{
-	"prefer-stable": true,
-	"minimum-stability": "dev",
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/mattermack/JsonPath"
-		}
-	]
-}
+```bash
+$ composer require mattersight/phppact --dev
 ```
 
-## Install with Composer
-`composer require mattersight/phppact --dev`
+## Basic Consumer Usage
 
-## Pull Requests
-This project is actively taking pull requests and appreciate the contribution.   The code needs to pass the CI validation 
-which can be found at [AppVeyor](https://ci.appveyor.com/project/mattermack/pact-php)
+All of the following code will be used exclusively for the Consumer.
 
-A code fixer will run prior to running unit tests in CI. Please run `composer test` before making a PR to verify that it is working.
+### 1. Configure PHPUnit to start the Mock Service
 
-## Service Consumer
+This library contains a wrapper for the [Ruby Standalone Mock Service](https://github.com/pact-foundation/pact-mock_service).
 
-#### 1. Add Pact Listener to PHPUnit Configuration
+The easiest way to configure this is to use a [PHPUnit Listener](https://phpunit.de/manual/current/en/appendixes.configuration.html#appendixes.configuration.test-listeners). A default listener is included in this project, see [PactTestListener.php](/src/PhpPact/Consumer/Listener/PactTestListener.php). This utilizes environmental variables for configurations. These env variables can either be added to the system or to the phpunit.xml configuration file. Here is an example [phpunit.xml](/example/phpunit.consumer.xml) file configured to use the default. Keep in mind that both the test suite and the arguments array must be the same value.
 
-The default PACT listener requires that you use environment variables to set up the mock server configuration. You can extend or implement another listener if need be.
-
-The listener accomplishes a few necessary functions. It starts the mock server, it publishes the results for you, and it stops the mock server after the test suite is complete.
-
-For this to function properly, you need to create a Test Suite, add a listener section, with an argument of the Test Suite name, and the necessary environment variables.
-
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="../vendor/autoload.php">
-   <testsuites>
-       <testsuite name="PhpPact Example Tests">
-           <directory>./tests/Consumer</directory>
-       </testsuite>
-   </testsuites>
-   <listeners>
-       <listener class="PhpPact\Consumer\Listener\PactTestListener">
-           <arguments>
-               <array>
-                   <element>
-                       <string>PhpPact Example Tests</string>
-                   </element>
-               </array>
-           </arguments>
-       </listener>
-   </listeners>
-   <php>
-       <env name="PACT_MOCK_SERVER_HOST" value="localhost"/>
-       <env name="PACT_MOCK_SERVER_PORT" value="7200"/>
-       <env name="PACT_CONSUMER_NAME" value="someConsumer"/>
-       <env name="PACT_CONSUMER_VERSION" value="1.0.0"/>
-       <env name="PACT_PROVIDER_NAME" value="someProvider"/>
-       <env name="PACT_BROKER_URI" value="http://localhost"/>
-   </php>
-</phpunit>
-```
-
-Here is the included listener.
+##### How To Start and Stop the Service
 
 ```php
 <?php
+    use PhpPact\Standalone\MockService\MockServer;
+    use PhpPact\Standalone\MockService\MockServerConfig;
 
-namespace PhpPact\Consumer\Listener;
-
-use GuzzleHttp\Psr7\Uri;
-use PhpPact\Broker\Service\BrokerHttpService;
-use PhpPact\Http\GuzzleClient;
-use PhpPact\Standalone\Installer\InstallManager;
-use PhpPact\Standalone\MockServer\MockServer;
-use PhpPact\Standalone\MockServer\MockServerConfigInterface;
-use PhpPact\Standalone\MockServer\MockServerEnvConfig;
-use PhpPact\Standalone\MockServer\Service\MockServerHttpService;
-use PHPUnit\Framework\Test;
-use PHPUnit\Framework\TestListener;
-use PHPUnit\Framework\TestListenerDefaultImplementation;
-use PHPUnit\Framework\TestSuite;
-
-/**
- * PACT listener that can be used with environment variables and easily attached to PHPUnit configuration.
- * Class PactTestListener
- */
-class PactTestListener implements TestListener
-{
-    use TestListenerDefaultImplementation;
-
-    /** @var MockServer */
-    private $server;
-
-    /**
-     * Name of the test suite configured in your phpunit config.
-     *
-     * @var string
-     */
-    private $testSuiteNames;
-
-    /** @var MockServerConfigInterface */
-    private $mockServerConfig;
-
-    /** @var bool */
-    private $failed;
-
-    /**
-     * PactTestListener constructor.
-     *
-     * @param string[] $testSuiteNames test suite names that need evaluated with the listener
-     */
-    public function __construct(array $testSuiteNames)
-    {
-        $this->testSuiteNames   = $testSuiteNames;
-        $this->mockServerConfig = new MockServerEnvConfig();
-    }
-
-    /**
-     * @param TestSuite $suite
-     */
-    public function startTestSuite(TestSuite $suite)
-    {
-        if (\in_array($suite->getName(), $this->testSuiteNames)) {
-            $this->server = new MockServer($this->mockServerConfig, new InstallManager());
-            $this->server->start();
-        }
-    }
-
-    /**
-     * Mark the test suite as a failure so that the PACT file does not get pushed to the broker.
-     * @param Test $test
-     * @param float $time
-     */
-    public function endTest(Test $test, $time)
-    {
-        if ($test->hasFailed() === true) {
-            $this->failed = true;
-        }
-    }
-
-    /**
-     * Publish JSON results to PACT Broker and stop the Mock Server.
-     *
-     * @param TestSuite $suite
-     */
-    public function endTestSuite(TestSuite $suite)
-    {
-        if (\in_array($suite->getName(), $this->testSuiteNames)) {
-            try {
-                $httpService = new MockServerHttpService(new GuzzleClient(), $this->mockServerConfig);
-                $httpService->verifyInteractions();
-
-                $json = $httpService->getPactJson();
-            } finally {
-                $this->server->stop();
-            }
-
-            if ($this->failed === true) {
-                print "A unit test has failed. Skipping PACT file upload.";
-            } elseif (!($pactBrokerUri = \getenv('PACT_BROKER_URI'))) {
-                print "PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.";
-            } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_VERSION'))) {
-                print "PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.";
-            } else {
-                $brokerHttpService = new BrokerHttpService(new GuzzleClient(), new Uri($pactBrokerUri));
-                $brokerHttpService->publishJson($json, $consumerVersion);
-            }
-        }
-    }
-}
-```
+    // Create your basic configuration. The host and port will need to match
+    // whatever your Http Service will be using to access the providers data.
+    $config = new MockServerConfig('localhost', 7200, 'SomeConsumer', 'SomeProvider');
     
-### 2. Write your tests
-Create a new test case within your service consumer test project, using whatever test framework you like (in this case we used phpUnit). 
-Then implement your tests.
+    // Instantiate the mock server object with the config. This can be any
+    // instance of MockServerConfigInterface.
+    $server = new MockServer($this->mockServerConfig);
+    
+    // Create the process.
+    $server->start();
+    
+    // Stop the process
+    $server->stop();
+```
+
+### 2. Create Your Unit Tests
+
+[Click here](/example/tests/Consumer/Service/ConsumerServiceHelloTest.php) to see the full sample file.
+
+##### 1. Create a phpunit test class
 
 ```php
 <?php
 
 namespace Consumer\Service;
 
-use PhpPact\Consumer\InteractionBuilder;
-use PhpPact\Consumer\Matcher\RegexMatcher;
-use PhpPact\Consumer\Model\ConsumerRequest;
-use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Standalone\MockServer\MockServerEnvConfig;
 use PHPUnit\Framework\TestCase;
 
-class ConsumerServiceHelloTest extends TestCase
-{
-    /**
-     * Example PACT test.
-     */
-    public function testGetHelloString()
-    {
-        // Create your expected request from the consumer.
-        $request = new ConsumerRequest();
-        $request
-            ->setMethod('GET')
-            ->setPath('/hello/Bob')
-            ->addHeader('Content-Type', 'application/json');
-
-        // Create your expected response from the provider.
-        $response = new ProviderResponse();
-        $response
-            ->setStatus(200)
-            ->addHeader('Content-Type', 'application/json')
-            ->setBody([
-                'message' => new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]') // Use matches directly in the body. These will get parsed into JSON automatically before being sent to the PACT Broker.
-            ]);
-
-        // Create a configuration that reflects the server that was started. You can create a custom MockServerConfigInterface if needed.
-        $config      = new MockServerEnvConfig();
-        $mockService = new InteractionBuilder($config);
-        $mockService
-            ->given('Get Hello')
-            ->uponReceiving('A get request to /hello/{name}')
-            ->with($request)
-            ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
-
-        $service = new HttpService($config->getBaseUri()); // Pass in the URL to the Mock Server.
-        $result  = $service->getHelloString('Bob'); // Make the real API request against the Mock Server.
-
-        $this->assertEquals('Hello, Bob', $result); // Make your assertions.
-    }
-}
+class ConsumerServiceTest extends TestCase { }
 ```
-   
-Right now there are 2 Available Matches. These matches can be used directly in the setBody function.
+
+##### 2. Create your test function
+
+```php
+public function testGetHelloString() { }
+```
+
+##### 3. Set up mock request
+
+This will define what the expected request coming from your http service will look like.
+
+```php
+$request = new ConsumerRequest();
+$request
+    ->setMethod('GET')
+    ->setPath('/hello/Bob')
+    ->addHeader('Content-Type', 'application/json');
+```
+
+You can also create a body just like you will see in the provider example.
+
+##### 4. Set up mock response
+
+This will define what the response from the provider should look like.
+
+```php
+$response = new ProviderResponse();
+$response
+    ->setStatus(200)
+    ->addHeader('Content-Type', 'application/json;charset=utf-8')
+    ->setBody([
+        'message' => new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
+    ]);
+```
+
+In this example, we are using matchers. This allows us to add flexible rules when matching the expectation with the actual value. In the example, you will see Regex is used to validate that the response is valid.
 
 Matcher | Explanation | Parameters | Example
 ---|---|---|---
 PhpPact\Consumer\Matcher\RegexMatcher | Match a value against a regex pattern. | Value, Regex Pattern | new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
 PhpPact\Consumer\Matcher\TypeMatcher | Match a value against its data type. | Value, Min (Optional), Max (Optional) | new TypeMatcher(12, 0, 100)
 
-### 3. Run the test
-Everything should be green and your PACT file should be published to the broker as expected.
+##### 5. Build the interaction
 
-## Service Provider
+Now that we have the request and response, we need to build the interaction and ship it over to the mock server.
 
-### 1. Build API
-Get an instance of the API up and running. You can use the built in PHP server to accomplish this. The Symfony Process library can be used to run the process asynchronous.
+```php
+// Create a configuration that reflects the server that was started. You can 
+// create a custom MockServerConfigInterface if needed. This configuration
+// is the same that is used via the PactTestListener and uses environment variables.
+$config      = new MockServerEnvConfig();
+$mockService = new InteractionBuilder($config);
+$mockService
+    ->given('Get Hello')
+    ->uponReceiving('A get request to /hello/{name}')
+    ->with($request)
+    ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
+```
+
+##### 6. Make the request
+
+```php
+$service = new HttpService($config->getBaseUri()); // Pass in the URL to the Mock Server.
+$result  = $service->getHelloString('Bob'); // Make the real API request against the Mock Server.
+```
+
+##### 7. Make assertions
+
+```php
+$this->assertEquals('Hello, Bob', $result); // Make your assertions.
+```
+
+## Basic Provider Usage
+
+All of the following code will be used exclusively for Providers. This will run the Pacts against the real Provider and either verify or fail validation on the Pact Broker.
+
+There are two ways to handle verifications.
+
+1. Create a test for each Consumer of this Provider.
+2. Create a test and run all tests for this Provider.
+
+Option 1 is the most likely use case but we can start with option 2.
+
+### Example of Running One Consumer at a Time
+
+##### 1. Create a PHPUnit test per Consumer
+
+##### 2. Spin up a copy of your API
+
+Get an instance of the API up and running. [Click here](#starting-your-api) for some tips.
+
+##### 3. Create your test
+
+```php
+$config = new VerifierConfig();
+$config
+    ->setProviderName('SomeProvider') // Providers name to fetch.
+    ->setProviderVersion('1.0.0') // Providers version.
+    ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
+    ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
+    ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
+
+// Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
+$verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()));
+$verifier->verify('SomeConsumer', 'master');
+
+// This will not be reached if the PACT verifier throws an error, otherwise it was successful.
+$this->assertTrue(true, 'Pact Verification has failed.');
+```
+
+### Example of Running All Consumers at Once
+
+##### 1. Create a single PHPUnit TestCase
+
+##### 2. Spin up a copy of your API
+
+Get an instance of the API up and running. [Click here](#starting-your-api-asyncronously) for some tips.
+
+##### 3. Create your test
+```php
+public function testPactVerifyAll()
+{
+    $config = new VerifierConfig();
+    $config
+        ->setProviderName('SomeProvider') // Providers name to fetch.
+        ->setProviderVersion('1.0.0') // Providers version.
+        ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
+        ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
+        ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
+
+    // Verify that all consumers of 'SomeProvider' are valid.
+    $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()), new InstallManager());
+    $verifier->verifyAll();
+
+    // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
+    $this->assertTrue(true, 'Pact Verification has failed.');
+}
+```
+
+## Tips
+
+### Starting your API Asyncronously
+
+You can use the built in PHP server to accomplish this during your tests setUp function. The Symfony Process library can be used to run the process asynchronous.
 
 [PHP Server](http://php.net/manual/en/features.commandline.webserver.php)
 
 [Symfony Process](https://symfony.com/doc/current/components/process.html)
-
-Here is an example:
-
-```php
-<?php
-
-namespace Provider;
-
-use GuzzleHttp\Client;
-use PhpPact\PactBrokerConnector;
-use PhpPact\PactUriOptions;
-use PhpPact\PactVerifier;
-use PhpPact\PactVerifierConfig;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Process\Process;
-
-/**
- * This is an example on how you could use the Symfony Process library to start your API to run PACT verification against a Provider.
- * Class PactVerifyTest
- */
-class PactVerifyTest extends TestCase
-{
-    /** @var Process */
-    private $process;
-
-    /**
-     * Run the PHP build-in web server.
-     */
-    protected function setUp()
-    {
-        $this->process = new Process('php -S localhost:8080 -t ../../src/Provider/public/');
-        $this->process->start();
-    }
-
-    /**
-     * Stop the web server process once complete.
-     */
-    protected function tearDown()
-    {
-        $this->process->stop();
-    }
-
-    /**
-     * This test will run after the web server is started.
-     */
-    public function testPactVerify()
-    {
-        // Download the Pact File.
-        $uriOptions = new PactUriOptions('http://your-pact-broker');
-        $connector  = new PactBrokerConnector($uriOptions);
-        $pact       = $connector->retrievePact('MockApiProvider', 'MockApiConsumer', 'latest');
-
-        // Verify that the PACTs are successful against your API.
-        $httpClient = new Client();
-        $config     = new PactVerifierConfig();
-        $config->setBaseUri('http://localhost:8080');
-        $pactVerifier = new PactVerifier($config);
-
-        $pactVerifier
-            ->providerState('A GET request to get types')
-            ->serviceProvider('MockApiProvider', $httpClient)
-            ->honoursPactWith('MockApiConsumer')
-            ->pactUri($pact)
-            ->verify();
-
-        // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
-        $this->assertTrue(true, 'Pact Verification has failed.');
-    }
-}
-
-```
-
-### 2. Configure PHP unit
-Bootstrap PHPUnit with appropriate composer and autoloaders.   Optionally, add a bootstrap api from the *Build API* section.   
-
-### 3. Tell the provider it needs to honor the pact
-```php
-<?php
-
-// Pick your PSR client.  Guzzle should work as well.
-$httpClient = new \Windwalker\Http\HttpClient();
-
-$pactVerifier
-    ->providerState("A GET request to get types")
-    ->serviceProvider("MockApiProvider", $httpClient)
-    ->honoursPactWith("MockApiConsumer")
-    ->pactUri('../pact/mockapiconsumer-mockapiprovider.json')
-    ->verify();
-```
-
-### 4. Run the test
-Everything should be green and the pact file should be published to the broker.
-
-## Examples
-### Provider setUp and tearDown
-The setUp and tearDown on a per Provider test basis needs to use closures
-
-```php
-<?php
-
-require_once( __DIR__ . '/MockApiConsumer.php');
-
-use PHPUnit\Framework\TestCase;
-
-class ProviderTest extends TestCase
-{
-    public function testPactProviderStateSetupTearDown() 
-    {
-        
-        $httpClient = new \Windwalker\Http\HttpClient();
-        
-        // whatever your URL of choice is
-        $uri = WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
-
-        $pactVerifier = new \PhpPact\PactVerifier($uri);
-
-        $setUpFunction = function() {
-            $fileName = "mock.json";
-            $currentDir = dirname(__FILE__);
-            $absolutePath = realpath($currentDir . '/../site/' );
-            $absolutePath .= '/' . $fileName;
-
-            $type = new \stdClass();
-            $type->id = 700;
-            $type->name = "mock";
-            $types = array( $type );
-            $body = new \stdClass();
-
-            $body->types = $types;
-
-            $output = \json_encode($body, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-
-            file_put_contents($absolutePath, $output);
-        };
-
-        $tearDownFunction = function() {
-            $fileName = "mock.json";
-            $currentDir = dirname(__FILE__);
-            $absolutePath = realpath($currentDir . '/../site/' );
-            $absolutePath .= '/' . $fileName;
-
-            unlink($absolutePath);
-        };
-
-        // wherever your PACT file is
-        // you may want to leverage PactBrokerConnector to pull this
-        $json = 'mockapiconsumer-mockapiprovider.json';
-
-        $pactVerifier->providerState("A GET request for a setup", $setUpFunction, $tearDownFunction)
-            ->serviceProvider("MockApiProvider", $httpClient)
-            ->honoursPactWith("MockApiConsumer")
-            ->pactUri($json)
-            ->verify(); // note that this should test all as we can run setup and tear down
-            
-        
-        
-    }         
-}
-```
-
-### Provider Test Filtering
-If you want to filter down the interaction you want to test, pass in options to `verify()`.  Try the below.
-
-```php
-<?php
-
-// declare your state
-$testState = "There is something to POST to";
-
-// Pick your PSR client.  Guzzle should work as well.
-$httpClient = new \Windwalker\Http\HttpClient();
-
-$pactVerifier->providerState("Test State")
-    ->serviceProvider("MockApiProvider", $httpClient)
-    ->honoursPactWith("MockApiConsumer")
-    ->pactUri($json)
-    ->verify(null, $testState);
-  
-```
-
-## Pact Broker Integration
-To integrate with your pact broker host, there are several options. This section focuses on the `PactBrokerConnector`.  To be fair, the pact broker authentication is currently untested but mirrors the implementation in pact-js.
- 
-### Publishing Pacts
-The PACT file should be sent automatically using the PactTestListener.
-
-Here is an example of publishing manually.
-
-   ```php
-    <?php
-    
-    use GuzzleHttp\Psr7\Uri;
-    use PhpPact\Broker\Service\BrokerHttpService;
-    use PhpPact\Http\GuzzleClient;
-    
-    require_once __DIR__ . '/../../../vendor/autoload.php';
-    
-    $httpService = new BrokerHttpService(new GuzzleClient(), new Uri('http://localhost:80/'));
-    
-    $json = json_encode([
-        "consumer" => "someConsumer",
-        "provider" => "someProvider"
-    ]);
-    
-    $httpService->publishJson($json, '1.0.0');
-   ```
-
-### Retrieving Pacts
-If you have an open pact broker, `$pactVerifier->PactUri` uses `file_get_contents` which accepts a URL.  You could simply use this technique in those cases.
-
-To do some more robust interactions, There are several hopefully self explanatory functions in `PactBrokerConnector`:
-
-- retrieveLatestProviderPacts - retrieve all the latest pacts associated with this provider
-- retrievePact - retrieve particular pact
-
-```php
-<?php
-
-// create your options
-$uriOptions = new \PhpPact\PactUriOptions("http://your-pact-broker" );
-$connector = new \PhpPact\PactBrokerConnector($uriOptions);
-
-// particular version
-$pact = $connector->retrievePact("MockApiProvider", "MockApiConsumer", "1.0.2");
-error_log(\json_encode($pact,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-
-// get all pacts for this provider
-$pacts = $connector->retrieveLatestProviderPacts("MockApiProvider");
-$pact = array_pop($pacts);
-error_log(\json_encode($pact,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-
-```
-
-### Publishing verification results to Broker
-If the Provider is PHP, a simple wrapper exists in the connector to publish the verification back to the broker. 
-The complexities lies in passing the build version and build url among other things.   Your CI tools should be able to provider this data.
-
-```php
-<?php
-
-$uriOptions = new \PhpPact\PactUriOptions("http://your-pact-broker" );
-$connector = new \PhpPact\PactBrokerConnector($uriOptions);
-$connector->verify(true, "http://your-ci-builder/api/pact-example-api/job/master/42/", "MockProvider", '0.0.42', 'MockConsumer', 'latest');
-```
-
-## Project Tests
-To run the projects tests run `composer test`.
-
-## Related Projects
-- [Pact.Net](https://github.com/SEEK-Jobs/pact-net)
-- [Pact-PHP](https://github.com/andykelk/pact-php)
-    - Non-native implementation  
-- [Pact-Mock-Service](https://github.com/pact-foundation/pact-mock_service)
-    - Nice Ruby layer 

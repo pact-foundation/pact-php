@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\ConnectException;
 use PhpPact\Consumer\Exception\HealthCheckFailedException;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Installer\InstallManager;
+use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -30,10 +31,10 @@ class MockServer
     /** @var Filesystem */
     private $fileSystem;
 
-    public function __construct(MockServerConfigInterface $config, InstallManager $installManager)
+    public function __construct(MockServerConfigInterface $config)
     {
         $this->config         = $config;
-        $this->installManager = $installManager;
+        $this->installManager = new InstallManager();
         $this->fileSystem     = new Filesystem();
     }
 
@@ -82,6 +83,20 @@ class MockServer
         print "Process exited with code {$exitCode}\n";
 
         return true;
+    }
+
+    /**
+     * Wrapper to add a custom installer.
+     *
+     * @param InstallerInterface $installer
+     *
+     * @return self
+     */
+    public function registerInstaller(InstallerInterface $installer): self
+    {
+        $this->installManager->registerInstaller($installer);
+
+        return $this;
     }
 
     /**

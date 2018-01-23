@@ -5,7 +5,6 @@ namespace PhpPact\Consumer\Listener;
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Broker\Service\BrokerHttpService;
 use PhpPact\Http\GuzzleClient;
-use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\MockService\MockServer;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
@@ -56,7 +55,7 @@ class PactTestListener implements TestListener
     public function startTestSuite(TestSuite $suite)
     {
         if (\in_array($suite->getName(), $this->testSuiteNames)) {
-            $this->server = new MockServer($this->mockServerConfig, new InstallManager());
+            $this->server = new MockServer($this->mockServerConfig);
             $this->server->start();
         }
     }

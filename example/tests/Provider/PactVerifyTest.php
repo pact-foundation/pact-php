@@ -45,15 +45,15 @@ class PactVerifyTest extends TestCase
     {
         $config = new VerifierConfig();
         $config
-            ->setProviderName('SomeProvider')
-            ->setProviderVersion('1.0.0')
-            ->setProviderBaseUrl(new Uri('http://localhost:58000'))
-            ->setBrokerUri(new Uri('http://localhost'))
-            ->setPublishResults(true);
+            ->setProviderName('SomeProvider') // Providers name to fetch.
+            ->setProviderVersion('1.0.0') // Providers version.
+            ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
+            ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
+            ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
 
-        // Download the Pact File.
-        $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()), new InstallManager());
-        $verifier->verify('SomeConsumer', 'standalone-provider');
+        // Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
+        $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()));
+        $verifier->verify('SomeConsumer', 'master');
 
         // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
         $this->assertTrue(true, 'Pact Verification has failed.');

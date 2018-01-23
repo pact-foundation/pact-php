@@ -4,6 +4,7 @@ namespace PhpPact\Standalone\ProviderVerifier;
 
 use PhpPact\Broker\Service\BrokerHttpServiceInterface;
 use PhpPact\Standalone\Installer\InstallManager;
+use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
@@ -23,11 +24,11 @@ class Verifier
     /** @var InstallManager */
     private $installManager;
 
-    public function __construct(VerifierConfigInterface $config, BrokerHttpServiceInterface $brokerHttpService, InstallManager $installManager)
+    public function __construct(VerifierConfigInterface $config, BrokerHttpServiceInterface $brokerHttpService)
     {
         $this->config            = $config;
         $this->brokerHttpService = $brokerHttpService;
-        $this->installManager    = $installManager;
+        $this->installManager    = new InstallManager();
     }
 
     /**
@@ -104,6 +105,20 @@ class Verifier
         $arguments = \array_merge($arguments, $this->getArguments());
 
         $this->verifyAction($arguments);
+    }
+
+    /**
+     * Wrapper to add a custom installer.
+     *
+     * @param InstallerInterface $installer
+     *
+     * @return self
+     */
+    public function registerInstaller(InstallerInterface $installer): self
+    {
+        $this->installManager->registerInstaller($installer);
+
+        return $this;
     }
 
     /**
