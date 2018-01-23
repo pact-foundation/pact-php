@@ -75,8 +75,10 @@ class Verifier
 
     /**
      * Make the request to the PACT Verifier Service to run the tests.
+     *
      * @param string $consumerName
      * @param string $tag
+     *
      * @return self
      */
     public function verify(string $consumerName, string $tag): self
@@ -85,7 +87,7 @@ class Verifier
             ->withPath("pacts/provider/{$this->config->getProviderName()}/consumer/{$consumerName}/latest/{$tag}")
             ->__toString();
 
-        $arguments = array_merge([$uri], $this->getArguments());
+        $arguments = \array_merge([$uri], $this->getArguments());
 
         $this->verifyAction($arguments);
 
@@ -99,13 +101,14 @@ class Verifier
     {
         $arguments = $this->brokerHttpService->getAllConsumerUrls($this->config->getProviderName(), $this->config->getProviderVersion());
 
-        $arguments = array_merge($arguments, $this->getArguments());
+        $arguments = \array_merge($arguments, $this->getArguments());
 
         $this->verifyAction($arguments);
     }
 
     /**
      * Execute the Pact Verifier Service.
+     *
      * @param array $arguments
      */
     private function verifyAction(array $arguments)

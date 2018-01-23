@@ -2,6 +2,7 @@
 
 namespace PhpPact\Standalone\ProviderVerifier;
 
+use GuzzleHttp\Psr7\Uri;
 use Mockery;
 use PhpPact\Broker\Service\BrokerHttpServiceInterface;
 use PhpPact\Standalone\Installer\InstallManager;
@@ -10,30 +11,36 @@ use PHPUnit\Framework\TestCase;
 
 class VerifierTest extends TestCase
 {
-    public function testBuildParametersNoOptionals()
+    public function testGetArguments()
     {
         $config = new VerifierConfig();
         $config
             ->setProviderName('SomeProvider')
             ->setProviderVersion('1.0.0')
-            ->setProviderBaseUrl('http://myprovider:1234');
+            ->setProviderBaseUrl(new Uri('http://myprovider:1234'))
+            ->setProviderStatesSetupUrl(new Uri('http://someurl:1234'))
+            ->setPublishResults(true)
+            ->setBrokerUsername('someusername')
+            ->setBrokerPassword('somepassword')
+            ->addCustomProviderHeader('key1', 'value1')
+            ->addCustomProviderHeader('key2', 'value2')
+            ->setVerbose(true)
+            ->setFormat('someformat');
 
         $brokerHttpService = Mockery::mock(BrokerHttpServiceInterface::class);
-        $brokerHttpService
-            ->shouldReceive('getAllConsumerUrls')
-            ->once()
-            ->with('SomeProvider', '1.0.0')
-            ->andReturn([
-                'http://something:1234/something',
-                'http://example.com/stuff'
-            ]);
 
         /** @var BrokerHttpServiceInterface $brokerHttpService */
         $server     = new Verifier($config, $brokerHttpService, new InstallManager());
-        $parameters = $server->getParameters();
+        $arguments  = $server->getArguments();
 
-        $this->assertTrue(\in_array('http://something:1234/something', $parameters));
-        $this->assertTrue(\in_array('http://example.com/stuff', $parameters));
-        $this->assertTrue(\in_array('--provider-base-url=http://myprovider:1234', $parameters));
+        $this->assertTrue(\in_array('--provider-base-url=http://myprovider:1234', $arguments));
+        $this->assertTrue(\in_array('--provider-states-setup-url=http://someurl:1234', $arguments));
+        $this->assertTrue(\in_array('--publish-verification-results', $arguments));
+        $this->assertTrue(\in_array('--broker-username=someusername', $arguments));
+        $this->assertTrue(\in_array('--broker-password=somepassword', $arguments));
+        $this->assertTrue(\in_array('--custom-provider-header=key1: value1', $arguments));
+        $this->assertTrue(\in_array('--custom-provider-header=key2: value2', $arguments));
+        $this->assertTrue(\in_array('--verbose', $arguments));
+        $this->assertTrue(\in_array('--format=someformat', $arguments));
     }
 }

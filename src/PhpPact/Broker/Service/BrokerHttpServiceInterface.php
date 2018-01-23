@@ -33,6 +33,7 @@ interface BrokerHttpServiceInterface
      * @param string $consumer
      * @param string $version
      * @param string $tag
+     *
      * @return mixed
      */
     public function tag(string $consumer, string $version, string $tag);

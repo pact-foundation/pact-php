@@ -149,11 +149,13 @@ class VerifierConfig implements VerifierConfigInterface
 
     /**
      * @param UriInterface $brokerUri
+     *
      * @return VerifierConfig
      */
-    public function setBrokerUri(UriInterface $brokerUri): VerifierConfig
+    public function setBrokerUri(UriInterface $brokerUri): self
     {
         $this->brokerUri = $brokerUri;
+
         return $this;
     }
 

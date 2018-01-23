@@ -27,7 +27,7 @@ class PactVerifyTest extends TestCase
     {
         $this->process = new Process('php -S localhost:58000 -t ../../src/Provider/public/');
         $this->process->start();
-        sleep(5);
+        \sleep(1);
     }
 
     /**

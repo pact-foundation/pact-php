@@ -77,6 +77,7 @@ interface VerifierConfigInterface
 
     /**
      * @param UriInterface $brokerUri
+     *
      * @return VerifierConfig
      */
     public function setBrokerUri(UriInterface $brokerUri): VerifierConfig;
