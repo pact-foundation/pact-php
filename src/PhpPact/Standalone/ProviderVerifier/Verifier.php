@@ -10,7 +10,7 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
 /**
- * Verify
+ * Wrapper for the Ruby Standalone Verifier service.
  * Class VerifierServer
  */
 class Verifier

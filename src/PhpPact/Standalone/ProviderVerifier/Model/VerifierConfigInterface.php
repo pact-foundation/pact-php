@@ -11,7 +11,7 @@ use Psr\Http\Message\UriInterface;
 interface VerifierConfigInterface
 {
     /**
-     * @return UriInterface Providers base url
+     * @return UriInterface providers base url
      */
     public function getProviderBaseUrl(): UriInterface;
 
@@ -23,12 +23,12 @@ interface VerifierConfigInterface
     public function setProviderBaseUrl(UriInterface $providerBaseUrl): self;
 
     /**
-     * @return null|string
+     * @return null|string Base URL to setup the provider states at
      */
     public function getProviderStatesSetupUrl();
 
     /**
-     * @param string $providerStatesSetupUrl
+     * @param string $providerStatesSetupUrl Base URL to setup the provider states at
      *
      * @return VerifierConfigInterface
      */
@@ -47,72 +47,72 @@ interface VerifierConfigInterface
     public function setProviderName(string $name): self;
 
     /**
-     * @return string
+     * @return string providers version
      */
     public function getProviderVersion(): string;
 
     /**
-     * @param string $providerAppVersion
+     * @param string $providerAppVersion providers version
      *
      * @return VerifierConfigInterface
      */
     public function setProviderVersion(string $providerAppVersion): self;
 
     /**
-     * @return bool
+     * @return bool are results going to be published
      */
     public function isPublishResults(): bool;
 
     /**
-     * @param bool $publishResults
+     * @param bool $publishResults flag to publish results
      *
      * @return VerifierConfigInterface
      */
     public function setPublishResults(bool $publishResults): self;
 
     /**
-     * @return UriInterface
+     * @return UriInterface url to the pact broker
      */
     public function getBrokerUri(): UriInterface;
 
     /**
-     * @param UriInterface $brokerUri
+     * @param UriInterface $brokerUri uri to the pact broker
      *
      * @return VerifierConfig
      */
     public function setBrokerUri(UriInterface $brokerUri): VerifierConfig;
 
     /**
-     * @return null|string
+     * @return null|string username for the pact broker if secured
      */
     public function getBrokerUsername();
 
     /**
-     * @param string $brokerUsername
+     * @param string $brokerUsername username for the pact broker if secured
      *
      * @return VerifierConfigInterface
      */
     public function setBrokerUsername(string $brokerUsername);
 
     /**
-     * @return null|string
+     * @return null|string password for the pact broker if secured
      */
     public function getBrokerPassword();
 
     /**
-     * @param string $brokerPassword
+     * @param string $brokerPassword password for the pact broker if secured
      *
      * @return VerifierConfigInterface
      */
     public function setBrokerPassword(string $brokerPassword);
 
     /**
-     * @return null|\string[]
+     * @return null|\string[] custom headers for the request to the provider such as authorization
      */
     public function getCustomProviderHeaders();
 
     /**
-     * @param \string[] $customProviderHeaders
+     * @param \string[] $customProviderHeaders custom headers for the requests to the provider such as authorization
      *
      * @return VerifierConfigInterface
      */
@@ -127,31 +127,26 @@ interface VerifierConfigInterface
     public function addCustomProviderHeader(string $name, string $value): self;
 
     /**
-     * @return bool
+     * @return bool is verbosity level increased
      */
     public function isVerbose(): bool;
 
     /**
-     * @param bool $verbose
+     * @param bool $verbose increase verbosity level
      *
      * @return VerifierConfigInterface
      */
     public function setVerbose(bool $verbose): self;
 
     /**
-     * @return null|string
+     * @return null|string RSpec formatter. Defaults to custom Pact formatter. json and RspecJunitFormatter may also be used
      */
     public function getFormat();
 
     /**
-     * @param string $format
+     * @param string $format RSpec formatter. Defaults to custom Pact formatter. json and RspecJunitFormatter may also be used
      *
      * @return VerifierConfigInterface
      */
     public function setFormat(string $format): self;
-
-    /**
-     * @return string[]
-     */
-    public function getPactUrls(): array;
 }

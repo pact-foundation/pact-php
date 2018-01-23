@@ -4,6 +4,9 @@ namespace PhpPact\Standalone\ProviderVerifier\Model;
 
 use Psr\Http\Message\UriInterface;
 
+/**
+ * @inheritdoc
+ */
 class VerifierConfig implements VerifierConfigInterface
 {
     /** @var UriInterface */
@@ -48,9 +51,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param UriInterface $providerBaseUrl
-     *
-     * @return VerifierConfigInterface
+     * @inheritdoc
      */
     public function setProviderBaseUrl(UriInterface $providerBaseUrl): VerifierConfigInterface
     {
@@ -60,7 +61,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @return null|string
+     * @inheritdoc
      */
     public function getProviderStatesSetupUrl()
     {
@@ -68,9 +69,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param string $providerStatesSetupUrl
-     *
-     * @return VerifierConfigInterface
+     * @inheritdoc
      */
     public function setProviderStatesSetupUrl(string $providerStatesSetupUrl): VerifierConfigInterface
     {
@@ -80,7 +79,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getProviderName(): string
     {
@@ -88,9 +87,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param string $providerName
-     *
-     * @return VerifierConfigInterface
+     * @inheritdoc
      */
     public function setProviderName(string $providerName): VerifierConfigInterface
     {
@@ -100,7 +97,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getProviderVersion(): string
     {
@@ -108,9 +105,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param string $providerVersion
-     *
-     * @return VerifierConfigInterface
+     * @inheritdoc
      */
     public function setProviderVersion(string $providerVersion): VerifierConfigInterface
     {
@@ -120,7 +115,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function isPublishResults(): bool
     {
@@ -128,9 +123,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param bool $publishResults
-     *
-     * @return VerifierConfigInterface
+     * @inheritdoc
      */
     public function setPublishResults(bool $publishResults): VerifierConfigInterface
     {
@@ -140,7 +133,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @return UriInterface
+     * @inheritdoc
      */
     public function getBrokerUri(): UriInterface
     {
@@ -148,9 +141,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param UriInterface $brokerUri
-     *
-     * @return VerifierConfig
+     * @inheritdoc
      */
     public function setBrokerUri(UriInterface $brokerUri): self
     {
@@ -160,7 +151,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @return null|string
+     * @inheritdoc
      */
     public function getBrokerUsername()
     {
@@ -168,9 +159,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param string $brokerUsername
-     *
-     * @return VerifierConfigInterface
+     * @inheritdoc
      */
     public function setBrokerUsername(string $brokerUsername)
     {
@@ -180,7 +169,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @return null|string
+     * @inheritdoc
      */
     public function getBrokerPassword()
     {
@@ -188,9 +177,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param string $brokerPassword
-     *
-     * @return VerifierConfigInterface
+     * @inheritdoc
      */
     public function setBrokerPassword(string $brokerPassword)
     {
@@ -200,7 +187,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @return null|\string[]
+     * @inheritdoc
      */
     public function getCustomProviderHeaders()
     {
@@ -208,9 +195,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param \string[] $customProviderHeaders
-     *
-     * @return VerifierConfigInterface
+     * @inheritdoc
      */
     public function setCustomProviderHeaders(array $customProviderHeaders): VerifierConfigInterface
     {
@@ -220,10 +205,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param string $name
-     * @param string $value
-     *
-     * @return VerifierConfigInterface
+     * @inheritdoc
      */
     public function addCustomProviderHeader(string $name, string $value): VerifierConfigInterface
     {
@@ -233,7 +215,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function isVerbose(): bool
     {
@@ -241,9 +223,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param bool $verbose
-     *
-     * @return VerifierConfigInterface
+     * @inheritdoc
      */
     public function setVerbose(bool $verbose): VerifierConfigInterface
     {
@@ -253,7 +233,7 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @return null|string
+     * @inheritdoc
      */
     public function getFormat()
     {
@@ -261,22 +241,12 @@ class VerifierConfig implements VerifierConfigInterface
     }
 
     /**
-     * @param string $format
-     *
-     * @return VerifierConfigInterface
+     * @inheritdoc
      */
     public function setFormat(string $format): VerifierConfigInterface
     {
         $this->format = $format;
 
         return $this;
-    }
-
-    /**
-     * @return \string[]
-     */
-    public function getPactUrls(): array
-    {
-        return $this->pactUrls;
     }
 }

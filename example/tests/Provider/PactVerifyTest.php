@@ -5,7 +5,6 @@ namespace Provider;
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Broker\Service\BrokerHttpService;
 use PhpPact\Http\GuzzleClient;
-use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
 use PHPUnit\Framework\TestCase;
