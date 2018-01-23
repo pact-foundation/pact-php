@@ -11,7 +11,6 @@ use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * Ruby Standalone Mock Server Wrapper
@@ -49,18 +48,10 @@ class MockServer
     {
         $scripts = $this->installManager->install();
 
-        $this->process = new Process(array_merge([$scripts->getMockService()], $this->buildParameters()));
+        $this->process = new Process(\array_merge([$scripts->getMockService()], $this->getArguments()));
         $this->process
             ->setTimeout(600)
             ->setIdleTimeout(60);
-
-//        $builder       = new ProcessBuilder();
-//        $this->process = $builder
-//            ->setPrefix($scripts->getMockService())
-//            ->setArguments($this->buildParameters())
-//            ->getProcess()
-//            ->setTimeout(600)
-//            ->setIdleTimeout(60);
 
         $this->process->start(function ($type, $buffer) {
             if (Process::ERR === $type) {
@@ -98,7 +89,7 @@ class MockServer
      *
      * @return array
      */
-    private function buildParameters(): array
+    private function getArguments(): array
     {
         $results = [];
 
