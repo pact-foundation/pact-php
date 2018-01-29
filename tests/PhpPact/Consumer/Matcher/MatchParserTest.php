@@ -40,6 +40,7 @@ class MatchParserTest extends TestCase
         $this->assertArrayHasKey('$.body.Data.Stuff.Here', $matchers);
         $this->assertInstanceOf(LikeMatcher::class, $matchers['$.body.Data.Stuff.Here']);
         $this->assertArrayHasKey('$.body.Value', $matchers);
+        $this->assertInstanceOf(RegexMatcher::class, $matchers['$.body.Value']);
     }
 
     public function testParseFlatArray()
@@ -52,11 +53,11 @@ class MatchParserTest extends TestCase
                 'lastName'  => 'Smith'
             ])
         ];
-        $results = $parser->parse($body);
 
-        $this->assertArrayHasKey('$.body[*].id', $results);
-        $this->assertArrayHasKey('$.body[*].firstName', $results);
-        $this->assertArrayHasKey('$.body[*].lastName', $results);
+        $matchers = $parser->parse($body);
+
+        $this->assertArrayHasKey('$.body[*].[*]', $matchers);
+        $this->assertInstanceOf(LikeMatcher::class, $matchers['$.body[*].[*]']);
 
         $this->assertEquals(4, $body[0]['id']);
         $this->assertEquals('John', $body[0]['firstName']);
@@ -73,9 +74,10 @@ class MatchParserTest extends TestCase
             ], '^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$')
         ];
 
-        $parser  = new MatchParser();
-        $results = $parser->parse($body);
+        $parser   = new MatchParser();
+        $matchers = $parser->parse($body);
 
-        $this->assertArrayHasKey('$.body.dates[*]', $results);
+        $this->assertArrayHasKey('$.body.dates[*]', $matchers);
+        $this->assertInstanceOf(RegexMatcher::class, $matchers['$.body.dates[*]']);
     }
 }

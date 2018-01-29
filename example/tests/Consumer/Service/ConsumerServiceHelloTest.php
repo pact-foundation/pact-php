@@ -6,7 +6,7 @@ use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Matcher\RegexMatcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Standalone\MockServer\MockServerEnvConfig;
+use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PHPUnit\Framework\TestCase;
 
 class ConsumerServiceHelloTest extends TestCase
@@ -27,7 +27,7 @@ class ConsumerServiceHelloTest extends TestCase
         $response = new ProviderResponse();
         $response
             ->setStatus(200)
-            ->addHeader('Content-Type', 'application/json')
+            ->addHeader('Content-Type', 'application/json;charset=utf-8')
             ->setBody([
                 'message' => new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
             ]);

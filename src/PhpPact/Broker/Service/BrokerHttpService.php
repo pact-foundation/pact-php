@@ -45,4 +45,42 @@ class BrokerHttpService implements BrokerHttpServiceInterface
             'body' => $json
         ]);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function tag(string $consumer, string $version, string $tag)
+    {
+        /** @var UriInterface $uri */
+        $uri = $this->baseUri->withPath("pacticipants/{$consumer}/versions/{$version}/tags/{$tag}");
+
+        $this->httpClient->put($uri, [
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ]
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllConsumerUrls(string $provider, string $version = 'latest'): array
+    {
+        $uri = $this->baseUri->withPath("pacts/provider/{$provider}/latest");
+
+        $response = $this->httpClient->get($uri, [
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ]
+        ]);
+
+        $json = \json_decode($response->getBody()->getContents(), true);
+
+        $urls = [];
+        foreach ($json['_links']['pacts'] as $pact) {
+            $urls[] = $pact['href'];
+        }
+
+        return $urls;
+    }
 }

@@ -15,9 +15,17 @@ class Scripts
      */
     private $mockService;
 
-    public function __construct(string $mockService)
+    /**
+     * Path to the PhpPact Provider Verifier
+     *
+     * @var string
+     */
+    private $providerVerifier;
+
+    public function __construct(string $mockService, string $providerVerifier)
     {
-        $this->mockService = $mockService;
+        $this->mockService      = $mockService;
+        $this->providerVerifier = $providerVerifier;
     }
 
     /**
@@ -26,5 +34,25 @@ class Scripts
     public function getMockService(): string
     {
         return $this->mockService;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProviderVerifier(): string
+    {
+        return $this->providerVerifier;
+    }
+
+    /**
+     * @param string $providerVerifier
+     *
+     * @return Scripts
+     */
+    public function setProviderVerifier(string $providerVerifier): self
+    {
+        $this->providerVerifier = $providerVerifier;
+
+        return $this;
     }
 }

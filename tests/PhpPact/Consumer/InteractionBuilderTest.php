@@ -7,10 +7,10 @@ use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Installer\InstallManager;
-use PhpPact\Standalone\MockServer\MockServer;
-use PhpPact\Standalone\MockServer\MockServerEnvConfig;
-use PhpPact\Standalone\MockServer\Service\MockServerHttpService;
-use PhpPact\Standalone\MockServer\Service\MockServerHttpServiceInterface;
+use PhpPact\Standalone\MockService\MockServer;
+use PhpPact\Standalone\MockService\MockServerEnvConfig;
+use PhpPact\Standalone\MockService\Service\MockServerHttpService;
+use PhpPact\Standalone\MockService\Service\MockServerHttpServiceInterface;
 use PHPUnit\Framework\TestCase;
 
 class InteractionBuilderTest extends TestCase

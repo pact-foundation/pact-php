@@ -39,9 +39,10 @@ class InstallerWindows implements InstallerInterface
                 ->deleteCompressed($tempFilePath);
         }
 
-        $binDir  = $destinationDir . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR . 'bin';
+        $binDir  = $destinationDir . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR;
         $scripts = new Scripts(
-             $binDir . DIRECTORY_SEPARATOR . 'pact-mock-service.bat'
+             $binDir . 'pact-mock-service.bat',
+            $binDir . 'pact-provider-verifier.bat'
         );
 
         return $scripts;

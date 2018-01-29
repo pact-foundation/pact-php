@@ -6,8 +6,8 @@ use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Http\GuzzleClient;
-use PhpPact\Standalone\MockServer\MockServerConfigInterface;
-use PhpPact\Standalone\MockServer\Service\MockServerHttpService;
+use PhpPact\Standalone\MockService\MockServerConfigInterface;
+use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 
 /**
  * Build an interaction and send it to the Ruby Standalone Mock Service
