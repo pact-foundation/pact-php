@@ -24,7 +24,7 @@ class PactVerifyTest extends TestCase
      */
     protected function setUp()
     {
-        $publicPath =  __DIR__ . '/../../src/Provider/public/';
+        $publicPath    =  __DIR__ . '/../../src/Provider/public/';
         $this->process = new Process("php -S localhost:58000 -t {$publicPath}");
         $this->process->start();
     }

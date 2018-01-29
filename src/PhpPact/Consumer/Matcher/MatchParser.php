@@ -19,19 +19,28 @@ class MatchParser
      *
      * @return MatcherInterface[]
      */
-    public function parse(&$body, string &$jsonPath = '$.body')
+    public function parse(&$body, string $jsonPath = '$.body')
     {
         if (\is_array($body)) {
             foreach ($body as $key => &$item) {
-                if (\is_int($key)) {
-                    $path = "{$jsonPath}[*]";
-                } else {
-                    $path = "{$jsonPath}.{$key}";
+                $path = $jsonPath;
+
+                // If not an associative array, set the key for the next item.
+                if ($body !== \array_values($body)) {
+                    $path .= ".{$key}";
                 }
 
                 if ($item instanceof MatcherInterface) {
-                    $this->parseMatcher($item, $path);
+                    if (\is_array($item->getValue())) {
+                        $path .= '[*]';
 
+                        // If the item is an associative array, make sure each item in that array is matched.
+                        if ($item->getValue() !== \array_values($item->getValue())) {
+                            $path .= '.[*]';
+                        }
+                    }
+
+                    $this->addMatchingRule($item, $path);
                     $item = $item->getValue();
                 } else {
                     $this->parse($item, $path);
@@ -43,37 +52,14 @@ class MatchParser
     }
 
     /**
-     * If the matcher has children, add a matcher pattern for each.
-     *
-     * @param MatcherInterface $matcher
-     * @param string           $jsonPath
-     */
-    private function parseMatcher(MatcherInterface $matcher, string $jsonPath)
-    {
-        if (\is_array($matcher->getValue())) {
-            foreach ($matcher->getValue() as $key => $value) {
-                if (\is_int($key)) {
-                    $path = "{$jsonPath}[*]";
-                } else {
-                    $path = "{$jsonPath}.{$key}";
-                }
-
-                $this->addMatchingRule($path, $matcher);
-            }
-        } else {
-            $this->addMatchingRule($jsonPath, $matcher);
-        }
-    }
-
-    /**
      * Add a matching rule to the array stack.
      *
-     * @param string           $path
      * @param MatcherInterface $matchingRule
+     * @param string           $path
      *
      * @return MatchParser
      */
-    private function addMatchingRule(string $path, MatcherInterface $matchingRule): self
+    private function addMatchingRule(MatcherInterface $matchingRule, string $path): self
     {
         $this->matchingRules[$path] = $matchingRule;
 
