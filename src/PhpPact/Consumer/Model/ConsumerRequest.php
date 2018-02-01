@@ -173,9 +173,27 @@ class ConsumerRequest implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * @return MatcherInterface[]
+     */
     public function getMatchingRules()
     {
         return $this->matchingRules;
+    }
+
+    /**
+     * Manually add a matcher to the request.
+     *
+     * @param string           $pattern JSON path
+     * @param MatcherInterface $matcher matcher object to represent the type
+     *
+     * @return self
+     */
+    public function addMatchingRule(string $pattern, MatcherInterface $matcher): self
+    {
+        $this->matchingRules[$pattern] = $matcher;
+
+        return $this;
     }
 
     /**

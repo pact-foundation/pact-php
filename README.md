@@ -11,6 +11,30 @@
 
 PHP version of [Pact](https://pact.io). Enables consumer driven contract testing. Please read the [Pact.io](https://pact.io) for specific information about PACT.
 
+Table of contents
+=================
+
+* [Installation](#installation)
+* [Basic Consumer Usage](#basic-consumer-usage)
+    * [Start and Stop Mock Service](#start-and-stop-mock-service)
+    * [Create Consumer Unit Test](#create-consumer-unit-test)
+    * [Create Mock Request](#create-mock-request)
+    * [Create Mock Response](#create-mock-response)  
+    * [Build the Interaction](#build-the-interaction)
+    * [Make the Request](#make-the-request)
+    * [Make Assertions](#make-assertions)
+* [Basic Provider Usage](#basic-provider-usage)
+    * [One Consumer](#one-consumer)
+        * [Create Provider Unit Test](#create-provider-unit-test)
+        * [Start API](#start-api)
+        * [Verify](#verify)
+    * [All Consumers](#all-consumers)
+        * [Setup Tests](#setup-tests)
+        * [Verify All](#verify-all)
+* [Tips](#tips)
+    * [Starting API Asyncronously](#starting-api-asyncronously)
+        
+
 ## Installation
 
 Install the latest version with:
@@ -23,13 +47,13 @@ $ composer require mattersight/phppact --dev
 
 All of the following code will be used exclusively for the Consumer.
 
-### 1. Configure PHPUnit to start the Mock Service
+### Start and Stop the Mock Server
 
 This library contains a wrapper for the [Ruby Standalone Mock Service](https://github.com/pact-foundation/pact-mock_service).
 
 The easiest way to configure this is to use a [PHPUnit Listener](https://phpunit.de/manual/current/en/appendixes.configuration.html#appendixes.configuration.test-listeners). A default listener is included in this project, see [PactTestListener.php](/src/PhpPact/Consumer/Listener/PactTestListener.php). This utilizes environmental variables for configurations. These env variables can either be added to the system or to the phpunit.xml configuration file. Here is an example [phpunit.xml](/example/phpunit.consumer.xml) file configured to use the default. Keep in mind that both the test suite and the arguments array must be the same value.
 
-##### How To Start and Stop the Service
+Alternatively, you can start and stop as in whatever means you would like by following this example:
 
 ```php
 <?php
@@ -47,33 +71,17 @@ The easiest way to configure this is to use a [PHPUnit Listener](https://phpunit
     // Create the process.
     $server->start();
     
-    // Stop the process
+    // Stop the process.
     $server->stop();
 ```
 
-### 2. Create Your Unit Tests
+### Create Consumer Unit Test
+
+Create a standard PHPUnit test case class and function.
 
 [Click here](/example/tests/Consumer/Service/ConsumerServiceHelloTest.php) to see the full sample file.
 
-##### 1. Create a phpunit test class
-
-```php
-<?php
-
-namespace Consumer\Service;
-
-use PHPUnit\Framework\TestCase;
-
-class ConsumerServiceTest extends TestCase { }
-```
-
-##### 2. Create your test function
-
-```php
-public function testGetHelloString() { }
-```
-
-##### 3. Set up mock request
+### Create Mock Request
 
 This will define what the expected request coming from your http service will look like.
 
@@ -87,7 +95,7 @@ $request
 
 You can also create a body just like you will see in the provider example.
 
-##### 4. Set up mock response
+### Create Mock Response
 
 This will define what the response from the provider should look like.
 
@@ -95,7 +103,7 @@ This will define what the response from the provider should look like.
 $response = new ProviderResponse();
 $response
     ->setStatus(200)
-    ->addHeader('Content-Type', 'application/json;charset=utf-8')
+    ->addHeader('Content-Type', 'application/json')
     ->setBody([
         'message' => new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
     ]);
@@ -108,7 +116,7 @@ Matcher | Explanation | Parameters | Example
 PhpPact\Consumer\Matcher\RegexMatcher | Match a value against a regex pattern. | Value, Regex Pattern | new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
 PhpPact\Consumer\Matcher\TypeMatcher | Match a value against its data type. | Value, Min (Optional), Max (Optional) | new TypeMatcher(12, 0, 100)
 
-##### 5. Build the interaction
+### Build the Interaction
 
 Now that we have the request and response, we need to build the interaction and ship it over to the mock server.
 
@@ -116,23 +124,34 @@ Now that we have the request and response, we need to build the interaction and 
 // Create a configuration that reflects the server that was started. You can 
 // create a custom MockServerConfigInterface if needed. This configuration
 // is the same that is used via the PactTestListener and uses environment variables.
-$config      = new MockServerEnvConfig();
-$mockService = new InteractionBuilder($config);
-$mockService
+$config  = new MockServerEnvConfig();
+$builder = new InteractionBuilder($config);
+$builder
     ->given('Get Hello')
     ->uponReceiving('A get request to /hello/{name}')
     ->with($request)
     ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
 ```
 
-##### 6. Make the request
+### Make the Request
 
 ```php
-$service = new HttpService($config->getBaseUri()); // Pass in the URL to the Mock Server.
+$service = new HttpClientService($config->getBaseUri()); // Pass in the URL to the Mock Server.
 $result  = $service->getHelloString('Bob'); // Make the real API request against the Mock Server.
 ```
 
-##### 7. Make assertions
+### Verify Interactions
+
+Verify that all interactions took place that were registered.
+This typically should be in each test, that way the test that failed to verify is marked correctly.
+
+```php
+$builder->verify();
+```
+
+### Make Assertions
+
+Verify that the data you would expect given the response configured is correct.
 
 ```php
 $this->assertEquals('Hello, Bob', $result); // Make your assertions.
@@ -147,17 +166,19 @@ There are two ways to handle verifications.
 1. Create a test for each Consumer of this Provider.
 2. Create a test and run all tests for this Provider.
 
-Option 1 is the most likely use case but we can start with option 2.
+### One Consumer
 
-### Example of Running One Consumer at a Time
+##### Create Unit Test
 
-##### 1. Create a PHPUnit test per Consumer
+Create a single unit test function. This will test a single consumer of the service.
 
-##### 2. Spin up a copy of your API
+##### Start API
 
 Get an instance of the API up and running. [Click here](#starting-your-api) for some tips.
 
-##### 3. Create your test
+##### Verify
+
+This will grab the Pact file from a Pact Broker and run the data against the stood up API.
 
 ```php
 $config = new VerifierConfig();
@@ -176,15 +197,18 @@ $verifier->verify('SomeConsumer', 'master');
 $this->assertTrue(true, 'Pact Verification has failed.');
 ```
 
-### Example of Running All Consumers at Once
+### All Consumers
 
-##### 1. Create a single PHPUnit TestCase
+This is an example of running tests for all consumers at once.
 
-##### 2. Spin up a copy of your API
+##### Setup Tests
 
-Get an instance of the API up and running. [Click here](#starting-your-api-asyncronously) for some tips.
+Create your test and API as detailed in the [One Consumer](#one-consumer) example.
 
-##### 3. Create your test
+##### Verify All
+
+This will grab every Pact file associated with the given provider.
+
 ```php
 public function testPactVerifyAll()
 {
@@ -207,7 +231,7 @@ public function testPactVerifyAll()
 
 ## Tips
 
-### Starting your API Asyncronously
+### Starting API Asyncronously
 
 You can use the built in PHP server to accomplish this during your tests setUp function. The Symfony Process library can be used to run the process asynchronous.
 

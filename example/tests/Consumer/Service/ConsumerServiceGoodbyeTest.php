@@ -27,15 +27,17 @@ class ConsumerServiceGoodbyeTest extends TestCase
             ]);
 
         $config      = new MockServerEnvConfig();
-        $mockService = new InteractionBuilder($config);
-        $mockService
+        $builder     = new InteractionBuilder($config);
+        $builder
             ->given('Get Goodbye')
             ->uponReceiving('A get request to /goodbye/{name}')
             ->with($request)
             ->willRespondWith($response);
 
-        $service = new HttpService($config->getBaseUri());
+        $service = new HttpClientService($config->getBaseUri());
         $result  = $service->getGoodbyeString('Bob');
+
+        $builder->verify();
 
         $this->assertEquals('Goodbye, Bob', $result);
     }

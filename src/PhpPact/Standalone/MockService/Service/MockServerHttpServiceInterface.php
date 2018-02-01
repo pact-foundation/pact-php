@@ -40,7 +40,7 @@ interface MockServerHttpServiceInterface
     public function verifyInteractions(): bool;
 
     /**
-     * Get the current state of the PACT JSON file.
+     * Get the current state of the PACT JSON file and write it to disk.
      *
      * @return string
      */

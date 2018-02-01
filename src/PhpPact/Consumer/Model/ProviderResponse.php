@@ -115,6 +115,21 @@ class ProviderResponse implements \JsonSerializable
     }
 
     /**
+     * Manually add a matcher to the response.
+     *
+     * @param string           $pattern JSON path
+     * @param MatcherInterface $matcher matcher object to represent the type
+     *
+     * @return self
+     */
+    public function addMatchingRule(string $pattern, MatcherInterface $matcher): self
+    {
+        $this->matchingRules[$pattern] = $matcher;
+
+        return $this;
+    }
+
+    /**
      * @inheritDoc
      */
     public function jsonSerialize()

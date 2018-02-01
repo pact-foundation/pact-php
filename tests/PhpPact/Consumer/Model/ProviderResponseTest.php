@@ -27,8 +27,10 @@ class ProviderResponseTest extends TestCase
                     '01/11/2017',
                     '04/17/2012',
                     '08/06/1987'
-                ], '^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$')
-            ]);
+                ], '^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$'),
+                'luckyNumber' => 1
+            ])
+            ->addMatchingRule('$.body.luckyNumber', new RegexMatcher('Blue', '\\d+'));
 
         $data = \json_decode(\json_encode($model->jsonSerialize()), true);
 
@@ -58,5 +60,10 @@ class ProviderResponseTest extends TestCase
         $this->assertTrue(\in_array('01/11/2017', $data['body']['dates']));
         $this->assertTrue(\in_array('04/17/2012', $data['body']['dates']));
         $this->assertTrue(\in_array('08/06/1987', $data['body']['dates']));
+
+        // Check add matcher
+        $this->assertArrayHasKey('$.body.luckyNumber', $data['matchingRules']);
+        $this->assertEquals('regex', $data['matchingRules']['$.body.luckyNumber']['match']);
+        $this->assertEquals('\\d+', $data['matchingRules']['$.body.luckyNumber']['regex']);
     }
 }
