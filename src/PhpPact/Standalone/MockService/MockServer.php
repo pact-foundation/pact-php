@@ -9,6 +9,7 @@ use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -31,11 +32,15 @@ class MockServer
     /** @var Filesystem */
     private $fileSystem;
 
+    /** @var ConsoleOutput */
+    private $console;
+
     public function __construct(MockServerConfigInterface $config)
     {
         $this->config         = $config;
         $this->installManager = new InstallManager();
         $this->fileSystem     = new Filesystem();
+        $this->console        = new ConsoleOutput();
     }
 
     /**
@@ -54,11 +59,13 @@ class MockServer
             ->setTimeout(600)
             ->setIdleTimeout(60);
 
+        $this->console->writeln("Starting the mock service with command {$this->process->getCommandLine()}.");
+
         $this->process->start(function ($type, $buffer) {
             if (Process::ERR === $type) {
-                print 'ERR > ' . $buffer;
+                $this->console->write($buffer);
             } else {
-                print 'OUT > ' . $buffer;
+                $this->console->write($buffer);
             }
         });
         \sleep(1);
@@ -80,7 +87,7 @@ class MockServer
     public function stop(): bool
     {
         $exitCode = $this->process->stop();
-        print "Process exited with code {$exitCode}\n";
+        $this->console->writeln("Process exited with code {$exitCode}.");
 
         return true;
     }

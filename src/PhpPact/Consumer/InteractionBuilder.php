@@ -21,6 +21,9 @@ class InteractionBuilder implements InteractionBuilderInterface
     /** @var MockServerConfigInterface */
     private $config;
 
+    /** @var MockServerHttpService */
+    private $mockServerHttpService;
+
     /**
      * InteractionBuilder constructor.
      *
@@ -28,8 +31,9 @@ class InteractionBuilder implements InteractionBuilderInterface
      */
     public function __construct(MockServerConfigInterface $config)
     {
-        $this->interaction = new Interaction();
-        $this->config      = $config;
+        $this->interaction           = new Interaction();
+        $this->mockServerHttpService = new MockServerHttpService(new GuzzleClient(), $config);
+        $this->config                = $config;
     }
 
     /**
@@ -69,16 +73,39 @@ class InteractionBuilder implements InteractionBuilderInterface
     {
         $this->interaction->setResponse($response);
 
-        return $this->send();
+        return $this->mockServerHttpService->registerInteraction($this->interaction);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    private function send(): bool
+    public function verify(): bool
     {
-        $service = new MockServerHttpService(new GuzzleClient(), $this->config);
+        return $this->mockServerHttpService->verifyInteractions();
+    }
 
-        return $service->registerInteraction($this->interaction);
+    /**
+     * @inheritdoc
+     */
+    public function finalize(): bool
+    {
+        // Write the pact file to disk.
+        $this->mockServerHttpService->getPactJson();
+
+        // Delete the interactions.
+        $this->mockServerHttpService->deleteAllInteractions();
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function writePact(): bool
+    {
+        // Write the pact file to disk.
+        $this->mockServerHttpService->getPactJson();
+
+        return true;
     }
 }

@@ -7,9 +7,9 @@ use GuzzleHttp\Psr7\Uri;
 
 /**
  * Example HTTP Service
- * Class HttpService
+ * Class HttpClientService
  */
-class HttpService
+class HttpClientService
 {
     /** @var Client */
     private $httpClient;

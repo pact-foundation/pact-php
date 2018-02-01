@@ -60,4 +60,28 @@ class ConsumerRequestTest extends TestCase
         $this->assertTrue(\in_array('04/17/2012', $data['body']['dates']));
         $this->assertTrue(\in_array('08/06/1987', $data['body']['dates']));
     }
+
+    public function testAddMatchingRule()
+    {
+        $pattern = '$.body.something[*]';
+
+        $model = new ConsumerRequest();
+        $model
+            ->setMethod('PUT')
+            ->setPath('/somepath')
+            ->addHeader('Content-Type', 'application/json')
+            ->setBody([
+                'something' => [
+                    1,
+                    2,
+                    3
+                ]
+            ])
+            ->addMatchingRule($pattern, new LikeMatcher());
+
+        $data = \json_decode(\json_encode($model->jsonSerialize()), true);
+
+        $this->assertArrayHasKey($pattern, $data['matchingRules']);
+        $this->assertEquals('type', $data['matchingRules'][$pattern]['match']);
+    }
 }

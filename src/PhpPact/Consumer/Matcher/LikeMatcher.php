@@ -13,7 +13,7 @@ class LikeMatcher implements MatcherInterface
     /** @var null|float */
     private $max;
 
-    public function __construct($value, float $min = null, float $max = null)
+    public function __construct($value = null, float $min = null, float $max = null)
     {
         $this->value = $value;
         $this->min   = $min;

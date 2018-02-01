@@ -75,16 +75,8 @@ class MockServerConfig implements MockServerConfigInterface
      */
     private $log;
 
-    public function __construct(string $host, int $port, string $consumer, string $provider)
-    {
-        $this->host     = $host;
-        $this->port     = $port;
-        $this->consumer = $consumer;
-        $this->provider = $provider;
-    }
-
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getHost(): string
     {
@@ -92,7 +84,15 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @return int
+     * @inheritdoc
+     */
+    public function setHost(string $host): MockServerConfigInterface
+    {
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getPort(): int
     {
@@ -100,7 +100,15 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
+     */
+    public function setPort(int $port): MockServerConfigInterface
+    {
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function isSecure(): bool
     {
@@ -108,7 +116,17 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @return UriInterface
+     * @inheritDoc
+     */
+    public function setSecure(bool $secure): MockServerConfigInterface
+    {
+        $this->secure = $secure;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getBaseUri(): UriInterface
     {
@@ -118,7 +136,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getConsumer(): string
     {
@@ -126,7 +144,17 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @return string
+     * @inheritdoc
+     */
+    public function setConsumer(string $consumer): MockServerConfigInterface
+    {
+        $this->consumer = $consumer;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getProvider(): string
     {
@@ -134,7 +162,17 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @return string
+     * @inheritDoc
+     */
+    public function setProvider(string $provider): MockServerConfigInterface
+    {
+        $this->provider = $provider;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function getPactDir()
     {
@@ -146,9 +184,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @param string $pactDir
-     *
-     * @return MockServerConfigInterface
+     * @inheritDoc
      */
     public function setPactDir(string $pactDir): MockServerConfigInterface
     {
@@ -158,7 +194,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     public function getPactFileWriteMode(): string
     {
@@ -166,18 +202,16 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @param string $pactFileWriteMode
-     *
-     * @return MockServerConfigInterface
+     * @inheritDoc
      */
     public function setPactFileWriteMode(string $pactFileWriteMode): MockServerConfigInterface
     {
         $options = ['overwrite', 'merge'];
 
         if (!\in_array($pactFileWriteMode, $options)) {
-            $implodedOptions = \implode(',', $options);
+            $implodedOptions = \implode(', ', $options);
 
-            throw new \InvalidArgumentException("Invalid PhpPact File Write Mode, value must be one of the following: {$implodedOptions}");
+            throw new \InvalidArgumentException("Invalid PhpPact File Write Mode, value must be one of the following: {$implodedOptions}.");
         }
 
         $this->pactFileWriteMode = $pactFileWriteMode;
@@ -186,7 +220,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @return float
+     * @inheritDoc
      */
     public function getPactSpecificationVersion()
     {
@@ -194,9 +228,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @param float $pactSpecificationVersion
-     *
-     * @return MockServerConfigInterface
+     * @inheritDoc
      */
     public function setPactSpecificationVersion(float $pactSpecificationVersion): MockServerConfigInterface
     {
@@ -206,7 +238,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     public function getLog()
     {
@@ -214,9 +246,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @param string $log
-     *
-     * @return MockServerConfigInterface
+     * @inheritDoc
      */
     public function setLog(string $log): MockServerConfigInterface
     {

@@ -78,17 +78,22 @@ class Verifier
      * Make the request to the PACT Verifier Service to run the tests.
      *
      * @param string $consumerName
-     * @param string $tag
+     * @param string|null $tag
      *
      * @return self
      */
-    public function verify(string $consumerName, string $tag): self
+    public function verify(string $consumerName, string $tag = null): self
     {
-        $uri = $this->config->getBrokerUri()
-            ->withPath("pacts/provider/{$this->config->getProviderName()}/consumer/{$consumerName}/latest/{$tag}")
-            ->__toString();
+        // Add tag if set.
+        if ($tag !== null) {
+            $uri = $this->config->getBrokerUri()
+                ->withPath("pacts/provider/{$this->config->getProviderName()}/consumer/{$consumerName}/latest/{$tag}");
+        } else {
+            $uri = $this->config->getBrokerUri()
+                ->withPath("pacts/provider/{$this->config->getProviderName()}/consumer/{$consumerName}/latest");
+        }
 
-        $arguments = \array_merge([$uri], $this->getArguments());
+        $arguments = \array_merge([$uri->__toString()], $this->getArguments());
 
         $this->verifyAction($arguments);
 
