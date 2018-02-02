@@ -24,13 +24,12 @@ Table of contents
     * [Make the Request](#make-the-request)
     * [Make Assertions](#make-assertions)
 * [Basic Provider Usage](#basic-provider-usage)
-    * [One Consumer](#one-consumer)
-        * [Create Provider Unit Test](#create-provider-unit-test)
-        * [Start API](#start-api)
-        * [Verify](#verify)
-    * [All Consumers](#all-consumers)
-        * [Setup Tests](#setup-tests)
-        * [Verify All](#verify-all)
+    * [Create Unit Tests](#create-unit-tests)
+    * [Start API](#start-api)
+    * [Provider Verification](#provider-verification)
+        * [Verify From Pact Broker](#verify-from-pact-broker)
+        * [Verify All from Pact Broker](#verify-all-from-pact-broker)
+        * [Verify Files by Path](#verify-files-by-path)
 * [Tips](#tips)
     * [Starting API Asyncronously](#starting-api-asyncronously)
         
@@ -161,13 +160,6 @@ $this->assertEquals('Hello, Bob', $result); // Make your assertions.
 
 All of the following code will be used exclusively for Providers. This will run the Pacts against the real Provider and either verify or fail validation on the Pact Broker.
 
-There are two ways to handle verifications.
-
-1. Create a test for each Consumer of this Provider.
-2. Create a test and run all tests for this Provider.
-
-### One Consumer
-
 ##### Create Unit Test
 
 Create a single unit test function. This will test a single consumer of the service.
@@ -176,7 +168,11 @@ Create a single unit test function. This will test a single consumer of the serv
 
 Get an instance of the API up and running. [Click here](#starting-your-api) for some tips.
 
-##### Verify
+### Provider Verification
+
+There are three ways to verify Pact files. See the examples below.
+
+##### Verify From Pact Broker
 
 This will grab the Pact file from a Pact Broker and run the data against the stood up API.
 
@@ -197,15 +193,7 @@ $verifier->verify('SomeConsumer', 'master');
 $this->assertTrue(true, 'Pact Verification has failed.');
 ```
 
-### All Consumers
-
-This is an example of running tests for all consumers at once.
-
-##### Setup Tests
-
-Create your test and API as detailed in the [One Consumer](#one-consumer) example.
-
-##### Verify All
+##### Verify All from Pact Broker
 
 This will grab every Pact file associated with the given provider.
 
@@ -223,6 +211,30 @@ public function testPactVerifyAll()
     // Verify that all consumers of 'SomeProvider' are valid.
     $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()), new InstallManager());
     $verifier->verifyAll();
+
+    // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
+    $this->assertTrue(true, 'Pact Verification has failed.');
+}
+```
+
+##### Verify Files by Path
+
+This allows local Pact file testing.
+
+```php
+public function testPactVerifyAll()
+{
+    $config = new VerifierConfig();
+    $config
+        ->setProviderName('SomeProvider') // Providers name to fetch.
+        ->setProviderVersion('1.0.0') // Providers version.
+        ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
+        ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
+        ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
+
+    // Verify that the files in the array are valid.
+    $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()), new InstallManager());
+    $verifier->verifyFiles(['C:\SomePath\consumer-provider.json']);
 
     // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
     $this->assertTrue(true, 'Pact Verification has failed.');

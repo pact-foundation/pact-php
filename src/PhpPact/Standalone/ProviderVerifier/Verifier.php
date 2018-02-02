@@ -75,10 +75,10 @@ class Verifier
     }
 
     /**
-     * Make the request to the PACT Verifier Service to run the tests.
+     * Make the request to the PACT Verifier Service to run a Pact file tests from the Pact Broker.
      *
-     * @param string $consumerName
-     * @param string|null $tag
+     * @param string $consumerName name of the consumer to be compared against
+     * @param string|null $tag optional tag of the consumer such as a branch name
      *
      * @return self
      */
@@ -101,7 +101,21 @@ class Verifier
     }
 
     /**
-     * Verify all Pacts for the Provider are valid.
+     * Provides a way to validate local Pact JSON files.
+     * @param array $files paths to pact json files
+     * @return self
+     */
+    public function verifyFiles(array $files): self
+    {
+        $arguments = \array_merge([$files], $this->getArguments());
+
+        $this->verifyAction($arguments);
+
+        return $this;
+    }
+
+    /**
+     * Verify all Pacts from the Pact Broker are valid for the Provider.
      */
     public function verifyAll()
     {
