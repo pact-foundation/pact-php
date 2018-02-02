@@ -43,4 +43,16 @@ class VerifierTest extends TestCase
         $this->assertTrue(\in_array('--verbose', $arguments));
         $this->assertTrue(\in_array('--format=someformat', $arguments));
     }
+
+    public function testGetArgumentsEmptyConfig()
+    {
+        $config = new VerifierConfig();
+        $brokerHttpService = Mockery::mock(BrokerHttpServiceInterface::class);
+
+        /** @var BrokerHttpServiceInterface $brokerHttpService */
+        $server     = new Verifier($config, $brokerHttpService, new InstallManager());
+        $arguments  = $server->getArguments();
+
+        $this->assertEmpty($arguments);
+    }
 }

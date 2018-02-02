@@ -36,11 +36,16 @@ class Verifier
      */
     public function getArguments(): array
     {
-        // Required Parameters
-        $parameters[] = "--provider-base-url={$this->config->getProviderBaseUrl()}";
-        $parameters[] = "--provider-app-version={$this->config->getProviderVersion()}";
+        $parameters = [];
 
-        // Optional Parameters
+        if ($this->config->getProviderBaseUrl() !== null) {
+            $parameters[] = "--provider-base-url={$this->config->getProviderBaseUrl()}";
+        }
+
+        if ($this->config->getProviderVersion() !== null) {
+            $parameters[] = "--provider-app-version={$this->config->getProviderVersion()}";
+        }
+
         if ($this->config->getProviderStatesSetupUrl() !== null) {
             $parameters[] = "--provider-states-setup-url={$this->config->getProviderStatesSetupUrl()}";
         }
@@ -77,8 +82,8 @@ class Verifier
     /**
      * Make the request to the PACT Verifier Service to run a Pact file tests from the Pact Broker.
      *
-     * @param string $consumerName name of the consumer to be compared against
-     * @param string|null $tag optional tag of the consumer such as a branch name
+     * @param string      $consumerName name of the consumer to be compared against
+     * @param null|string $tag          optional tag of the consumer such as a branch name
      *
      * @return self
      */
@@ -102,7 +107,9 @@ class Verifier
 
     /**
      * Provides a way to validate local Pact JSON files.
+     *
      * @param array $files paths to pact json files
+     *
      * @return self
      */
     public function verifyFiles(array $files): self
