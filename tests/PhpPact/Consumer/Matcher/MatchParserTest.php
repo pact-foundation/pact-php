@@ -4,8 +4,15 @@ namespace PhpPact\Consumer\Matcher;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Test the Matcher parser.
+ * Class MatchParserTest
+ */
 class MatchParserTest extends TestCase
 {
+    /**
+     * Test parsing without any matchers.
+     */
     public function testNoMatcher()
     {
         $parser = new MatchParser();
@@ -23,6 +30,9 @@ class MatchParserTest extends TestCase
         $this->assertNull($matchers);
     }
 
+    /**
+     * Test mixing both Like and Regex matchers.
+     */
     public function testLikeAndRegex()
     {
         $parser = new MatchParser();
@@ -43,6 +53,9 @@ class MatchParserTest extends TestCase
         $this->assertInstanceOf(RegexMatcher::class, $matchers['$.body.Value']);
     }
 
+    /**
+     * Verify a simple flat array matcher.
+     */
     public function testParseFlatArray()
     {
         $parser = new MatchParser();
@@ -64,6 +77,9 @@ class MatchParserTest extends TestCase
         $this->assertEquals('Smith', $body[0]['lastName']);
     }
 
+    /**
+     * Verify that a matcher works with a list.
+     */
     public function testParseList()
     {
         $body = [
@@ -79,5 +95,30 @@ class MatchParserTest extends TestCase
 
         $this->assertArrayHasKey('$.body.dates[*]', $matchers);
         $this->assertInstanceOf(RegexMatcher::class, $matchers['$.body.dates[*]']);
+    }
+
+    /**
+     * Verify that we can still use a matcher with an array of data.
+     */
+    public function testParseArrayWithMatcher()
+    {
+        $body = [
+            'data' => [
+                new LikeMatcher([
+                    'firstItem'  => 1,
+                    'secondItem' => 'Stuff'
+                ]),
+                [
+                    'firstItem'  => 2,
+                    'secondItem' => 'Other Stuff'
+                ]
+            ]
+        ];
+
+        $parser   = new MatchParser();
+        $matchers = $parser->parse($body);
+
+        $this->assertArrayHasKey('$.body.data[*].[*]', $matchers);
+        $this->assertInstanceOf(LikeMatcher::class, $matchers['$.body.data[*].[*]']);
     }
 }

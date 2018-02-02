@@ -11,9 +11,9 @@ use Psr\Http\Message\UriInterface;
 interface VerifierConfigInterface
 {
     /**
-     * @return UriInterface providers base url
+     * @return null|UriInterface providers base url
      */
-    public function getProviderBaseUrl(): UriInterface;
+    public function getProviderBaseUrl();
 
     /**
      * @param UriInterface $providerBaseUrl providers base url
@@ -35,9 +35,9 @@ interface VerifierConfigInterface
     public function setProviderStatesSetupUrl(string $providerStatesSetupUrl): self;
 
     /**
-     * @return string name of the provider
+     * @return null|string name of the provider
      */
-    public function getProviderName(): string;
+    public function getProviderName();
 
     /**
      * @param string $name Name of the provider
@@ -47,9 +47,9 @@ interface VerifierConfigInterface
     public function setProviderName(string $name): self;
 
     /**
-     * @return string providers version
+     * @return null|string providers version
      */
-    public function getProviderVersion(): string;
+    public function getProviderVersion();
 
     /**
      * @param string $providerAppVersion providers version
@@ -71,16 +71,16 @@ interface VerifierConfigInterface
     public function setPublishResults(bool $publishResults): self;
 
     /**
-     * @return UriInterface url to the pact broker
+     * @return null|UriInterface url to the pact broker
      */
-    public function getBrokerUri(): UriInterface;
+    public function getBrokerUri();
 
     /**
      * @param UriInterface $brokerUri uri to the pact broker
      *
-     * @return VerifierConfig
+     * @return VerifierConfigInterface
      */
-    public function setBrokerUri(UriInterface $brokerUri): VerifierConfig;
+    public function setBrokerUri(UriInterface $brokerUri): self;
 
     /**
      * @return null|string username for the pact broker if secured

@@ -9,7 +9,7 @@ use Psr\Http\Message\UriInterface;
  */
 class VerifierConfig implements VerifierConfigInterface
 {
-    /** @var UriInterface */
+    /** @var null|UriInterface */
     private $providerBaseUrl;
 
     /** @var null|string */
@@ -24,7 +24,7 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var bool */
     private $publishResults = false;
 
-    /** @var UriInterface */
+    /** @var null|UriInterface */
     private $brokerUri;
 
     /** @var null|string */
@@ -43,9 +43,9 @@ class VerifierConfig implements VerifierConfigInterface
     private $format;
 
     /**
-     * @return UriInterface
+     * @inheritdoc
      */
-    public function getProviderBaseUrl(): UriInterface
+    public function getProviderBaseUrl()
     {
         return $this->providerBaseUrl;
     }
@@ -99,7 +99,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * @inheritdoc
      */
-    public function getProviderVersion(): string
+    public function getProviderVersion()
     {
         return $this->providerVersion;
     }
@@ -143,7 +143,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * @inheritdoc
      */
-    public function setBrokerUri(UriInterface $brokerUri): self
+    public function setBrokerUri(UriInterface $brokerUri): VerifierConfigInterface
     {
         $this->brokerUri = $brokerUri;
 
