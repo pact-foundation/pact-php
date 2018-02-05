@@ -21,6 +21,10 @@ class MatchParser
      */
     public function parse(&$body, string $jsonPath = '$.body')
     {
+        if ($body instanceof \stdClass) {
+            $body = (array) $body;
+        }
+
         if (\is_array($body)) {
             foreach ($body as $key => &$item) {
                 $path = $jsonPath;
@@ -31,17 +35,23 @@ class MatchParser
                 }
 
                 if ($item instanceof MatcherInterface) {
-                    if (\is_array($item->getValue())) {
+                    if ($item->getValue() instanceof \stdClass) {
+                        $value = (array) $item->getValue();
+                    } else {
+                        $value = $item->getValue();
+                    }
+
+                    if (\is_array($value)) {
                         $path .= '[*]';
 
                         // If the item is an associative array, make sure each item in that array is matched.
-                        if ($item->getValue() !== \array_values($item->getValue())) {
+                        if ($value !== \array_values($value)) {
                             $path .= '.[*]';
                         }
                     }
 
                     $this->addMatchingRule($item, $path);
-                    $item = $item->getValue();
+                    $item = $value;
                 } else {
                     $this->parse($item, $path);
                 }
