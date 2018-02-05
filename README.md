@@ -108,6 +108,8 @@ $response
     ]);
 ```
 
+Right now the body supports 2 data types with matchers, arrays and stdObjects.
+
 In this example, we are using matchers. This allows us to add flexible rules when matching the expectation with the actual value. In the example, you will see Regex is used to validate that the response is valid.
 
 Matcher | Explanation | Parameters | Example

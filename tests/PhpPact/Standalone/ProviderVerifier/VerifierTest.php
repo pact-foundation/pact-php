@@ -46,7 +46,7 @@ class VerifierTest extends TestCase
 
     public function testGetArgumentsEmptyConfig()
     {
-        $config = new VerifierConfig();
+        $config            = new VerifierConfig();
         $brokerHttpService = Mockery::mock(BrokerHttpServiceInterface::class);
 
         /** @var BrokerHttpServiceInterface $brokerHttpService */

@@ -127,7 +127,7 @@ return PhpCsFixer\Config::create()
             'single_blank_line_before_namespace' => true,
             'single_quote' => true,
             'standardize_not_equals' => true,
-            //'strict_comparison' => true,
+            'strict_comparison' => true,
             'ternary_to_null_coalescing' => true,
             'trim_array_spaces' => true,
             'unary_operator_spaces' => true,

@@ -3,6 +3,7 @@
 namespace PhpPact\Consumer\Matcher;
 
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * Test the Matcher parser.
@@ -120,5 +121,60 @@ class MatchParserTest extends TestCase
 
         $this->assertArrayHasKey('$.body.data[*].[*]', $matchers);
         $this->assertInstanceOf(LikeMatcher::class, $matchers['$.body.data[*].[*]']);
+    }
+
+    public function testParseStdObject()
+    {
+        $body = new \stdClass();
+
+        $first             = new \stdClass();
+        $first->firstItem  = 1;
+        $first->secondItem = 'Stuff';
+        $body->data[]      = new LikeMatcher($first);
+
+        $second             = new \stdClass();
+        $second->firstItem  = 2;
+        $second->secondItem = 'Other Stuff';
+        $body->data[]       = $second;
+
+        $parser   = new MatchParser();
+        $matchers = $parser->parse($body);
+
+        $this->assertArrayHasKey('$.body.data[*].[*]', $matchers);
+        $this->assertInstanceOf(LikeMatcher::class, $matchers['$.body.data[*].[*]']);
+    }
+
+    public function testParseStdObject2()
+    {
+        $category1            = new stdClass();
+        $category1->name      = new RegexMatcher('Games', 'Games|Book Clubs');
+        $category1->sort_name = new LikeMatcher(['Games', 'Book Clubs']);
+        $category1->id        = new LikeMatcher(17);
+        $category1->shortname = new LikeMatcher(['Games', 'Book Clubs']);
+
+        $body[] = $category1;
+
+        $category2            = new stdClass();
+        $category2->name      = 'Book Clubs';
+        $category2->sort_name = 'Book Clubs';
+        $category2->id        = 18;
+        $category2->shortname = 'Book Clubs';
+
+        $body[] = $category2;
+
+        $parser   = new MatchParser();
+        $matchers = $parser->parse($body);
+
+        $this->assertArrayHasKey('$.body.name', $matchers);
+        $this->assertInstanceOf(RegexMatcher::class, $matchers['$.body.name']);
+
+        $this->assertArrayHasKey('$.body.sort_name[*]', $matchers);
+        $this->assertInstanceOf(LikeMatcher::class, $matchers['$.body.sort_name[*]']);
+
+        $this->assertArrayHasKey('$.body.id', $matchers);
+        $this->assertInstanceOf(LikeMatcher::class, $matchers['$.body.id']);
+
+        $this->assertArrayHasKey('$.body.shortname[*]', $matchers);
+        $this->assertInstanceOf(LikeMatcher::class, $matchers['$.body.shortname[*]']);
     }
 }
