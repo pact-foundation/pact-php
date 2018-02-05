@@ -2,7 +2,6 @@
 
 namespace PhpPact\Consumer\Matcher;
 
-use DeepCopy\TypeMatcher\TypeMatcher;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -150,7 +149,7 @@ class MatchParserTest extends TestCase
         $category1            = new stdClass();
         $category1->name      = new RegexMatcher('Games', 'Games|Book Clubs');
         $category1->sort_name = new LikeMatcher(['Games', 'Book Clubs']);
-        $category1->id        = new TypeMatcher(17);
+        $category1->id        = new LikeMatcher(17);
         $category1->shortname = new LikeMatcher(['Games', 'Book Clubs']);
 
         $body[] = $category1;
@@ -171,6 +170,9 @@ class MatchParserTest extends TestCase
 
         $this->assertArrayHasKey('$.body.sort_name[*]', $matchers);
         $this->assertInstanceOf(LikeMatcher::class, $matchers['$.body.sort_name[*]']);
+
+        $this->assertArrayHasKey('$.body.id', $matchers);
+        $this->assertInstanceOf(LikeMatcher::class, $matchers['$.body.id']);
 
         $this->assertArrayHasKey('$.body.shortname[*]', $matchers);
         $this->assertInstanceOf(LikeMatcher::class, $matchers['$.body.shortname[*]']);
