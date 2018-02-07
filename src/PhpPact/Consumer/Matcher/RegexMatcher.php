@@ -26,12 +26,6 @@ class RegexMatcher implements MatcherInterface
     }
 
     /** @inheritdoc */
-    public function getMatch(): string
-    {
-        return 'regex';
-    }
-
-    /** @inheritdoc */
     public function getValue()
     {
         return $this->value;
@@ -40,9 +34,31 @@ class RegexMatcher implements MatcherInterface
     /** @inheritdoc */
     public function jsonSerialize()
     {
+        if (\is_array($this->getValue())) {
+            $data['contents']['json_class'] = 'Pact::ArrayLike';
+
+            foreach ($this->getValue() as $key => $value) {
+                $data['contents'][$key] = $this->generateTerm($value);
+            }
+        } else {
+            $data = $this->generateTerm($this->getValue());
+        }
+
+        return $data;
+    }
+
+    private function generateTerm($value)
+    {
         return [
-            'match' => $this->getMatch(),
-            'regex' => $this->regex
+            'json_class' => 'Pact::Term',
+            'data'       => [
+                'generate' => $value,
+                'matcher'  => [
+                    'json_class' => 'Regexp',
+                    'o'          => 0,
+                    's'          => $this->regex
+                ]
+            ]
         ];
     }
 }

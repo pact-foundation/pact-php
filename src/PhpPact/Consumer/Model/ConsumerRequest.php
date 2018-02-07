@@ -3,7 +3,6 @@
 namespace PhpPact\Consumer\Model;
 
 use PhpPact\Consumer\Matcher\MatcherInterface;
-use PhpPact\Consumer\Matcher\MatchParser;
 
 /**
  * Request initiated by the consumer.
@@ -129,8 +128,6 @@ class ConsumerRequest implements \JsonSerializable
      */
     public function setBody($body)
     {
-        $parser              = new MatchParser();
-        $this->matchingRules = $parser->parse($body);
         $this->body          = $body;
 
         return $this;

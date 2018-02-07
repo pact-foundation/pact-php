@@ -3,7 +3,6 @@
 namespace PhpPact\Consumer\Model;
 
 use PhpPact\Consumer\Matcher\MatcherInterface;
-use PhpPact\Consumer\Matcher\MatchParser;
 
 /**
  * Response expectation that would be in response to a Consumer request from the Provider.
@@ -99,9 +98,7 @@ class ProviderResponse implements \JsonSerializable
      */
     public function setBody($body): self
     {
-        $parser              = new MatchParser();
-        $this->matchingRules = $parser->parse($body);
-        $this->body          = $body;
+        $this->body = $body;
 
         return $this;
     }

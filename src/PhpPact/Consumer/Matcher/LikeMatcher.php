@@ -20,11 +20,6 @@ class LikeMatcher implements MatcherInterface
         $this->max   = $max;
     }
 
-    public function getMatch(): string
-    {
-        return 'type';
-    }
-
     public function getValue()
     {
         return $this->value;
@@ -46,20 +41,26 @@ class LikeMatcher implements MatcherInterface
         return $this->max;
     }
 
+    /** @inheritdoc */
     public function jsonSerialize()
     {
-        $results = [
-            'match' => $this->getMatch()
-        ];
+        if (\is_array($this->getValue())) {
+            $data = [
+                'contents'   => $this->value,
+                'json_class' => 'Pact::ArrayLike',
+                'min'        => $this->getMin() ?? 1
+            ];
 
-        if ($this->getMin() !== null) {
-            $results['min'] = $this->getMin();
+            if ($this->getMax() !== null) {
+                $data['max'] = $this->getMax();
+            }
+        } else {
+            return [
+                'contents'   => $this->value,
+                'json_class' => 'Pact::SomethingLike'
+            ];
         }
 
-        if ($this->getMax() !== null) {
-            $results['max'] = $this->getMax();
-        }
-
-        return $results;
+        return $data;
     }
 }
