@@ -2,8 +2,6 @@
 
 namespace PhpPact\Consumer\Model;
 
-use PhpPact\Consumer\Matcher\MatcherInterface;
-
 /**
  * Request initiated by the consumer.
  * Class ConsumerRequest
@@ -34,11 +32,6 @@ class ConsumerRequest implements \JsonSerializable
      * @var string
      */
     private $query;
-
-    /**
-     * @var MatcherInterface[]
-     */
-    private $matchingRules;
 
     /**
      * @return string
@@ -171,29 +164,6 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @return MatcherInterface[]
-     */
-    public function getMatchingRules()
-    {
-        return $this->matchingRules;
-    }
-
-    /**
-     * Manually add a matcher to the request.
-     *
-     * @param string           $pattern JSON path
-     * @param MatcherInterface $matcher matcher object to represent the type
-     *
-     * @return self
-     */
-    public function addMatchingRule(string $pattern, MatcherInterface $matcher): self
-    {
-        $this->matchingRules[$pattern] = $matcher;
-
-        return $this;
-    }
-
-    /**
      * @inheritdoc
      */
     public function jsonSerialize()
@@ -216,10 +186,6 @@ class ConsumerRequest implements \JsonSerializable
 
         if ($this->getQuery() !== null) {
             $results['query'] = $this->getQuery();
-        }
-
-        if ($this->getMatchingRules()) {
-            $results['matchingRules'] = $this->getMatchingRules();
         }
 
         return $results;
