@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class ProviderResponseTest extends TestCase
 {
-    public function testSerializingWithLikeMatcher()
+    public function testSerializing()
     {
         $model = new ProviderResponse();
         $model
@@ -27,43 +27,44 @@ class ProviderResponseTest extends TestCase
                     '01/11/2017',
                     '04/17/2012',
                     '08/06/1987'
-                ], '^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$'),
-                'luckyNumber' => 1
-            ])
-            ->addMatchingRule('$.body.luckyNumber', new RegexMatcher('Blue', '\\d+'));
+                ], '^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$')
+            ]);
 
         $data = \json_decode(\json_encode($model->jsonSerialize()), true);
 
-        // String
-        $this->assertEquals(12, $data['body']['age']);
+        // Age
+        $this->assertEquals(12, $data['body']['age']['contents']);
+        $this->assertEquals('Pact::SomethingLike', $data['body']['age']['json_class']);
+
+        // Current City
         $this->assertEquals('Austin', $data['body']['currentCity']);
 
-        // Int Like
-        $this->assertArrayHasKey('$.body.age', $data['matchingRules']);
-        $this->assertEquals(12, $data['body']['age']);
-        $this->assertEquals('type', $data['matchingRules']['$.body.age']['match']);
-        $this->assertEquals(0, $data['matchingRules']['$.body.age']['min']);
-        $this->assertEquals(100, $data['matchingRules']['$.body.age']['max']);
+        // Previous City
+        $this->assertEquals([
+            'Dallas',
+            'Houston',
+            'San Antonio',
+            'Pittsburgh'
+        ], $data['body']['previousCities']['contents']);
+        $this->assertEquals('Pact::ArrayLike', $data['body']['previousCities']['json_class']);
 
-        // Array Like
-        $this->assertArrayHasKey('$.body.previousCities[*]', $data['matchingRules']);
-        $this->assertEquals('type', $data['matchingRules']['$.body.previousCities[*]']['match']);
-        $this->assertTrue(\in_array('Dallas', $data['body']['previousCities']));
-        $this->assertTrue(\in_array('Houston', $data['body']['previousCities']));
-        $this->assertTrue(\in_array('San Antonio', $data['body']['previousCities']));
-        $this->assertTrue(\in_array('Pittsburgh', $data['body']['previousCities']));
+        // Dates
+        $this->assertEquals('Pact::Term', $data['body']['dates']['contents'][0]['json_class']);
+        $this->assertEquals('01/11/2017', $data['body']['dates']['contents'][0]['data']['generate']);
+        $this->assertEquals('Regexp', $data['body']['dates']['contents'][0]['data']['matcher']['json_class']);
+        $this->assertEquals(0, $data['body']['dates']['contents'][0]['data']['matcher']['o']);
+        $this->assertEquals('^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$', $data['body']['dates']['contents'][0]['data']['matcher']['s']);
 
-        // Array Regex
-        $this->assertArrayHasKey('$.body.dates[*]', $data['matchingRules']);
-        $this->assertEquals('regex', $data['matchingRules']['$.body.dates[*]']['match']);
-        $this->assertEquals('^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$', $data['matchingRules']['$.body.dates[*]']['regex']);
-        $this->assertTrue(\in_array('01/11/2017', $data['body']['dates']));
-        $this->assertTrue(\in_array('04/17/2012', $data['body']['dates']));
-        $this->assertTrue(\in_array('08/06/1987', $data['body']['dates']));
+        $this->assertEquals('Pact::Term', $data['body']['dates']['contents'][1]['json_class']);
+        $this->assertEquals('04/17/2012', $data['body']['dates']['contents'][1]['data']['generate']);
+        $this->assertEquals('Regexp', $data['body']['dates']['contents'][1]['data']['matcher']['json_class']);
+        $this->assertEquals(0, $data['body']['dates']['contents'][1]['data']['matcher']['o']);
+        $this->assertEquals('^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$', $data['body']['dates']['contents'][1]['data']['matcher']['s']);
 
-        // Check add matcher
-        $this->assertArrayHasKey('$.body.luckyNumber', $data['matchingRules']);
-        $this->assertEquals('regex', $data['matchingRules']['$.body.luckyNumber']['match']);
-        $this->assertEquals('\\d+', $data['matchingRules']['$.body.luckyNumber']['regex']);
+        $this->assertEquals('Pact::Term', $data['body']['dates']['contents'][2]['json_class']);
+        $this->assertEquals('08/06/1987', $data['body']['dates']['contents'][2]['data']['generate']);
+        $this->assertEquals('Regexp', $data['body']['dates']['contents'][2]['data']['matcher']['json_class']);
+        $this->assertEquals(0, $data['body']['dates']['contents'][2]['data']['matcher']['o']);
+        $this->assertEquals('^(0[1-9]|1[012])[/](0[1-9]|[12][0-9]|3[01])[/](19|20)\d\d$', $data['body']['dates']['contents'][2]['data']['matcher']['s']);
     }
 }
