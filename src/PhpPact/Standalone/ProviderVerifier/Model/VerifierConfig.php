@@ -135,7 +135,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * @inheritdoc
      */
-    public function getBrokerUri(): UriInterface
+    public function getBrokerUri()
     {
         return $this->brokerUri;
     }

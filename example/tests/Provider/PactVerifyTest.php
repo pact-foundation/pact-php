@@ -3,8 +3,6 @@
 namespace Provider;
 
 use GuzzleHttp\Psr7\Uri;
-use PhpPact\Broker\Service\BrokerHttpService;
-use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
 use PHPUnit\Framework\TestCase;
@@ -51,7 +49,7 @@ class PactVerifyTest extends TestCase
             ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
 
         // Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
-        $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()));
+        $verifier = new Verifier($config);
         $verifier->verify('SomeConsumer', 'master');
 
         // This will not be reached if the PACT verifier throws an error, otherwise it was successful.

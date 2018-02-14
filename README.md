@@ -32,6 +32,7 @@ Table of contents
         * [Verify Files by Path](#verify-files-by-path)
 * [Tips](#tips)
     * [Starting API Asyncronously](#starting-api-asyncronously)
+    * [Set Up Provider State](#set-up-provider-state)
         
 
 ## Installation
@@ -170,6 +171,8 @@ Create a single unit test function. This will test a single consumer of the serv
 
 Get an instance of the API up and running. [Click here](#starting-your-api) for some tips.
 
+If you need to set up the state of your API before making each request please see [Set Up Provider State](#set-up-provider-state).
+
 ### Provider Verification
 
 There are three ways to verify Pact files. See the examples below.
@@ -188,8 +191,8 @@ $config
     ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
 
 // Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
-$verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()));
-$verifier->verify('SomeConsumer', 'master');
+$verifier = new Verifier($config);
+$verifier->verify('SomeConsumer', 'master'); // The tag is option. If no tag is set it will just grab the latest.
 
 // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
 $this->assertTrue(true, 'Pact Verification has failed.');
@@ -211,7 +214,7 @@ public function testPactVerifyAll()
         ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
 
     // Verify that all consumers of 'SomeProvider' are valid.
-    $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()), new InstallManager());
+    $verifier = new Verifier($config);
     $verifier->verifyAll();
 
     // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
@@ -235,7 +238,7 @@ public function testPactVerifyAll()
         ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
 
     // Verify that the files in the array are valid.
-    $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()), new InstallManager());
+    $verifier = new Verifier($config);
     $verifier->verifyFiles(['C:\SomePath\consumer-provider.json']);
 
     // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
@@ -252,3 +255,15 @@ You can use the built in PHP server to accomplish this during your tests setUp f
 [PHP Server](http://php.net/manual/en/features.commandline.webserver.php)
 
 [Symfony Process](https://symfony.com/doc/current/components/process.html)
+
+### Set Up Provider State
+
+The PACT verifier is a wrapper of the [Ruby Standalone Verifier](https://github.com/pact-foundation/pact-provider-verifier).
+See [API with Provider States](https://github.com/pact-foundation/pact-provider-verifier#api-with-provider-states) for more information on how this works.
+Since most PHP rest APIs are stateless, this required some thought.
+
+Here are some options:
+1. Write the posted state to a file and use a factory to decide which mock repository class to use based on the state.
+2. Set up your database to meet the expectations of the request. At the start of each request, you should first reset the database to its original state.
+
+No matter which direction you go, you will have to modify something outside of the PHP process because each request to your server will be stateless and independent.

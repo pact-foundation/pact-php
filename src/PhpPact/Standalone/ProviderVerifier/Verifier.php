@@ -2,11 +2,13 @@
 
 namespace PhpPact\Standalone\ProviderVerifier;
 
-use PhpPact\Broker\Service\BrokerHttpServiceInterface;
+use PhpPact\Broker\Service\BrokerHttpClient;
+use PhpPact\Broker\Service\BrokerHttpClientInterface;
+use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
-use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Process\ProcessBuilder;
 
 /**
@@ -18,17 +20,20 @@ class Verifier
     /** @var VerifierConfigInterface */
     private $config;
 
-    /** @var BrokerHttpServiceInterface */
-    private $brokerHttpService;
+    /** @var BrokerHttpClientInterface */
+    private $brokerHttpClient;
 
     /** @var InstallManager */
     private $installManager;
 
-    public function __construct(VerifierConfigInterface $config, BrokerHttpServiceInterface $brokerHttpService)
+    /** @var ConsoleOutput */
+    private $console;
+
+    public function __construct(VerifierConfigInterface $config)
     {
         $this->config            = $config;
-        $this->brokerHttpService = $brokerHttpService;
         $this->installManager    = new InstallManager();
+        $this->console           = new ConsoleOutput();
     }
 
     /**
@@ -126,7 +131,7 @@ class Verifier
      */
     public function verifyAll()
     {
-        $arguments = $this->brokerHttpService->getAllConsumerUrls($this->config->getProviderName(), $this->config->getProviderVersion());
+        $arguments = $this->getBrokerHttpClient()->getAllConsumerUrls($this->config->getProviderName(), $this->config->getProviderVersion());
 
         $arguments = \array_merge($arguments, $this->getArguments());
 
@@ -164,12 +169,19 @@ class Verifier
             ->setTimeout(60)
             ->setIdleTimeout(10);
 
+        $this->console->write("Verifying PACT with script {$process->getCommandLine()}");
+
         $process->mustRun(function ($type, $buffer) {
-            if (Process::ERR === $type) {
-                print 'ERR > ' . $buffer;
-            } else {
-                print 'OUT > ' . $buffer;
-            }
+            $this->console->write("{$type} > {$buffer}");
         });
+    }
+
+    private function getBrokerHttpClient(): BrokerHttpClient
+    {
+        if (!$this->brokerHttpClient) {
+            $this->brokerHttpClient = new BrokerHttpClient(new GuzzleClient(), $this->config->getBrokerUri());
+        }
+
+        return $this->brokerHttpClient;
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
 use GuzzleHttp\Psr7\Uri;
-use PhpPact\Broker\Service\BrokerHttpService;
+use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Http\GuzzleClient;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
-$httpService = new BrokerHttpService(new GuzzleClient(), new Uri('http://localhost:80/'));
+$httpService = new BrokerHttpClient(new GuzzleClient(), new Uri('http://localhost:80/'));
 
 $json = \json_encode([
     'consumer' => 'someConsumer',
