@@ -3,7 +3,6 @@
 namespace PhpPact\Standalone\ProviderVerifier;
 
 use GuzzleHttp\Psr7\Uri;
-use Mockery;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PHPUnit\Framework\TestCase;
@@ -44,7 +43,6 @@ class VerifierTest extends TestCase
     public function testGetArgumentsEmptyConfig()
     {
         $config            = new VerifierConfig();
-        $brokerHttpService = Mockery::mock(BrokerHttpClientInterface::class);
 
         /** @var BrokerHttpClientInterface $brokerHttpService */
         $server     = new Verifier($config);
