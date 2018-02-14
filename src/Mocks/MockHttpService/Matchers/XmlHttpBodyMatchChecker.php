@@ -343,7 +343,7 @@ class XmlHttpBodyMatchChecker implements \PhpPact\Matchers\Checkers\IMatchChecke
      */
     private function shouldApplyMatchers($matchingRules) {
 
-        if ($matchingRules instanceof \Countable && count($matchingRules) > 0) {
+        if (is_array($matchingRules) && (count($matchingRules) > 0)) {
             foreach($matchingRules as $jsonPath => $matchingRule) {
                 if (stripos($jsonPath, '.' . static::PATH_PREFIX) !== false) {
                     return true;

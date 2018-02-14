@@ -15,10 +15,7 @@ class MatchingRuleMapper
     {
         $matchingRules = array();
         if (isset($obj->matchingRules)
-            && (
-                ($obj->matchingRules instanceof \Countable)
-                && count($obj->matchingRules) > 0
-            )
+            && (is_object($obj->matchingRules) || is_array($obj->matchingRules) || $obj->matchingRules instanceof \Countable)
         ) {
             foreach ($obj->matchingRules as $jsonPath => $matchingRule) {
                 $options = array();

@@ -92,7 +92,7 @@ class MockProviderService implements IMockProviderService
     }
 
     /**
-     * @return MockProviderHost
+     * @return \PhpPact\Mocks\MockHttpClient
      */
     public function getHttpClient()
     {

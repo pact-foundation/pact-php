@@ -44,9 +44,10 @@ class ProviderServiceRequestComparer
         $queryResult = $this->_httpQueryStringComparer->compare($expected->getQuery(), $actual->getQuery());
         $result->addChildResult($queryResult);
 
-        if (count($expected->getHeaders()) > 0) {
-            $headerResult = $this->_httpHeaderComparer->compare($expected, $actual);
-            $result->addChildResult($headerResult);
+        if ((is_array($expected->getHeaders()) || is_object($expected->getHeaders()))
+            && count($expected->getHeaders()) > 0) {
+                $headerResult = $this->_httpHeaderComparer->compare($expected, $actual);
+                $result->addChildResult($headerResult);
         }
 
         // handles case where body is set but null
