@@ -32,7 +32,6 @@ class HttpRequestMessageMapperTest extends TestCase
         $this->assertFalse(($httpRequest->getUri()->getQuery()? true : false), "Test that query was not set.  Note this is an explicit false check");
         $this->assertEquals($obj->body, (string) $httpRequest->getBody(), "Body is set appropriately");
 
-
         // test duplicate headers
         $obj = new \stdClass();
         $obj->method = 'post';
@@ -57,8 +56,8 @@ class HttpRequestMessageMapperTest extends TestCase
         $this->assertFalse(isset($actualHeaders["content-type"]), "We expect the lower case header not to exist - content-type");
         $this->assertEquals(array_pop($actualHeaders["Host"]), "myhost", "Ensure it is not overwritten");
         $this->assertEquals(count($actualHeaders), 3, "Only three headers should be set");
-
-
+        
+        
         // test query
         $obj = new \stdClass();
         $obj->method = 'post';

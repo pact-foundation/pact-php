@@ -43,6 +43,10 @@ class HttpRequestMessageMapper
                 }
             }
         }
+        
+        $httpRequest = $httpRequest->withUri($uri)
+                            ->withMethod($request->getMethod());
+        
 
         $httpRequest = $httpRequest->withUri($uri)
             ->withMethod($request->getMethod());
@@ -60,6 +64,7 @@ class HttpRequestMessageMapper
         return $httpRequest;
     }
 
+  
     /**
      * Windwalker requires Host header to be set
      *
@@ -76,7 +81,7 @@ class HttpRequestMessageMapper
                 $uri = $uri->withHost($headers['host']);
             }
         }
-
+      
         return $uri;
     }
 }
