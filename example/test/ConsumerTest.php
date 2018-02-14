@@ -65,11 +65,7 @@ class ConsumerTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        // build system under test
-        $host = $mockService->getHost();
-
-        $clientUnderTest = new MockApiConsumer();
-        $clientUnderTest->setMockHost($host);
+        $clientUnderTest = new MockApiConsumer($mockService->getHttpClient());
         $receivedResponse = $clientUnderTest->getBasic("http://localhost");
 
         // do some asserts on the return
@@ -101,13 +97,9 @@ class ConsumerTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        // build system under test
-        $host = $mockService->getHost();
-
         $hasException = false;
         try {
-            $clientUnderTest = new MockApiConsumer();
-            $clientUnderTest->setMockHost($host);
+            $clientUnderTest = new MockApiConsumer($mockService->getHttpClient());
             $clientUnderTest->getWithPath("http://localhost");
         } catch (PactFailureException $e) {
             $hasException = true;
@@ -133,13 +125,9 @@ class ConsumerTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        // build system under test
-        $host = $mockService->getHost();
-
         $hasException = false;
         try {
-            $clientUnderTest = new MockApiConsumer();
-            $clientUnderTest->setMockHost($host);
+            $clientUnderTest = new MockApiConsumer($mockService->getHttpClient());
             $clientUnderTest->getWithQuery("http://localhost");
         } catch (PactFailureException $e) {
             $hasException = true;
@@ -166,13 +154,9 @@ class ConsumerTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        // build system under test
-        $host = $mockService->getHost();
-
         $hasException = false;
         try {
-            $clientUnderTest = new MockApiConsumer();
-            $clientUnderTest->setMockHost($host);
+            $clientUnderTest = new MockApiConsumer($mockService->getHttpClient());
             $clientUnderTest->getWithBody("http://localhost");
         } catch (PactFailureException $e) {
             $hasException = true;
@@ -204,11 +188,8 @@ class ConsumerTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        // build system under test
-        $host = $mockService->getHost();
 
-        $clientUnderTest = new MockApiConsumer();
-        $clientUnderTest->setMockHost($host);
+        $clientUnderTest = new MockApiConsumer($mockService->getHttpClient());
         $clientUnderTest->getWithResponseBodyXml("http://localhost");
 
         // verify the interactions
@@ -254,14 +235,9 @@ class ConsumerTest extends TestCase
             ->with($request2)
             ->willRespondWith($response2);
 
-
-        // build system under test
-        $host = $mockService->getHost();
-
         $hasException = false;
         try {
-            $clientUnderTest = new MockApiConsumer();
-            $clientUnderTest->setMockHost($host);
+            $clientUnderTest = new MockApiConsumer($mockService->getHttpClient());
 
             $clientUnderTest->getWithBody("http://localhost");
             $clientUnderTest->getWithPath("http://localhost");
@@ -300,14 +276,10 @@ class ConsumerTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        // build system under test
-        $host = $mockService->getHost();
-
         // test that we can overwrite the base url
         $hasException = false;
         try {
-            $clientUnderTest = new MockApiConsumer();
-            $clientUnderTest->setMockHost($host);
+            $clientUnderTest = new MockApiConsumer($mockService->getHttpClient());
             $clientUnderTest->getWithPath("http://google.com");
         } catch (PactFailureException $e) {
             $hasException = true;
@@ -336,13 +308,9 @@ class ConsumerTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        // build system under test
-        $host = $mockService->getHost();
-
         $hasException = false;
         try {
-            $clientUnderTest = new MockApiConsumer();
-            $clientUnderTest->setMockHost($host);
+            $clientUnderTest = new MockApiConsumer($mockService->getHttpClient());
             $receivedResponse = $clientUnderTest->PostWithBody("http://localhost");
         } catch (PactFailureException $e) {
             $hasException = true;
@@ -390,11 +358,7 @@ class ConsumerTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        // build system under test
-        $host = $mockService->getHost();
-
-        $clientUnderTest = new MockApiConsumer();
-        $clientUnderTest->setMockHost($host);
+        $clientUnderTest = new MockApiConsumer($mockService->getHttpClient());
         $receivedResponse = $clientUnderTest->getBasic("http://localhost");
 
         // do some asserts on the return

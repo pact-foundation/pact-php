@@ -191,7 +191,7 @@ class ProviderServiceResponse implements \JsonSerializable, \PhpPact\Mocks\MockH
             }
         }
 
-        if (count($this->_matchingRules) > 0) {
+        if ($this->_matchingRules instanceof \Countable && count($this->_matchingRules) > 0) {
             $obj->matchingRules = new \stdClass();
             foreach($this->_matchingRules as $matchingRuleVo) {
 
