@@ -33,6 +33,32 @@ class HttpRequestMessageMapperTest extends TestCase
         $this->assertEquals($obj->body, (string) $httpRequest->getBody(), "Body is set appropriately");
 
 
+        // test duplicate headers
+        $obj = new \stdClass();
+        $obj->method = 'post';
+        $obj->path = '/test';
+        $obj->headers = array();
+        $obj->headers["Content-Type"] = "application/json";
+        $obj->headers["X-Header-Type"] = "interesting_header";
+        $obj->headers["content-type"] = "application/xml"; // ensures we are case sensitive
+        $obj->headers["Host"] = 'myhost'; // ensures we are not overwriting this by Windwalker or other libraries
+
+        $obj->body = "Do not tell me what I can do to my body";
+
+        $providerServiceRequestMapper = new ProviderServiceRequestMapper();
+        $providerServiceRequest = $providerServiceRequestMapper->convert($obj);
+        $httpRequest = $mapper->convert($providerServiceRequest, "http://localhost");
+
+        $this->assertTrue(($httpRequest instanceof \Psr\Http\Message\RequestInterface), "We expect a Psr request");
+
+        $actualHeaders = $httpRequest->getHeaders();
+        $this->assertTrue(isset($actualHeaders["Content-Type"]), "We expect a cased header - Content-Type");
+        $this->assertEquals(array_pop($actualHeaders["Content-Type"]), "application/json", "Content-Type to exist and be json");
+        $this->assertFalse(isset($actualHeaders["content-type"]), "We expect the lower case header not to exist - content-type");
+        $this->assertEquals(array_pop($actualHeaders["Host"]), "myhost", "Ensure it is not overwritten");
+        $this->assertEquals(count($actualHeaders), 3, "Only three headers should be set");
+
+
         // test query
         $obj = new \stdClass();
         $obj->method = 'post';
