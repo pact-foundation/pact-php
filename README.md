@@ -56,8 +56,8 @@ To have the lint checker auto correct your code, run locally using the Powershel
 ## Service Consumer
 
 ### 1. Build your client
-This is either a net new green field client you are writing in PHP or a legacy application. The key part is your client 
-will need to inject a "mock server".   To provide Windows support, this project leverages [julienfalque/http-mock
+This is either a net new green field client you are writing in PHP or a legacy application. The key part is your app needs
+to pass in an httpClient.  For testing, this can be the mock client provided by Pact-PHP.   To provide Windows support, this project leverages [julienfalque/http-mock
 ](https://github.com/julienfalque/http-mock).   
 
 ```php
@@ -65,26 +65,38 @@ will need to inject a "mock server".   To provide Windows support, this project 
 /**
  * Class MockApiConsumer
  *
- * Example consumer API client.  Note that if you will need to pass in the host  Note
+ * Example consumer API.  Note that if you will need to pass in the http client you want to use
  */
 class MockApiConsumer
 {
     /**
-     * @var \PhpPact\Mocks\MockHttpService\MockProviderHost
+     * MockApiConsumer constructor.
+     *
+     * @param null|\PhpPact\Mocks\MockHttpClient $httpClient
      */
-    private $_mockHost;
+    public function __construct($httpClient=null)
+    {
+        if ($httpClient) {
+            $this->setHttpClient($httpClient);
+        }
+    }
 
     /**
-     * @param $host
+     * @var \PhpPact\Mocks\MockHttpClient
      */
-    public function setMockHost(&$host)
+    private $httpClient;
+
+    /**
+     * @param \PhpPact\Mocks\MockHttpClient
+     */
+    public function setHttpClient($httpClient)
     {
-        $this->_mockHost = $host;
+        $this->httpClient = $httpClient;
     }
 
 
     /**
-     * Mock out a basic GET.  Assume it returns some business value to be used in other parts of this mock api consumer/client
+     * Mock out a basic GET
      *
      * @param $uri string
      * @return mixed
@@ -100,30 +112,8 @@ class MockApiConsumer
             ->withMethod("get");
 
 
-        $response = $this->sendRequest($httpRequest);
+        $response = $this->httpClient->sendRequest($httpRequest);
         return $response;
-    }
-	
-	/*
-		Other examples in examples/test/MockApiConsumer.php
-	*/
-	
-	/**
-     * Encapsulate your calls to the actual api. This allows mock out of server calls
-     *
-     * @param \Psr\Http\Message\RequestInterface $httpRequest
-     * @return callable|null|\Psr\Http\Message\ResponseInterface
-     * @throws Exception
-     */
-    private function sendRequest(\Psr\Http\Message\RequestInterface $httpRequest)
-    {
-        // handle mock server
-        if (isset($this->_mockHost)) {
-            return $this->_mockHost->handle($httpRequest);
-        }
-
-        // make actual call to the client
-        throw new \Exception("Since this is a mock api client, there is no 'real' server.  This is where you put your app logic.");
     }
 }
 ```
@@ -191,11 +181,7 @@ class ConsumerTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        // build system under test
-        $host = $mockService->getHost();
-
-        $clientUnderTest = new MockApiConsumer();
-        $clientUnderTest->setMockHost($host);
+        $clientUnderTest = new MockApiConsumer($mockService->getHttpClient()); // passing in the framework's mock client
         $receivedResponse = $clientUnderTest->getBasic("http://localhost");
 
         // do some asserts on the return
@@ -313,8 +299,6 @@ class ProviderTest extends TestCase
             ->honoursPactWith("MockApiConsumer")
             ->pactUri($json)
             ->verify(); // note that this should test all as we can run setup and tear down
-            
-        
         
     }         
 }

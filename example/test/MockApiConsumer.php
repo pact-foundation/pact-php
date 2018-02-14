@@ -8,16 +8,28 @@
 class MockApiConsumer
 {
     /**
-     * @var \PhpPact\Mocks\MockHttpService\MockProviderHost
+     * MockApiConsumer constructor.
+     *
+     * @param null|\PhpPact\Mocks\MockHttpClient $httpClient
      */
-    private $_mockHost;
+    public function __construct($httpClient=null)
+    {
+        if ($httpClient) {
+            $this->setHttpClient($httpClient);
+        }
+    }
 
     /**
-     * @param $host
+     * @var \PhpPact\Mocks\MockHttpClient
      */
-    public function setMockHost(&$host)
+    private $httpClient;
+
+    /**
+     * @param \PhpPact\Mocks\MockHttpClient
+     */
+    public function setHttpClient($httpClient)
     {
-        $this->_mockHost = $host;
+        $this->httpClient = $httpClient;
     }
 
 
@@ -38,7 +50,7 @@ class MockApiConsumer
             ->withMethod("get");
 
 
-        $response = $this->sendRequest($httpRequest);
+        $response = $this->httpClient->sendRequest($httpRequest);
         return $response;
     }
 
@@ -60,7 +72,7 @@ class MockApiConsumer
             ->withMethod("get");
 
 
-        $response = $this->sendRequest($httpRequest);
+        $response = $this->httpClient->sendRequest($httpRequest);
         return $response;
     }
 
@@ -79,7 +91,7 @@ class MockApiConsumer
             ->withMethod("get");
 
 
-        $response = $this->sendRequest($httpRequest);
+        $response = $this->httpClient->sendRequest($httpRequest);
         return $response;
     }
 
@@ -94,7 +106,7 @@ class MockApiConsumer
             ->withMethod("get");
 
 
-        $response = $this->sendRequest($httpRequest);
+        $response = $this->httpClient->sendRequest($httpRequest);
         return $response;
     }
 
@@ -112,7 +124,7 @@ class MockApiConsumer
         $httpRequest->getBody()->write($msg);
 
 
-        $response = $this->sendRequest($httpRequest);
+        $response = $this->httpClient->sendRequest($httpRequest);
         return $response;
     }
 
@@ -129,26 +141,8 @@ class MockApiConsumer
         $msg = '{ "type" : "some new type" }';
         $httpRequest->getBody()->write($msg);
 
-        $response = $this->sendRequest($httpRequest);
+        $response = $this->httpClient->sendRequest($httpRequest);
         return $response;
     }
 
-
-    /**
-     * Encapsulate your calls to the actual api. This allows mock out of server calls
-     *
-     * @param \Psr\Http\Message\RequestInterface $httpRequest
-     * @return callable|null|\Psr\Http\Message\ResponseInterface
-     * @throws Exception
-     */
-    private function sendRequest(\Psr\Http\Message\RequestInterface $httpRequest)
-    {
-        // handle mock server
-        if (isset($this->_mockHost)) {
-            return $this->_mockHost->handle($httpRequest);
-        }
-
-        // make actual call to the client
-        throw new \Exception("Since this is a mock api client, there is no 'real' server.  This is where you put your app logic.");
-    }
 }

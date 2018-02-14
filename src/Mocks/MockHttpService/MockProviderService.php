@@ -14,6 +14,7 @@ use PhpPact\Mocks\MockHttpService\Mappers\HttpResponseMessageMapper;
 use PhpPact\Mocks\MockHttpService\MockProviderHost;
 use PhpPact\Mocks\MockHttpService\Models\IHttpMessage;
 use PhpPact\Mocks\MockHttpService\Models\HttpVerb;
+use PhpPact\Mocks\MockHttpClient;
 
 class MockProviderService implements IMockProviderService
 {
@@ -26,7 +27,7 @@ class MockProviderService implements IMockProviderService
     private $_host;
 
     /**
-     * @var \Windwalker\Http\HttpClient
+     * @var MockHttpClient
      */
     private $_httpClient;
 
@@ -53,8 +54,8 @@ class MockProviderService implements IMockProviderService
     public function __construct($providerName, \PhpPact\PactConfig $config)
     {
         $this->_config = $config;
-        $this->_httpClient = new \Windwalker\Http\HttpClient();
         $this->_host = new MockProviderHost();
+        $this->_httpClient = new MockHttpClient($this->_host);
 
         $pactFile = new ProviderServicePactFile();
         $this->setPactFile($pactFile);
@@ -88,6 +89,14 @@ class MockProviderService implements IMockProviderService
     public function getPort()
     {
         return $this->_config->getPort();
+    }
+
+    /**
+     * @return \PhpPact\Mocks\MockHttpClient
+     */
+    public function getHttpClient()
+    {
+        return $this->_httpClient;
     }
 
     /**
@@ -371,7 +380,7 @@ class MockProviderService implements IMockProviderService
             ->andWhenPath($interaction->getRequest()->getPath());
 
 
-        if (count($interaction->getRequest()->getHeaders()) > 0) {
+        if ($interaction->getRequest()->getHeaders() instanceof \Countable && count($interaction->getRequest()->getHeaders()) > 0) {
             $server = $server->andWhenHeaders($interaction->getRequest()->getHeaders());
         }
 

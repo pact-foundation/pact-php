@@ -29,7 +29,7 @@ class HttpRequestMessageMapper
 
         // Windwalker requires Host to be set
         $uri = $this->augmentUriWithHostHeader($uri, $request->getHeaders());
-        
+
         if ($request->getQuery()) {
             $uri = $uri->withQuery($request->getQuery());
         }
@@ -48,6 +48,10 @@ class HttpRequestMessageMapper
                             ->withMethod($request->getMethod());
         
 
+        $httpRequest = $httpRequest->withUri($uri)
+            ->withMethod($request->getMethod());
+
+
         if ($request->getBody()) {
             $body = $request->getBody();
             if (!is_string($body)) {
@@ -59,22 +63,25 @@ class HttpRequestMessageMapper
 
         return $httpRequest;
     }
-    
+
+  
     /**
      * Windwalker requires Host header to be set
-     * 
+     *
      * @param \Windwalker\Uri\PsrUri $uri
      * @param array $headers
+     *
+     * @return \Windwalker\Uri\PsrUri
      */
     function augmentUriWithHostHeader(\Windwalker\Uri\PsrUri $uri, $headers) {
         if ($headers) {
             if (isset($headers['Host'])) {
-                $uri = $uri->withHost($headers['Host']);  
+                $uri = $uri->withHost($headers['Host']);
             } else if (isset($headers['host'])) {
                 $uri = $uri->withHost($headers['host']);
             }
         }
-        
+      
         return $uri;
     }
 }

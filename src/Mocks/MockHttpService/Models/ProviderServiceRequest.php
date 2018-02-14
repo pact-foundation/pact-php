@@ -238,7 +238,7 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
             }
         }
 
-        if (count($this->_matchingRules) > 0) {
+        if (is_array($this->_matchingRules) && count($this->_matchingRules) > 0) {
             $obj->matchingRules = new \stdClass();
             foreach($this->_matchingRules as $matchingRuleVo) {
 
