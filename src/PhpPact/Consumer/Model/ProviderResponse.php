@@ -2,8 +2,6 @@
 
 namespace PhpPact\Consumer\Model;
 
-use PhpPact\Consumer\Matcher\MatcherInterface;
-
 /**
  * Response expectation that would be in response to a Consumer request from the Provider.
  * Class ProviderResponse
@@ -24,11 +22,6 @@ class ProviderResponse implements \JsonSerializable
      * @var null|array
      */
     private $body;
-
-    /**
-     * @var null|MatcherInterface[]
-     */
-    private $matchingRules;
 
     /**
      * @return int
@@ -104,29 +97,6 @@ class ProviderResponse implements \JsonSerializable
     }
 
     /**
-     * @return null|MatcherInterface[]
-     */
-    public function getMatchingRules()
-    {
-        return $this->matchingRules;
-    }
-
-    /**
-     * Manually add a matcher to the response.
-     *
-     * @param string           $pattern JSON path
-     * @param MatcherInterface $matcher matcher object to represent the type
-     *
-     * @return self
-     */
-    public function addMatchingRule(string $pattern, MatcherInterface $matcher): self
-    {
-        $this->matchingRules[$pattern] = $matcher;
-
-        return $this;
-    }
-
-    /**
      * @inheritDoc
      */
     public function jsonSerialize()
@@ -137,10 +107,6 @@ class ProviderResponse implements \JsonSerializable
 
         if ($this->getHeaders() !== null) {
             $results['headers'] = $this->getHeaders();
-        }
-
-        if ($this->getMatchingRules() !== null) {
-            $results['matchingRules'] = $this->getMatchingRules();
         }
 
         if ($this->getBody() !== null) {

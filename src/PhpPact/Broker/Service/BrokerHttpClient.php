@@ -9,7 +9,7 @@ use Psr\Http\Message\UriInterface;
  * Http Service Wrapper for Pact Broker
  * Class BrokerHttpService
  */
-class BrokerHttpService implements BrokerHttpServiceInterface
+class BrokerHttpClient implements BrokerHttpClientInterface
 {
     /** @var ClientInterface */
     private $httpClient;

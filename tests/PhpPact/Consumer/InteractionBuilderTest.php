@@ -2,7 +2,7 @@
 
 namespace PhpPact\Consumer;
 
-use PhpPact\Consumer\Matcher\LikeMatcher;
+use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Http\GuzzleClient;
@@ -24,8 +24,7 @@ class InteractionBuilderTest extends TestCase
     protected function setUp()
     {
         $config            = new MockServerEnvConfig();
-        $installManager    = new InstallManager();
-        $this->mockServer  = new MockServer($config, $installManager);
+        $this->mockServer  = new MockServer($config);
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $config);
     }
@@ -37,6 +36,8 @@ class InteractionBuilderTest extends TestCase
 
     public function testSimpleGet()
     {
+        $matcher = new Matcher();
+
         $request = new ConsumerRequest();
         $request
             ->setPath('/something')
@@ -48,7 +49,7 @@ class InteractionBuilderTest extends TestCase
             ->setStatus(200)
             ->setBody([
                 'message' => 'Hello, world!',
-                'age'     => new LikeMatcher(73)
+                'age'     => $matcher->like(73)
             ])
             ->addHeader('Content-Type', 'application/json');
 
@@ -85,6 +86,37 @@ class InteractionBuilderTest extends TestCase
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
                 'message' => 'Hello, world!'
+            ]);
+
+        $builder = new InteractionBuilder(new MockServerEnvConfig());
+        $result  = $builder
+            ->given('A test request.')
+            ->uponReceiving('A test response.')
+            ->with($request)
+            ->willRespondWith($response);
+
+        $this->assertTrue($result);
+    }
+
+    public function testBuildWithEachLikeMatcher()
+    {
+        $matcher = new Matcher();
+
+        $request = new ConsumerRequest();
+        $request
+            ->setPath('/something')
+            ->setMethod('GET')
+            ->addHeader('Content-Type', 'application/json');
+
+        $response = new ProviderResponse();
+        $response
+            ->setStatus(200)
+            ->addHeader('Content-Type', 'application/json')
+            ->setBody([
+                'list' => $matcher->eachLike([
+                    'test' => 1,
+                    'another' => 2
+                ])
             ]);
 
         $builder = new InteractionBuilder(new MockServerEnvConfig());

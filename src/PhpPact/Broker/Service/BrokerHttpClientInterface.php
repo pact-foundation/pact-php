@@ -9,7 +9,7 @@ use Psr\Http\Message\UriInterface;
  * Interface for http interaction with the PACT Broker.
  * Interface BrokerHttpServiceInterface
  */
-interface BrokerHttpServiceInterface
+interface BrokerHttpClientInterface
 {
     /**
      * HttpServiceInterface constructor.

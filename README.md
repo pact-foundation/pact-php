@@ -32,6 +32,7 @@ Table of contents
         * [Verify Files by Path](#verify-files-by-path)
 * [Tips](#tips)
     * [Starting API Asyncronously](#starting-api-asyncronously)
+    * [Set Up Provider State](#set-up-provider-state)
         
 
 ## Installation
@@ -99,23 +100,38 @@ You can also create a body just like you will see in the provider example.
 This will define what the response from the provider should look like.
 
 ```php
+$matcher = new Matcher();
+
 $response = new ProviderResponse();
 $response
     ->setStatus(200)
     ->addHeader('Content-Type', 'application/json')
     ->setBody([
-        'message' => new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
+        'message' => $matcher->regex('Hello, Bob', '(Hello, )[A-Za-z]')
     ]);
 ```
 
-Right now the body supports 2 data types with matchers, arrays and stdObjects.
+In this example, we are using matchers. This allows us to add flexible rules when matching the expectation with the actual value. In the example, you will see regex is used to validate that the response is valid.
 
-In this example, we are using matchers. This allows us to add flexible rules when matching the expectation with the actual value. In the example, you will see Regex is used to validate that the response is valid.
+```php
+$matcher = new Matcher();
+
+$response = new ProviderResponse();
+$response
+    ->setStatus(200)
+    ->addHeader('Content-Type', 'application/json')
+    ->setBody([
+        'list' => $matcher->eachLike()
+    ]);
+```
 
 Matcher | Explanation | Parameters | Example
 ---|---|---|---
-PhpPact\Consumer\Matcher\RegexMatcher | Match a value against a regex pattern. | Value, Regex Pattern | new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
-PhpPact\Consumer\Matcher\TypeMatcher | Match a value against its data type. | Value, Min (Optional), Max (Optional) | new TypeMatcher(12, 0, 100)
+term | Match a value against a regex pattern. | Value, Regex Pattern | $matcher->term('Hello, Bob', '(Hello, )[A-Za-z]')
+regex | Alias to term matcher. | Value, Regex Pattern | $matcher->regex('Hello, Bob', '(Hello, )[A-Za-z]')
+dateISO8601 | Regex match a date using the ISO8601 format. Example: 2010-01-01 | Value | $matcher->dateISO8601('2010-01-01')
+like | Match a value against its data type. | Value | $matcher->like(12)
+eachLike | Match on an object like the example. | Value, Min (Defaults to 1) | $matcher->eachLike(12)
 
 ### Build the Interaction
 
@@ -170,6 +186,8 @@ Create a single unit test function. This will test a single consumer of the serv
 
 Get an instance of the API up and running. [Click here](#starting-your-api) for some tips.
 
+If you need to set up the state of your API before making each request please see [Set Up Provider State](#set-up-provider-state).
+
 ### Provider Verification
 
 There are three ways to verify Pact files. See the examples below.
@@ -188,8 +206,8 @@ $config
     ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
 
 // Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
-$verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()));
-$verifier->verify('SomeConsumer', 'master');
+$verifier = new Verifier($config);
+$verifier->verify('SomeConsumer', 'master'); // The tag is option. If no tag is set it will just grab the latest.
 
 // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
 $this->assertTrue(true, 'Pact Verification has failed.');
@@ -211,7 +229,7 @@ public function testPactVerifyAll()
         ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
 
     // Verify that all consumers of 'SomeProvider' are valid.
-    $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()), new InstallManager());
+    $verifier = new Verifier($config);
     $verifier->verifyAll();
 
     // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
@@ -235,7 +253,7 @@ public function testPactVerifyAll()
         ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
 
     // Verify that the files in the array are valid.
-    $verifier = new Verifier($config, new BrokerHttpService(new GuzzleClient(), $config->getBrokerUri()), new InstallManager());
+    $verifier = new Verifier($config);
     $verifier->verifyFiles(['C:\SomePath\consumer-provider.json']);
 
     // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
@@ -252,3 +270,15 @@ You can use the built in PHP server to accomplish this during your tests setUp f
 [PHP Server](http://php.net/manual/en/features.commandline.webserver.php)
 
 [Symfony Process](https://symfony.com/doc/current/components/process.html)
+
+### Set Up Provider State
+
+The PACT verifier is a wrapper of the [Ruby Standalone Verifier](https://github.com/pact-foundation/pact-provider-verifier).
+See [API with Provider States](https://github.com/pact-foundation/pact-provider-verifier#api-with-provider-states) for more information on how this works.
+Since most PHP rest APIs are stateless, this required some thought.
+
+Here are some options:
+1. Write the posted state to a file and use a factory to decide which mock repository class to use based on the state.
+2. Set up your database to meet the expectations of the request. At the start of each request, you should first reset the database to its original state.
+
+No matter which direction you go, you will have to modify something outside of the PHP process because each request to your server will be stateless and independent.
