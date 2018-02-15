@@ -6,7 +6,6 @@ use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Http\GuzzleClient;
-use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\MockService\MockServer;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
@@ -114,7 +113,7 @@ class InteractionBuilderTest extends TestCase
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
                 'list' => $matcher->eachLike([
-                    'test' => 1,
+                    'test'    => 1,
                     'another' => 2
                 ])
             ]);

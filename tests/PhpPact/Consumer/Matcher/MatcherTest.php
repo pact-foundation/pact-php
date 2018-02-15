@@ -34,7 +34,7 @@ class MatcherTest extends TestCase
         $object->value1 = $this->matcher->like(1);
         $object->value2 = 2;
 
-        $expected = json_encode([
+        $expected = \json_encode([
             'contents' => [
                 'value1' => [
                     'contents'   => 1,
@@ -46,7 +46,7 @@ class MatcherTest extends TestCase
             'min'        => 1
         ]);
 
-        $actual = json_encode($this->matcher->eachLike($object, 1));
+        $actual = \json_encode($this->matcher->eachLike($object, 1));
 
         $this->assertEquals($expected, $actual);
     }
@@ -58,7 +58,7 @@ class MatcherTest extends TestCase
             'value2' => 2
         ];
 
-        $expected = json_encode([
+        $expected = \json_encode([
             'contents' => [
                 'value1' => [
                     'contents'   => 1,
@@ -70,7 +70,7 @@ class MatcherTest extends TestCase
             'min'        => 1
         ]);
 
-        $actual = json_encode($this->matcher->eachLike($object, 1));
+        $actual = \json_encode($this->matcher->eachLike($object, 1));
 
         $this->assertEquals($expected, $actual);
     }
