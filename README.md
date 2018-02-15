@@ -107,11 +107,11 @@ $response
     ->setStatus(200)
     ->addHeader('Content-Type', 'application/json')
     ->setBody([
-        'message' => $matcher->term('Hello, Bob', '(Hello, )[A-Za-z]')
+        'message' => $matcher->regex('Hello, Bob', '(Hello, )[A-Za-z]')
     ]);
 ```
 
-In this example, we are using matchers. This allows us to add flexible rules when matching the expectation with the actual value. In the example, you will see Regex is used to validate that the response is valid.
+In this example, we are using matchers. This allows us to add flexible rules when matching the expectation with the actual value. In the example, you will see regex is used to validate that the response is valid.
 
 Matcher | Explanation | Parameters | Example
 ---|---|---|---
