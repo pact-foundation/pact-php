@@ -28,21 +28,49 @@ class MatcherTest extends TestCase
         $this->assertEquals('{"contents":12,"json_class":"Pact::SomethingLike"}', $json);
     }
 
-    public function testEachLike()
+    public function testEachLikeStdClass()
     {
         $object         = new \stdClass();
         $object->value1 = $this->matcher->like(1);
         $object->value2 = 2;
 
-        $expected = [
+        $expected = json_encode([
             'contents' => [
-                $object
+                'value1' => [
+                    'contents'   => 1,
+                    'json_class' => 'Pact::SomethingLike'
+                ],
+                'value2' => 2
             ],
             'json_class' => 'Pact::ArrayLike',
             'min'        => 1
+        ]);
+
+        $actual = json_encode($this->matcher->eachLike($object, 1));
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testEachLikeArray()
+    {
+        $object = [
+            'value1' => $this->matcher->like(1),
+            'value2' => 2
         ];
 
-        $actual = $this->matcher->eachLike([$object], 1);
+        $expected = json_encode([
+            'contents' => [
+                'value1' => [
+                    'contents'   => 1,
+                    'json_class' => 'Pact::SomethingLike'
+                ],
+                'value2' => 2
+            ],
+            'json_class' => 'Pact::ArrayLike',
+            'min'        => 1
+        ]);
+
+        $actual = json_encode($this->matcher->eachLike($object, 1));
 
         $this->assertEquals($expected, $actual);
     }

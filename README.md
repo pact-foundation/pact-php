@@ -113,6 +113,18 @@ $response
 
 In this example, we are using matchers. This allows us to add flexible rules when matching the expectation with the actual value. In the example, you will see regex is used to validate that the response is valid.
 
+```php
+$matcher = new Matcher();
+
+$response = new ProviderResponse();
+$response
+    ->setStatus(200)
+    ->addHeader('Content-Type', 'application/json')
+    ->setBody([
+        'list' => $matcher->eachLike()
+    ]);
+```
+
 Matcher | Explanation | Parameters | Example
 ---|---|---|---
 term | Match a value against a regex pattern. | Value, Regex Pattern | $matcher->term('Hello, Bob', '(Hello, )[A-Za-z]')
