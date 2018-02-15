@@ -2,10 +2,21 @@
 
 namespace PhpPact\Consumer\Matcher;
 
+/**
+ * Matcher implementation. Builds the Ruby Mock Server specification json for interaction publishing.
+ * Class Matcher
+ */
 class Matcher
 {
     const ISO8601_DATE_FORMAT = '^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))?)$';
 
+    /**
+     * @param mixed $value example of what the expected data would be
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
     public function like($value): array
     {
         if ($value === null) {
@@ -18,15 +29,33 @@ class Matcher
         ];
     }
 
-    public function eachLike($values, int $min = 1): array
+    /**
+     * Expect an array of similar data as the value passed in.
+     *
+     * @param mixed $value example of what the expected data would be
+     * @param int   $min
+     *
+     * @return array
+     */
+    public function eachLike($value, int $min = 1): array
     {
         return [
-            'contents'   => $values,
+            'contents'   => $value,
             'json_class' => 'Pact::ArrayLike',
             'min'        => $min
         ];
     }
 
+    /**
+     * Validate that a value will match a regex pattern.
+     *
+     * @param mixed  $value   example of what the expected data would be
+     * @param string $pattern valid Ruby regex pattern
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
     public function term($value, string $pattern): array
     {
         $result = \preg_match("/$pattern/", $value);
@@ -64,7 +93,7 @@ class Matcher
     }
 
     /**
-     * ISO8601 date format
+     * ISO8601 date format wrapper for the term matcher.
      *
      * @param string $value valid ISO8601 date, example: 2010-01-01
      *
