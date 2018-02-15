@@ -117,7 +117,7 @@ Matcher | Explanation | Parameters | Example
 ---|---|---|---
 term | Match a value against a regex pattern. | Value, Regex Pattern | $matcher->term('Hello, Bob', '(Hello, )[A-Za-z]')
 regex | Alias to term matcher. | Value, Regex Pattern | $matcher->regex('Hello, Bob', '(Hello, )[A-Za-z]')
-dateISO8601 | Regex match a date using the ISO8601 format. Example: 2010-01-01 | Value | $matcher->like(12)
+dateISO8601 | Regex match a date using the ISO8601 format. Example: 2010-01-01 | Value | $matcher->dateISO8601('2010-01-01')
 like | Match a value against its data type. | Value | $matcher->like(12)
 eachLike | Match on an object like the example. | Value, Min (Defaults to 1) | $matcher->eachLike(12)
 
