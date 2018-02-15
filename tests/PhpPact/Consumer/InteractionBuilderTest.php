@@ -2,7 +2,7 @@
 
 namespace PhpPact\Consumer;
 
-use PhpPact\Consumer\Matcher\LikeMatcher;
+use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Http\GuzzleClient;
@@ -37,6 +37,8 @@ class InteractionBuilderTest extends TestCase
 
     public function testSimpleGet()
     {
+        $matcher = new Matcher();
+
         $request = new ConsumerRequest();
         $request
             ->setPath('/something')
@@ -48,7 +50,7 @@ class InteractionBuilderTest extends TestCase
             ->setStatus(200)
             ->setBody([
                 'message' => 'Hello, world!',
-                'age'     => new LikeMatcher(73)
+                'age'     => $matcher->like(73)
             ])
             ->addHeader('Content-Type', 'application/json');
 

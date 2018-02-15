@@ -3,6 +3,8 @@
 namespace PhpPact\Standalone\MockService\Service;
 
 use GuzzleHttp\Exception\ServerException;
+use PhpPact\Consumer\InteractionBuilder;
+use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
@@ -12,6 +14,7 @@ use PhpPact\Standalone\MockService\MockServer;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class MockServerHttpServiceTest extends TestCase
 {
@@ -147,5 +150,48 @@ class MockServerHttpServiceTest extends TestCase
         $body = $response->getBody()->getContents();
         $this->assertEquals(\json_encode($expectedResponseBody), $body);
         $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testMatcherWithMockServer()
+    {
+        $matcher = new Matcher();
+
+        $category       = new stdClass();
+        $category->name = $matcher->term('Games', '[gbBG]');
+
+        $request = new ConsumerRequest();
+        $request
+            ->setPath('/test')
+            ->setMethod('GET');
+
+        $response = new ProviderResponse();
+        $response
+            ->setStatus(200)
+            ->addHeader('Content-Type', 'application/json')
+            ->setBody([
+                'results' => $matcher->eachLike($category)
+            ]);
+
+        $config      = new MockServerEnvConfig();
+        $interaction = new InteractionBuilder($config);
+        $interaction
+            ->given('Something')
+            ->uponReceiving('Stuff')
+            ->with($request)
+            ->willRespondWith($response);
+
+        $client   = new GuzzleClient();
+        $uri      = $this->config->getBaseUri()->withPath('/test');
+        $client->get($uri, [
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ]
+        ]);
+
+        $httpClient = new MockServerHttpService(new GuzzleClient(), $config);
+
+        $pact = \json_decode($httpClient->getPactJson(), true);
+
+        $this->assertArrayHasKey('$.body.results[*].name', $pact['interactions'][0]['response']['matchingRules']);
     }
 }

@@ -100,23 +100,26 @@ You can also create a body just like you will see in the provider example.
 This will define what the response from the provider should look like.
 
 ```php
+$matcher = new Matcher();
+
 $response = new ProviderResponse();
 $response
     ->setStatus(200)
     ->addHeader('Content-Type', 'application/json')
     ->setBody([
-        'message' => new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
+        'message' => $matcher->term('Hello, Bob', '(Hello, )[A-Za-z]')
     ]);
 ```
-
-Right now the body supports 2 data types with matchers, arrays and stdObjects.
 
 In this example, we are using matchers. This allows us to add flexible rules when matching the expectation with the actual value. In the example, you will see Regex is used to validate that the response is valid.
 
 Matcher | Explanation | Parameters | Example
 ---|---|---|---
-PhpPact\Consumer\Matcher\RegexMatcher | Match a value against a regex pattern. | Value, Regex Pattern | new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
-PhpPact\Consumer\Matcher\TypeMatcher | Match a value against its data type. | Value, Min (Optional), Max (Optional) | new TypeMatcher(12, 0, 100)
+term | Match a value against a regex pattern. | Value, Regex Pattern | $matcher->term('Hello, Bob', '(Hello, )[A-Za-z]')
+regex | Alias to term matcher. | Value, Regex Pattern | $matcher->regex('Hello, Bob', '(Hello, )[A-Za-z]')
+dateISO8601 | Regex match a date using the ISO8601 format. Example: 2010-01-01 | Value | $matcher->like(12)
+like | Match a value against its data type. | Value | $matcher->like(12)
+eachLike | Match on an object like the example. | Value, Min (Defaults to 1) | $matcher->eachLike(12)
 
 ### Build the Interaction
 

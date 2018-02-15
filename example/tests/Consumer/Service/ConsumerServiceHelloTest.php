@@ -3,7 +3,7 @@
 namespace Consumer\Service;
 
 use PhpPact\Consumer\InteractionBuilder;
-use PhpPact\Consumer\Matcher\RegexMatcher;
+use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
@@ -16,6 +16,8 @@ class ConsumerServiceHelloTest extends TestCase
      */
     public function testGetHelloString()
     {
+        $matcher = new Matcher();
+
         // Create your expected request from the consumer.
         $request = new ConsumerRequest();
         $request
@@ -29,7 +31,7 @@ class ConsumerServiceHelloTest extends TestCase
             ->setStatus(200)
             ->addHeader('Content-Type', 'application/json;charset=utf-8')
             ->setBody([
-                'message' => new RegexMatcher('Hello, Bob', '(Hello, )[A-Za-z]')
+                'message' => $matcher->term('Hello, Bob', '(Hello, )[A-Za-z]')
             ]);
 
         // Create a configuration that reflects the server that was started. You can create a custom MockServerConfigInterface if needed.
