@@ -121,7 +121,10 @@ $response
     ->setStatus(200)
     ->addHeader('Content-Type', 'application/json')
     ->setBody([
-        'list' => $matcher->eachLike()
+        'list' => $matcher->eachLike([
+            'firstName' => 'Bob',
+            'age' => 22
+        ])
     ]);
 ```
 
