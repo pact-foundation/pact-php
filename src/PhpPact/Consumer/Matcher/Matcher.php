@@ -33,17 +33,22 @@ class Matcher
      * Expect an array of similar data as the value passed in.
      *
      * @param mixed $value example of what the expected data would be
-     * @param int   $min
+     * @param int   $min minimum number of objects to verify against
      *
      * @return array
      */
-    public function eachLike($value, int $min = 1): array
+    public function eachLike($value, int $min = null): array
     {
-        return [
+        $result = [
             'contents'   => $value,
-            'json_class' => 'Pact::ArrayLike',
-            'min'        => $min
+            'json_class' => 'Pact::ArrayLike'
         ];
+
+        if ($min !== null) {
+            $result['min'] = $min;
+        }
+
+        return $result;
     }
 
     /**

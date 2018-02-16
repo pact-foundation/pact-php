@@ -119,7 +119,7 @@ class Verifier
      */
     public function verifyFiles(array $files): self
     {
-        $arguments = \array_merge([$files], $this->getArguments());
+        $arguments = \array_merge($files, $this->getArguments());
 
         $this->verifyAction($arguments);
 
