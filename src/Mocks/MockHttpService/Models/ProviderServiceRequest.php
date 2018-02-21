@@ -141,7 +141,7 @@ class ProviderServiceRequest implements \JsonSerializable, IHttpMessage
      */
     public function setMatchingRules($matchingRules)
     {
-        if (count($matchingRules) > 0) {
+        if (is_array($matchingRules) && count($matchingRules) > 0) {
            foreach ($matchingRules as $matchingRule) {
                 $this->addMatchingRule($matchingRule);
            }
