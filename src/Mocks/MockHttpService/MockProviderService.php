@@ -380,7 +380,7 @@ class MockProviderService implements IMockProviderService
             ->andWhenPath($interaction->getRequest()->getPath());
 
 
-        if ($interaction->getRequest()->getHeaders() instanceof \Countable && count($interaction->getRequest()->getHeaders()) > 0) {
+        if (is_array($interaction->getRequest()->getHeaders()) && count($interaction->getRequest()->getHeaders()) > 0) {
             $server = $server->andWhenHeaders($interaction->getRequest()->getHeaders());
         }
 
