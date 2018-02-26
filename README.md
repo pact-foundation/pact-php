@@ -45,7 +45,7 @@ $ composer require mattersight/phppact --dev
 
 ## Basic Consumer Usage
 
-All of the following code will be used exclusively for the Consumer.
+All of the following code will be used exclusively for the Consumer. 
 
 ### Start and Stop the Mock Server
 
@@ -62,11 +62,15 @@ Alternatively, you can start and stop as in whatever means you would like by fol
 
     // Create your basic configuration. The host and port will need to match
     // whatever your Http Service will be using to access the providers data.
-    $config = new MockServerConfig('localhost', 7200, 'SomeConsumer', 'SomeProvider');
+    $config = (new MockServerConfig())
+        ->setHost('localhost')
+        ->setPort(7200)
+        ->setConsumer('SomeConsumer')
+        ->setProvider('SomeProvider');
     
     // Instantiate the mock server object with the config. This can be any
     // instance of MockServerConfigInterface.
-    $server = new MockServer($this->mockServerConfig);
+    $server = new MockServer($config);
     
     // Create the process.
     $server->start();
@@ -181,11 +185,11 @@ $this->assertEquals('Hello, Bob', $result); // Make your assertions.
 
 All of the following code will be used exclusively for Providers. This will run the Pacts against the real Provider and either verify or fail validation on the Pact Broker.
 
-##### Create Unit Test
+### Create Unit Test
 
 Create a single unit test function. This will test a single consumer of the service.
 
-##### Start API
+### Start API
 
 Get an instance of the API up and running. [Click here](#starting-your-api) for some tips.
 
@@ -285,3 +289,7 @@ Here are some options:
 2. Set up your database to meet the expectations of the request. At the start of each request, you should first reset the database to its original state.
 
 No matter which direction you go, you will have to modify something outside of the PHP process because each request to your server will be stateless and independent.
+
+### Interact with the Broker
+Often it is useful to explictly interact with the broker.   Leverage the BrokerHttpClient your necessary custom steps 
+outside of the normal verify and build work flow.   Historical functions can be brought over later.
