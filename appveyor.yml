@@ -1,10 +1,4 @@
-# Notes:
-#   - Minimal appveyor.yml file is an empty file. All sections are optional.
-#   - Indent each level of configuration with 2 spaces. Do not use tabs!
-#   - All section names are case-sensitive.
-#   - Section names should be unique on each level.
-
-version: 2.0.{build}
+version: 3.0.{build}
 
 skip_tags: false
 
@@ -20,36 +14,21 @@ image: Visual Studio 2017
 init:
   - git config --global core.autocrlf input
 
-clone_folder: c:\projects\pact-php
-
 install:
-  - cinst php --version 7.1.11
-  - cmd: C:\tools\php71\php.exe -i
-  - cmd: copy /Y .\test\php.ini C:\tools\php71\
+  - cinst php --version 7.0.27
+  - set PATH=C:\tools\php70;%PATH%
+  - cmd: copy /Y .\tests\PhpPact\php.ini C:\tools\php70\
+  - cmd: php -v
   - appveyor DownloadFile https://getcomposer.org/composer.phar
-  - cmd: C:\tools\php71\php.exe .\composer.phar update --ignore-platform-reqs
+  - cmd: php .\composer.phar update
 
 build: off
 
 test_script:
-  - cmd: C:\tools\php71\php.exe .\vendor\phpunit\phpunit\phpunit -c .\phpunit-all-tests.xml
-  - appveyor DownloadFile http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar
-  - cmd: C:\tools\php71\php.exe php-cs-fixer-v2.phar fix  -v --dry-run --stop-on-violation --using-cache=no --rules=-line_ending .
+  - cmd: php .\composer.phar test
 
 on_success:
   - echo Success
 
 on_failure:
   - echo Failure
-
-notifications:
-
-# Email
-#  - provider: Email
-#    to:
-#      - user1@email.com
-#      - user2@email.com
-#    subject: 'Build {{status}}'                  # optional
-#    message: "{{message}}, {{commitId}}, ..."    # optional
-#    on_build_status_changed: true
-
