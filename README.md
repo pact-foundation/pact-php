@@ -14,6 +14,7 @@ PHP version of [Pact](https://pact.io). Enables consumer driven contract testing
 Table of contents
 =================
 
+* [Versions](#versions)
 * [Installation](#installation)
 * [Basic Consumer Usage](#basic-consumer-usage)
     * [Start and Stop Mock Service](#start-and-stop-mock-service)
@@ -33,8 +34,15 @@ Table of contents
 * [Tips](#tips)
     * [Starting API Asyncronously](#starting-api-asyncronously)
     * [Set Up Provider State](#set-up-provider-state)
+	* 
         
 
+## Versions
+Master and the 3.X tags are a major breaking change to the 2.X versions.   To be similar to the rest of the Pact ecosystem, Pact-PHP migrated to leverage the Ruby backend.  This mirrors the .Net, JS, Python, and Go implementations. 
+
+If you wish to stick with the 2.X implementation, you can continue to pull from the [latest 2.X.X tag](https://github.com/pact-foundation/pact-php/tree/2.2.1). 
+
+		
 ## Installation
 
 Install the latest version with:
@@ -285,3 +293,8 @@ Here are some options:
 2. Set up your database to meet the expectations of the request. At the start of each request, you should first reset the database to its original state.
 
 No matter which direction you go, you will have to modify something outside of the PHP process because each request to your server will be stateless and independent.
+
+### Additional Examples
+There is a separate repository with an end to end example for both the 2.X and 3.X implementations.   
+- [pact-php-example](https://github.com/mattermack/pact-php-example) for 3.X examples
+- [2.2.1 tag](https://github.com/mattermack/pact-php-example/tree/2.2.1) for 2.X examples
