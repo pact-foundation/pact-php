@@ -33,7 +33,7 @@ class Matcher
      * Expect an array of similar data as the value passed in.
      *
      * @param mixed $value example of what the expected data would be
-     * @param int   $min minimum number of objects to verify against
+     * @param int   $min   minimum number of objects to verify against
      *
      * @return array
      */
