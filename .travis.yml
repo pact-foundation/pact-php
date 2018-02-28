@@ -1,0 +1,16 @@
+sudo: required
+
+os:
+  - linux
+
+language: php
+
+php:
+  - 7.0
+  - 7.1
+  - 7.2
+
+install:
+  - composer install
+
+script: composer test
