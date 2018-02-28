@@ -15,6 +15,7 @@ Table of contents
 =================
 
 * [Versions](#versions)
+* [Specifications](#specifications)
 * [Installation](#installation)
 * [Basic Consumer Usage](#basic-consumer-usage)
     * [Start and Stop Mock Service](#start-and-stop-mock-service)
@@ -32,16 +33,20 @@ Table of contents
         * [Verify All from Pact Broker](#verify-all-from-pact-broker)
         * [Verify Files by Path](#verify-files-by-path)
 * [Tips](#tips)
-    * [Starting API Asyncronously](#starting-api-asyncronously)
+    * [Starting API Asynchronously](#starting-api-asynchronously)
     * [Set Up Provider State](#set-up-provider-state)
 	* 
         
 
 ## Versions
+
 Master and the 3.X tags are a major breaking change to the 2.X versions.   To be similar to the rest of the Pact ecosystem, Pact-PHP migrated to leverage the Ruby backend.  This mirrors the .Net, JS, Python, and Go implementations. 
 
 If you wish to stick with the 2.X implementation, you can continue to pull from the [latest 2.X.X tag](https://github.com/pact-foundation/pact-php/tree/2.2.1). 
 
+## Specifications
+
+The 3.X version is the version of Pact-PHP, not the pact specification version that it supports.   Pact-Php 3.X supports [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2).
 		
 ## Installation
 
@@ -274,7 +279,7 @@ public function testPactVerifyAll()
 
 ## Tips
 
-### Starting API Asyncronously
+### Starting API Asynchronously
 
 You can use the built in PHP server to accomplish this during your tests setUp function. The Symfony Process library can be used to run the process asynchronous.
 
