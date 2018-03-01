@@ -81,11 +81,11 @@ interface MockServerConfigInterface
     public function getPactDir();
 
     /**
-     * @param string $pactDir url to place the pact files when written to disk
+     * @param null|string $pactDir url to place the pact files when written to disk
      *
      * @return MockServerConfigInterface
      */
-    public function setPactDir(string $pactDir): self;
+    public function setPactDir($pactDir): self;
 
     /**
      * @return string 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten

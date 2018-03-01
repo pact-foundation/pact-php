@@ -28,7 +28,7 @@ class InstallManager
 
     public function __construct()
     {
-        $this->destinationDir = __DIR__.'/../../../../';
+        $this->destinationDir = __DIR__ . '/../../../..';
         $this
             ->registerInstaller(new InstallerWindows())
             ->registerInstaller(new InstallerMac())

@@ -120,7 +120,6 @@ return PhpCsFixer\Config::create()
             'return_type_declaration' => ['space_before' => 'none'],
             'self_accessor' => true,
             'short_scalar_cast' => true,
-            'simplified_null_return' => true,
             'single_blank_line_at_eof' => true,
             'single_import_per_statement' => true,
             'single_line_after_imports' => true,

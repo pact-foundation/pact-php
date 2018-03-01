@@ -186,7 +186,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * @inheritDoc
      */
-    public function setPactDir(string $pactDir): MockServerConfigInterface
+    public function setPactDir($pactDir): MockServerConfigInterface
     {
         $this->pactDir = $pactDir;
 
