@@ -28,7 +28,7 @@ class InstallManager
 
     public function __construct()
     {
-        $this->destinationDir = \sys_get_temp_dir();
+        $this->destinationDir = __DIR__.'/../../../../';
         $this
             ->registerInstaller(new InstallerWindows())
             ->registerInstaller(new InstallerMac())
