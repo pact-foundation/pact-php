@@ -255,3 +255,4 @@ vendor/*
 .buildpath
 
 test_results
+pact
