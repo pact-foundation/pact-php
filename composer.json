@@ -25,6 +25,7 @@
     },
     "require": {
         "php": "^7.0",
+        "ext-openssl": "*",
         "symfony/process": "^3.0",
         "symfony/filesystem": "^3.0",
         "guzzlehttp/guzzle": "^6.3",

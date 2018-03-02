@@ -29,9 +29,9 @@ class InstallerWindows implements InstallerInterface
         $fs = new Filesystem();
 
         if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
-            $version      = '1.22.1';
+            $version      = '1.29.2';
             $fileName     = "pact-{$version}-win32.zip";
-            $tempFilePath = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+            $tempFilePath = __DIR__ . DIRECTORY_SEPARATOR . $fileName;
 
             $this
                 ->download($fileName, $tempFilePath)
@@ -41,7 +41,7 @@ class InstallerWindows implements InstallerInterface
 
         $binDir  = $destinationDir . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR;
         $scripts = new Scripts(
-             $binDir . 'pact-mock-service.bat',
+            $binDir . 'pact-mock-service.bat',
             $binDir . 'pact-provider-verifier.bat'
         );
 
@@ -60,13 +60,18 @@ class InstallerWindows implements InstallerInterface
      */
     private function download(string $fileName, string $tempFilePath): self
     {
-        $uri  = "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.22.1/{$fileName}";
+        $uri  = "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.29.2/{$fileName}";
+
         $data = \file_get_contents($uri);
+
+        if ($data === false) {
+            throw new FileDownloadFailureException('Failed to download binary from Github for Ruby Standalone!');
+        }
 
         $result = \file_put_contents($tempFilePath, $data);
 
         if ($result === false) {
-            throw new FileDownloadFailureException('Failed to download file.');
+            throw new FileDownloadFailureException('Failed to save binaries for Ruby Standalone!');
         }
 
         return $this;

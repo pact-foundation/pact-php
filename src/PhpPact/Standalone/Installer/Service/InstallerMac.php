@@ -54,13 +54,18 @@ class InstallerMac implements InstallerInterface
      */
     private function download(string $fileName, string $tempFilePath): self
     {
-        $uri  = "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.22.1/{$fileName}";
+        $uri  = "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.29.2/{$fileName}";
+
         $data = \file_get_contents($uri);
+
+        if ($data === false) {
+            throw new FileDownloadFailureException('Failed to download binary from Github for Ruby Standalone!');
+        }
 
         $result = \file_put_contents($tempFilePath, $data);
 
         if ($result === false) {
-            throw new FileDownloadFailureException('Failed to download file.');
+            throw new FileDownloadFailureException('Failed to save binaries for Ruby Standalone!');
         }
 
         return $this;
