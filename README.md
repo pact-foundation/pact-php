@@ -35,7 +35,7 @@ Table of contents
 * [Tips](#tips)
     * [Starting API Asynchronously](#starting-api-asynchronously)
     * [Set Up Provider State](#set-up-provider-state)
-	* 
+    * [Examples](#additional-examples)
         
 
 ## Versions
@@ -200,7 +200,7 @@ Create a single unit test function. This will test a single consumer of the serv
 
 ##### Start API
 
-Get an instance of the API up and running. [Click here](#starting-your-api) for some tips.
+Get an instance of the API up and running. [Click here](#starting-api-asynchronously) for some tips.
 
 If you need to set up the state of your API before making each request please see [Set Up Provider State](#set-up-provider-state).
 
