@@ -47,4 +47,14 @@ interface BrokerHttpClientInterface
      * @return string[]
      */
     public function getAllConsumerUrls(string $provider, string $version = 'latest'): array;
+
+    /**
+     * Get all Pact URLs for a specific tag.
+     *
+     * @param string $provider
+     * @param string $tag
+     *
+     * @return array
+     */
+    public function getAllConsumerUrlsForTag(string $provider, string $tag): array;
 }

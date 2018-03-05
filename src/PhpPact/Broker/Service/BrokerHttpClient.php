@@ -66,7 +66,30 @@ class BrokerHttpClient implements BrokerHttpClientInterface
      */
     public function getAllConsumerUrls(string $provider, string $version = 'latest'): array
     {
-        $uri = $this->baseUri->withPath("pacts/provider/{$provider}/latest");
+        $uri = $this->baseUri->withPath("pacts/provider/{$provider}/{$version}");
+
+        $response = $this->httpClient->get($uri, [
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ]
+        ]);
+
+        $json = \json_decode($response->getBody()->getContents(), true);
+
+        $urls = [];
+        foreach ($json['_links']['pacts'] as $pact) {
+            $urls[] = $pact['href'];
+        }
+
+        return $urls;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllConsumerUrlsForTag(string $provider, string $tag): array
+    {
+        $uri = $this->baseUri->withPath("pacts/provider/{$provider}/latest/{$tag}");
 
         $response = $this->httpClient->get($uri, [
             'headers' => [

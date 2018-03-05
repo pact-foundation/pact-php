@@ -104,6 +104,8 @@ class MockServerConfig implements MockServerConfigInterface
      */
     public function setPort(int $port): MockServerConfigInterface
     {
+        $this->port = $port;
+
         return $this;
     }
 

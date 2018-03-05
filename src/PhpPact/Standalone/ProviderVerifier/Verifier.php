@@ -139,6 +139,20 @@ class Verifier
     }
 
     /**
+     * Verify all PACTs for a given tag.
+     *
+     * @param string $tag
+     */
+    public function verifyAllForTag(string $tag)
+    {
+        $arguments = $this->getBrokerHttpClient()->getAllConsumerUrlsForTag($this->config->getProviderName(), $tag);
+
+        $arguments = \array_merge($arguments, $this->getArguments());
+
+        $this->verifyAction($arguments);
+    }
+
+    /**
      * Wrapper to add a custom installer.
      *
      * @param InstallerInterface $installer
