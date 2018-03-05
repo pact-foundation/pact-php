@@ -24,7 +24,7 @@ class InstallerMac implements InstallerInterface
         $fs = new Filesystem();
 
         if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
-            $version      = '1.22.1';
+            $version      = '1.29.2';
             $fileName     = "pact-{$version}-osx.tar.gz";
             $tempFilePath = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
 
