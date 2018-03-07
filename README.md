@@ -18,7 +18,7 @@ Table of contents
 * [Specifications](#specifications)
 * [Installation](#installation)
 * [Basic Consumer Usage](#basic-consumer-usage)
-    * [Start and Stop Mock Service](#start-and-stop-mock-service)
+    * [Start and Stop the Mock Server](#start-and-stop-the-mock-server)
     * [Create Consumer Unit Test](#create-consumer-unit-test)
     * [Create Mock Request](#create-mock-request)
     * [Create Mock Response](#create-mock-response)  
