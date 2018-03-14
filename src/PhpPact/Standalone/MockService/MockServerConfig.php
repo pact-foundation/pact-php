@@ -88,6 +88,8 @@ class MockServerConfig implements MockServerConfigInterface
      */
     public function setHost(string $host): MockServerConfigInterface
     {
+        $this->host = $host;
+
         return $this;
     }
 
