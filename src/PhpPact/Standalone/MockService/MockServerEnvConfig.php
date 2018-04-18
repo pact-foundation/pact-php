@@ -10,6 +10,11 @@ use PhpPact\Consumer\Exception\MissingEnvVariableException;
  */
 class MockServerEnvConfig extends MockServerConfig
 {
+    /**
+     * MockServerEnvConfig constructor.
+     *
+     * @throws MissingEnvVariableException
+     */
     public function __construct()
     {
         $this

@@ -20,6 +20,10 @@ class InteractionBuilderTest extends TestCase
     /** @var MockServer */
     private $mockServer;
 
+    /**
+     * @throws Exception\MissingEnvVariableException
+     * @throws \Exception
+     */
     protected function setUp()
     {
         $config            = new MockServerEnvConfig();
@@ -33,6 +37,10 @@ class InteractionBuilderTest extends TestCase
         $this->mockServer->stop();
     }
 
+    /**
+     * @throws Exception\MissingEnvVariableException
+     * @throws \Exception
+     */
     public function testSimpleGet()
     {
         $matcher = new Matcher();
@@ -62,6 +70,9 @@ class InteractionBuilderTest extends TestCase
         $this->assertTrue($result);
     }
 
+    /**
+     * @throws Exception\MissingEnvVariableException
+     */
     public function testPostWithBody()
     {
         $request = new ConsumerRequest();
@@ -97,6 +108,9 @@ class InteractionBuilderTest extends TestCase
         $this->assertTrue($result);
     }
 
+    /**
+     * @throws Exception\MissingEnvVariableException
+     */
     public function testBuildWithEachLikeMatcher()
     {
         $matcher = new Matcher();

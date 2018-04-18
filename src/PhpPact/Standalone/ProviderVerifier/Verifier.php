@@ -5,6 +5,8 @@ namespace PhpPact\Standalone\ProviderVerifier;
 use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
 use PhpPact\Http\GuzzleClient;
+use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
+use PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
@@ -90,7 +92,10 @@ class Verifier
      * @param string      $consumerName name of the consumer to be compared against
      * @param null|string $tag          optional tag of the consumer such as a branch name
      *
-     * @return self
+     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
+     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
+     *
+     * @return Verifier
      */
     public function verify(string $consumerName, string $tag = null): self
     {
@@ -115,7 +120,10 @@ class Verifier
      *
      * @param array $files paths to pact json files
      *
-     * @return self
+     * @throws FileDownloadFailureException
+     * @throws NoDownloaderFoundException
+     *
+     * @return Verifier
      */
     public function verifyFiles(array $files): self
     {
@@ -128,6 +136,9 @@ class Verifier
 
     /**
      * Verify all Pacts from the Pact Broker are valid for the Provider.
+     *
+     * @throws FileDownloadFailureException
+     * @throws NoDownloaderFoundException
      */
     public function verifyAll()
     {
@@ -142,6 +153,9 @@ class Verifier
      * Verify all PACTs for a given tag.
      *
      * @param string $tag
+     *
+     * @throws FileDownloadFailureException
+     * @throws NoDownloaderFoundException
      */
     public function verifyAllForTag(string $tag)
     {
@@ -170,6 +184,9 @@ class Verifier
      * Execute the Pact Verifier Service.
      *
      * @param array $arguments
+     *
+     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
+     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
      */
     private function verifyAction(array $arguments)
     {

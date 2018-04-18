@@ -2,6 +2,7 @@
 
 namespace PhpPact\Standalone\Installer\Service;
 
+use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
 use PhpPact\Standalone\Installer\Model\Scripts;
 
 /**
@@ -20,6 +21,8 @@ interface InstallerInterface
      * Download the file and install it in the necessary directory.
      *
      * @param string $destinationDir folder path to put the binaries
+     *
+     * @throws FileDownloadFailureException
      *
      * @return Scripts
      */

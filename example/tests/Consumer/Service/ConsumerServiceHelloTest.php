@@ -13,6 +13,8 @@ class ConsumerServiceHelloTest extends TestCase
 {
     /**
      * Example PACT test.
+     *
+     * @throws \Exception
      */
     public function testGetHelloString()
     {

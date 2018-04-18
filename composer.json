@@ -53,9 +53,7 @@
     },
     "scripts": {
         "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
-        "test": [
-            "php-cs-fixer fix --config .php_cs",
-            "phpunit --debug"
-        ]
+        "fix": "php-cs-fixer fix --config .php_cs",
+        "test": "phpunit --debug"
     }
 }

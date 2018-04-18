@@ -41,7 +41,7 @@ class InteractionBuilder implements InteractionBuilderInterface
      */
     public function given(string $description): InteractionBuilderInterface
     {
-        $this->interaction->setDescription($description);
+        $this->interaction->setProviderState($description);
 
         return $this;
     }
@@ -51,7 +51,7 @@ class InteractionBuilder implements InteractionBuilderInterface
      */
     public function uponReceiving(string $providerState): InteractionBuilderInterface
     {
-        $this->interaction->setProviderState($providerState);
+        $this->interaction->setDescription($providerState);
 
         return $this;
     }

@@ -47,6 +47,7 @@ class MockServer
      * Start the Mock Server. Verify that it is running.
      *
      * @throws ProcessFailedException
+     * @throws Exception
      *
      * @return int process ID of the started Mock Server
      */

@@ -13,6 +13,8 @@ use ZipArchive;
  */
 class InstallerWindows implements InstallerInterface
 {
+    const VERSION = '1.38.0';
+
     /**
      * @inheritDoc
      */
@@ -29,8 +31,7 @@ class InstallerWindows implements InstallerInterface
         $fs = new Filesystem();
 
         if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
-            $version      = '1.29.2';
-            $fileName     = "pact-{$version}-win32.zip";
+            $fileName     = 'pact-' . self::VERSION . '-win32.zip';
             $tempFilePath = __DIR__ . DIRECTORY_SEPARATOR . $fileName;
 
             $this
@@ -60,7 +61,7 @@ class InstallerWindows implements InstallerInterface
      */
     private function download(string $fileName, string $tempFilePath): self
     {
-        $uri  = "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.29.2/{$fileName}";
+        $uri  = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v' . self::VERSION . "/{$fileName}";
 
         $data = \file_get_contents($uri);
 
