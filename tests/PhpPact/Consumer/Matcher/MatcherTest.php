@@ -15,12 +15,18 @@ class MatcherTest extends TestCase
         $this->matcher = new Matcher();
     }
 
+    /**
+     * @throws Exception
+     */
     public function testLikeNoValue()
     {
         $this->expectException(Exception::class);
         $this->matcher->like(null);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testLike()
     {
         $json = \json_encode($this->matcher->like(12));
@@ -28,6 +34,9 @@ class MatcherTest extends TestCase
         $this->assertEquals('{"contents":12,"json_class":"Pact::SomethingLike"}', $json);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testEachLikeStdClass()
     {
         $object         = new \stdClass();
@@ -51,6 +60,9 @@ class MatcherTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testEachLikeArray()
     {
         $object = [
@@ -75,12 +87,18 @@ class MatcherTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testRegexNoMatch()
     {
         $this->expectException(Exception::class);
         $this->matcher->regex('SomeWord', 'BadPattern');
     }
 
+    /**
+     * @throws Exception
+     */
     public function testRegex()
     {
         $expected = [
@@ -100,6 +118,9 @@ class MatcherTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testDate()
     {
         $expected = [

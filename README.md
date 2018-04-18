@@ -26,7 +26,7 @@ Table of contents
     * [Make the Request](#make-the-request)
     * [Make Assertions](#make-assertions)
 * [Basic Provider Usage](#basic-provider-usage)
-    * [Create Unit Tests](#create-unit-tests)
+    * [Create Unit Tests](#create-unit-test)
     * [Start API](#start-api)
     * [Provider Verification](#provider-verification)
         * [Verify From Pact Broker](#verify-from-pact-broker)
@@ -160,8 +160,8 @@ Now that we have the request and response, we need to build the interaction and 
 $config  = new MockServerEnvConfig();
 $builder = new InteractionBuilder($config);
 $builder
-    ->given('Get Hello')
-    ->uponReceiving('A get request to /hello/{name}')
+    ->given('a person exists')
+    ->uponReceiving('a get request to /hello/{name}')
     ->with($request)
     ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
 ```

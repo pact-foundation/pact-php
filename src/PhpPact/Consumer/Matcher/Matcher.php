@@ -87,8 +87,10 @@ class Matcher
     /**
      * Alias for the term matcher.
      *
-     * @param mixed  $value   example value
-     * @param string $pattern valid Ruby regex pattern
+     * @param $value
+     * @param string $pattern
+     *
+     * @throws \Exception
      *
      * @return array
      */
@@ -101,6 +103,8 @@ class Matcher
      * ISO8601 date format wrapper for the term matcher.
      *
      * @param string $value valid ISO8601 date, example: 2010-01-01
+     *
+     * @throws \Exception
      *
      * @return array
      */

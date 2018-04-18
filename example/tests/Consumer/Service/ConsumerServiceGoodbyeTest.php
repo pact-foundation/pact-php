@@ -2,6 +2,7 @@
 
 namespace Consumer\Service;
 
+use PhpPact\Consumer\Exception\MissingEnvVariableException;
 use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
@@ -10,6 +11,9 @@ use PHPUnit\Framework\TestCase;
 
 class ConsumerServiceGoodbyeTest extends TestCase
 {
+    /**
+     * @throws MissingEnvVariableException
+     */
     public function testGetGoodbyeString()
     {
         $request = new ConsumerRequest();

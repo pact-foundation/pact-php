@@ -8,6 +8,8 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class InstallerMac implements InstallerInterface
 {
+    const VERSION = '1.38.0';
+
     /**
      * @inheritDoc
      */
@@ -24,8 +26,7 @@ class InstallerMac implements InstallerInterface
         $fs = new Filesystem();
 
         if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
-            $version      = '1.29.2';
-            $fileName     = "pact-{$version}-osx.tar.gz";
+            $fileName     = 'pact-' . self::VERSION . '-osx.tar.gz';
             $tempFilePath = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
 
             $this
@@ -54,7 +55,7 @@ class InstallerMac implements InstallerInterface
      */
     private function download(string $fileName, string $tempFilePath): self
     {
-        $uri  = "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.29.2/{$fileName}";
+        $uri  = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v' . self::VERSION . "/{$fileName}";
 
         $data = \file_get_contents($uri);
 

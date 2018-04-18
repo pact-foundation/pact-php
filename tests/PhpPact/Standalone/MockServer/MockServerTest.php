@@ -2,17 +2,20 @@
 
 namespace PhpPact\Consumer;
 
-use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\MockService\MockServer;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PHPUnit\Framework\TestCase;
 
 class MockServerTest extends TestCase
 {
+    /**
+     * @throws Exception\MissingEnvVariableException
+     * @throws \Exception
+     */
     public function testStartAndStop()
     {
         try {
-            $mockServer = new MockServer(new MockServerEnvConfig(), new InstallManager());
+            $mockServer = new MockServer(new MockServerEnvConfig());
             $pid        = $mockServer->start();
             $this->assertTrue(\is_int($pid));
         } finally {

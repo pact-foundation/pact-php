@@ -64,7 +64,8 @@ class InstallManager
     }
 
     /**
-     * Install.
+     * @throws Exception\FileDownloadFailureException
+     * @throws NoDownloaderFoundException
      *
      * @return Scripts
      */

@@ -3,13 +3,14 @@
 namespace PhpPact\Standalone\MockService\Service;
 
 use GuzzleHttp\Exception\ServerException;
+use PhpPact\Consumer\Exception\MissingEnvVariableException;
 use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
+use PhpPact\Exception\ConnectionException;
 use PhpPact\Http\GuzzleClient;
-use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\MockService\MockServer;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
@@ -27,10 +28,14 @@ class MockServerHttpServiceTest extends TestCase
     /** @var MockServerConfigInterface */
     private $config;
 
+    /**
+     * @throws MissingEnvVariableException
+     * @throws \Exception
+     */
     protected function setUp()
     {
         $this->config     = new MockServerEnvConfig();
-        $this->mockServer = new MockServer($this->config, new InstallManager());
+        $this->mockServer = new MockServer($this->config);
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $this->config);
     }
@@ -40,6 +45,9 @@ class MockServerHttpServiceTest extends TestCase
         $this->mockServer->stop();
     }
 
+    /**
+     * @throws ConnectionException
+     */
     public function testHealthCheck()
     {
         $result = $this->service->healthCheck();
@@ -152,6 +160,10 @@ class MockServerHttpServiceTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
+    /**
+     * @throws MissingEnvVariableException
+     * @throws \Exception
+     */
     public function testMatcherWithMockServer()
     {
         $matcher = new Matcher();

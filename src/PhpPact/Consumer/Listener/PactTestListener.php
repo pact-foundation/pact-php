@@ -4,6 +4,7 @@ namespace PhpPact\Consumer\Listener;
 
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Broker\Service\BrokerHttpClient;
+use PhpPact\Consumer\Exception\MissingEnvVariableException;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\MockService\MockServer;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
@@ -42,6 +43,8 @@ class PactTestListener implements TestListener
      * PactTestListener constructor.
      *
      * @param string[] $testSuiteNames test suite names that need evaluated with the listener
+     *
+     * @throws MissingEnvVariableException
      */
     public function __construct(array $testSuiteNames)
     {
@@ -51,6 +54,8 @@ class PactTestListener implements TestListener
 
     /**
      * @param TestSuite $suite
+     *
+     * @throws \Exception
      */
     public function startTestSuite(TestSuite $suite)
     {
