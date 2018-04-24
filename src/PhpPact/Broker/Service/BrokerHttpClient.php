@@ -36,7 +36,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
         $provider = $array['provider']['name'];
 
         /** @var UriInterface $uri */
-        $uri = $this->baseUri->withPath("pacts/provider/{$provider}/consumer/{$consumer}/version/{$version}");
+        $uri = $this->baseUri->withPath("/pacts/provider/{$provider}/consumer/{$consumer}/version/{$version}");
 
         $this->httpClient->put($uri, [
             'headers' => [
@@ -52,7 +52,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
     public function tag(string $consumer, string $version, string $tag)
     {
         /** @var UriInterface $uri */
-        $uri = $this->baseUri->withPath("pacticipants/{$consumer}/versions/{$version}/tags/{$tag}");
+        $uri = $this->baseUri->withPath("/pacticipants/{$consumer}/versions/{$version}/tags/{$tag}");
 
         $this->httpClient->put($uri, [
             'headers' => [
@@ -66,7 +66,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
      */
     public function getAllConsumerUrls(string $provider, string $version = 'latest'): array
     {
-        $uri = $this->baseUri->withPath("pacts/provider/{$provider}/{$version}");
+        $uri = $this->baseUri->withPath("/pacts/provider/{$provider}/{$version}");
 
         $response = $this->httpClient->get($uri, [
             'headers' => [
@@ -89,7 +89,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
      */
     public function getAllConsumerUrlsForTag(string $provider, string $tag): array
     {
-        $uri = $this->baseUri->withPath("pacts/provider/{$provider}/latest/{$tag}");
+        $uri = $this->baseUri->withPath("/pacts/provider/{$provider}/latest/{$tag}");
 
         $response = $this->httpClient->get($uri, [
             'headers' => [
