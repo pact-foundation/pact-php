@@ -26,10 +26,10 @@
     "require": {
         "php": "^7.0",
         "ext-openssl": "*",
-        "symfony/process": "^3.0",
-        "symfony/filesystem": "^3.0",
+        "symfony/process": "^3.0 || ^4.0",
+        "symfony/filesystem": "^3.0 || ^4.0",
         "guzzlehttp/guzzle": "^6.3",
-        "symfony/console": "^3.3"
+        "symfony/console": "^3.3 || ^4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0",
