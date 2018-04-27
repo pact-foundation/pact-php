@@ -75,15 +75,19 @@ Alternatively, you can start and stop as in whatever means you would like by fol
 
     // Create your basic configuration. The host and port will need to match
     // whatever your Http Service will be using to access the providers data.
-    $config = new MockServerConfig('localhost', 7200, 'SomeConsumer', 'SomeProvider');
-    
+    $config = new MockServerConfig();
+    $config->setHost('localhost');
+    $config->setPort(7200);
+    $config->setConsumer('SomeConsumer');
+    $config->setProvider('SomeProvider');
+
     // Instantiate the mock server object with the config. This can be any
     // instance of MockServerConfigInterface.
-    $server = new MockServer($this->mockServerConfig);
-    
+    $server = new MockServer($config);
+
     // Create the process.
     $server->start();
-    
+
     // Stop the process.
     $server->stop();
 ```
