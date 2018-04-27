@@ -3,7 +3,7 @@
 namespace PhpPact\Standalone\MockService\Service;
 
 use GuzzleHttp\Exception\ServerException;
-use PhpPact\Consumer\Exception\MissingEnvVariableException;
+use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;

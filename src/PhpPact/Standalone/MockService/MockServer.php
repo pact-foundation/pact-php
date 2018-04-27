@@ -4,8 +4,8 @@ namespace PhpPact\Standalone\MockService;
 
 use Exception;
 use GuzzleHttp\Exception\ConnectException;
-use PhpPact\Consumer\Exception\HealthCheckFailedException;
 use PhpPact\Http\GuzzleClient;
+use PhpPact\Standalone\Exception\HealthCheckFailedException;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
