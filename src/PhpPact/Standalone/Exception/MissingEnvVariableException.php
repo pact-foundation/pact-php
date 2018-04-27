@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Consumer\Exception;
+namespace PhpPact\Standalone\Exception;
 
 use Exception;
 

@@ -4,7 +4,7 @@ namespace PhpPact\Consumer\Listener;
 
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Broker\Service\BrokerHttpClient;
-use PhpPact\Consumer\Exception\MissingEnvVariableException;
+use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\MockService\MockServer;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;

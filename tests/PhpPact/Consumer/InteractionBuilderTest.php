@@ -6,6 +6,7 @@ use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Http\GuzzleClient;
+use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PhpPact\Standalone\MockService\MockServer;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
@@ -21,7 +22,7 @@ class InteractionBuilderTest extends TestCase
     private $mockServer;
 
     /**
-     * @throws Exception\MissingEnvVariableException
+     * @throws MissingEnvVariableException
      * @throws \Exception
      */
     protected function setUp()
@@ -38,7 +39,7 @@ class InteractionBuilderTest extends TestCase
     }
 
     /**
-     * @throws Exception\MissingEnvVariableException
+     * @throws MissingEnvVariableException
      * @throws \Exception
      */
     public function testSimpleGet()
@@ -71,7 +72,7 @@ class InteractionBuilderTest extends TestCase
     }
 
     /**
-     * @throws Exception\MissingEnvVariableException
+     * @throws MissingEnvVariableException
      */
     public function testPostWithBody()
     {
@@ -109,7 +110,7 @@ class InteractionBuilderTest extends TestCase
     }
 
     /**
-     * @throws Exception\MissingEnvVariableException
+     * @throws MissingEnvVariableException
      */
     public function testBuildWithEachLikeMatcher()
     {

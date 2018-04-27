@@ -2,7 +2,7 @@
 
 namespace Consumer\Service;
 
-use PhpPact\Consumer\Exception\MissingEnvVariableException;
+use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;

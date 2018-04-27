@@ -2,7 +2,7 @@
 
 namespace PhpPact\Standalone\MockService;
 
-use PhpPact\Consumer\Exception\MissingEnvVariableException;
+use PhpPact\Standalone\Exception\MissingEnvVariableException;
 
 /**
  * An environment variable based mock server configuration.
