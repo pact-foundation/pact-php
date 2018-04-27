@@ -11,7 +11,7 @@ use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Process\ProcessBuilder;
+use Symfony\Component\Process\Process;
 
 /**
  * Wrapper for the Ruby Standalone Verifier service.
@@ -19,6 +19,9 @@ use Symfony\Component\Process\ProcessBuilder;
  */
 class Verifier
 {
+    const PROCESS_TIMEOUT = 60;
+    const PROCESS_IDLE_TIMEOUT = 10;
+
     /** @var VerifierConfigInterface */
     private $config;
 
@@ -191,14 +194,11 @@ class Verifier
     private function verifyAction(array $arguments)
     {
         $scripts = $this->installManager->install();
+        
+        $arguments = array_merge([$scripts->getProviderVerifier()], $arguments);
 
-        $builder = new ProcessBuilder();
-        $process = $builder
-            ->setPrefix($scripts->getProviderVerifier())
-            ->setArguments($arguments)
-            ->getProcess()
-            ->setTimeout(60)
-            ->setIdleTimeout(10);
+        $process = new Process($arguments, null, null, null, self::PROCESS_TIMEOUT, null);
+        $process->setIdleTimeout(self::PROCESS_IDLE_TIMEOUT);
 
         $this->console->write("Verifying PACT with script {$process->getCommandLine()}");
 
