@@ -16,15 +16,22 @@ class Scripts
     private $mockService;
 
     /**
+     * Path to the PhpPact Stub Service
+     * @var string
+     */
+    private $stubService;
+
+    /**
      * Path to the PhpPact Provider Verifier
      *
      * @var string
      */
     private $providerVerifier;
 
-    public function __construct(string $mockService, string $providerVerifier)
+    public function __construct(string $mockService, string $stubService, string $providerVerifier)
     {
         $this->mockService      = $mockService;
+        $this->stubService      = $stubService;
         $this->providerVerifier = $providerVerifier;
     }
 
@@ -34,6 +41,14 @@ class Scripts
     public function getMockService(): string
     {
         return $this->mockService;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStubService(): string
+    {
+        return $this->stubService;
     }
 
     /**

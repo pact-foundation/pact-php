@@ -43,6 +43,7 @@ class InstallerWindows implements InstallerInterface
         $binDir  = $destinationDir . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR;
         $scripts = new Scripts(
             $binDir . 'pact-mock-service.bat',
+            $binDir . 'pact-stub-service.bat',
             $binDir . 'pact-provider-verifier.bat'
         );
 
