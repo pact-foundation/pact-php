@@ -24,11 +24,10 @@ class InstallManager
      *
      * @var string
      */
-    private $destinationDir;
+    private static $destinationDir = __DIR__ . '/../../../..';
 
     public function __construct()
     {
-        $this->destinationDir = __DIR__ . '/../../../..';
         $this
             ->registerInstaller(new InstallerWindows())
             ->registerInstaller(new InstallerMac())
@@ -73,16 +72,16 @@ class InstallManager
     {
         $downloader = $this->getDownloader();
 
-        return $downloader->install($this->destinationDir);
+        return $downloader->install(self::$destinationDir);
     }
 
     /**
      * Uninstall.
      */
-    public function uninstall()
+    public static function uninstall()
     {
         $fs = new Filesystem();
-        $fs->remove($this->destinationDir . DIRECTORY_SEPARATOR . 'pact');
+        $fs->remove(self::$destinationDir . DIRECTORY_SEPARATOR . 'pact');
     }
 
     /**
