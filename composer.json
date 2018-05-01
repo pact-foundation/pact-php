@@ -32,6 +32,7 @@
         "symfony/console": "^3.3 || ^4.0"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-master",
         "phpunit/phpunit": "^6.4",
         "friendsofphp/php-cs-fixer": "^2.10",
         "mockery/mockery": "^1.0",
@@ -52,6 +53,7 @@
         }
     },
     "scripts": {
+        "post-update-cmd": "\\PhpPact\\Standalone\\Installer\\InstallManager::uninstall",
         "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
         "fix": "php-cs-fixer fix --config .php_cs",
         "test": "phpunit --debug"
