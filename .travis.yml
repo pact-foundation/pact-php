@@ -11,6 +11,6 @@ php:
   - 7.2
 
 install:
-  - composer install
+  - composer update
 
 script: composer test
