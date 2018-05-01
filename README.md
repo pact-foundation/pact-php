@@ -310,7 +310,7 @@ There is a separate repository with an end to end example for both the 2.X and 3
 
 ## Usage for the optional `pact-stub-service`
 
-For functional like test set ups you can use the `pact-stub-service` to get real fixture data:
+If you would like to test with fixtures, you can use the `pact-stub-service` like this:
 
 ```
 $pactLocation             = __DIR__ . '/someconsumer-someprovider.json';
