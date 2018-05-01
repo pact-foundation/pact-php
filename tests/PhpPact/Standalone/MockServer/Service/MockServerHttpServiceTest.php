@@ -157,6 +157,7 @@ class MockServerHttpServiceTest extends TestCase
 
         $body = $response->getBody()->getContents();
         $this->assertEquals(\json_encode($expectedResponseBody), $body);
+        $this->assertEquals($response->getHeaderLine('Access-Control-Allow-Origin'), '*', 'CORS flag not set properly');
         $this->assertEquals(200, $response->getStatusCode());
     }
 

@@ -122,4 +122,16 @@ interface MockServerConfigInterface
      * @return MockServerConfigInterface
      */
     public function setLog(string $log): self;
+
+    /**
+     * @return bool
+     */
+    public function hasCors(): bool;
+
+    /**
+     * @param bool|string $flag
+     *
+     * @return MockServerConfigInterface
+     */
+    public function setCors($flag): self;
 }
