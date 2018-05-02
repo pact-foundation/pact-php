@@ -2,8 +2,8 @@
 
 namespace PhpPact\Standalone\StubService\Service;
 
-use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PhpPact\Http\GuzzleClient;
+use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PhpPact\Standalone\StubService\StubServer;
 use PhpPact\Standalone\StubService\StubServerConfig;
 use PhpPact\Standalone\StubService\StubServerConfigInterface;

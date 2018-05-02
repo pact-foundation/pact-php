@@ -125,7 +125,7 @@ class MockServer
         $results[] = "--port={$this->config->getPort()}";
 
         if ($this->config->hasCors()) {
-            $results[] = "-o";
+            $results[] = '-o';
         }
 
         if ($this->config->getPactSpecificationVersion() !== null) {

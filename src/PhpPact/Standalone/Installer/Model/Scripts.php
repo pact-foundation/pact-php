@@ -17,6 +17,7 @@ class Scripts
 
     /**
      * Path to the PhpPact Stub Service
+     *
      * @var string
      */
     private $stubService;

@@ -247,6 +247,7 @@ vendor/*
 
 #phpstorm
 .idea/
+*.iml
 /composer.lock
 
 #eclipse
