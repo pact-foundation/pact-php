@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * Ruby Standalone Stub Server Wrapper
@@ -51,7 +52,9 @@ class StubServer
     {
         $scripts = $this->installManager->install();
 
-        $this->process = new Process(\array_merge([$scripts->getStubService()], $this->getArguments()));
+        $this->process = ProcessBuilder::create(\array_merge(['exec', $scripts->getMockService()], $this->getArguments()))
+            ->getProcess();
+
         $this->process
             ->setTimeout(600)
             ->setIdleTimeout(60);
