@@ -55,6 +55,7 @@
     "scripts": {
         "post-update-cmd": "\\PhpPact\\Standalone\\Installer\\InstallManager::uninstall",
         "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
+        "lint": "php-cs-fixer fix --config .php_cs --dry-run",
         "fix": "php-cs-fixer fix --config .php_cs",
         "test": "phpunit --debug"
     }
