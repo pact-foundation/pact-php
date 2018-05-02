@@ -22,7 +22,8 @@ class MockServerEnvConfig extends MockServerConfig
             ->setPort($this->parseEnv('PACT_MOCK_SERVER_PORT'))
             ->setConsumer($this->parseEnv('PACT_CONSUMER_NAME'))
             ->setProvider($this->parseEnv('PACT_PROVIDER_NAME'))
-            ->setPactDir($this->parseEnv('PACT_OUTPUT_DIR', false));
+            ->setPactDir($this->parseEnv('PACT_OUTPUT_DIR', false))
+            ->setCors($this->parseEnv('PACT_CORS', false));
     }
 
     /**
@@ -37,13 +38,21 @@ class MockServerEnvConfig extends MockServerConfig
      */
     private function parseEnv(string $variableName, bool $required = true)
     {
-        if (\getenv($variableName) !== false) {
-            return \getenv($variableName);
+        $result = null;
+
+        if (\getenv($variableName) === 'false') {
+            $result = false;
+        } elseif (\getenv($variableName) === 'true') {
+            $result = true;
         }
-        if ($required === true) {
+        if (\getenv($variableName) !== false) {
+            $result = \getenv($variableName);
+        }
+
+        if ($required === true && $result === null) {
             throw new MissingEnvVariableException($variableName);
         }
 
-        return null;
+        return $result;
     }
 }

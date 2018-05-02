@@ -75,6 +75,9 @@ class MockServerConfig implements MockServerConfigInterface
      */
     private $log;
 
+    /** @var bool */
+    private $cors = false;
+
     /**
      * @inheritdoc
      */
@@ -255,6 +258,24 @@ class MockServerConfig implements MockServerConfigInterface
     public function setLog(string $log): MockServerConfigInterface
     {
         $this->log = $log;
+
+        return $this;
+    }
+
+    public function hasCors(): bool
+    {
+        return $this->cors;
+    }
+
+    public function setCors($flag): MockServerConfigInterface
+    {
+        if ($flag === 'true') {
+            $this->cors = true;
+        } elseif ($flag === 'false') {
+            $this->cors = false;
+        } else {
+            $this->cors = (bool) $flag;
+        }
 
         return $this;
     }

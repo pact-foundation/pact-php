@@ -22,5 +22,6 @@
         <env name="PACT_CONSUMER_VERSION" value="1.0.0"/>
         <env name="PACT_PROVIDER_NAME" value="someProvider"/>
         <env name="PACT_BROKER_URI" value="http://localhost"/>
+        <env name="PACT_CORS" value="true"/>
     </php>
 </phpunit>

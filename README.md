@@ -80,6 +80,7 @@ Alternatively, you can start and stop as in whatever means you would like by fol
     $config->setPort(7200);
     $config->setConsumer('SomeConsumer');
     $config->setProvider('SomeProvider');
+    $config->setCors(true);
 
     // Instantiate the mock server object with the config. This can be any
     // instance of MockServerConfigInterface.
