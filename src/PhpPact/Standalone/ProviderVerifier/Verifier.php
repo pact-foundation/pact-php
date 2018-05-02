@@ -19,7 +19,7 @@ use Symfony\Component\Process\Process;
  */
 class Verifier
 {
-    const PROCESS_TIMEOUT = 60;
+    const PROCESS_TIMEOUT      = 60;
     const PROCESS_IDLE_TIMEOUT = 10;
 
     /** @var VerifierConfigInterface */
@@ -194,8 +194,8 @@ class Verifier
     private function verifyAction(array $arguments)
     {
         $scripts = $this->installManager->install();
-        
-        $arguments = array_merge([$scripts->getProviderVerifier()], $arguments);
+
+        $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
 
         $process = new Process($arguments, null, null, null, self::PROCESS_TIMEOUT, null);
         $process->setIdleTimeout(self::PROCESS_IDLE_TIMEOUT);

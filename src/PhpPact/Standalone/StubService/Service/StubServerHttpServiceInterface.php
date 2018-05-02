@@ -2,7 +2,6 @@
 
 namespace PhpPact\Standalone\StubService\Service;
 
-
 use PhpPact\Exception\ConnectionException;
 
 /**
