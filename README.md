@@ -307,3 +307,27 @@ No matter which direction you go, you will have to modify something outside of t
 There is a separate repository with an end to end example for both the 2.X and 3.X implementations.   
 - [pact-php-example](https://github.com/mattermack/pact-php-example) for 3.X examples
 - [2.2.1 tag](https://github.com/mattermack/pact-php-example/tree/2.2.1) for 2.X examples
+
+## Usage for the optional `pact-stub-service`
+
+If you would like to test with fixtures, you can use the `pact-stub-service` like this:
+
+```
+$pactLocation             = __DIR__ . '/someconsumer-someprovider.json';
+$host                     = 'localhost';
+$port                     = 7201;
+$endpoint                 = 'test';
+
+$config = (new StubServerConfig())
+            ->setPactLocation($pactLocation)
+            ->setHost($host)
+            ->setPort($port)
+            ->setEndpoint($endpoint);
+
+$stubServer = new StubServer($config);
+$stubServer->start();
+
+$service = new StubServerHttpService(new GuzzleClient(), $config);
+
+echo $service->getJson(); // output: {"results":[{"name":"Games"}]}
+```

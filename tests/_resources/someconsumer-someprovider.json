@@ -1,0 +1,48 @@
+{
+  "consumer": {
+    "name": "someConsumer"
+  },
+  "provider": {
+    "name": "someProvider"
+  },
+  "interactions": [
+    {
+      "description": "Stuff",
+      "providerState": "Something",
+      "request": {
+        "method": "GET",
+        "path": "/test"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "results": [
+            {
+              "name": "Games"
+            }
+          ]
+        },
+        "matchingRules": {
+          "$.body.results": {
+            "min": 1
+          },
+          "$.body.results[*].*": {
+            "match": "type"
+          },
+          "$.body.results[*].name": {
+            "match": "regex",
+            "regex": "[gbBG]"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}
