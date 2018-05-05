@@ -139,4 +139,202 @@ class MatcherTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * @throws Exception
+     */
+    public function testTime()
+    {
+        $expected = [
+            'data' => [
+                'generate' => 'T22:44:30.652Z',
+                'matcher'  => [
+                    'json_class' => 'Regexp',
+                    'o'          => 0,
+                    's'          => '^(T\\d\\d:\\d\\d(:\\d\\d)?(\\.\\d+)?(([+-]\\d\\d:\\d\\d)|Z)?)?$'
+                ]
+            ],
+            'json_class' => 'Pact::Term'
+        ];
+
+        $actual = $this->matcher->timeISO8601('T22:44:30.652Z');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testDateTime()
+    {
+        $expected = [
+            'data' => [
+                'generate' => '2015-08-06T16:53:10+01:00',
+                'matcher'  => [
+                    'json_class' => 'Regexp',
+                    'o'          => 0,
+                    's'          => '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)$'
+                ]
+            ],
+            'json_class' => 'Pact::Term'
+        ];
+
+        $actual = $this->matcher->dateTimeISO8601('2015-08-06T16:53:10+01:00');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testDateTimeWithMillis()
+    {
+        $expected = [
+            'data' => [
+                'generate' => '2015-08-06T16:53:10.123+01:00',
+                'matcher'  => [
+                    'json_class' => 'Regexp',
+                    'o'          => 0,
+                    's'          => '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d{3}([+-][0-2]\\d:[0-5]\\d|Z)$'
+                ]
+            ],
+            'json_class' => 'Pact::Term'
+        ];
+
+        $actual = $this->matcher->dateTimeWithMillisISO8601('2015-08-06T16:53:10.123+01:00');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testTimestampRFC3339()
+    {
+        $expected = [
+            'data' => [
+                'generate' => 'Mon, 31 Oct 2016 15:21:41 -0400',
+                'matcher'  => [
+                    'json_class' => 'Regexp',
+                    'o'          => 0,
+                    's'          => '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\\s\\d{2}\\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\s\\d{4}\\s\\d{2}:\\d{2}:\\d{2}\\s(\\+|-)\\d{4}$'
+                ]
+            ],
+            'json_class' => 'Pact::Term'
+        ];
+
+        $actual = $this->matcher->timestampRFC3339('Mon, 31 Oct 2016 15:21:41 -0400');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testInteger()
+    {
+        $json = \json_encode($this->matcher->integer());
+
+        $this->assertEquals('{"contents":13,"json_class":"Pact::SomethingLike"}', $json);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testBoolean()
+    {
+        $json = \json_encode($this->matcher->boolean());
+
+        $this->assertEquals('{"contents":true,"json_class":"Pact::SomethingLike"}', $json);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testDecimal()
+    {
+        $json = \json_encode($this->matcher->decimal());
+
+        $this->assertEquals('{"contents":13.01,"json_class":"Pact::SomethingLike"}', $json);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testHexadecimal()
+    {
+        $expected = [
+            'data' => [
+                'generate' => '3F',
+                'matcher'  => [
+                    'json_class' => 'Regexp',
+                    'o'          => 0,
+                    's'          => '^[0-9a-fA-F]+$'
+                ]
+            ],
+            'json_class' => 'Pact::Term'
+        ];
+
+        $this->assertEquals($expected, $this->matcher->hexadecimal());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testUuid()
+    {
+        $expected = [
+            'data' => [
+                'generate' => 'ce118b6e-d8e1-11e7-9296-cec278b6b50a',
+                'matcher'  => [
+                    'json_class' => 'Regexp',
+                    'o'          => 0,
+                    's'          => '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$'
+                ]
+            ],
+            'json_class' => 'Pact::Term'
+        ];
+
+        $this->assertEquals($expected, $this->matcher->uuid());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testIpv4Address()
+    {
+        $expected = [
+            'data' => [
+                'generate' => '127.0.0.13',
+                'matcher'  => [
+                    'json_class' => 'Regexp',
+                    'o'          => 0,
+                    's'          => '^(\\d{1,3}\\.)+\\d{1,3}$'
+                ]
+            ],
+            'json_class' => 'Pact::Term'
+        ];
+
+        $this->assertEquals($expected, $this->matcher->ipv4Address());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testIpv6Address()
+    {
+        $expected = [
+            'data' => [
+                'generate' => '::ffff:192.0.2.128',
+                'matcher'  => [
+                    'json_class' => 'Regexp',
+                    'o'          => 0,
+                    's'          => '^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$'
+                ]
+            ],
+            'json_class' => 'Pact::Term'
+        ];
+
+        $this->assertEquals($expected, $this->matcher->ipv6Address());
+    }
 }
