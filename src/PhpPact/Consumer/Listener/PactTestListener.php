@@ -65,17 +65,14 @@ class PactTestListener implements TestListener
         }
     }
 
-    /**
-     * Mark the test suite as a failure so that the PACT file does not get pushed to the broker.
-     *
-     * @param Test  $test
-     * @param float $time
-     */
-    public function endTest(Test $test, $time)
+    public function addError(Test $test, \Exception $e, $time)
     {
-        if ($test->hasFailed() === true) {
-            $this->failed = true;
-        }
+        $this->failed = true;
+    }
+
+    public function addFailure(Test $test, AssertionFailedError $e, $time)
+    {
+        $this->failed = true;
     }
 
     /**
