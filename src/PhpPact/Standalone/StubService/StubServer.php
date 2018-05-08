@@ -5,6 +5,7 @@ namespace PhpPact\Standalone\StubService;
 use Exception;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
+use PhpPact\Standalone\Runner\ProcessRunner;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -51,7 +52,8 @@ class StubServer
     {
         $scripts = $this->installManager->install();
 
-        $this->process = new Process(\array_merge([$scripts->getStubService()], $this->getArguments()));
+        $this->process = ProcessRunner::run($scripts->getStubService(), $this->getArguments());
+
         $this->process
             ->setTimeout(600)
             ->setIdleTimeout(60);
