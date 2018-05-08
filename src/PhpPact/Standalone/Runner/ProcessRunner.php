@@ -3,7 +3,6 @@
 namespace PhpPact\Standalone\Runner;
 
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * Wrapper around Process with backwards-compatibility support.
@@ -30,7 +29,7 @@ class ProcessRunner
         if ($useProcess) {
             $process = new Process(\array_merge([$command], $arguments));
         } else {
-            $pb      = new ProcessBuilder(\array_merge([$command], $arguments));
+            $pb      = new \Symfony\Component\Process\ProcessBuilder(\array_merge([$command], $arguments));
             //see https://symfony.com/doc/current/components/process.html#process-signals
             if (self::isPosixPlatform()) {
                 $pb->setPrefix('exec');
