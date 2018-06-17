@@ -6,7 +6,7 @@ use Exception;
 
 /**
  * Unable to find a downloader to get the binaries.
- * Class NoDownloaderFoundException
+ * Class NoDownloaderFoundException.
  */
 class NoDownloaderFoundException extends Exception
 {

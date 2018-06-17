@@ -13,7 +13,7 @@ class ProviderResponseTest extends TestCase
             ->setStatus(200)
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
-                'currentCity'    => 'Austin'
+                'currentCity' => 'Austin',
             ]);
 
         $data = \json_decode(\json_encode($model->jsonSerialize()), true);

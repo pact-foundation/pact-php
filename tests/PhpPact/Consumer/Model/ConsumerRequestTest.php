@@ -14,7 +14,7 @@ class ConsumerRequestTest extends TestCase
             ->setPath('/somepath')
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
-                'currentCity'    => 'Austin'
+                'currentCity' => 'Austin',
             ]);
 
         $data = \json_decode(\json_encode($model->jsonSerialize()), true);

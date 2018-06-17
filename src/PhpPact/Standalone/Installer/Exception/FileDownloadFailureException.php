@@ -6,7 +6,7 @@ use Exception;
 
 /**
  * File failed to download from external source.
- * Class FileDownloadFailureException
+ * Class FileDownloadFailureException.
  */
 class FileDownloadFailureException extends Exception
 {

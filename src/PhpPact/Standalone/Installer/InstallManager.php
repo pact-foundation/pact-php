@@ -12,7 +12,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Manage Ruby Standalone binaries.
- * Class BinaryManager
+ * Class BinaryManager.
  */
 class InstallManager
 {
@@ -24,7 +24,7 @@ class InstallManager
      *
      * @var string
      */
-    private static $destinationDir = __DIR__ . '/../../../..';
+    private static $destinationDir = __DIR__.'/../../../..';
 
     public function __construct()
     {
@@ -81,7 +81,7 @@ class InstallManager
     public static function uninstall()
     {
         $fs = new Filesystem();
-        $fs->remove(self::$destinationDir . DIRECTORY_SEPARATOR . 'pact');
+        $fs->remove(self::$destinationDir.DIRECTORY_SEPARATOR.'pact');
     }
 
     /**

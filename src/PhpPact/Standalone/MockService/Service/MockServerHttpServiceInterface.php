@@ -6,7 +6,7 @@ use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Exception\ConnectionException;
 
 /**
- * Interface MockServerHttpServiceInterface
+ * Interface MockServerHttpServiceInterface.
  */
 interface MockServerHttpServiceInterface
 {

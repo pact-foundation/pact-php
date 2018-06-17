@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestSuite;
 
 /**
  * PACT listener that can be used with environment variables and easily attached to PHPUnit configuration.
- * Class PactTestListener
+ * Class PactTestListener.
  */
 class PactTestListener implements TestListener
 {
@@ -49,7 +49,7 @@ class PactTestListener implements TestListener
      */
     public function __construct(array $testSuiteNames)
     {
-        $this->testSuiteNames   = $testSuiteNames;
+        $this->testSuiteNames = $testSuiteNames;
         $this->mockServerConfig = new MockServerEnvConfig();
     }
 
@@ -94,18 +94,18 @@ class PactTestListener implements TestListener
             }
 
             if ($this->failed === true) {
-                print 'A unit test has failed. Skipping PACT file upload.';
+                echo 'A unit test has failed. Skipping PACT file upload.';
             } elseif (!($pactBrokerUri = \getenv('PACT_BROKER_URI'))) {
-                print 'PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.';
+                echo 'PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.';
             } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_VERSION'))) {
-                print 'PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.';
+                echo 'PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.';
             } elseif (!($tag = \getenv('PACT_CONSUMER_TAG'))) {
-                print 'PACT_CONSUMER_TAG environment variable was not set. Skipping PACT file upload.';
+                echo 'PACT_CONSUMER_TAG environment variable was not set. Skipping PACT file upload.';
             } else {
                 $brokerHttpService = new BrokerHttpClient(new GuzzleClient(), new Uri($pactBrokerUri));
                 $brokerHttpService->publishJson($json, $consumerVersion);
                 $brokerHttpService->tag($this->mockServerConfig->getConsumer(), $consumerVersion, $tag);
-                print 'Pact file has been uploaded to the Broker successfully.';
+                echo 'Pact file has been uploaded to the Broker successfully.';
             }
         }
     }

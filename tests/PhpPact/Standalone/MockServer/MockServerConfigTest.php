@@ -9,17 +9,17 @@ class MockServerConfigTest extends TestCase
 {
     public function testSetters()
     {
-        $host                     = 'test-host';
-        $port                     = 1234;
-        $provider                 = 'test-provider';
-        $consumer                 = 'test-consumer';
-        $pactDir                  = 'test-pact-dir/';
-        $pactFileWriteMode        = 'merge';
-        $log                      = 'test-log-dir/';
-        $cors                     = true;
+        $host = 'test-host';
+        $port = 1234;
+        $provider = 'test-provider';
+        $consumer = 'test-consumer';
+        $pactDir = 'test-pact-dir/';
+        $pactFileWriteMode = 'merge';
+        $log = 'test-log-dir/';
+        $cors = true;
         $pactSpecificationVersion = 2.0;
 
-        $subject = (new MockServerConfig)
+        $subject = (new MockServerConfig())
             ->setHost($host)
             ->setPort($port)
             ->setProvider($provider)

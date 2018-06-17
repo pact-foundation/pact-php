@@ -6,7 +6,7 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Mock Server configuration interface to allow for simple overrides that are reusable.
- * Interface MockServerConfigInterface
+ * Interface MockServerConfigInterface.
  */
 interface MockServerConfigInterface
 {

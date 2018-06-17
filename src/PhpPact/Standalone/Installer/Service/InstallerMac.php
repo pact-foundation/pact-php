@@ -11,7 +11,7 @@ class InstallerMac implements InstallerInterface
     const VERSION = '1.38.0';
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function isEligible(): bool
     {
@@ -19,15 +19,15 @@ class InstallerMac implements InstallerInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function install(string $destinationDir): Scripts
     {
         $fs = new Filesystem();
 
-        if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
-            $fileName     = 'pact-' . self::VERSION . '-osx.tar.gz';
-            $tempFilePath = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+        if ($fs->exists($destinationDir.DIRECTORY_SEPARATOR.'pact') === false) {
+            $fileName = 'pact-'.self::VERSION.'-osx.tar.gz';
+            $tempFilePath = \sys_get_temp_dir().DIRECTORY_SEPARATOR.$fileName;
 
             $this
                 ->download($fileName, $tempFilePath)
@@ -56,7 +56,7 @@ class InstallerMac implements InstallerInterface
      */
     private function download(string $fileName, string $tempFilePath): self
     {
-        $uri  = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v' . self::VERSION . "/{$fileName}";
+        $uri = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v'.self::VERSION."/{$fileName}";
 
         $data = \file_get_contents($uri);
 

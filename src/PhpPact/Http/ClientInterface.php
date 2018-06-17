@@ -7,12 +7,12 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Http Client Interface
- * Interface ClientInterface
+ * Interface ClientInterface.
  */
 interface ClientInterface
 {
     /**
-     * Get Request
+     * Get Request.
      *
      * @param UriInterface $uri
      * @param array        $options
@@ -22,7 +22,7 @@ interface ClientInterface
     public function get(UriInterface $uri, array $options = []): ResponseInterface;
 
     /**
-     * Put Request
+     * Put Request.
      *
      * @param UriInterface $uri
      * @param array        $options
@@ -32,7 +32,7 @@ interface ClientInterface
     public function put(UriInterface $uri, array $options = []): ResponseInterface;
 
     /**
-     * Post Request
+     * Post Request.
      *
      * @param UriInterface $uri
      * @param array        $options
@@ -42,7 +42,7 @@ interface ClientInterface
     public function post(UriInterface $uri, array $options = []): ResponseInterface;
 
     /**
-     * Delete Request
+     * Delete Request.
      *
      * @param UriInterface $uri
      * @param array        $options

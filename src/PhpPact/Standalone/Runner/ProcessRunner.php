@@ -6,7 +6,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * Wrapper around Process with backwards-compatibility support.
- * Can be replaced with usual Process as soon as symfony 2.x support is dropped
+ * Can be replaced with usual Process as soon as symfony 2.x support is dropped.
  *
  * @see https://symfony.com/doc/current/components/process.html#process-signals for POSIX workaround
  * @see https://github.com/symfony/symfony/pull/21474 how it works in symfony/process ^3.3
@@ -29,7 +29,7 @@ class ProcessRunner
         if ($useProcess) {
             $process = new Process(\array_merge([$command], $arguments));
         } else {
-            $pb      = new \Symfony\Component\Process\ProcessBuilder(\array_merge([$command], $arguments));
+            $pb = new \Symfony\Component\Process\ProcessBuilder(\array_merge([$command], $arguments));
             //see https://symfony.com/doc/current/components/process.html#process-signals
             if (self::isPosixPlatform()) {
                 $pb->setPrefix('exec');

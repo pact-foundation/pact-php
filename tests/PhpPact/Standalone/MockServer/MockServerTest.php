@@ -17,7 +17,7 @@ class MockServerTest extends TestCase
     {
         try {
             $mockServer = new MockServer(new MockServerEnvConfig());
-            $pid        = $mockServer->start();
+            $pid = $mockServer->start();
             $this->assertTrue(\is_int($pid));
         } finally {
             $result = $mockServer->stop();

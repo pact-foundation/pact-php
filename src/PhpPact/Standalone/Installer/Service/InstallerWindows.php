@@ -9,14 +9,14 @@ use ZipArchive;
 
 /**
  * Download the Ruby Standalone binaries for Windows.
- * Class BinaryDownloaderWindows
+ * Class BinaryDownloaderWindows.
  */
 class InstallerWindows implements InstallerInterface
 {
     const VERSION = '1.38.0';
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function isEligible(): bool
     {
@@ -24,15 +24,15 @@ class InstallerWindows implements InstallerInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function install(string $destinationDir): Scripts
     {
         $fs = new Filesystem();
 
-        if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
-            $fileName     = 'pact-' . self::VERSION . '-win32.zip';
-            $tempFilePath = __DIR__ . DIRECTORY_SEPARATOR . $fileName;
+        if ($fs->exists($destinationDir.DIRECTORY_SEPARATOR.'pact') === false) {
+            $fileName = 'pact-'.self::VERSION.'-win32.zip';
+            $tempFilePath = __DIR__.DIRECTORY_SEPARATOR.$fileName;
 
             $this
                 ->download($fileName, $tempFilePath)
@@ -40,11 +40,11 @@ class InstallerWindows implements InstallerInterface
                 ->deleteCompressed($tempFilePath);
         }
 
-        $binDir  = $destinationDir . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR;
+        $binDir = $destinationDir.DIRECTORY_SEPARATOR.'pact'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR;
         $scripts = new Scripts(
-            $binDir . 'pact-mock-service.bat',
-            $binDir . 'pact-stub-service.bat',
-            $binDir . 'pact-provider-verifier.bat'
+            $binDir.'pact-mock-service.bat',
+            $binDir.'pact-stub-service.bat',
+            $binDir.'pact-provider-verifier.bat'
         );
 
         return $scripts;
@@ -62,7 +62,7 @@ class InstallerWindows implements InstallerInterface
      */
     private function download(string $fileName, string $tempFilePath): self
     {
-        $uri  = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v' . self::VERSION . "/{$fileName}";
+        $uri = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v'.self::VERSION."/{$fileName}";
 
         $data = \file_get_contents($uri);
 

@@ -5,7 +5,7 @@ namespace PhpPact\Standalone\StubService\Service;
 use PhpPact\Exception\ConnectionException;
 
 /**
- * Interface StubServerHttpServiceInterface
+ * Interface StubServerHttpServiceInterface.
  */
 interface StubServerHttpServiceInterface
 {

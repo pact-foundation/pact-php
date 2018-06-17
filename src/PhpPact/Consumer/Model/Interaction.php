@@ -4,7 +4,7 @@ namespace PhpPact\Consumer\Model;
 
 /**
  * Request/Response Pair to be posted to the Ruby Standalone Mock Server for PACT tests.
- * Class Interaction
+ * Class Interaction.
  */
 class Interaction implements \JsonSerializable
 {
@@ -109,15 +109,15 @@ class Interaction implements \JsonSerializable
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function jsonSerialize()
     {
         return [
-            'description'   => $this->getDescription(),
+            'description' => $this->getDescription(),
             'providerState' => $this->getProviderState(),
-            'request'       => $this->getRequest(),
-            'response'      => $this->getResponse()
+            'request' => $this->getRequest(),
+            'response' => $this->getResponse(),
         ];
     }
 }

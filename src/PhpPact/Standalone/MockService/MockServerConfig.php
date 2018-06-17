@@ -7,19 +7,19 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Configuration defining the default PhpPact Ruby Standalone server.
- * Class MockServerConfig
+ * Class MockServerConfig.
  */
 class MockServerConfig implements MockServerConfigInterface
 {
     /**
-     * Host on which to bind the service
+     * Host on which to bind the service.
      *
      * @var string
      */
     private $host = 'localhost';
 
     /**
-     * Port on which to run the service
+     * Port on which to run the service.
      *
      * @var int
      */
@@ -31,21 +31,21 @@ class MockServerConfig implements MockServerConfigInterface
     private $secure = false;
 
     /**
-     * Consumer name
+     * Consumer name.
      *
      * @var string
      */
     private $consumer;
 
     /**
-     * Provider name
+     * Provider name.
      *
      * @var string
      */
     private $provider;
 
     /**
-     * Directory to which the pacts will be written
+     * Directory to which the pacts will be written.
      *
      * @var string
      */
@@ -69,7 +69,7 @@ class MockServerConfig implements MockServerConfigInterface
     private $pactSpecificationVersion;
 
     /**
-     * File to which to log output
+     * File to which to log output.
      *
      * @var string
      */
@@ -79,7 +79,7 @@ class MockServerConfig implements MockServerConfigInterface
     private $cors = false;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getHost(): string
     {
@@ -87,7 +87,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setHost(string $host): MockServerConfigInterface
     {
@@ -97,7 +97,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPort(): int
     {
@@ -105,7 +105,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setPort(int $port): MockServerConfigInterface
     {
@@ -115,7 +115,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isSecure(): bool
     {
@@ -123,7 +123,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setSecure(bool $secure): MockServerConfigInterface
     {
@@ -133,7 +133,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getBaseUri(): UriInterface
     {
@@ -143,7 +143,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getConsumer(): string
     {
@@ -151,7 +151,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setConsumer(string $consumer): MockServerConfigInterface
     {
@@ -161,7 +161,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getProvider(): string
     {
@@ -169,7 +169,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setProvider(string $provider): MockServerConfigInterface
     {
@@ -179,7 +179,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getPactDir()
     {
@@ -191,7 +191,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setPactDir($pactDir): MockServerConfigInterface
     {
@@ -201,7 +201,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getPactFileWriteMode(): string
     {
@@ -209,7 +209,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setPactFileWriteMode(string $pactFileWriteMode): MockServerConfigInterface
     {
@@ -227,7 +227,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getPactSpecificationVersion()
     {
@@ -235,7 +235,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setPactSpecificationVersion(float $pactSpecificationVersion): MockServerConfigInterface
     {
@@ -245,7 +245,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getLog()
     {
@@ -253,7 +253,7 @@ class MockServerConfig implements MockServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setLog(string $log): MockServerConfigInterface
     {

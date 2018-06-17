@@ -6,7 +6,7 @@ use PhpPact\Standalone\Exception\MissingEnvVariableException;
 
 /**
  * An environment variable based mock server configuration.
- * Class MockServerEnvConfig
+ * Class MockServerEnvConfig.
  */
 class MockServerEnvConfig extends MockServerConfig
 {

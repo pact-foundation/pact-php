@@ -6,7 +6,7 @@ use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
 use PhpPact\Standalone\Installer\Model\Scripts;
 
 /**
- * Interface BinaryDownloaderInterface
+ * Interface BinaryDownloaderInterface.
  */
 interface InstallerInterface
 {

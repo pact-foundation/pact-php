@@ -15,7 +15,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * Wrapper for the Ruby Standalone Verifier service.
- * Class VerifierServer
+ * Class VerifierServer.
  */
 class Verifier
 {
@@ -39,9 +39,9 @@ class Verifier
 
     public function __construct(VerifierConfigInterface $config)
     {
-        $this->config            = $config;
-        $this->installManager    = new InstallManager();
-        $this->console           = new ConsoleOutput();
+        $this->config = $config;
+        $this->installManager = new InstallManager();
+        $this->console = new ConsoleOutput();
         $this->processTimeout = $config->getProcessTimeout();
         $this->processIdleTimeout = $config->getProcessIdleTimeout();
     }

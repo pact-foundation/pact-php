@@ -4,26 +4,26 @@ namespace PhpPact\Standalone\Installer\Model;
 
 /**
  * Represents locations of Ruby Standalone full path and scripts.
- * Class BinaryScripts
+ * Class BinaryScripts.
  */
 class Scripts
 {
     /**
-     * Path to PhpPact Mock Service
+     * Path to PhpPact Mock Service.
      *
      * @var string
      */
     private $mockService;
 
     /**
-     * Path to the PhpPact Stub Service
+     * Path to the PhpPact Stub Service.
      *
      * @var string
      */
     private $stubService;
 
     /**
-     * Path to the PhpPact Provider Verifier
+     * Path to the PhpPact Provider Verifier.
      *
      * @var string
      */
@@ -31,8 +31,8 @@ class Scripts
 
     public function __construct(string $mockService, string $stubService, string $providerVerifier)
     {
-        $this->mockService      = $mockService;
-        $this->stubService      = $stubService;
+        $this->mockService = $mockService;
+        $this->stubService = $stubService;
         $this->providerVerifier = $providerVerifier;
     }
 

@@ -13,7 +13,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * Ruby Standalone Stub Server Wrapper
- * Class StubServer
+ * Class StubServer.
  */
 class StubServer
 {
@@ -34,10 +34,10 @@ class StubServer
 
     public function __construct(StubServerConfigInterface $config)
     {
-        $this->config         = $config;
+        $this->config = $config;
         $this->installManager = new InstallManager();
-        $this->fileSystem     = new Filesystem();
-        $this->console        = new ConsoleOutput();
+        $this->fileSystem = new Filesystem();
+        $this->console = new ConsoleOutput();
     }
 
     /**
