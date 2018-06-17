@@ -19,8 +19,11 @@ use Symfony\Component\Process\Process;
  */
 class Verifier
 {
-    const PROCESS_TIMEOUT      = 60;
-    const PROCESS_IDLE_TIMEOUT = 10;
+    /** @var int $processTimeout */
+    private $processTimeout = 60;
+
+    /** @var int $processIdleTimeout */
+    private $processIdleTimeout = 10;
 
     /** @var VerifierConfigInterface */
     private $config;
@@ -39,6 +42,8 @@ class Verifier
         $this->config            = $config;
         $this->installManager    = new InstallManager();
         $this->console           = new ConsoleOutput();
+        $this->processTimeout = $config->getProcessTimeout();
+        $this->processIdleTimeout = $config->getProcessIdleTimeout();
     }
 
     /**
@@ -197,8 +202,8 @@ class Verifier
 
         $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
 
-        $process = new Process($arguments, null, null, null, self::PROCESS_TIMEOUT, null);
-        $process->setIdleTimeout(self::PROCESS_IDLE_TIMEOUT);
+        $process = new Process($arguments, null, null, null, $this->processTimeout);
+        $process->setIdleTimeout($this->processIdleTimeout);
 
         $this->console->write("Verifying PACT with script {$process->getCommandLine()}");
 
@@ -214,5 +219,10 @@ class Verifier
         }
 
         return $this->brokerHttpClient;
+    }
+
+    public function getTimeoutValues(): array
+    {
+        return ['process_timeout' => $this->processTimeout, 'process_idle_timeout' => $this->processIdleTimeout];
     }
 }

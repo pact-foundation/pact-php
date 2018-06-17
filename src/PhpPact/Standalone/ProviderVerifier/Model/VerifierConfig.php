@@ -42,6 +42,10 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var string */
     private $format;
 
+    private $processTimeout = 60;
+
+    private $processIdleTimeout = 10;
+
     /**
      * @inheritdoc
      */
@@ -248,5 +252,43 @@ class VerifierConfig implements VerifierConfigInterface
         $this->format = $format;
 
         return $this;
+    }
+
+    /**
+     * @param int $timeout
+     * @return VerifierConfigInterface
+     */
+    public function setProcessTimeout(int $timeout): VerifierConfigInterface
+    {
+        $this->processTimeout = $timeout;
+
+        return $this;
+    }
+
+    /**
+     * @param int $timeout
+     * @return VerifierConfigInterface
+     */
+    public function setProcessIdleTimeout(int $timeout): VerifierConfigInterface
+    {
+        $this->processIdleTimeout = $timeout;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getProcessTimeout(): int
+    {
+        return $this->processTimeout;
+    }
+
+    /**
+     * @return int
+     */
+    public function getProcessIdleTimeout(): int
+    {
+        return $this->processIdleTimeout;
     }
 }
