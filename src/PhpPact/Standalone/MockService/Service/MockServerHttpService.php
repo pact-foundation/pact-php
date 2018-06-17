@@ -46,7 +46,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
         $response = $this->client->get($uri, [
             'headers' => [
-                'Content-Type' => 'application/json',
+                'Content-Type'        => 'application/json',
                 'X-Pact-Mock-Service' => true,
             ],
         ]);
@@ -70,7 +70,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
         $response = $this->client->delete($uri, [
             'headers' => [
-                'Content-Type' => 'application/json',
+                'Content-Type'        => 'application/json',
                 'X-Pact-Mock-Service' => true,
             ],
         ]);
@@ -93,7 +93,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
         $this->client->post($uri, [
             'headers' => [
-                'Content-Type' => 'application/json',
+                'Content-Type'        => 'application/json',
                 'X-Pact-Mock-Service' => true,
             ],
             'body' => $body,
@@ -111,7 +111,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
         $this->client->get($uri, [
             'headers' => [
-                'Content-Type' => 'application/json',
+                'Content-Type'        => 'application/json',
                 'X-Pact-Mock-Service' => true,
             ],
         ]);
@@ -124,10 +124,10 @@ class MockServerHttpService implements MockServerHttpServiceInterface
      */
     public function getPactJson(): string
     {
-        $uri = $this->config->getBaseUri()->withPath('/pact');
+        $uri      = $this->config->getBaseUri()->withPath('/pact');
         $response = $this->client->post($uri, [
             'headers' => [
-                'Content-Type' => 'application/json',
+                'Content-Type'        => 'application/json',
                 'X-Pact-Mock-Service' => true,
             ],
         ]);

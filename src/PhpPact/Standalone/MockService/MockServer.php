@@ -38,10 +38,10 @@ class MockServer
 
     public function __construct(MockServerConfigInterface $config)
     {
-        $this->config = $config;
+        $this->config         = $config;
         $this->installManager = new InstallManager();
-        $this->fileSystem = new Filesystem();
-        $this->console = new ConsoleOutput();
+        $this->fileSystem     = new Filesystem();
+        $this->console        = new ConsoleOutput();
     }
 
     /**
@@ -152,7 +152,7 @@ class MockServer
         $service = new MockServerHttpService(new GuzzleClient(), $this->config);
 
         // Verify that the service is up.
-        $tries = 0;
+        $tries    = 0;
         $maxTries = 10;
         do {
             ++$tries;

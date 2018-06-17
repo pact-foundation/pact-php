@@ -31,9 +31,9 @@ class InteractionBuilder implements InteractionBuilderInterface
      */
     public function __construct(MockServerConfigInterface $config)
     {
-        $this->interaction = new Interaction();
+        $this->interaction           = new Interaction();
         $this->mockServerHttpService = new MockServerHttpService(new GuzzleClient(), $config);
-        $this->config = $config;
+        $this->config                = $config;
     }
 
     /**

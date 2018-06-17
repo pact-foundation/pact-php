@@ -39,10 +39,10 @@ class Verifier
 
     public function __construct(VerifierConfigInterface $config)
     {
-        $this->config = $config;
-        $this->installManager = new InstallManager();
-        $this->console = new ConsoleOutput();
-        $this->processTimeout = $config->getProcessTimeout();
+        $this->config             = $config;
+        $this->installManager     = new InstallManager();
+        $this->console            = new ConsoleOutput();
+        $this->processTimeout     = $config->getProcessTimeout();
         $this->processIdleTimeout = $config->getProcessIdleTimeout();
     }
 
@@ -188,6 +188,11 @@ class Verifier
         return $this;
     }
 
+    public function getTimeoutValues(): array
+    {
+        return ['process_timeout' => $this->processTimeout, 'process_idle_timeout' => $this->processIdleTimeout];
+    }
+
     /**
      * Execute the Pact Verifier Service.
      *
@@ -219,10 +224,5 @@ class Verifier
         }
 
         return $this->brokerHttpClient;
-    }
-
-    public function getTimeoutValues(): array
-    {
-        return ['process_timeout' => $this->processTimeout, 'process_idle_timeout' => $this->processIdleTimeout];
     }
 }

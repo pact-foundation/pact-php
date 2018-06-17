@@ -23,7 +23,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
     public function __construct(ClientInterface $httpClient, UriInterface $baseUri)
     {
         $this->httpClient = $httpClient;
-        $this->baseUri = $baseUri;
+        $this->baseUri    = $baseUri;
     }
 
     /**
@@ -31,7 +31,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
      */
     public function publishJson(string $json, string $version)
     {
-        $array = \json_decode($json, true);
+        $array    = \json_decode($json, true);
         $consumer = $array['consumer']['name'];
         $provider = $array['provider']['name'];
 

@@ -45,7 +45,7 @@ class StubServerHttpService implements StubServerHttpServiceInterface
 
         $response = $this->client->get($uri, [
             'headers' => [
-                'Content-Type' => 'application/json',
+                'Content-Type'        => 'application/json',
                 'X-Pact-Mock-Service' => true,
             ],
         ]);
@@ -65,7 +65,7 @@ class StubServerHttpService implements StubServerHttpServiceInterface
      */
     public function getJson(): string
     {
-        $uri = $this->config->getBaseUri()->withPath('/'.$this->config->getEndpoint());
+        $uri      = $this->config->getBaseUri()->withPath('/' . $this->config->getEndpoint());
         $response = $this->client->get($uri, [
             'headers' => [
                 'Content-Type' => 'application/json',

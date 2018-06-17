@@ -31,8 +31,8 @@ class Scripts
 
     public function __construct(string $mockService, string $stubService, string $providerVerifier)
     {
-        $this->mockService = $mockService;
-        $this->stubService = $stubService;
+        $this->mockService      = $mockService;
+        $this->stubService      = $stubService;
         $this->providerVerifier = $providerVerifier;
     }
 

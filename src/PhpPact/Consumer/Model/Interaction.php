@@ -114,10 +114,10 @@ class Interaction implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'description' => $this->getDescription(),
+            'description'   => $this->getDescription(),
             'providerState' => $this->getProviderState(),
-            'request' => $this->getRequest(),
-            'response' => $this->getResponse(),
+            'request'       => $this->getRequest(),
+            'response'      => $this->getResponse(),
         ];
     }
 }

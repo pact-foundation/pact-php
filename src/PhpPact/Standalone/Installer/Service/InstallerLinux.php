@@ -25,9 +25,9 @@ class InstallerLinux implements InstallerInterface
     {
         $fs = new Filesystem();
 
-        if ($fs->exists($destinationDir.DIRECTORY_SEPARATOR.'pact') === false) {
-            $fileName = 'pact-'.self::VERSION.'-linux-x86_64.tar.gz';
-            $tempFilePath = \sys_get_temp_dir().DIRECTORY_SEPARATOR.$fileName;
+        if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
+            $fileName     = 'pact-' . self::VERSION . '-linux-x86_64.tar.gz';
+            $tempFilePath = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
 
             $this
                 ->download($fileName, $tempFilePath)
@@ -56,7 +56,7 @@ class InstallerLinux implements InstallerInterface
      */
     private function download(string $fileName, string $tempFilePath): self
     {
-        $uri = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v'.self::VERSION."/{$fileName}";
+        $uri = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v' . self::VERSION . "/{$fileName}";
 
         $data = \file_get_contents($uri);
 

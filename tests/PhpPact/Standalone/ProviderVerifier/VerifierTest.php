@@ -28,7 +28,7 @@ class VerifierTest extends TestCase
             ->setProcessIdleTimeout(5);
 
         /** @var BrokerHttpClientInterface $brokerHttpService */
-        $server = new Verifier($config);
+        $server    = new Verifier($config);
         $arguments = $server->getArguments();
 
         $this->assertContains('--provider-base-url=http://myprovider:1234', $arguments);

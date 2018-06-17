@@ -34,7 +34,7 @@ class MockServerHttpServiceTest extends TestCase
      */
     protected function setUp()
     {
-        $this->config = new MockServerEnvConfig();
+        $this->config     = new MockServerEnvConfig();
         $this->mockServer = new MockServer($this->config);
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $this->config);
@@ -147,8 +147,8 @@ class MockServerHttpServiceTest extends TestCase
 
         $this->assertTrue($result);
 
-        $client = new GuzzleClient();
-        $uri = $this->config->getBaseUri()->withPath('/example')->withQuery('enabled=true&order=asc&value=12');
+        $client   = new GuzzleClient();
+        $uri      = $this->config->getBaseUri()->withPath('/example')->withQuery('enabled=true&order=asc&value=12');
         $response = $client->get($uri, [
             'headers' => [
                 'Content-Type' => 'application/json',
@@ -169,7 +169,7 @@ class MockServerHttpServiceTest extends TestCase
     {
         $matcher = new Matcher();
 
-        $category = new stdClass();
+        $category       = new stdClass();
         $category->name = $matcher->term('Games', '[gbBG]');
 
         $request = new ConsumerRequest();
@@ -185,7 +185,7 @@ class MockServerHttpServiceTest extends TestCase
                 'results' => $matcher->eachLike($category),
             ]);
 
-        $config = new MockServerEnvConfig();
+        $config      = new MockServerEnvConfig();
         $interaction = new InteractionBuilder($config);
         $interaction
             ->given('Something')
@@ -194,7 +194,7 @@ class MockServerHttpServiceTest extends TestCase
             ->willRespondWith($response);
 
         $client = new GuzzleClient();
-        $uri = $this->config->getBaseUri()->withPath('/test');
+        $uri    = $this->config->getBaseUri()->withPath('/test');
         $client->get($uri, [
             'headers' => [
                 'Content-Type' => 'application/json',
