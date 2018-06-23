@@ -58,7 +58,7 @@ class PactTestListener implements TestListener
      *
      * @throws \Exception
      */
-    public function startTestSuite(TestSuite $suite): void
+    public function startTestSuite(TestSuite $suite)
     {
         if (\in_array($suite->getName(), $this->testSuiteNames)) {
             $this->server = new MockServer($this->mockServerConfig);
@@ -66,12 +66,12 @@ class PactTestListener implements TestListener
         }
     }
 
-    public function addError(Test $test, \Exception $e, $time): void
+    public function addError(Test $test, \Exception $e, $time)
     {
         $this->failed = true;
     }
 
-    public function addFailure(Test $test, AssertionFailedError $e, $time): void
+    public function addFailure(Test $test, AssertionFailedError $e, $time)
     {
         $this->failed = true;
     }
@@ -81,7 +81,7 @@ class PactTestListener implements TestListener
      *
      * @param TestSuite $suite
      */
-    public function endTestSuite(TestSuite $suite): void
+    public function endTestSuite(TestSuite $suite)
     {
         if (\in_array($suite->getName(), $this->testSuiteNames)) {
             try {
