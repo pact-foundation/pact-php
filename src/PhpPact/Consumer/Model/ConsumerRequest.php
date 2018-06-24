@@ -4,7 +4,7 @@ namespace PhpPact\Consumer\Model;
 
 /**
  * Request initiated by the consumer.
- * Class ConsumerRequest
+ * Class ConsumerRequest.
  */
 class ConsumerRequest implements \JsonSerializable
 {
@@ -121,7 +121,7 @@ class ConsumerRequest implements \JsonSerializable
      */
     public function setBody($body)
     {
-        $this->body          = $body;
+        $this->body = $body;
 
         return $this;
     }
@@ -164,7 +164,7 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function jsonSerialize()
     {

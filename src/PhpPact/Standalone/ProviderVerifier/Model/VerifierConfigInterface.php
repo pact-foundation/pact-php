@@ -6,7 +6,7 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Configuration to use with the verifier server.
- * Interface VerifierServerConfigInterface
+ * Interface VerifierServerConfigInterface.
  */
 interface VerifierConfigInterface
 {
@@ -149,4 +149,28 @@ interface VerifierConfigInterface
      * @return VerifierConfigInterface
      */
     public function setFormat(string $format): self;
+
+    /**
+     * @param int $timeout
+     *
+     * @return VerifierConfigInterface
+     */
+    public function setProcessTimeout(int $timeout): self;
+
+    /**
+     * @param int $timeout
+     *
+     * @return VerifierConfigInterface
+     */
+    public function setProcessIdleTimeout(int $timeout): self;
+
+    /**
+     * @return int
+     */
+    public function getProcessTimeout(): int;
+
+    /**
+     * @return int
+     */
+    public function getProcessIdleTimeout(): int;
 }

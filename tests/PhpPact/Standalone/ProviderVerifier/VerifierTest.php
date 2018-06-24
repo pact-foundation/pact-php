@@ -23,31 +23,28 @@ class VerifierTest extends TestCase
             ->addCustomProviderHeader('key1', 'value1')
             ->addCustomProviderHeader('key2', 'value2')
             ->setVerbose(true)
-            ->setFormat('someformat');
+            ->setFormat('someformat')
+            ->setProcessTimeout(30)
+            ->setProcessIdleTimeout(5);
 
         /** @var BrokerHttpClientInterface $brokerHttpService */
-        $server     = new Verifier($config);
-        $arguments  = $server->getArguments();
+        $server    = new Verifier($config);
+        $arguments = $server->getArguments();
 
-        $this->assertTrue(\in_array('--provider-base-url=http://myprovider:1234', $arguments));
-        $this->assertTrue(\in_array('--provider-states-setup-url=http://someurl:1234', $arguments));
-        $this->assertTrue(\in_array('--publish-verification-results', $arguments));
-        $this->assertTrue(\in_array('--broker-username=someusername', $arguments));
-        $this->assertTrue(\in_array('--broker-password=somepassword', $arguments));
-        $this->assertTrue(\in_array('--custom-provider-header=key1: value1', $arguments));
-        $this->assertTrue(\in_array('--custom-provider-header=key2: value2', $arguments));
-        $this->assertTrue(\in_array('--verbose', $arguments));
-        $this->assertTrue(\in_array('--format=someformat', $arguments));
+        $this->assertContains('--provider-base-url=http://myprovider:1234', $arguments);
+        $this->assertContains('--provider-states-setup-url=http://someurl:1234', $arguments);
+        $this->assertContains('--publish-verification-results', $arguments);
+        $this->assertContains('--broker-username=someusername', $arguments);
+        $this->assertContains('--broker-password=somepassword', $arguments);
+        $this->assertContains('--custom-provider-header=key1: value1', $arguments);
+        $this->assertContains('--custom-provider-header=key2: value2', $arguments);
+        $this->assertContains('--verbose', $arguments);
+        $this->assertContains('--format=someformat', $arguments);
+        $this->assertSame(['process_timeout' => 30, 'process_idle_timeout' => 5], $server->getTimeoutValues());
     }
 
     public function testGetArgumentsEmptyConfig()
     {
-        $config            = new VerifierConfig();
-
-        /** @var BrokerHttpClientInterface $brokerHttpService */
-        $server     = new Verifier($config);
-        $arguments  = $server->getArguments();
-
-        $this->assertEmpty($arguments);
+        $this->assertEmpty((new Verifier(new VerifierConfig()))->getArguments());
     }
 }

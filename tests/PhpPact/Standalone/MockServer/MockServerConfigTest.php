@@ -19,7 +19,7 @@ class MockServerConfigTest extends TestCase
         $cors                     = true;
         $pactSpecificationVersion = 2.0;
 
-        $subject = (new MockServerConfig)
+        $subject = (new MockServerConfig())
             ->setHost($host)
             ->setPort($port)
             ->setProvider($provider)

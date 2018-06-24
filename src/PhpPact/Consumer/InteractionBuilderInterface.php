@@ -6,7 +6,7 @@ use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
 
 /**
- * Interface InteractionBuilderInterface
+ * Interface InteractionBuilderInterface.
  */
 interface InteractionBuilderInterface
 {

@@ -4,7 +4,7 @@ namespace PhpPact\Consumer\Model;
 
 /**
  * Response expectation that would be in response to a Consumer request from the Provider.
- * Class ProviderResponse
+ * Class ProviderResponse.
  */
 class ProviderResponse implements \JsonSerializable
 {
@@ -97,12 +97,12 @@ class ProviderResponse implements \JsonSerializable
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function jsonSerialize()
     {
         $results = [
-            'status' => $this->getStatus()
+            'status' => $this->getStatus(),
         ];
 
         if ($this->getHeaders() !== null) {

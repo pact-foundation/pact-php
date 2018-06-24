@@ -27,8 +27,8 @@ class InteractionBuilderTest extends TestCase
      */
     protected function setUp()
     {
-        $config            = new MockServerEnvConfig();
-        $this->mockServer  = new MockServer($config);
+        $config           = new MockServerEnvConfig();
+        $this->mockServer = new MockServer($config);
         $this->mockServer->start();
         $this->service = new MockServerHttpService(new GuzzleClient(), $config);
     }
@@ -57,7 +57,7 @@ class InteractionBuilderTest extends TestCase
             ->setStatus(200)
             ->setBody([
                 'message' => 'Hello, world!',
-                'age'     => $matcher->like(73)
+                'age'     => $matcher->like(73),
             ])
             ->addHeader('Content-Type', 'application/json');
 
@@ -87,8 +87,8 @@ class InteractionBuilderTest extends TestCase
                 'anArray'    => [
                     12,
                     'words here',
-                    493.5
-                ]
+                    493.5,
+                ],
             ]);
 
         $response = new ProviderResponse();
@@ -96,7 +96,7 @@ class InteractionBuilderTest extends TestCase
             ->setStatus(200)
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
-                'message' => 'Hello, world!'
+                'message' => 'Hello, world!',
             ]);
 
         $builder = new InteractionBuilder(new MockServerEnvConfig());
@@ -129,8 +129,8 @@ class InteractionBuilderTest extends TestCase
             ->setBody([
                 'list' => $matcher->eachLike([
                     'test'    => 1,
-                    'another' => 2
-                ])
+                    'another' => 2,
+                ]),
             ]);
 
         $builder = new InteractionBuilder(new MockServerEnvConfig());

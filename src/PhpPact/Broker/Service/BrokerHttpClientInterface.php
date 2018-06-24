@@ -7,7 +7,7 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Interface for http interaction with the PACT Broker.
- * Interface BrokerHttpServiceInterface
+ * Interface BrokerHttpServiceInterface.
  */
 interface BrokerHttpClientInterface
 {
@@ -20,7 +20,7 @@ interface BrokerHttpClientInterface
     public function __construct(ClientInterface $client, UriInterface $baseUri);
 
     /**
-     * Publish JSON
+     * Publish JSON.
      *
      * @param string $version Consumer version
      * @param string $json    PACT File JSON

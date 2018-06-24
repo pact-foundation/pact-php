@@ -12,7 +12,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Manage Ruby Standalone binaries.
- * Class BinaryManager
+ * Class BinaryManager.
  */
 class InstallManager
 {

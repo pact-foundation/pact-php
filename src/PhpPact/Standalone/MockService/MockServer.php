@@ -17,7 +17,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * Ruby Standalone Mock Server Wrapper
- * Class MockServer
+ * Class MockServer.
  */
 class MockServer
 {
@@ -155,7 +155,7 @@ class MockServer
         $tries    = 0;
         $maxTries = 10;
         do {
-            $tries++;
+            ++$tries;
 
             try {
                 $status = $service->healthCheck();

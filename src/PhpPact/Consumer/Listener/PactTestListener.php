@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestSuite;
 
 /**
  * PACT listener that can be used with environment variables and easily attached to PHPUnit configuration.
- * Class PactTestListener
+ * Class PactTestListener.
  */
 class PactTestListener implements TestListener
 {

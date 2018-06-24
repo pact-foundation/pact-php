@@ -236,7 +236,9 @@ $config
     ->setProviderVersion('1.0.0') // Providers version.
     ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
     ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
-    ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
+    ->setPublishResults(true) // Flag the verifier service to publish the results to the Pact Broker.
+    ->setProcessTimeout(60)      // Set process timeout (optional) - default 60
+    ->setProcessIdleTimeout(10); // Set process idle timeout (optional) - default 10
 
 // Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
 $verifier = new Verifier($config);

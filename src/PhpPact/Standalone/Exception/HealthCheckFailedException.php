@@ -6,7 +6,7 @@ use Exception;
 
 /**
  * Unable to verify that the mock server is running successfully.
- * Class HealthCheckFailedException
+ * Class HealthCheckFailedException.
  */
 class HealthCheckFailedException extends Exception
 {

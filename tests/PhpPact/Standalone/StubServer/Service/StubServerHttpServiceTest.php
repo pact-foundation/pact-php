@@ -26,10 +26,10 @@ class StubServerHttpServiceTest extends TestCase
      */
     protected function setUp()
     {
-        $pactLocation             = __DIR__ . '/../../../../_resources/someconsumer-someprovider.json';
-        $host                     = 'localhost';
-        $port                     = 7201;
-        $endpoint                 = 'test';
+        $pactLocation = __DIR__ . '/../../../../_resources/someconsumer-someprovider.json';
+        $host         = 'localhost';
+        $port         = 7201;
+        $endpoint     = 'test';
 
         $this->config = (new StubServerConfig())
             ->setPactLocation($pactLocation)

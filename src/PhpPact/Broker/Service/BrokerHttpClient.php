@@ -7,7 +7,7 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Http Service Wrapper for Pact Broker
- * Class BrokerHttpService
+ * Class BrokerHttpService.
  */
 class BrokerHttpClient implements BrokerHttpClientInterface
 {
@@ -18,7 +18,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
     private $baseUri;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __construct(ClientInterface $httpClient, UriInterface $baseUri)
     {
@@ -27,7 +27,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function publishJson(string $json, string $version)
     {
@@ -40,14 +40,14 @@ class BrokerHttpClient implements BrokerHttpClientInterface
 
         $this->httpClient->put($uri, [
             'headers' => [
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ],
-            'body' => $json
+            'body' => $json,
         ]);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function tag(string $consumer, string $version, string $tag)
     {
@@ -56,13 +56,13 @@ class BrokerHttpClient implements BrokerHttpClientInterface
 
         $this->httpClient->put($uri, [
             'headers' => [
-                'Content-Type' => 'application/json'
-            ]
+                'Content-Type' => 'application/json',
+            ],
         ]);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getAllConsumerUrls(string $provider, string $version = 'latest'): array
     {
@@ -70,8 +70,8 @@ class BrokerHttpClient implements BrokerHttpClientInterface
 
         $response = $this->httpClient->get($uri, [
             'headers' => [
-                'Content-Type' => 'application/json'
-            ]
+                'Content-Type' => 'application/json',
+            ],
         ]);
 
         $json = \json_decode($response->getBody()->getContents(), true);
@@ -85,7 +85,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getAllConsumerUrlsForTag(string $provider, string $tag): array
     {
@@ -93,8 +93,8 @@ class BrokerHttpClient implements BrokerHttpClientInterface
 
         $response = $this->httpClient->get($uri, [
             'headers' => [
-                'Content-Type' => 'application/json'
-            ]
+                'Content-Type' => 'application/json',
+            ],
         ]);
 
         $json = \json_decode($response->getBody()->getContents(), true);

@@ -13,7 +13,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * Ruby Standalone Stub Server Wrapper
- * Class StubServer
+ * Class StubServer.
  */
 class StubServer
 {

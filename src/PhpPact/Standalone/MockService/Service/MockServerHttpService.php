@@ -8,7 +8,7 @@ use PhpPact\Http\ClientInterface;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 
 /**
- * Http Service that interacts with the Ruby Standalone Mock Server
+ * Http Service that interacts with the Ruby Standalone Mock Server.
  *
  * @see https://github.com/pact-foundation/pact-mock_service
  * Class MockServerHttpService
@@ -38,17 +38,17 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function healthCheck(): bool
     {
-        $uri      = $this->config->getBaseUri()->withPath('/');
+        $uri = $this->config->getBaseUri()->withPath('/');
 
         $response = $this->client->get($uri, [
             'headers' => [
-                'Content-Type'           => 'application/json',
-                'X-Pact-Mock-Service'    => true
-            ]
+                'Content-Type'        => 'application/json',
+                'X-Pact-Mock-Service' => true,
+            ],
         ]);
 
         $body = $response->getBody()->getContents();
@@ -62,7 +62,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function deleteAllInteractions(): bool
     {
@@ -70,9 +70,9 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
         $response = $this->client->delete($uri, [
             'headers' => [
-                'Content-Type'           => 'application/json',
-                'X-Pact-Mock-Service'    => true
-            ]
+                'Content-Type'        => 'application/json',
+                'X-Pact-Mock-Service' => true,
+            ],
         ]);
 
         if ($response->getStatusCode() !== 200) {
@@ -83,7 +83,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function registerInteraction(Interaction $interaction): bool
     {
@@ -93,17 +93,17 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
         $this->client->post($uri, [
             'headers' => [
-                'Content-Type'           => 'application/json',
-                'X-Pact-Mock-Service'    => true
+                'Content-Type'        => 'application/json',
+                'X-Pact-Mock-Service' => true,
             ],
-            'body' => $body
+            'body' => $body,
         ]);
 
         return true;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function verifyInteractions(): bool
     {
@@ -111,25 +111,25 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
         $this->client->get($uri, [
             'headers' => [
-                'Content-Type'           => 'application/json',
-                'X-Pact-Mock-Service'    => true
-            ]
+                'Content-Type'        => 'application/json',
+                'X-Pact-Mock-Service' => true,
+            ],
         ]);
 
         return true;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getPactJson(): string
     {
         $uri      = $this->config->getBaseUri()->withPath('/pact');
         $response = $this->client->post($uri, [
             'headers' => [
-                'Content-Type'           => 'application/json',
-                'X-Pact-Mock-Service'    => true
-            ]
+                'Content-Type'        => 'application/json',
+                'X-Pact-Mock-Service' => true,
+            ],
         ]);
 
         return \json_encode(\json_decode($response->getBody()->getContents()));

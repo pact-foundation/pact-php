@@ -128,7 +128,7 @@ class MockServerHttpServiceTest extends TestCase
             ->addHeader('Content-Type', 'application/json');
 
         $expectedResponseBody = [
-            'message' => 'Hello, world!'
+            'message' => 'Hello, world!',
         ];
         $response = new ProviderResponse();
         $response
@@ -151,8 +151,8 @@ class MockServerHttpServiceTest extends TestCase
         $uri      = $this->config->getBaseUri()->withPath('/example')->withQuery('enabled=true&order=asc&value=12');
         $response = $client->get($uri, [
             'headers' => [
-                'Content-Type' => 'application/json'
-            ]
+                'Content-Type' => 'application/json',
+            ],
         ]);
 
         $body = $response->getBody()->getContents();
@@ -182,7 +182,7 @@ class MockServerHttpServiceTest extends TestCase
             ->setStatus(200)
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
-                'results' => $matcher->eachLike($category)
+                'results' => $matcher->eachLike($category),
             ]);
 
         $config      = new MockServerEnvConfig();
@@ -193,12 +193,12 @@ class MockServerHttpServiceTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        $client   = new GuzzleClient();
-        $uri      = $this->config->getBaseUri()->withPath('/test');
+        $client = new GuzzleClient();
+        $uri    = $this->config->getBaseUri()->withPath('/test');
         $client->get($uri, [
             'headers' => [
-                'Content-Type' => 'application/json'
-            ]
+                'Content-Type' => 'application/json',
+            ],
         ]);
 
         $httpClient = new MockServerHttpService(new GuzzleClient(), $config);

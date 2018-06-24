@@ -8,7 +8,7 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Guzzle Client Interface Wrapper
- * Class GuzzleClient
+ * Class GuzzleClient.
  */
 class GuzzleClient implements ClientInterface
 {

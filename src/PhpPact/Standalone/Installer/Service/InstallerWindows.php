@@ -9,14 +9,14 @@ use ZipArchive;
 
 /**
  * Download the Ruby Standalone binaries for Windows.
- * Class BinaryDownloaderWindows
+ * Class BinaryDownloaderWindows.
  */
 class InstallerWindows implements InstallerInterface
 {
     const VERSION = '1.38.0';
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function isEligible(): bool
     {
@@ -24,7 +24,7 @@ class InstallerWindows implements InstallerInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function install(string $destinationDir): Scripts
     {
@@ -62,7 +62,7 @@ class InstallerWindows implements InstallerInterface
      */
     private function download(string $fileName, string $tempFilePath): self
     {
-        $uri  = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v' . self::VERSION . "/{$fileName}";
+        $uri = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v' . self::VERSION . "/{$fileName}";
 
         $data = \file_get_contents($uri);
 

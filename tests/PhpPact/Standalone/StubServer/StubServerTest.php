@@ -14,10 +14,10 @@ class StubServerTest extends TestCase
     public function testStartAndStop()
     {
         try {
-            $pactLocation             = __DIR__ . '/../../../_resources/someconsumer-someprovider.json';
-            $host                     = 'localhost';
-            $port                     = 7201;
-            $endpoint                 = 'test';
+            $pactLocation = __DIR__ . '/../../../_resources/someconsumer-someprovider.json';
+            $host         = 'localhost';
+            $port         = 7201;
+            $endpoint     = 'test';
 
             $subject = (new StubServerConfig())
                 ->setPactLocation($pactLocation)

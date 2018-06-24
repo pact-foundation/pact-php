@@ -11,7 +11,7 @@ use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 
 /**
  * Build an interaction and send it to the Ruby Standalone Mock Service
- * Class InteractionBuilder
+ * Class InteractionBuilder.
  */
 class InteractionBuilder implements InteractionBuilderInterface
 {
@@ -77,7 +77,7 @@ class InteractionBuilder implements InteractionBuilderInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function verify(): bool
     {
@@ -85,7 +85,7 @@ class InteractionBuilder implements InteractionBuilderInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function finalize(): bool
     {
@@ -99,7 +99,7 @@ class InteractionBuilder implements InteractionBuilderInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function writePact(): bool
     {

@@ -9,12 +9,12 @@ class StubServerConfigTest extends TestCase
 {
     public function testSetters()
     {
-        $pactLocation             = __DIR__ . '/../../../_resources/someconsumer-someprovider.json';
-        $host                     = 'test-host';
-        $port                     = 1234;
-        $log                      = 'test-log-dir/';
+        $pactLocation = __DIR__ . '/../../../_resources/someconsumer-someprovider.json';
+        $host         = 'test-host';
+        $port         = 1234;
+        $log          = 'test-log-dir/';
 
-        $subject = (new StubServerConfig)
+        $subject = (new StubServerConfig())
             ->setPactLocation($pactLocation)
             ->setHost($host)
             ->setPort($port)

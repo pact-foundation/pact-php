@@ -7,19 +7,19 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Configuration defining the default PhpPact Ruby Standalone server.
- * Class StubServerConfig
+ * Class StubServerConfig.
  */
 class StubServerConfig implements StubServerConfigInterface
 {
     /**
-     * Host on which to bind the service
+     * Host on which to bind the service.
      *
      * @var string
      */
     private $host = 'localhost';
 
     /**
-     * Port on which to run the service
+     * Port on which to run the service.
      *
      * @var int
      */
@@ -31,7 +31,7 @@ class StubServerConfig implements StubServerConfigInterface
     private $secure = false;
 
     /**
-     * File to which to log output
+     * File to which to log output.
      *
      * @var string
      */
@@ -41,7 +41,7 @@ class StubServerConfig implements StubServerConfigInterface
     private $endpoint;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getHost(): string
     {
@@ -49,7 +49,7 @@ class StubServerConfig implements StubServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setHost(string $host): StubServerConfigInterface
     {
@@ -59,7 +59,7 @@ class StubServerConfig implements StubServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPort(): int
     {
@@ -67,7 +67,7 @@ class StubServerConfig implements StubServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setPort(int $port): StubServerConfigInterface
     {
@@ -77,7 +77,7 @@ class StubServerConfig implements StubServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isSecure(): bool
     {
@@ -85,7 +85,7 @@ class StubServerConfig implements StubServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setSecure(bool $secure): StubServerConfigInterface
     {
@@ -95,7 +95,7 @@ class StubServerConfig implements StubServerConfigInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getBaseUri(): UriInterface
     {
@@ -105,7 +105,7 @@ class StubServerConfig implements StubServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getLog()
     {
@@ -113,7 +113,7 @@ class StubServerConfig implements StubServerConfigInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setLog(string $log): StubServerConfigInterface
     {

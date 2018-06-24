@@ -4,7 +4,7 @@ namespace PhpPact\Consumer\Matcher;
 
 /**
  * Matcher implementation. Builds the Ruby Mock Server specification json for interaction publishing.
- * Class Matcher
+ * Class Matcher.
  */
 class Matcher
 {
@@ -47,7 +47,7 @@ class Matcher
 
         return [
             'contents'   => $value,
-            'json_class' => 'Pact::SomethingLike'
+            'json_class' => 'Pact::SomethingLike',
         ];
     }
 
@@ -63,7 +63,7 @@ class Matcher
     {
         $result = [
             'contents'   => $value,
-            'json_class' => 'Pact::ArrayLike'
+            'json_class' => 'Pact::ArrayLike',
         ];
 
         $result['min'] = $min;
@@ -97,10 +97,10 @@ class Matcher
                 'matcher'  => [
                     'json_class' => 'Regexp',
                     'o'          => 0,
-                    's'          => $pattern
-                ]
+                    's'          => $pattern,
+                ],
             ],
-            'json_class' => 'Pact::Term'
+            'json_class' => 'Pact::Term',
         ];
     }
 
@@ -162,7 +162,7 @@ class Matcher
     }
 
     /**
-     * ISO8601 DateTime matcher with required millisecond precision
+     * ISO8601 DateTime matcher with required millisecond precision.
      *
      * @param string $value
      *
@@ -176,7 +176,7 @@ class Matcher
     }
 
     /**
-     * RFC3339 Timestamp matcher, a subset of ISO8609
+     * RFC3339 Timestamp matcher, a subset of ISO8609.
      *
      * @param string $value
      *
