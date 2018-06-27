@@ -97,9 +97,9 @@ class Verifier
     /**
      * Make the request to the PACT Verifier Service to run a Pact file tests from the Pact Broker.
      *
-     * @param string      $consumerName     name of the consumer to be compared against
-     * @param null|string $tag              optional tag of the consumer such as a branch name
-     * @param null|string $consumerVersion  optional specific version of the consumer; this is overridden by tag
+     * @param string      $consumerName    name of the consumer to be compared against
+     * @param null|string $tag             optional tag of the consumer such as a branch name
+     * @param null|string $consumerVersion optional specific version of the consumer; this is overridden by tag
      *
      * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
      * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
@@ -112,11 +112,10 @@ class Verifier
 
         if ($tag) {
             $path .= "latest/{$tag}/";
-        }
-        else if ($consumerVersion) {
+        } elseif ($consumerVersion) {
             $path .= "version/{$consumerVersion}/";
         } else {
-            $path .= "latest/";
+            $path .= 'latest/';
         }
 
         $uri = $this->config->getBrokerUri()->withPath($path);
