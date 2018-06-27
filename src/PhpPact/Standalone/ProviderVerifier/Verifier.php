@@ -97,24 +97,29 @@ class Verifier
     /**
      * Make the request to the PACT Verifier Service to run a Pact file tests from the Pact Broker.
      *
-     * @param string      $consumerName name of the consumer to be compared against
-     * @param null|string $tag          optional tag of the consumer such as a branch name
+     * @param string      $consumerName     name of the consumer to be compared against
+     * @param null|string $tag              optional tag of the consumer such as a branch name
+     * @param null|string $consumerVersion  optional specific version of the consumer; this is overridden by tag
      *
      * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
      * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
      *
      * @return Verifier
      */
-    public function verify(string $consumerName, string $tag = null): self
+    public function verify(string $consumerName, string $tag = null, string $consumerVersion = null): self
     {
-        // Add tag if set.
-        if ($tag !== null) {
-            $uri = $this->config->getBrokerUri()
-                ->withPath("pacts/provider/{$this->config->getProviderName()}/consumer/{$consumerName}/latest/{$tag}");
-        } else {
-            $uri = $this->config->getBrokerUri()
-                ->withPath("pacts/provider/{$this->config->getProviderName()}/consumer/{$consumerName}/latest");
+        $path = "pacts/provider/{$this->config->getProviderName()}}/consumer/{$consumerName}/";
+
+        if ($tag) {
+            $path .= "latest/{$tag}/";
         }
+        else if ($consumerVersion) {
+            $path .= "version/{$consumerVersion}/";
+        } else {
+            $path .= "latest/";
+        }
+
+        $uri = $this->config->getBrokerUri()->withPath($path);
 
         $arguments = \array_merge([$uri->__toString()], $this->getArguments());
 
