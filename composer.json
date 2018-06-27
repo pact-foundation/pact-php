@@ -19,7 +19,7 @@
         }
     ],
     "require": {
-        "php": "^7.0",
+        "php": "^7.1",
         "ext-openssl": "*",
         "symfony/process": ">=2.8 <4.1",
         "symfony/filesystem": ">=2.8 <4.1",
@@ -28,7 +28,7 @@
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
-        "phpunit/phpunit": "^6.4",
+        "phpunit/phpunit": "^7.1",
         "mockery/mockery": "^1.0",
         "slim/slim": "^3.9",
         "tm/tooly-composer-script": "^1.2"
