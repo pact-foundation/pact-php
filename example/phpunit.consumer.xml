@@ -9,7 +9,7 @@
         <listener class="PhpPact\Consumer\Listener\PactTestListener">
             <arguments>
                 <array>
-                    <element>
+                     <element key="0">
                         <string>PhpPact Example Tests</string>
                     </element>
                 </array>
