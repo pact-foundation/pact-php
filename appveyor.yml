@@ -15,9 +15,9 @@ init:
   - git config --global core.autocrlf input
 
 install:
-  - cinst php --version 7.0.27
-  - set PATH=C:\tools\php70;%PATH%
-  - cmd: copy /Y .\tests\PhpPact\php.ini C:\tools\php70\
+  - cinst php --version 7.2.1
+  - set PATH=C:\tools\php72;%PATH%
+  - cmd: copy /Y .\tests\PhpPact\php.ini C:\tools\php72\
   - cmd: php -v
   - appveyor DownloadFile https://getcomposer.org/composer.phar
   - cmd: php .\composer.phar update
