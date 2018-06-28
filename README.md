@@ -55,7 +55,7 @@ The 3.X version is the version of Pact-PHP, not the pact specification version t
 Install the latest version with:
 
 ```bash
-$ composer require mattersight/phppact --dev
+$ composer require pact-foundation/pact-php --dev
 ```
 
 ## Basic Consumer Usage
