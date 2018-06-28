@@ -1,17 +1,16 @@
 {
-    "name": "mattersight/phppact",
+    "name": "pact-foundation/pact-php",
     "keywords": [
-        "mattersight",
         "pact",
         "pact-php"
     ],
-    "homepage": "https://github.com/Mattersight/php-pact",
+    "homepage": "https://github.com/pact-foundation/pact-php",
     "description": "Enables consumer driven contract testing, following the PACT foundation principles.",
     "license": "MIT",
     "authors": [
         {
             "name": "Mattermack",
-            "email": "charles.mack@mattersight.com"
+            "email": "c.f.mack@gmail.com"
         },
         {
             "name": "Nicholas Brink",
