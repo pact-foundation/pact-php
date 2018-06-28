@@ -58,6 +58,8 @@ Install the latest version with:
 $ composer require pact-foundation/pact-php --dev
 ```
 
+Composer hosts older versions under `mattersight/phppact`, which is abandoned. Please convert to the new package name.  
+
 ## Basic Consumer Usage
 
 All of the following code will be used exclusively for the Consumer.
