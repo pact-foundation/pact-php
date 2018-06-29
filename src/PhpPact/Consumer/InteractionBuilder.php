@@ -5,24 +5,17 @@ namespace PhpPact\Consumer;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
-use PhpPact\Standalone\MockService\Service\MockServerHttpService;
+
 
 /**
  * Build an interaction and send it to the Ruby Standalone Mock Service
  * Class InteractionBuilder.
  */
-class InteractionBuilder implements InteractionBuilderInterface
+class InteractionBuilder extends PactBuilder
 {
     /** @var Interaction */
     private $interaction;
-
-    /** @var MockServerConfigInterface */
-    private $config;
-
-    /** @var MockServerHttpService */
-    private $mockServerHttpService;
 
     /**
      * InteractionBuilder constructor.
@@ -31,35 +24,40 @@ class InteractionBuilder implements InteractionBuilderInterface
      */
     public function __construct(MockServerConfigInterface $config)
     {
+        parent::__construct($config);
         $this->interaction           = new Interaction();
-        $this->mockServerHttpService = new MockServerHttpService(new GuzzleClient(), $config);
-        $this->config                = $config;
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $providerState what is given to the request
+     *
+     * @return InteractionBuilder
      */
-    public function given(string $description): InteractionBuilderInterface
+    public function given(string $providerState): self
     {
-        $this->interaction->setProviderState($description);
+        $this->interaction->setProviderState($providerState);
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $description what is received when the request is made
+     *
+     * @return InteractionBuilder
      */
-    public function uponReceiving(string $providerState): InteractionBuilderInterface
+    public function uponReceiving(string $description): self
     {
-        $this->interaction->setDescription($providerState);
+        $this->interaction->setDescription($description);
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * @param ConsumerRequest $request mock of request sent
+     *
+     * @return InteractionBuilder
      */
-    public function with(ConsumerRequest $request): InteractionBuilderInterface
+    public function with(ConsumerRequest $request): self
     {
         $this->interaction->setRequest($request);
 
@@ -67,7 +65,11 @@ class InteractionBuilder implements InteractionBuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Make the http request to the Mock Service to register the interaction.
+     *
+     * @param ProviderResponse $response mock of response received
+     *
+     * @return bool returns true on success
      */
     public function willRespondWith(ProviderResponse $response): bool
     {
@@ -76,36 +78,4 @@ class InteractionBuilder implements InteractionBuilderInterface
         return $this->mockServerHttpService->registerInteraction($this->interaction);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function verify(): bool
-    {
-        return $this->mockServerHttpService->verifyInteractions();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function finalize(): bool
-    {
-        // Write the pact file to disk.
-        $this->mockServerHttpService->getPactJson();
-
-        // Delete the interactions.
-        $this->mockServerHttpService->deleteAllInteractions();
-
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function writePact(): bool
-    {
-        // Write the pact file to disk.
-        $this->mockServerHttpService->getPactJson();
-
-        return true;
-    }
 }

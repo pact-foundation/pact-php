@@ -3,6 +3,7 @@
 namespace PhpPact\Standalone\MockService\Service;
 
 use PhpPact\Consumer\Model\Interaction;
+use PhpPact\Consumer\Model\Message;
 use PhpPact\Exception\ConnectionException;
 use PhpPact\Http\ClientInterface;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
@@ -90,6 +91,29 @@ class MockServerHttpService implements MockServerHttpServiceInterface
         $uri = $this->config->getBaseUri()->withPath('/interactions');
 
         $body = \json_encode($interaction->jsonSerialize());
+
+        $this->client->post($uri, [
+            'headers' => [
+                'Content-Type'        => 'application/json',
+                'X-Pact-Mock-Service' => true,
+            ],
+            'body' => $body,
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Separate function for messages, instead of interactions, as I am unsure what to do with the Ruby Standalone at the moment
+     *
+     * @param Message $message
+     * @return bool
+     */
+    public function registerMessage(Message $message): bool
+    {
+        $uri = $this->config->getBaseUri()->withPath('/interactions');
+
+        $body = \json_encode($message->jsonSerialize());
 
         $this->client->post($uri, [
             'headers' => [
