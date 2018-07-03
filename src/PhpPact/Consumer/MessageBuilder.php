@@ -4,6 +4,7 @@ namespace PhpPact\Consumer;
 
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
+use PhpPact\Standalone\PactMessage\PactMessage;
 
 /**
  * Build a message and send it to the Ruby Standalone Mock Service
@@ -14,16 +15,18 @@ class MessageBuilder implements BuilderInterface
     /** @var Message */
     private $message;
 
+    /** @var PactMessage */
+    protected $pactMessage;
+
 
     /**
-     * InteractionBuilder constructor.
+     * constructor.
      *
-     * @param MockServerConfigInterface $config
      */
-    public function __construct(MockServerConfigInterface $config)
+    public function __construct()
     {
-        $this->config  = $config;
         $this->message = new Message();
+        $this->pactMessage = new PactMessage();
     }
 
     /**
@@ -77,9 +80,16 @@ class MessageBuilder implements BuilderInterface
         return $this;
     }
 
+    /**
+     * Run reify to create an example pact from the message (i.e. create messages from matchers)
+     *
+     * @return string
+     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
+     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
+     */
     public function reify(): string
     {
-        // build pact-message.bat call
+        return $this->pactMessage->reify($this->message);
     }
 
     /**

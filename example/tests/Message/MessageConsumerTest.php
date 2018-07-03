@@ -15,17 +15,20 @@ class MessageConsumerTest extends TestCase
     public function testMessage()
     {
 
-        $config     = new MockServerEnvConfig();
-        $builder    = new MessageBuilder($config);
+        $builder    = new MessageBuilder();
 
         $content    = new \stdClass();
         $content->text = "Hello Mary!!";
 
+        $metadata = ["queue"=>"wind cries"];
+
         $builder
             ->given('a hello message')
             ->expectsToReceive('an alligator named Mary exists')
-            ->withMetadata($content)
+            ->withMetadata($metadata)
             ->withContent($content);
+
+        $output = $builder->reify();
 
         $this->assertTrue(false, "random assert");
     }
