@@ -6,16 +6,24 @@ use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
-
+use PhpPact\Http\GuzzleClient;
+use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 
 /**
  * Build an interaction and send it to the Ruby Standalone Mock Service
  * Class InteractionBuilder.
  */
-class InteractionBuilder extends PactBuilder
+class InteractionBuilder implements BuilderInterface
 {
     /** @var Interaction */
     private $interaction;
+
+    /** @var MockServerHttpService */
+    protected $mockServerHttpService;
+
+    /** @var MockServerConfigInterface */
+    protected $config;
+
 
     /**
      * InteractionBuilder constructor.
@@ -24,7 +32,8 @@ class InteractionBuilder extends PactBuilder
      */
     public function __construct(MockServerConfigInterface $config)
     {
-        parent::__construct($config);
+        $this->config                = $config;
+        $this->mockServerHttpService = new MockServerHttpService(new GuzzleClient(), $config);
         $this->interaction           = new Interaction();
     }
 
@@ -78,4 +87,37 @@ class InteractionBuilder extends PactBuilder
         return $this->mockServerHttpService->registerInteraction($this->interaction);
     }
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function verify(): bool
+    {
+        return $this->mockServerHttpService->verifyInteractions();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function finalize(): bool
+    {
+        // Write the pact file to disk.
+        $this->mockServerHttpService->getPactJson();
+
+        // Delete the interactions.
+        $this->mockServerHttpService->deleteAllInteractions();
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function writePact(): bool
+    {
+        // Write the pact file to disk.
+        $this->mockServerHttpService->getPactJson();
+
+        return true;
+    }
 }

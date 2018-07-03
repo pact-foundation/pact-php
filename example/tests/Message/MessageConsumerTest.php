@@ -9,6 +9,9 @@ use PHPUnit\Framework\TestCase;
 class MessageConsumerTest extends TestCase
 {
 
+    /**
+     * @throws \PhpPact\Standalone\Exception\MissingEnvVariableException
+     */
     public function testMessage()
     {
 
@@ -23,7 +26,6 @@ class MessageConsumerTest extends TestCase
             ->expectsToReceive('an alligator named Mary exists')
             ->withMetadata($content)
             ->withContent($content);
-
 
         $this->assertTrue(false, "random assert");
     }

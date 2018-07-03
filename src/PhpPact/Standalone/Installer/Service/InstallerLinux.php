@@ -38,7 +38,8 @@ class InstallerLinux implements InstallerInterface
         $scripts = new Scripts(
             "{$destinationDir}/pact/bin/pact-mock-service",
             "{$destinationDir}/pact/bin/pact-stub-service",
-            "{$destinationDir}/pact/bin/pact-provider-verifier"
+            "{$destinationDir}/pact/bin/pact-provider-verifier",
+            "{$destinationDir}/pact/bin/pact-message"
         );
 
         return $scripts;

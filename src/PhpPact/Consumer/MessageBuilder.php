@@ -9,7 +9,7 @@ use PhpPact\Standalone\MockService\MockServerConfigInterface;
  * Build a message and send it to the Ruby Standalone Mock Service
  * Class MessageBuilder.
  */
-class MessageBuilder extends PactBuilder
+class MessageBuilder implements BuilderInterface
 {
     /** @var Message */
     private $message;
@@ -22,8 +22,8 @@ class MessageBuilder extends PactBuilder
      */
     public function __construct(MockServerConfigInterface $config)
     {
+        $this->config  = $config;
         $this->message = new Message();
-        parent::__construct($config);
     }
 
     /**
@@ -71,11 +71,50 @@ class MessageBuilder extends PactBuilder
      *
      * @return bool returns true on success
      */
-    public function withContent($contents): bool
+    public function withContent($contents): self
     {
         $this->message->setContents($contents);
-
-        return $this->mockServerHttpService->registerMessage($this->message);
+        return $this;
     }
 
+    public function reify(): string
+    {
+        // build pact-message.bat call
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function verify(): bool
+    {
+
+        //return $this->mockServerHttpService->verifyInteractions();
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function finalize(): bool
+    {
+        // Write the pact file to disk.
+        //$this->mockServerHttpService->getPactJson();
+
+        // Delete the interactions.
+        //$this->mockServerHttpService->deleteAllInteractions();
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function writePact(): bool
+    {
+        // Write the pact file to disk.
+        //$this->mockServerHttpService->getPactJson();
+
+        return false;
+    }
 }

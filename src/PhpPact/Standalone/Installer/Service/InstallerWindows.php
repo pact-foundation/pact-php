@@ -44,7 +44,8 @@ class InstallerWindows implements InstallerInterface
         $scripts = new Scripts(
             $binDir . 'pact-mock-service.bat',
             $binDir . 'pact-stub-service.bat',
-            $binDir . 'pact-provider-verifier.bat'
+            $binDir . 'pact-provider-verifier.bat',
+            $binDir . 'pact-message.bat'
         );
 
         return $scripts;
