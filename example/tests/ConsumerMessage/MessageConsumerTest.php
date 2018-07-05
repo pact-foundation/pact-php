@@ -34,7 +34,9 @@ class MessageConsumerTest extends TestCase
 
         $json = $builder->reify();
 
-        // invote send this json to a consumer
+        // should we use a call back?
+
+        // invoke send this json to a consumer
         // should we deserialize it first?  do we require that the consumer deserializes given the lack of json mapping classes?
 
         // wrap in a try catch?

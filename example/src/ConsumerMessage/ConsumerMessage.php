@@ -2,7 +2,8 @@
 
 class ConsumerMessage
 {
-    public function Process(string $message) {
-        echo " [x] Processed ", $message , "\n";
+    public function Process($message) {
+        $obj = \json_decode($message);
+        echo " [x] Processed ".  $obj->content . "\n";
     }
 }

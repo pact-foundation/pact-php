@@ -2,11 +2,31 @@
 
 class ProviderMessage
 {
-    // perhaps build a json object, etc
-    public function Publish() {
-        $message = 'Hello World';
+    /** @var array */
+    private $metadata;
 
-        echo " [x] Publishing ", $message , "\n";
-        return $message;
+    public function __construct($metadata = [])
+    {
+        $this->metadata = $metadata;
     }
+
+    /**
+     * @return array
+     */
+    public function getMetadata(): array
+    {
+        return $this->metadata;
+    }
+
+    // perhaps build a json object, etc
+    public function Publish($content) {
+        $obj = new \stdClass();
+        $obj->metadata = $this->metadata;
+        $obj->content = $content;
+
+        echo print_r($obj, true);
+        return \json_encode($obj);
+    }
+
+
 }
