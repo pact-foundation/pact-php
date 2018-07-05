@@ -108,7 +108,7 @@ class Verifier
      */
     public function verify(string $consumerName, string $tag = null, string $consumerVersion = null): self
     {
-        $path = "pacts/provider/{$this->config->getProviderName()}}/consumer/{$consumerName}/";
+        $path = "pacts/provider/{$this->config->getProviderName()}/consumer/{$consumerName}/";
 
         if ($tag) {
             $path .= "latest/{$tag}/";
