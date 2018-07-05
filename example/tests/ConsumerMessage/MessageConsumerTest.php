@@ -3,7 +3,6 @@
 namespace Consumer\Service;
 
 use PhpPact\Consumer\MessageBuilder;
-use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PhpPact\Standalone\PactMessage\PactMessageConfig;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +14,6 @@ class MessageConsumerTest extends TestCase
      */
     public function testMessage()
     {
-
         $config = new PactMessageConfig();
         $config->setConsumer("test_consumer");
         $config->setProvider("test_provider");
