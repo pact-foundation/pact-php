@@ -52,42 +52,6 @@ interface MockServerConfigInterface
     public function getBaseUri(): UriInterface;
 
     /**
-     * @return string
-     */
-    public function getConsumer(): string;
-
-    /**
-     * @param string $consumer consumers name
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setConsumer(string $consumer): self;
-
-    /**
-     * @return string
-     */
-    public function getProvider(): string;
-
-    /**
-     * @param string $provider providers name
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setProvider(string $provider): self;
-
-    /**
-     * @return string url to place the pact files when written to disk
-     */
-    public function getPactDir();
-
-    /**
-     * @param null|string $pactDir url to place the pact files when written to disk
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setPactDir($pactDir): self;
-
-    /**
      * @return string 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
      */
     public function getPactFileWriteMode(): string;
@@ -98,30 +62,6 @@ interface MockServerConfigInterface
      * @return MockServerConfigInterface
      */
     public function setPactFileWriteMode(string $pactFileWriteMode): self;
-
-    /**
-     * @return float pact version
-     */
-    public function getPactSpecificationVersion();
-
-    /**
-     * @param float $pactSpecificationVersion pact version
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setPactSpecificationVersion(float $pactSpecificationVersion): self;
-
-    /**
-     * @return string directory for log output
-     */
-    public function getLog();
-
-    /**
-     * @param string $log directory for log output
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setLog(string $log): self;
 
     /**
      * @return bool

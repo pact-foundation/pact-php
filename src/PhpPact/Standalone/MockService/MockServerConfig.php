@@ -4,12 +4,13 @@ namespace PhpPact\Standalone\MockService;
 
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
+use PhpPact\Standalone\PactConfigInterface;
 
 /**
  * Configuration defining the default PhpPact Ruby Standalone server.
  * Class MockServerConfig.
  */
-class MockServerConfig implements MockServerConfigInterface
+class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
 {
     /**
      * Host on which to bind the service.
@@ -153,7 +154,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setConsumer(string $consumer): MockServerConfigInterface
+    public function setConsumer(string $consumer): PactConfigInterface
     {
         $this->consumer = $consumer;
 
@@ -171,7 +172,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setProvider(string $provider): MockServerConfigInterface
+    public function setProvider(string $provider): PactConfigInterface
     {
         $this->provider = $provider;
 
@@ -193,7 +194,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setPactDir($pactDir): MockServerConfigInterface
+    public function setPactDir($pactDir): PactConfigInterface
     {
         $this->pactDir = $pactDir;
 
@@ -237,7 +238,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setPactSpecificationVersion(float $pactSpecificationVersion): MockServerConfigInterface
+    public function setPactSpecificationVersion(float $pactSpecificationVersion): PactConfigInterface
     {
         $this->pactSpecificationVersion = $pactSpecificationVersion;
 
@@ -255,7 +256,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setLog(string $log): MockServerConfigInterface
+    public function setLog(string $log): PactConfigInterface
     {
         $this->log = $log;
 

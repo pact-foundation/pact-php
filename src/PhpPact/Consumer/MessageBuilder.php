@@ -3,7 +3,7 @@
 namespace PhpPact\Consumer;
 
 use PhpPact\Consumer\Model\Message;
-use PhpPact\Standalone\MockService\MockServerConfigInterface;
+use PhpPact\Standalone\PactConfigInterface;
 use PhpPact\Standalone\PactMessage\PactMessage;
 
 /**
@@ -18,13 +18,20 @@ class MessageBuilder implements BuilderInterface
     /** @var PactMessage */
     protected $pactMessage;
 
+    /** @var string */
+    protected $pactJson;
+
+    /** @var PactConfigInterface */
+    protected $config;
+
 
     /**
      * constructor.
      *
      */
-    public function __construct()
+    public function __construct(PactConfigInterface $config)
     {
+        $this->config = $config;
         $this->message = new Message();
         $this->pactMessage = new PactMessage();
     }
@@ -89,7 +96,9 @@ class MessageBuilder implements BuilderInterface
      */
     public function reify(): string
     {
-        return $this->pactMessage->reify($this->message);
+        $this->pactJson = $this->pactMessage->reify($this->message);
+
+        return $this->pactJson;
     }
 
     /**
@@ -97,9 +106,6 @@ class MessageBuilder implements BuilderInterface
      */
     public function verify(): bool
     {
-
-        //return $this->mockServerHttpService->verifyInteractions();
-
         return false;
     }
 
@@ -108,13 +114,13 @@ class MessageBuilder implements BuilderInterface
      */
     public function finalize(): bool
     {
-        // Write the pact file to disk.
-        //$this->mockServerHttpService->getPactJson();
+        if (!$this->pactJson) {
+            $pactJson = \json_encode($this->message);
+        } else {
+            $pactJson = $this->pactJson;
+        }
 
-        // Delete the interactions.
-        //$this->mockServerHttpService->deleteAllInteractions();
-
-        return false;
+        return $this->pactMessage->update($pactJson, $this->config->getConsumer(), $this->config->getProvider(), $this->config->getPactDir());
     }
 
     /**
@@ -122,9 +128,6 @@ class MessageBuilder implements BuilderInterface
      */
     public function writePact(): bool
     {
-        // Write the pact file to disk.
-        //$this->mockServerHttpService->getPactJson();
-
         return false;
     }
 }
