@@ -85,10 +85,10 @@ class PactMessage
 
         $arguments = [];
         $arguments[] = 'update';
-        $arguments[] = $pactJson;
         $arguments[] = "--consumer={$consumer}";
         $arguments[] = "--provider={$provider}";
         $arguments[] = "--pact-dir={$pactDir}";
+        $arguments[] = $pactJson;
 
         $this->process = ProcessRunner::run($scripts->getPactMessage(), $arguments);
         $this->process
