@@ -68,8 +68,10 @@ class VerifierTest extends TestCase
         $config = new VerifierConfig();
         $config->setProviderName($providerName);
         $config->setBrokerUri($uriMock);
+        $config->setVerbose(true);
 
         $verifier = new Verifier($config);
+
         $verifier->verify($consumerName, $tag, $verison);
     }
 
