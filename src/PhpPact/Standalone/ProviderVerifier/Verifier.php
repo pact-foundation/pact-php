@@ -214,7 +214,7 @@ class Verifier
         $process = new Process($arguments, null, null, null, $this->processTimeout);
         $process->setIdleTimeout($this->processIdleTimeout);
 
-        if (!is_array($process->getCommandLine())) {
+        if (!\is_array($process->getCommandLine())) {
             $this->console->write("Verifying PACT with script {$process->getCommandLine()}");
         }
 
