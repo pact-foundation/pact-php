@@ -66,9 +66,24 @@ class VerifierTest extends TestCase
             ->willReturn($uriMock);
 
         $config = new VerifierConfig();
-        $config->setProviderName($providerName);
-        $config->setBrokerUri($uriMock);
-        $config->setVerbose(true);
+
+
+        $config
+            ->setProviderName($providerName)
+            ->setProviderVersion('1.0.0')
+            ->setProviderBaseUrl(new Uri('http://myprovider:1234'))
+            ->setProviderStatesSetupUrl(new Uri('http://someurl:1234'))
+            ->setPublishResults(true)
+            ->setBrokerUri($uriMock)
+            ->setBrokerUsername('someusername')
+            ->setBrokerPassword('somepassword')
+            ->addCustomProviderHeader('key1', 'value1')
+            ->addCustomProviderHeader('key2', 'value2')
+            ->setVerbose(true)
+            ->setFormat('someformat')
+            ->setProcessTimeout(30)
+            ->setProcessIdleTimeout(5);
+
 
         $verifier = new Verifier($config);
 
