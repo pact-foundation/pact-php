@@ -48,7 +48,7 @@ class VerifierTest extends TestCase
         $this->assertEmpty((new Verifier(new VerifierConfig()))->getArguments());
     }
 
-    /**
+    /*
      * @dataProvider dataProviderForBrokerPathTest
      *
      * @param mixed $consumerName
