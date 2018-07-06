@@ -47,4 +47,38 @@ class VerifierTest extends TestCase
     {
         $this->assertEmpty((new Verifier(new VerifierConfig()))->getArguments());
     }
+
+    /**
+     * @dataProvider dataProviderForBrokerPathTest
+     */
+    public function testBuildValidPathToPactBroker($consumerName, $providerName, $tag, $verison, $path)
+    {
+        $uriMock = $this->createMock(Uri::class);
+        $uriMock->expects($this->once())
+            ->method('withPath')
+            ->with($path)
+            ->willReturn($uriMock);
+
+        $config = new VerifierConfig();
+        $config->setProviderName($providerName);
+        $config->setBrokerUri($uriMock);
+
+        $verifier = new Verifier($config);
+        $verifier->verify($consumerName, $tag, $verison);
+    }
+
+    public function dataProviderForBrokerPathTest()
+    {
+        $consumerName = 'someProviderName';
+        $providerName = 'someProviderName';
+        $tag = '1.0.0';
+        $version = '11111';
+
+        return [
+            [$consumerName, $providerName, null, $version, "pacts/provider/$providerName/consumer/$consumerName/version/$version/"],
+            [$consumerName, $providerName, $tag, null, "pacts/provider/$providerName/consumer/$consumerName/latest/$tag/"],
+            [$consumerName, $providerName, $tag, $version, "pacts/provider/$providerName/consumer/$consumerName/latest/$tag/"],
+            [$consumerName, $providerName, null, null, "pacts/provider/$providerName/consumer/$consumerName/latest/"],
+        ];
+    }
 }
