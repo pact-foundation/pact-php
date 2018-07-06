@@ -3,8 +3,8 @@
 namespace PhpPact\Standalone\MockService;
 
 use GuzzleHttp\Psr7\Uri;
-use Psr\Http\Message\UriInterface;
 use PhpPact\Standalone\PactConfigInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Configuration defining the default PhpPact Ruby Standalone server.

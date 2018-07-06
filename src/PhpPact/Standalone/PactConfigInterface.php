@@ -44,7 +44,6 @@ interface PactConfigInterface
      */
     public function setPactDir($pactDir): self;
 
-
     /**
      * @return float pact version
      */
@@ -68,5 +67,4 @@ interface PactConfigInterface
      * @return PactConfigInterface
      */
     public function setLog(string $log): self;
-
 }

@@ -12,9 +12,6 @@ use PhpPact\Standalone\PactMessage\PactMessage;
  */
 class MessageBuilder implements BuilderInterface
 {
-    /** @var Message */
-    private $message;
-
     /** @var PactMessage */
     protected $pactMessage;
 
@@ -24,16 +21,41 @@ class MessageBuilder implements BuilderInterface
     /** @var PactConfigInterface */
     protected $config;
 
+    /** @var array */
+    protected $callback;
+    /** @var Message */
+    private $message;
 
     /**
      * constructor.
-     *
      */
     public function __construct(PactConfigInterface $config)
     {
-        $this->config = $config;
-        $this->message = new Message();
+        $this->config      = $config;
+        $this->message     = new Message();
         $this->pactMessage = new PactMessage();
+    }
+
+    /**
+     * Retrieve the verification call back
+     *
+     * @return array
+     */
+    public function getCallback(): array
+    {
+        return $this->callback;
+    }
+
+    /**
+     * Retrieve the verification call back
+     *
+     * @param array $callback
+     */
+    public function setCallback(array $callback): self
+    {
+        $this->callback = $callback;
+
+        return $this;
     }
 
     /**
@@ -60,8 +82,6 @@ class MessageBuilder implements BuilderInterface
         return $this;
     }
 
-
-
     /**
      * @param mixed $metadata what is the additional metadata of the message
      *
@@ -84,15 +104,17 @@ class MessageBuilder implements BuilderInterface
     public function withContent($contents): self
     {
         $this->message->setContents($contents);
+
         return $this;
     }
 
     /**
      * Run reify to create an example pact from the message (i.e. create messages from matchers)
      *
-     * @return string
      * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
      * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
+     *
+     * @return string
      */
     public function reify(): string
     {
@@ -104,9 +126,31 @@ class MessageBuilder implements BuilderInterface
     /**
      * {@inheritdoc}
      */
+    public function verifyMessage($callback): bool
+    {
+        $this->setCallback($callback);
+
+        return $this->verify();
+    }
+
+    /**
+     * Verify the use of the pact by calling the callback
+     * It also calls finalize to write the pact
+     *
+     * @throws \Exception if callback is not set
+     */
     public function verify(): bool
     {
-        return false;
+        if (!$this->callback) {
+            throw new \Exception('Callbacks need to exist to run verify.');
+        }
+
+        $this->reify();
+
+        // call the function to actually run the logic
+        \call_user_func([$this->callback[0], $this->callback[1]]);
+
+        return $this->finalize();
     }
 
     /**
@@ -128,6 +172,6 @@ class MessageBuilder implements BuilderInterface
      */
     public function writePact(): bool
     {
-        return false;
+        return $this->finalize();
     }
 }

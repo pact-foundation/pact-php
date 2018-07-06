@@ -87,5 +87,4 @@ class Scripts
     {
         return $this->pactMessage;
     }
-
 }

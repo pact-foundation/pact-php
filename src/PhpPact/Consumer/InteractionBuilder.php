@@ -5,8 +5,8 @@ namespace PhpPact\Consumer;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPact\Http\GuzzleClient;
+use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 
 /**
@@ -15,15 +15,13 @@ use PhpPact\Standalone\MockService\Service\MockServerHttpService;
  */
 class InteractionBuilder implements BuilderInterface
 {
-    /** @var Interaction */
-    private $interaction;
-
     /** @var MockServerHttpService */
     protected $mockServerHttpService;
 
     /** @var MockServerConfigInterface */
     protected $config;
-
+    /** @var Interaction */
+    private $interaction;
 
     /**
      * InteractionBuilder constructor.
@@ -86,7 +84,6 @@ class InteractionBuilder implements BuilderInterface
 
         return $this->mockServerHttpService->registerInteraction($this->interaction);
     }
-
 
     /**
      * {@inheritdoc}

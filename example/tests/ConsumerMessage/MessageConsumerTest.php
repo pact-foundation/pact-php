@@ -2,29 +2,31 @@
 
 namespace Consumer\Service;
 
+require_once __DIR__ . '/../../src/ConsumerMessage/ConsumerMessage.php';
+
+use ConsumerMessage\ConsumerMessage;
 use PhpPact\Consumer\MessageBuilder;
 use PhpPact\Standalone\PactMessage\PactMessageConfig;
 use PHPUnit\Framework\TestCase;
 
 class MessageConsumerTest extends TestCase
 {
-
     /**
      * @throws \PhpPact\Standalone\Exception\MissingEnvVariableException
      */
     public function testMessage()
     {
         $config = new PactMessageConfig();
-        $config->setConsumer("test_consumer");
-        $config->setProvider("test_provider");
-        $config->setPactDir("D:\\Temp\\");
+        $config->setConsumer('test_consumer');
+        $config->setProvider('test_provider');
+        $config->setPactDir('D:\\Temp\\');
 
         $builder    = new MessageBuilder($config);
 
-        $content    = new \stdClass();
-        $content->text = "Hello Mary!!";
+        $content       = new \stdClass();
+        $content->text = 'Hello Mary!!';
 
-        $metadata = ["queue"=>"wind cries"];
+        $metadata = ['queue'=>'wind cries', 'routing_key'=>'wind cries'];
 
         $builder
             ->given('a hello message')
@@ -32,21 +34,15 @@ class MessageConsumerTest extends TestCase
             ->withMetadata($metadata)
             ->withContent($content);
 
-
-
-        $json = $builder->reify();
-
-        // should we use a call back?
-
-        // invoke send this json to a consumer
-        // should we deserialize it first?  do we require that the consumer deserializes given the lack of json mapping classes?
-
-        // wrap in a try catch?
-        // how do we fail?
+        $consumerMessage = new ConsumerMessage();
+        $callback        = [$consumerMessage, 'Process'];
+        $builder->setCallback($callback);
+        $builder->verify();
 
         // update message interaction
-        $builder->finalize();
+        //$builder->reify();
+        //$builder->finalize();
 
-        $this->assertTrue(true, "random assert");
+        $this->assertTrue(true, 'random assert');
     }
 }

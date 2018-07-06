@@ -38,11 +38,13 @@ class Message implements \JsonSerializable
 
     /**
      * @param string $description
+     *
      * @return Message
      */
-    public function setDescription(string $description): Message
+    public function setDescription(string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -56,11 +58,13 @@ class Message implements \JsonSerializable
 
     /**
      * @param string $providerState
+     *
      * @return Message
      */
-    public function setProviderState(string $providerState): Message
+    public function setProviderState(string $providerState): self
     {
         $this->providerState = $providerState;
+
         return $this;
     }
 
@@ -74,11 +78,13 @@ class Message implements \JsonSerializable
 
     /**
      * @param array $metadata
+     *
      * @return Message
      */
-    public function setMetadata(array $metadata): Message
+    public function setMetadata(array $metadata): self
     {
         $this->metadata = $metadata;
+
         return $this;
     }
 
@@ -92,21 +98,22 @@ class Message implements \JsonSerializable
 
     /**
      * @param mixed $contents
+     *
      * @return Message
      */
     public function setContents($contents)
     {
         $this->contents = $contents;
+
         return $this;
     }
-
 
     /**
      * {@inheritdoc}
      */
     public function jsonSerialize()
     {
-        $out = array();
+        $out                = [];
         $out['description'] = $this->getDescription();
 
         if ($this->providerState) {

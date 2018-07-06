@@ -107,6 +107,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
      * Separate function for messages, instead of interactions, as I am unsure what to do with the Ruby Standalone at the moment
      *
      * @param Message $message
+     *
      * @return bool
      */
     public function registerMessage(Message $message): bool

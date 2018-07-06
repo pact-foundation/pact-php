@@ -2,14 +2,12 @@
 
 namespace PhpPact\Consumer;
 
-
 /**
  * Build an Pact and send it to the Ruby Standalone Mock Service
  * Class BuilderInterface.
  */
 interface BuilderInterface
 {
-
     /**
      * Verify that the interactions are valid.
      */
@@ -26,5 +24,4 @@ interface BuilderInterface
      * @return bool
      */
     public function writePact(): bool;
-
 }

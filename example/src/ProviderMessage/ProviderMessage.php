@@ -19,14 +19,14 @@ class ProviderMessage
     }
 
     // perhaps build a json object, etc
-    public function Publish($content) {
-        $obj = new \stdClass();
+    public function Publish($content)
+    {
+        $obj           = new \stdClass();
         $obj->metadata = $this->metadata;
-        $obj->content = $content;
+        $obj->content  = $content;
 
-        echo print_r($obj, true);
+        print \print_r($obj, true);
+
         return \json_encode($obj);
     }
-
-
 }
