@@ -57,6 +57,7 @@ class VerifierTest extends TestCase
      * @param mixed $verison
      * @param mixed $path
      */
+    /*
     public function testBuildValidPathToPactBroker($consumerName, $providerName, $tag, $verison, $path)
     {
         $uriMock = $this->createMock(Uri::class);
@@ -91,4 +92,5 @@ class VerifierTest extends TestCase
             [$consumerName, $providerName, null, null, "pacts/provider/$providerName/consumer/$consumerName/latest/"],
         ];
     }
+    */
 }
