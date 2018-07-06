@@ -21,8 +21,9 @@ class MessageBuilder implements BuilderInterface
     /** @var PactConfigInterface */
     protected $config;
 
-    /** @var array */
+    /** @var callable */
     protected $callback;
+
     /** @var Message */
     private $message;
 
@@ -39,19 +40,11 @@ class MessageBuilder implements BuilderInterface
     /**
      * Retrieve the verification call back
      *
-     * @return array
-     */
-    public function getCallback(): array
-    {
-        return $this->callback;
-    }
-
-    /**
-     * Retrieve the verification call back
+     * @param callable $callback
      *
-     * @param array $callback
+     * @return MessageBuilder
      */
-    public function setCallback(array $callback): self
+    public function setCallback(callable $callback): self
     {
         $this->callback = $callback;
 
@@ -147,8 +140,10 @@ class MessageBuilder implements BuilderInterface
 
         $this->reify();
 
+        print \print_r($this->pactJson, true);
+
         // call the function to actually run the logic
-        \call_user_func([$this->callback[0], $this->callback[1]]);
+        \call_user_func($this->callback, $this->pactJson);
 
         return $this->finalize();
     }
@@ -158,6 +153,8 @@ class MessageBuilder implements BuilderInterface
      */
     public function finalize(): bool
     {
+        print $this->pactJson;
+
         if (!$this->pactJson) {
             $pactJson = \json_encode($this->message);
         } else {
@@ -172,6 +169,6 @@ class MessageBuilder implements BuilderInterface
      */
     public function writePact(): bool
     {
-        return $this->finalize();
+        return false;
     }
 }

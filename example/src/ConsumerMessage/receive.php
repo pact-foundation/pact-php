@@ -15,7 +15,7 @@ echo ' [*] Waiting for messages. To exit press CTRL+C', "\n";
 $callback = function ($msg) {
 
     // process that invokes the use of the message
-    $processor = new ConsumerMessage();
+    $processor = new ConsumerMessage\ConsumerMessage();
     $processor->Process($msg->body);
 
     $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);

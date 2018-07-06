@@ -9,10 +9,13 @@ use PhpPact\Consumer\MessageBuilder;
 use PhpPact\Standalone\PactMessage\PactMessageConfig;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class MessageConsumerTest
+ */
 class MessageConsumerTest extends TestCase
 {
     /**
-     * @throws \PhpPact\Standalone\Exception\MissingEnvVariableException
+     * @throws \Exception
      */
     public function testMessage()
     {
@@ -23,8 +26,8 @@ class MessageConsumerTest extends TestCase
 
         $builder    = new MessageBuilder($config);
 
-        $content       = new \stdClass();
-        $content->text = 'Hello Mary!!';
+        $contents       = new \stdClass();
+        $contents->test = 'Hello Mary!!';
 
         $metadata = ['queue'=>'wind cries', 'routing_key'=>'wind cries'];
 
@@ -32,8 +35,9 @@ class MessageConsumerTest extends TestCase
             ->given('a hello message')
             ->expectsToReceive('an alligator named Mary exists')
             ->withMetadata($metadata)
-            ->withContent($content);
+            ->withContent($contents);
 
+        // established mechanism to this via callbacks
         $consumerMessage = new ConsumerMessage();
         $callback        = [$consumerMessage, 'Process'];
         $builder->setCallback($callback);

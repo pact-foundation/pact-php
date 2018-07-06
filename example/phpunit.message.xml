@@ -2,7 +2,7 @@
 <phpunit bootstrap="../vendor/autoload.php">
     <testsuites>
         <testsuite name="PhpPact Example Tests">
-            <directory>./tests/Message</directory>
+            <directory>./tests/ConsumerMessage</directory>
         </testsuite>
     </testsuites>
 </phpunit>
