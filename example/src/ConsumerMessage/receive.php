@@ -8,10 +8,14 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 $connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
 $channel = $connection->channel();
 
+// the queue should be part of the Pact metadata
 $channel->queue_declare('myQueue', false, false, false, false);
 echo ' [*] Waiting for messages. To exit press CTRL+C', "\n";
 
+
 $callback = function($msg) {
+
+    // process that invokes the use of the message
     $processor = new ConsumerMessage();
     $processor->Process($msg->body);
 

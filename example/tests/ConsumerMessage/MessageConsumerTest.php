@@ -32,6 +32,8 @@ class MessageConsumerTest extends TestCase
             ->withMetadata($metadata)
             ->withContent($content);
 
+
+
         $json = $builder->reify();
 
         // should we use a call back?
