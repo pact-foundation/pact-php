@@ -50,6 +50,12 @@ class VerifierTest extends TestCase
 
     /**
      * @dataProvider dataProviderForBrokerPathTest
+     *
+     * @param mixed $consumerName
+     * @param mixed $providerName
+     * @param mixed $tag
+     * @param mixed $verison
+     * @param mixed $path
      */
     public function testBuildValidPathToPactBroker($consumerName, $providerName, $tag, $verison, $path)
     {
@@ -71,8 +77,8 @@ class VerifierTest extends TestCase
     {
         $consumerName = 'someProviderName';
         $providerName = 'someProviderName';
-        $tag = '1.0.0';
-        $version = '11111';
+        $tag          = '1.0.0';
+        $version      = '11111';
 
         return [
             [$consumerName, $providerName, null, $version, "pacts/provider/$providerName/consumer/$consumerName/version/$version/"],
