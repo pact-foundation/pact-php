@@ -8,7 +8,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class InstallerMac implements InstallerInterface
 {
-    const VERSION = '1.47.1';
+    const VERSION = '1.47.3';
 
     /**
      * {@inheritdoc}

@@ -15,9 +15,6 @@ class MessageBuilder implements BuilderInterface
     /** @var PactMessage */
     protected $pactMessage;
 
-    /** @var string */
-    protected $pactJson;
-
     /** @var PactConfigInterface */
     protected $config;
 
@@ -111,9 +108,7 @@ class MessageBuilder implements BuilderInterface
      */
     public function reify(): string
     {
-        $this->pactJson = $this->pactMessage->reify($this->message);
-
-        return $this->pactJson;
+        return $this->pactMessage->reify($this->message);
     }
 
     /**
@@ -138,12 +133,10 @@ class MessageBuilder implements BuilderInterface
             throw new \Exception('Callbacks need to exist to run verify.');
         }
 
-        $this->reify();
-
-        print \print_r($this->pactJson, true);
+        $pactJson = $this->reify();
 
         // call the function to actually run the logic
-        \call_user_func($this->callback, $this->pactJson);
+        \call_user_func($this->callback, $pactJson);
 
         return $this->finalize();
     }
@@ -153,13 +146,8 @@ class MessageBuilder implements BuilderInterface
      */
     public function finalize(): bool
     {
-        print $this->pactJson;
-
-        if (!$this->pactJson) {
-            $pactJson = \json_encode($this->message);
-        } else {
-            $pactJson = $this->pactJson;
-        }
+        // you do not want to save the reified json
+        $pactJson = \json_encode($this->message);
 
         return $this->pactMessage->update($pactJson, $this->config->getConsumer(), $this->config->getProvider(), $this->config->getPactDir());
     }

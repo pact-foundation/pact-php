@@ -1,10 +1,9 @@
 <?php
 
-namespace Consumer\Service;
+namespace ConsumerMessage;
 
 require_once __DIR__ . '/../../src/ConsumerMessage/ConsumerMessage.php';
 
-use ConsumerMessage\ConsumerMessage;
 use PhpPact\Consumer\MessageBuilder;
 use PhpPact\Standalone\PactMessage\PactMessageConfig;
 use PHPUnit\Framework\TestCase;
