@@ -94,7 +94,7 @@ class InteractionBuilder implements BuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Writes the file to disk and deletes interactions from mock server.
      */
     public function finalize(): bool
     {

@@ -14,11 +14,6 @@ interface BuilderInterface
     public function verify(): bool;
 
     /**
-     * Writes the file to disk and deletes interactions from mock server.
-     */
-    public function finalize(): bool;
-
-    /**
      * Write the Pact without deleting the interactions.
      *
      * @return bool

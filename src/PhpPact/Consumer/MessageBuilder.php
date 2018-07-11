@@ -112,7 +112,11 @@ class MessageBuilder implements BuilderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Wrapper around verify()
+     *
+     * @param callable $callback
+     * @return bool
+     * @throws \Exception
      */
     public function verifyMessage($callback): bool
     {
@@ -136,27 +140,26 @@ class MessageBuilder implements BuilderInterface
         $pactJson = $this->reify();
 
         // call the function to actually run the logic
-        \call_user_func($this->callback, $pactJson);
-
-        return $this->finalize();
+        try {
+            \call_user_func($this->callback, $pactJson);
+            return $this->writePact();
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
-     * {@inheritdoc}
+     * Write the Pact without deleting the interactions.
+     *
+     * @return bool
+     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
+     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
      */
-    public function finalize(): bool
+    public function writePact(): bool
     {
         // you do not want to save the reified json
         $pactJson = \json_encode($this->message);
 
         return $this->pactMessage->update($pactJson, $this->config->getConsumer(), $this->config->getProvider(), $this->config->getPactDir());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function writePact(): bool
-    {
-        return false;
     }
 }
