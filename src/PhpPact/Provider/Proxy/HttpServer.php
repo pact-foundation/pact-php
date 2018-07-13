@@ -1,7 +1,7 @@
 <?php
+namespace PhpPact\Provider\Proxy;
 
 use PhpPact\Standalone\Runner\ProcessRunner;
-use PhpPact\Provider\Proxy\ProxyServerConfig;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -29,16 +29,14 @@ class HttpServer
     }
 
     /**
-     * Start the Mock Server. Verify that it is running.
+     * Start the Proxy Server. Verify that it is running.
      *
-     * @throws ProcessFailedException
-     * @throws Exception
-     *
-     * @return int process ID of the started Mock Server
+     * @return int
+     * @throws HealthCheckFailedException
+     * @throws \Exception
      */
     public function start(): int
     {
-
         $this->process = ProcessRunner::run($this->getCommand(), $this->getArguments());
         $this->process
             ->setTimeout(600)
@@ -114,7 +112,7 @@ class HttpServer
     {
         $client = new GuzzleClient();
 
-        $uri = (new Uri("http://{$this->config->getHost()}:{$this->getPort()}"))
+        $uri = (new Uri("http://{$this->config->getHost()}:{$this->config->getPort()}"))
                 ->withPath('/health');
 
         $response = $client->get($uri, []);

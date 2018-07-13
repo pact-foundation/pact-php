@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: matr06017
- * Date: 7/13/2018
- * Time: 9:00 AM
- */
 
 namespace PhpPact\Provider\Proxy;
-
 
 class ProxyServerConfig
 {

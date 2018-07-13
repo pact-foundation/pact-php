@@ -45,9 +45,13 @@
                 "example/src/Consumer",
                 "example/tests/Consumer"
             ],
-            "ConsumerMessage\\": [
-                "example/src/ConsumerMessage",
-                "example/tests/ConsumerMessage"
+            "MessageConsumer\\": [
+                "example/src/MessageConsumer",
+                "example/tests/MessageConsumer"
+            ],
+            "MessageProvider\\": [
+                "example/src/MessageProvider",
+                "example/tests/MessageProvider"
             ]
         }
     },

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="../vendor/autoload.php">
+    <testsuites>
+        <testsuite name="PhpPact Example Message Provider Tests">
+            <directory>./tests/MessageProvider</directory>
+        </testsuite>
+    </testsuites>
+    <listeners>
+        <listener class="PhpPact\Provider\Listener\PactMessageTestListener">
+            <arguments>
+                <array>
+                    <element key="0">
+                        <string>PhpPact Example Message Provider Tests</string>
+                    </element>
+                </array>
+            </arguments>
+        </listener>
+    </listeners>
+    <php>
+        <env name="PACT_PROXY_SERVER_HOST" value="localhost"/>
+        <env name="PACT_PROXY_SERVER_PORT" value="7201"/>
+        <env name="PACT_PROXY_ROOT_DIR" value="D:\Development\github\pact-php\src\PhpPact\Provider\Proxy\public" />
+        <env name="PACT_PROXY_PHP_EXE" value="php" />
+    </php>
+</phpunit>
