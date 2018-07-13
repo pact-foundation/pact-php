@@ -42,11 +42,13 @@ class ProxyServerConfig
 
     /**
      * @param string $host
+     *
      * @return ProxyServerConfig
      */
-    public function setHost(string $host): ProxyServerConfig
+    public function setHost(string $host): self
     {
         $this->host = $host;
+
         return $this;
     }
 
@@ -60,11 +62,13 @@ class ProxyServerConfig
 
     /**
      * @param int $port
+     *
      * @return ProxyServerConfig
      */
-    public function setPort(int $port): ProxyServerConfig
+    public function setPort(int $port): self
     {
         $this->port = $port;
+
         return $this;
     }
 
@@ -78,11 +82,13 @@ class ProxyServerConfig
 
     /**
      * @param string $phpExe
+     *
      * @return ProxyServerConfig
      */
-    public function setPhpExe(string $phpExe): ProxyServerConfig
+    public function setPhpExe(string $phpExe): self
     {
         $this->phpExe = $phpExe;
+
         return $this;
     }
 
@@ -96,12 +102,13 @@ class ProxyServerConfig
 
     /**
      * @param string $rootDir
+     *
      * @return ProxyServerConfig
      */
-    public function setRootDir(string $rootDir): ProxyServerConfig
+    public function setRootDir(string $rootDir): self
     {
         $this->rootDir = $rootDir;
+
         return $this;
     }
-
 }

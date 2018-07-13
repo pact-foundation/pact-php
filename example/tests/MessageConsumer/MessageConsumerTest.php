@@ -15,7 +15,6 @@ use PHPUnit\Framework\TestCase;
  */
 class MessageConsumerTest extends TestCase
 {
-
     private static $config;
 
     public static function setUpBeforeClass()/* The :void return type declaration that should be here would cause a BC issue */
@@ -64,12 +63,12 @@ class MessageConsumerTest extends TestCase
         $builder->setCallback($callback);
 
         $hasException = false;
+
         try {
             $builder->verify();
         } catch (\Exception $e) {
             $hasException = true;
         }
-
 
         $this->assertFalse($hasException, 'Expects verification to pass without exceptions being thrown');
     }
@@ -98,12 +97,12 @@ class MessageConsumerTest extends TestCase
         $builder->setCallback($callback);
 
         $hasException = false;
+
         try {
             $builder->verify();
         } catch (\Exception $e) {
             $hasException = true;
         }
-
 
         $this->assertFalse($hasException, 'Expects verification to pass without exceptions being thrown');
     }

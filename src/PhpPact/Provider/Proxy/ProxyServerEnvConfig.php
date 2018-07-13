@@ -4,7 +4,6 @@ namespace PhpPact\Provider\Proxy;
 
 use PhpPact\Standalone\Exception\MissingEnvVariableException;
 
-
 /**
  * An environment variable based mock server configuration.
  * Class MockServerEnvConfig.

@@ -1,15 +1,15 @@
 <?php
+
 namespace PhpPact\Provider\Proxy;
 
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Psr7\Uri;
+use PhpPact\Http\GuzzleClient;
+use PhpPact\Standalone\Exception\HealthCheckFailedException;
 use PhpPact\Standalone\Runner\ProcessRunner;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
-use PhpPact\Http\GuzzleClient;
-use GuzzleHttp\Psr7\Uri;
-use GuzzleHttp\Exception\ConnectException;
-use PhpPact\Standalone\Exception\HealthCheckFailedException;
-
 
 class HttpServer
 {
@@ -31,9 +31,10 @@ class HttpServer
     /**
      * Start the Proxy Server. Verify that it is running.
      *
-     * @return int
      * @throws HealthCheckFailedException
      * @throws \Exception
+     *
+     * @return int
      */
     public function start(): int
     {
@@ -78,11 +79,12 @@ class HttpServer
     /**
      * Make sure the proxy server starts as expected.
      *
-     * @return bool
      * @throws HealthCheckFailedException
      * @throws \Exception
+     *
+     * @return bool
      */
-    private function  verifyHealthCheck() : bool
+    private function verifyHealthCheck(): bool
     {
         $tries    = 0;
         $maxTries = 10;
@@ -102,8 +104,6 @@ class HttpServer
     }
 
     /**
-     *
-     *
      * @throws Exception
      *
      * @return bool
@@ -121,7 +121,7 @@ class HttpServer
         $json = \json_decode($body);
 
         if ($response->getStatusCode() !== 200
-            || $json->status !== "OK") {
+            || $json->status !== 'OK') {
             throw new \Exception('Failed to receive a successful response from the Proxy Server.');
         }
 
@@ -149,9 +149,9 @@ class HttpServer
 
         $results[] = '-S';
         $results[] = "{$this->config->getHost()}:{$this->config->getPort()}";
-        $results[] = "-t";
+        $results[] = '-t';
         $results[] = "{$this->config->getRootDir()}";
-        $results[] = "index.php";
+        $results[] = 'index.php';
 
         return $results;
     }

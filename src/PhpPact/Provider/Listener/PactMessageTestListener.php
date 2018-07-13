@@ -2,8 +2,8 @@
 
 namespace PhpPact\Provider\Listener;
 
-use PhpPact\Provider\Proxy\ProxyServerConfig;
 use PhpPact\Provider\Proxy\HttpServer;
+use PhpPact\Provider\Proxy\ProxyServerConfig;
 use PhpPact\Provider\Proxy\ProxyServerEnvConfig;
 use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PHPUnit\Framework\AssertionFailedError;
@@ -46,7 +46,7 @@ class PactMessageTestListener implements TestListener
     public function __construct(array $testSuiteNames)
     {
         $this->testSuiteNames   = $testSuiteNames;
-        $this->config = new ProxyServerEnvConfig();
+        $this->config           = new ProxyServerEnvConfig();
     }
 
     /**

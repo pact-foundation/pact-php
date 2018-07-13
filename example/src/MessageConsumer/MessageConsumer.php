@@ -19,5 +19,4 @@ class MessageConsumer
 
         return $obj;
     }
-
 }

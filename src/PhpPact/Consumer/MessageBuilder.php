@@ -115,8 +115,10 @@ class MessageBuilder implements BuilderInterface
      * Wrapper around verify()
      *
      * @param callable $callback
-     * @return bool
+     *
      * @throws \Exception
+     *
+     * @return bool
      */
     public function verifyMessage($callback): bool
     {
@@ -142,6 +144,7 @@ class MessageBuilder implements BuilderInterface
         // call the function to actually run the logic
         try {
             \call_user_func($this->callback, $pactJson);
+
             return $this->writePact();
         } catch (\Exception $e) {
             return false;
@@ -151,9 +154,10 @@ class MessageBuilder implements BuilderInterface
     /**
      * Write the Pact without deleting the interactions.
      *
-     * @return bool
      * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
      * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
+     *
+     * @return bool
      */
     public function writePact(): bool
     {

@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
  */
 class MessageProviderTest extends TestCase
 {
-
     public static function setUpBeforeClass()/* The :void return type declaration that should be here would cause a BC issue */
     {
         parent::setUpBeforeClass();
@@ -52,8 +51,7 @@ class MessageProviderTest extends TestCase
         }
         */
 
-        sleep(60);
+        \sleep(60);
         $this->assertFalse(false, 'Expects verification to pass without exceptions being thrown');
     }
-
 }
