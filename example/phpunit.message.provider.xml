@@ -5,17 +5,6 @@
             <directory>./tests/MessageProvider</directory>
         </testsuite>
     </testsuites>
-    <listeners>
-        <listener class="PhpPact\Provider\Listener\PactMessageTestListener">
-            <arguments>
-                <array>
-                    <element key="0">
-                        <string>PhpPact Example Message Provider Tests</string>
-                    </element>
-                </array>
-            </arguments>
-        </listener>
-    </listeners>
     <php>
         <env name="PACT_PROXY_SERVER_HOST" value="localhost"/>
         <env name="PACT_PROXY_SERVER_PORT" value="7201"/>

@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class HttpServer
+class ProxyServer
 {
     /** @var ProxyServerConfig */
     private $config;
@@ -104,12 +104,16 @@ class HttpServer
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      *
      * @return bool
      */
     private function executeHealthCheck(): bool
     {
+        // revisit how to do a health check
+        sleep(2);
+        return true;
+
         $client = new GuzzleClient();
 
         $uri = (new Uri("http://{$this->config->getHost()}:{$this->config->getPort()}"))

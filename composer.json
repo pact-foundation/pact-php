@@ -23,7 +23,8 @@
         "symfony/process": ">=2.8 <4.1",
         "symfony/filesystem": ">=2.8 <4.1",
         "guzzlehttp/guzzle": "^6.3",
-        "symfony/console": ">=2.8 <4.1"
+        "symfony/console": ">=2.8 <4.1",
+        "react/http": "^0.8.3"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
