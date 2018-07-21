@@ -81,6 +81,7 @@ class MessageVerifier extends Verifier
             $server = new Server($servers, new CallableRequestHandler(function (Request $request) use ($callback) {
                 $out = \call_user_func($callback);
 
+                // @todo change status code based on errors on $out
                 return new Response(Status::OK, [
                     'content-type' => 'application/json;',
                 ], $out);
@@ -91,7 +92,6 @@ class MessageVerifier extends Verifier
             // @todo move delay to config
             Loop::delay(3000, function () use ($scripts, $arguments) {
 
-                // "echo" is a shell internal command on Windows and doesn't work.
                 $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
                 $cmd = \implode(' ', $arguments);
                 $process = new Process($cmd);
