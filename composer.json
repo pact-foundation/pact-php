@@ -24,7 +24,10 @@
         "symfony/filesystem": ">=2.8 <4.1",
         "guzzlehttp/guzzle": "^6.3",
         "symfony/console": ">=2.8 <4.1",
-        "react/http": "^0.8.3"
+        "amphp/socket": "^0.10.9",
+        "amphp/process": "^0.3.3",
+        "amphp/http-server": "^0.8.2",
+        "amphp/log": "^1.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

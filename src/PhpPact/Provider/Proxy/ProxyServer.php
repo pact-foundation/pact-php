@@ -111,7 +111,8 @@ class ProxyServer
     private function executeHealthCheck(): bool
     {
         // revisit how to do a health check
-        sleep(2);
+        \sleep(2);
+
         return true;
 
         $client = new GuzzleClient();
