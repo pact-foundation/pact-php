@@ -84,7 +84,7 @@ class MessageVerifier extends Verifier
 
                 return new Response(Status::OK, [
                     'content-type' => 'application/json;',
-                ], \json_encode($out));
+                ], $out);
             }), $logger);
 
             yield $server->start();
@@ -102,83 +102,17 @@ class MessageVerifier extends Verifier
                 print yield $payload->buffer();
 
                 $code = yield $process->join();
-                print "Process exited with {$code}.\n";
 
+                print "Process exited with {$code}.\n";
+                if ($code != 0) {
+                    throw new \Exception("Pact failed to validate");
+                }
                 Loop::stop();
+
             });
         };
 
         Loop::run($lambdaLoop);
-
-//        $loop = EventLoop\Factory::create();
-//        $callback = $this->callback;
-//
-//        $server = new Http\Server(function (ServerRequestInterface $request) use ($callback) {
-//
-//            echo "\n**** got a request \n";
-//            error_log("\n**** got a request \n");
-//
-//            // handle the provider verifier response in the server
-//            //$out = \call_user_func($callback);
-//            $out = array("hi");
-//
-//            return new Http\Response(
-//                200,
-//                array('Content-Type' => 'application/json'),
-//                \json_encode($out)
-//            );
-//        });
-//
-//        // move port to config
-//        $socket = new Socket\Server(8080, $loop);
-//        $server->listen($socket);
-//
-//        $scripts = $this->installManager->install();
-//
-//        // kick off the provider verifier by a timer
-//        $loop->addTimer(5.0, function () use ($arguments, $scripts, $loop) {
-//
-//            // move to be configuration based, not env config
-//            $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
-//            error_log("\n**** about to run provider \n");
-//            error_log(print_r($arguments, true));
-//
-//            echo "\n**** about to run provider \n";
-//
-//            $process = new Process($arguments, null, null, null, $this->processTimeout);
-//            $process->setIdleTimeout($this->processIdleTimeout);
-//
-//            $this->console->write("Verifying PACT with script {$process->getCommandLine()}");
-//
-//            $process->mustRun(function ($type, $buffer) {
-//                $this->console->write("{$type} > {$buffer}");
-//            });
-//
-//            /*
-//            $xmlData = file_get_contents('http://localhost:8080');
-//            error_log("Response: " . $xmlData);
-//            */
-//
-//            $client = new GuzzleClient();
-//            $o = $client->get(new Uri("http://localhost:8080"));
-//
-//            error_log("Response: " . (string) $o->getBody());
-//            echo "\n**** ran provider \n";
-//        });
-//
-//        // shut off the proxy server by timer with messages
-//        // move 5 seconds to config
-//        $loop->addTimer(8.0, function () use ($loop) {
-//            echo "\n**** Stopping Proxy Server after 15 seconds\n";
-//            $loop->stop();
-//        });
-//
-//
-//        error_log("Running loop");
-//        echo "\n**** Running loop\n";
-//        $loop->run();
-
-        print "\n**** Stopping loop\n";
 
         // where do we check for errors?
     }
