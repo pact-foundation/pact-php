@@ -5,7 +5,6 @@ namespace PhpPact\Provider;
 use Amp\ByteStream\Payload;
 use Amp\ByteStream\ResourceOutputStream;
 use Amp\Http\Server\Request;
-
 use Amp\Http\Server\RequestHandler\CallableRequestHandler;
 use Amp\Http\Server\Response;
 use Amp\Http\Server\Server;
@@ -62,7 +61,7 @@ class MessageVerifier extends Verifier
         }
 
         $callback = $this->callback;
-        $scripts = $this->installManager->install();
+        $scripts  = $this->installManager->install();
 
         $lambdaLoop = function () use ($callback, $scripts, $arguments) {
 
@@ -90,7 +89,7 @@ class MessageVerifier extends Verifier
             yield $server->start();
 
             // @todo move delay to config
-            Loop::delay(3000, function () use ($scripts, $arguments){
+            Loop::delay(3000, function () use ($scripts, $arguments) {
 
                 // "echo" is a shell internal command on Windows and doesn't work.
                 $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
@@ -104,11 +103,10 @@ class MessageVerifier extends Verifier
                 $code = yield $process->join();
 
                 print "Process exited with {$code}.\n";
-                if ($code != 0) {
-                    throw new \Exception("Pact failed to validate");
+                if ($code !== 0) {
+                    throw new \Exception('Pact failed to validate');
                 }
                 Loop::stop();
-
             });
         };
 
