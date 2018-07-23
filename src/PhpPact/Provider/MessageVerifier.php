@@ -65,11 +65,11 @@ class MessageVerifier extends Verifier
         parent::__construct($config);
 
         $baseUrl = @$this->config->getProviderBaseUrl();
-
         if (!$baseUrl) {
             $config->setProviderBaseUrl(new Uri("http://{$this->defaultProxyHost}:{$this->defaultProxyPort}"));
         }
 
+        // default verification delay
         $this->setVerificationDelaySec(floor($config->getProcessIdleTimeout() / $this->defaultDelayFactor));
     }
     /**
