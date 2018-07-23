@@ -25,18 +25,53 @@ class MessageVerifier extends Verifier
     protected $callback;
 
     /**
+     * Default host name for the proxy server
+     *
+     * @var string
+     */
+    protected $defaultProxyHost = 'localhost';
+
+    /**
+     * Default port for the proxy server to listen on
+     *
+     * @var int
+     */
+    protected $defaultProxyPort = 7201;
+
+    /**
+     * floor(provider-verification timeout / this value) = default verificationDelaySec
+     *
+     * @var int
+     */
+    protected $defaultDelayFactor = 3;
+
+    /**
+     * Set the number of seconds to delay the verification test to allow the proxy server to be stood up
+     *
+     * By default, it is a third of the provider-verification timeout
+     *
+     * @var float
+     */
+    protected $verificationDelaySec;
+
+
+    /**
      * MessageVerifier constructor.
      *
      * @param VerifierConfigInterface $config
      */
     public function __construct(VerifierConfigInterface $config)
     {
-        // move this into a config
-        $config->setProviderBaseUrl(new Uri('http://localhost:8080'));
-
         parent::__construct($config);
-    }
 
+        $baseUrl = @$this->config->getProviderBaseUrl();
+
+        if (!$baseUrl) {
+            $config->setProviderBaseUrl(new Uri("http://{$this->defaultProxyHost}:{$this->defaultProxyPort}"));
+        }
+
+        $this->setVerificationDelaySec(floor($config->getProcessIdleTimeout() / $this->defaultDelayFactor));
+    }
     /**
      * @param callable $callback
      *
@@ -46,6 +81,16 @@ class MessageVerifier extends Verifier
     {
         $this->callback = $callback;
 
+        return $this;
+    }
+
+    /**
+     * @param float $verificationDelaySec
+     * @return MessageVerifier
+     */
+    public function setVerificationDelaySec(float $verificationDelaySec): MessageVerifier
+    {
+        $this->verificationDelaySec = $verificationDelaySec;
         return $this;
     }
 
@@ -61,15 +106,16 @@ class MessageVerifier extends Verifier
         }
 
         $callback = $this->callback;
+        $uri = $this->config->getProviderBaseUrl();
+
         $scripts  = $this->installManager->install();
+        $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
 
-        $lambdaLoop = function () use ($callback, $scripts, $arguments) {
-
+        $lambdaLoop = function () use ($callback, $arguments, $uri) {
             // spin up a server
-
-            // move this to configuration
+            $url = "{$uri->getHost()}:{$uri->getPort()}";
             $servers = [
-                listen('127.0.0.1:8080')
+                listen($url)
             ];
 
             // @todo migrate to Symphony logger
@@ -89,10 +135,12 @@ class MessageVerifier extends Verifier
 
             yield $server->start();
 
-            // @todo move delay to config
-            Loop::delay(3000, function () use ($scripts, $arguments) {
 
-                $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
+            // delay long enough for the server to be stood up
+            $delay = intval($this->verificationDelaySec * 1000);
+
+            // call the provider-verification cmd
+            Loop::delay( $delay , function () use ($arguments) {
                 $cmd = \implode(' ', $arguments);
                 $process = new Process($cmd);
                 $process->start();
@@ -102,16 +150,15 @@ class MessageVerifier extends Verifier
 
                 $code = yield $process->join();
 
-                print "Process exited with {$code}.\n";
+                // if the provider verification cmd returns a non-zero number, the test failed
                 if ($code !== 0) {
-                    throw new \Exception('Pact failed to validate');
+                    throw new \Exception("Pact failed to validate.  Exit code: {$code}");
                 }
+
                 Loop::stop();
             });
         };
 
         Loop::run($lambdaLoop);
-
-        // where do we check for errors?
     }
 }
