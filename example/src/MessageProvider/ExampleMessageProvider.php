@@ -17,8 +17,6 @@ class ExampleMessageProvider
         $this->metadata = $metadata;
     }
 
-    
-
     /**
      * @return array
      */
@@ -27,26 +25,43 @@ class ExampleMessageProvider
         return $this->metadata;
     }
 
-    // perhaps build a json object, etc
-    public function Publish($contents)
+    /**
+     * @param array $metadata
+     * @return ExampleMessageProvider
+     */
+    public function setMetadata(array $metadata): ExampleMessageProvider
     {
-        $obj           = new \stdClass();
-        $obj->metadata = $this->metadata;
-
-        $obj->contents       = new \stdClass();
-        $obj->contents->test = $contents;
-
-        return \json_encode($obj);
+        $this->metadata = $metadata;
+        return $this;
     }
 
-    // perhaps build a json object, etc
-    public function PublishAnotherMessageType()
+    /**
+     * @return mixed
+     */
+    public function getContents()
+    {
+        return $this->contents;
+    }
+
+    /**
+     * @param mixed $contents
+     * @return ExampleMessageProvider
+     */
+    public function setContents($contents)
+    {
+        $this->contents = $contents;
+        return $this;
+    }
+
+    /**
+     *  Build metadata and content for message
+     * @return string
+     */
+    public function Build()
     {
         $obj           = new \stdClass();
         $obj->metadata = $this->metadata;
-
-        $obj->contents       = new \stdClass();
-        $obj->contents->song = 'And the wind whispers Mary';
+        $obj->contents = $this->contents;
 
         return \json_encode($obj);
     }

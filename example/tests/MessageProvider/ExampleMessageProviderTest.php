@@ -26,13 +26,22 @@ class ExampleMessageProviderTest extends TestCase
      */
     public function testProcess()
     {
-        $provider        = new ExampleMessageProvider();
-        $callback        = [$provider, 'PublishAnotherMessageType'];
+
+        $content = new \stdClass();
+        $content->song ="And the wind whispers Mary";
+
+        $metadata = array();
+        $metadata['queue'] = "myKey";
+
+        $provider = (new ExampleMessageProvider())
+                    ->setContents($content)
+                    ->setMetadata($metadata);
+
+        $callback        = [$provider, 'Build'];
 
         $config = new VerifierConfig();
         $config
             ->setProviderName('someProvider') // Providers name to fetch.
-                ->setProviderStatesSetupUrl('http://localhost')
             ->setPublishResults(false); // Flag the verifier service to publish the results to the Pact Broker.
 
         // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.

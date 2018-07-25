@@ -8,17 +8,20 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 $connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
 
-$providerMessage = new MessageProvider(['queue'=>'myQueue', 'routing_key'=>'myQueue']);
+// build the message with appropriate metadata
+$providerMessage = new \MessageProvider\ExampleMessageProvider(['queue'=>'myKey', 'routing_key'=>'myKey']);
+$content = new \stdClass();
+$content->text = "HHello Mary!!";
+$providerMessage->setContents($content);
 
 $channel = $connection->channel();
 $channel->queue_declare($providerMessage->getMetadata()['queue'], false, false, false, false);
 
-$channel->exchange_declare('DougExchange', 'direct');
-$channel->queue_bind($providerMessage->getMetadata()['queue'], 'DougExchange', $providerMessage->getMetadata()['routing_key']);
+// transform message to AMQP
+$msg = new AMQPMessage($providerMessage->Build());
 
-$msg = new AMQPMessage($providerMessage->Publish());
-
-$channel->basic_publish($msg, 'DougExchange');
+// publish it
+$channel->basic_publish($msg, '', $providerMessage->getMetadata()['routing_key']);
 
 $channel->close();
 $connection->close();

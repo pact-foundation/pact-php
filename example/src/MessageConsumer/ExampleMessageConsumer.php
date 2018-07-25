@@ -2,17 +2,17 @@
 
 namespace MessageConsumer;
 
-class MessageConsumer
+class ExampleMessageConsumer
 {
-    public function Process($message)
+    public function ProcessText($message)
     {
         $obj = \json_decode($message);
-        print ' [x] Processed ' . \print_r($obj->contents->test, true) . "\n";
+        print ' [x] Processed ' . \print_r($obj->contents->text, true) . "\n";
 
         return $obj;
     }
 
-    public function ProcessAnotherMessageType($message)
+    public function ProcessSong($message)
     {
         $obj = \json_decode($message);
         print ' [x] Processed ' . \print_r($obj->contents->song, true) . "\n";

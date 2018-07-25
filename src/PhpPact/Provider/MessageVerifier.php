@@ -129,7 +129,7 @@ class MessageVerifier extends Verifier
             $server = new Server($servers, new CallableRequestHandler(function (Request $request) use ($callback) {
                 $out = \call_user_func($callback);
 
-                // @todo change status code based on errors on $out
+                // return response should only happen if the \call_user_fun()
                 return new Response(Status::OK, [
                     'content-type' => 'application/json;',
                 ], $out);

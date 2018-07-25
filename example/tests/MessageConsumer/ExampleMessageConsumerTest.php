@@ -2,7 +2,7 @@
 
 namespace MessageConsumer;
 
-require_once __DIR__ . '/../../src/MessageConsumer/MessageConsumer.php';
+require_once __DIR__ . '/../../src/MessageConsumer/ExampleMessageConsumer.php';
 
 use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Consumer\MessageBuilder;
@@ -11,9 +11,9 @@ use PhpPact\Standalone\PactMessage\PactMessageConfig;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class MessageConsumerTest
+ * Class ExampleMessageConsumerTest
  */
-class MessageConsumerTest extends TestCase
+class ExampleMessageConsumerTest extends TestCase
 {
     private static $config;
 
@@ -42,7 +42,7 @@ class MessageConsumerTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testProcess()
+    public function testProcessText()
     {
         $builder    = new MessageBuilder(self::$config);
 
@@ -58,8 +58,8 @@ class MessageConsumerTest extends TestCase
             ->withContent($contents);
 
         // established mechanism to this via callbacks
-        $consumerMessage = new MessageConsumer();
-        $callback        = [$consumerMessage, 'Process'];
+        $consumerMessage = new ExampleMessageConsumer();
+        $callback        = [$consumerMessage, 'ProcessText'];
         $builder->setCallback($callback);
 
         $hasException = false;
@@ -76,7 +76,7 @@ class MessageConsumerTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testProcessMessage2()
+    public function testProcessSong()
     {
         $builder    = new MessageBuilder(self::$config);
 
@@ -92,8 +92,8 @@ class MessageConsumerTest extends TestCase
             ->withContent($contents);
 
         // established mechanism to this via callbacks
-        $consumerMessage = new MessageConsumer();
-        $callback        = [$consumerMessage, 'ProcessAnotherMessageType'];
+        $consumerMessage = new ExampleMessageConsumer();
+        $callback        = [$consumerMessage, 'ProcessSong'];
         $builder->setCallback($callback);
 
         $hasException = false;
