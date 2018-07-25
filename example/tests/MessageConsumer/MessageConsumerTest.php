@@ -24,7 +24,7 @@ class MessageConsumerTest extends TestCase
         self::$config = (new PactMessageConfig())
                         ->setConsumer('test_consumer')
                         ->setProvider('test_provider')
-                        ->setPactDir('D:\\Temp\\');
+                        ->setPactDir(__DIR__ . '/../../output/');
     }
 
     public static function tearDownAfterClass()/* The :void return type declaration that should be here would cause a BC issue */

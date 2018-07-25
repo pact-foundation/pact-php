@@ -35,13 +35,16 @@ class MessageProviderTest extends TestCase
             ->setPublishResults(false); // Flag the verifier service to publish the results to the Pact Broker.
 
         // Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
-        $verifier = (new MessageVerifier($config))
-                        ->setCallback($callback)
-                        ->verifyFiles(['D:\\Temp\\test_consumer-test_provider-rev1.json']);
+        $hasException = false;
+        try {
+            $verifier = (new MessageVerifier($config))
+                ->setCallback($callback)
+                ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
+        } catch (\Exception $e){
+            $hasException = true;
+        }
 
         // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
-        $this->assertTrue(true, 'Pact Verification has failed.');
-
-        $this->assertFalse(false, 'Expects verification to pass without exceptions being thrown');
+        $this->assertFalse($hasException, 'Expects verification to pass without exceptions being thrown');
     }
 }
