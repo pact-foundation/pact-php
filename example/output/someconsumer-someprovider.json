@@ -1,9 +1,9 @@
 {
   "consumer": {
-    "name": "SomeConsumer"
+    "name": "someConsumer"
   },
   "provider": {
-    "name": "SomeProvider"
+    "name": "someProvider"
   },
   "interactions": [
     {

@@ -113,7 +113,7 @@ class MockServerHttpServiceTest extends TestCase
     public function testGetPactJson()
     {
         $result = $this->service->getPactJson();
-        $this->assertEquals('{"consumer":{"name":"SomeConsumer"},"provider":{"name":"SomeProvider"},"interactions":[],"metadata":{"pactSpecification":{"version":"2.0.0"}}}', $result);
+        $this->assertEquals('{"consumer":{"name":"someConsumer"},"provider":{"name":"someProvider"},"interactions":[],"metadata":{"pactSpecification":{"version":"2.0.0"}}}', $result);
     }
 
     public function testFullGetInteraction()

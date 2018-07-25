@@ -82,8 +82,8 @@ Alternatively, you can start and stop as in whatever means you would like by fol
     $config = new MockServerConfig();
     $config->setHost('localhost');
     $config->setPort(7200);
-    $config->setConsumer('SomeConsumer');
-    $config->setProvider('SomeProvider');
+    $config->setConsumer('someConsumer');
+    $config->setProvider('someProvider');
     $config->setCors(true);
 
     // Instantiate the mock server object with the config. This can be any
@@ -236,7 +236,7 @@ This will grab the Pact file from a Pact Broker and run the data against the sto
 ```php
 $config = new VerifierConfig();
 $config
-    ->setProviderName('SomeProvider') // Providers name to fetch.
+    ->setProviderName('someProvider') // Providers name to fetch.
     ->setProviderVersion('1.0.0') // Providers version.
     ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
     ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
@@ -244,9 +244,9 @@ $config
     ->setProcessTimeout(60)      // Set process timeout (optional) - default 60
     ->setProcessIdleTimeout(10); // Set process idle timeout (optional) - default 10
 
-// Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
+// Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
 $verifier = new Verifier($config);
-$verifier->verify('SomeConsumer', 'master'); // The tag is option. If no tag is set it will just grab the latest.
+$verifier->verify('someConsumer', 'master'); // The tag is option. If no tag is set it will just grab the latest.
 
 // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
 $this->assertTrue(true, 'Pact Verification has failed.');
@@ -261,13 +261,13 @@ public function testPactVerifyAll()
 {
     $config = new VerifierConfig();
     $config
-        ->setProviderName('SomeProvider') // Providers name to fetch.
+        ->setProviderName('someProvider') // Providers name to fetch.
         ->setProviderVersion('1.0.0') // Providers version.
         ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
         ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
         ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
 
-    // Verify that all consumers of 'SomeProvider' are valid.
+    // Verify that all consumers of 'someProvider' are valid.
     $verifier = new Verifier($config);
     $verifier->verifyAll();
 
@@ -285,7 +285,7 @@ public function testPactVerifyAll()
 {
     $config = new VerifierConfig();
     $config
-        ->setProviderName('SomeProvider') // Providers name to fetch.
+        ->setProviderName('someProvider') // Providers name to fetch.
         ->setProviderVersion('1.0.0') // Providers version.
         ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
         ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.

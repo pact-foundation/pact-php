@@ -25,8 +25,6 @@ class PactVerifyTest extends TestCase
     protected function setUp()
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
-        $publicPath = __DIR__ . '/../../src/Provider/public/';
-
         $this->process = new Process("php -S localhost:7202 -t {$publicPath}");
         $this->process->start();
     }
@@ -49,12 +47,12 @@ class PactVerifyTest extends TestCase
     {
         $config = new VerifierConfig();
         $config
-            ->setProviderName('SomeProvider') // Providers name to fetch.
+            ->setProviderName('someProvider') // Providers name to fetch.
             ->setProviderVersion('1.0.0') // Providers version.
             ->setProviderBaseUrl(new Uri('http://localhost:7202')) // URL of the Provider.
             ; // Flag the verifier service to publish the results to the Pact Broker.
 
-        // Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
+        // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
         $verifier = new Verifier($config);
         $verifier->verifyFiles([__DIR__ . '/../../output/someconsumer-someprovider.json']);
 

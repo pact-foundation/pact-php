@@ -31,10 +31,10 @@ class MessageProviderTest extends TestCase
 
         $config = new VerifierConfig();
         $config
-            ->setProviderName('SomeProvider') // Providers name to fetch.
+            ->setProviderName('someProvider') // Providers name to fetch.
             ->setPublishResults(false); // Flag the verifier service to publish the results to the Pact Broker.
 
-        // Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
+        // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
         $hasException = false;
 
         try {

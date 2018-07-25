@@ -19,5 +19,4 @@ $app->get('/goodbye/{name}', function (Request $request, Response $response) {
     return $response->withJson(['message' => "Goodbye, {$name}"]);
 });
 
-
 $app->run();
