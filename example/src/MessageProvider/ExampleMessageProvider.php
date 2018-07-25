@@ -2,15 +2,22 @@
 
 namespace MessageProvider;
 
-class MessageProvider
+class ExampleMessageProvider
 {
     /** @var array */
     private $metadata;
+
+    /**
+     * @var mixed
+     */
+    private $contents;
 
     public function __construct($metadata = [])
     {
         $this->metadata = $metadata;
     }
+
+    
 
     /**
      * @return array
@@ -29,8 +36,6 @@ class MessageProvider
         $obj->contents       = new \stdClass();
         $obj->contents->test = $contents;
 
-        print \print_r($obj, true);
-
         return \json_encode($obj);
     }
 
@@ -42,8 +47,6 @@ class MessageProvider
 
         $obj->contents       = new \stdClass();
         $obj->contents->song = 'And the wind whispers Mary';
-
-        print \print_r($obj, true);
 
         return \json_encode($obj);
     }

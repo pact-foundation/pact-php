@@ -7,9 +7,9 @@ use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class MessageProviderTest
+ * Class ExampleMessageProviderTest
  */
-class MessageProviderTest extends TestCase
+class ExampleMessageProviderTest extends TestCase
 {
     public static function setUpBeforeClass()/* The :void return type declaration that should be here would cause a BC issue */
     {
@@ -26,12 +26,13 @@ class MessageProviderTest extends TestCase
      */
     public function testProcess()
     {
-        $provider        = new MessageProvider();
+        $provider        = new ExampleMessageProvider();
         $callback        = [$provider, 'PublishAnotherMessageType'];
 
         $config = new VerifierConfig();
         $config
             ->setProviderName('someProvider') // Providers name to fetch.
+                ->setProviderStatesSetupUrl('http://localhost')
             ->setPublishResults(false); // Flag the verifier service to publish the results to the Pact Broker.
 
         // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.

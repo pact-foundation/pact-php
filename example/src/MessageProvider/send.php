@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
-require_once __DIR__ . '/MessageProvider.php';
+require_once __DIR__ . '/ExampleMessageProvider.php';
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
