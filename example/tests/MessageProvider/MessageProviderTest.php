@@ -36,11 +36,12 @@ class MessageProviderTest extends TestCase
 
         // Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
         $hasException = false;
+
         try {
             $verifier = (new MessageVerifier($config))
                 ->setCallback($callback)
                 ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $hasException = true;
         }
 

@@ -54,7 +54,6 @@ class MessageVerifier extends Verifier
      */
     protected $verificationDelaySec;
 
-
     /**
      * MessageVerifier constructor.
      *
@@ -70,8 +69,9 @@ class MessageVerifier extends Verifier
         }
 
         // default verification delay
-        $this->setVerificationDelaySec(floor($config->getProcessIdleTimeout() / $this->defaultDelayFactor));
+        $this->setVerificationDelaySec(\floor($config->getProcessIdleTimeout() / $this->defaultDelayFactor));
     }
+
     /**
      * @param callable $callback
      *
@@ -86,11 +86,13 @@ class MessageVerifier extends Verifier
 
     /**
      * @param float $verificationDelaySec
+     *
      * @return MessageVerifier
      */
-    public function setVerificationDelaySec(float $verificationDelaySec): MessageVerifier
+    public function setVerificationDelaySec(float $verificationDelaySec): self
     {
         $this->verificationDelaySec = $verificationDelaySec;
+
         return $this;
     }
 
@@ -106,14 +108,14 @@ class MessageVerifier extends Verifier
         }
 
         $callback = $this->callback;
-        $uri = $this->config->getProviderBaseUrl();
+        $uri      = $this->config->getProviderBaseUrl();
 
-        $scripts  = $this->installManager->install();
+        $scripts   = $this->installManager->install();
         $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
 
         $lambdaLoop = function () use ($callback, $arguments, $uri) {
             // spin up a server
-            $url = "{$uri->getHost()}:{$uri->getPort()}";
+            $url     = "{$uri->getHost()}:{$uri->getPort()}";
             $servers = [
                 listen($url)
             ];
@@ -135,12 +137,11 @@ class MessageVerifier extends Verifier
 
             yield $server->start();
 
-
             // delay long enough for the server to be stood up
-            $delay = intval($this->verificationDelaySec * 1000);
+            $delay = (int) ($this->verificationDelaySec * 1000);
 
             // call the provider-verification cmd
-            Loop::delay( $delay , function () use ($arguments) {
+            Loop::delay($delay, function () use ($arguments) {
                 $cmd = \implode(' ', $arguments);
                 $process = new Process($cmd);
                 $process->start();

@@ -5,10 +5,4 @@
             <directory>./tests/MessageProvider</directory>
         </testsuite>
     </testsuites>
-    <php>
-        <env name="PACT_PROXY_SERVER_HOST" value="localhost"/>
-        <env name="PACT_PROXY_SERVER_PORT" value="8080"/>
-        <env name="PACT_PROXY_ROOT_DIR" value="D:\Development\github\pact-php\src\PhpPact\Provider\Proxy\public" />
-        <env name="PACT_PROXY_PHP_EXE" value="php" />
-    </php>
 </phpunit>
