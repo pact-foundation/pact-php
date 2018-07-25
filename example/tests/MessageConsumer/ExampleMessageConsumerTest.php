@@ -47,7 +47,7 @@ class ExampleMessageConsumerTest extends TestCase
         $builder    = new MessageBuilder(self::$config);
 
         $contents       = new \stdClass();
-        $contents->test = 'Hello Mary!!';
+        $contents->text = 'Hello Mary';
 
         $metadata = ['queue'=>'wind cries', 'routing_key'=>'wind cries'];
 

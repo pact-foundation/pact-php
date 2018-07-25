@@ -14,7 +14,7 @@
         }
       ],
       "contents": {
-        "test": "Hello Mary"
+        "text": "Hello Mary"
       },
       "matchingRules": {
         "body": {

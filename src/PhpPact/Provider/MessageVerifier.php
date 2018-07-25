@@ -21,8 +21,8 @@ use function Amp\Socket\listen;
 
 class MessageVerifier extends Verifier
 {
-    /** @var callable */
-    protected $callback;
+    /** @var array */
+    protected $callbacks;
 
     /**
      * Default host name for the proxy server
@@ -63,6 +63,8 @@ class MessageVerifier extends Verifier
     {
         parent::__construct($config);
 
+        $this->callbacks = array();
+
         $baseUrl = @$this->config->getProviderBaseUrl();
         if (!$baseUrl) {
             $config->setProviderBaseUrl(new Uri("http://{$this->defaultProxyHost}:{$this->defaultProxyPort}"));
@@ -73,13 +75,30 @@ class MessageVerifier extends Verifier
     }
 
     /**
-     * @param callable $callback
+     * @param array $callbacks
      *
      * @return self
      */
-    public function setCallback(callable $callback): self
+    public function setCallbacks(array $callbacks): self
     {
-        $this->callback = $callback;
+        $this->callbacks = $callbacks;
+
+        return $this;
+    }
+
+    /**
+     * Add an individual call back
+     * @param string $key
+     * @param callable $callback
+     * @return MessageVerifier
+     */
+    public function addCallback(string $key, callable $callback): self
+    {
+        if (!isset($this->callbacks[$key])) {
+            $this->callbacks[$key] = $callback;
+        } else {
+            throw new \Exception("Callback with key ($key) already exists");
+        }
 
         return $this;
     }
@@ -103,17 +122,24 @@ class MessageVerifier extends Verifier
      */
     protected function verifyAction(array $arguments)
     {
-        if (!$this->callback) {
+        if (count($this->callbacks) < 1) {
             throw new \Exception('Callback needs to bet set when using message pacts');
         }
 
-        $callback = $this->callback;
+
+        $callbacks = $this->callbacks;
         $uri      = $this->config->getProviderBaseUrl();
 
         $scripts   = $this->installManager->install();
         $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
 
-        $lambdaLoop = function () use ($callback, $arguments, $uri) {
+        /**
+         * @return \Generator
+         * @throws \Amp\Socket\SocketException
+         * @throws \Error
+         * @throws \TypeError
+         */
+        $lambdaLoop = function () use ($callbacks, $arguments, $uri) {
             // spin up a server
             $url     = "{$uri->getHost()}:{$uri->getPort()}";
             $servers = [
@@ -126,7 +152,23 @@ class MessageVerifier extends Verifier
             $logger = new Logger('server');
             $logger->pushHandler($logHandler);
 
-            $server = new Server($servers, new CallableRequestHandler(function (Request $request) use ($callback) {
+            $server = new Server($servers, new CallableRequestHandler(function (Request $request) use ($callbacks) {
+                if (count($callbacks) == 1) {
+                    $callback = array_pop($callbacks);
+                }
+                else {
+                    $payload = new Payload($request->getBody());
+                    $requestBody = yield $payload->buffer();
+                    $requestBody = \json_decode($requestBody);
+                    $providerState = $requestBody->providerStates[0]->name;
+
+                    if (!isset($this->callbacks[$providerState])) {
+                        throw new \Exception("Pacts with multiple states need to have callbacks key'ed by the providerState name");
+                    }
+
+                    $callback = $this->callbacks[$providerState];
+                }
+
                 $out = \call_user_func($callback);
 
                 // return response should only happen if the \call_user_fun()

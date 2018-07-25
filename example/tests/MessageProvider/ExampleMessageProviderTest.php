@@ -26,18 +26,34 @@ class ExampleMessageProviderTest extends TestCase
      */
     public function testProcess()
     {
+        $callbacks = array();
+        $callbacks["a hello message"] = function() {
+            $content = new \stdClass();
+            $content->text ="Hello Mary";
 
-        $content = new \stdClass();
-        $content->song ="And the wind whispers Mary";
+            $metadata = array();
+            $metadata['queue'] = "myKey";
 
-        $metadata = array();
-        $metadata['queue'] = "myKey";
+            $provider = (new ExampleMessageProvider())
+                ->setContents($content)
+                ->setMetadata($metadata);
 
-        $provider = (new ExampleMessageProvider())
-                    ->setContents($content)
-                    ->setMetadata($metadata);
+            return $provider->Build();
+        };
 
-        $callback        = [$provider, 'Build'];
+        $callbacks["You can hear happiness staggering on down the street"] = function() {
+            $content = new \stdClass();
+            $content->song ="And the wind whispers Mary";
+
+            $metadata = array();
+            $metadata['queue'] = "myKey";
+
+            $provider = (new ExampleMessageProvider())
+                ->setContents($content)
+                ->setMetadata($metadata);
+
+            return $provider->Build();
+        };
 
         $config = new VerifierConfig();
         $config
@@ -47,9 +63,10 @@ class ExampleMessageProviderTest extends TestCase
         // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
         $hasException = false;
 
+
         try {
             $verifier = (new MessageVerifier($config))
-                ->setCallback($callback)
+                ->setCallbacks($callbacks)
                 ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
         } catch (\Exception $e) {
             $hasException = true;
