@@ -19,10 +19,5 @@ $app->get('/goodbye/{name}', function (Request $request, Response $response) {
     return $response->withJson(['message' => "Goodbye, {$name}"]);
 });
 
-$app->get('/goodbye/{name}', function (Request $request, Response $response) {
-    $name = $request->getAttribute('name');
-
-    return $response->withJson(['message' => "Goodbye, {$name}"]);
-});
 
 $app->run();

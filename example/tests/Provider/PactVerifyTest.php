@@ -25,6 +25,8 @@ class PactVerifyTest extends TestCase
     protected function setUp()
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
+        $publicPath = __DIR__ . '/../../src/Provider/public/';
+
         $this->process = new Process("php -S localhost:7202 -t {$publicPath}");
         $this->process->start();
     }
@@ -54,7 +56,7 @@ class PactVerifyTest extends TestCase
 
         // Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
         $verifier = new Verifier($config);
-        $verifier->verify('SomeConsumer', 'master');
+        $verifier->verifyFiles([__DIR__ . '/../../output/someconsumer-someprovider.json']);
 
         // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
         $this->assertTrue(true, 'Pact Verification has failed.');
