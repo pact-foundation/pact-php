@@ -10,8 +10,8 @@ $connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
 
 // build the message with appropriate metadata
 $providerMessage = new \MessageProvider\ExampleMessageProvider(['queue'=>'myKey', 'routing_key'=>'myKey']);
-$content = new \stdClass();
-$content->text = "HHello Mary!!";
+$content         = new \stdClass();
+$content->text   = 'Hello Mary';
 $providerMessage->setContents($content);
 
 $channel = $connection->channel();

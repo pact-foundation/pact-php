@@ -63,7 +63,7 @@ class MessageVerifier extends Verifier
     {
         parent::__construct($config);
 
-        $this->callbacks = array();
+        $this->callbacks = [];
 
         $baseUrl = @$this->config->getProviderBaseUrl();
         if (!$baseUrl) {
@@ -88,8 +88,12 @@ class MessageVerifier extends Verifier
 
     /**
      * Add an individual call back
-     * @param string $key
+     *
+     * @param string   $key
      * @param callable $callback
+     *
+     * @throws \Exception
+     *
      * @return MessageVerifier
      */
     public function addCallback(string $key, callable $callback): self
@@ -122,22 +126,22 @@ class MessageVerifier extends Verifier
      */
     protected function verifyAction(array $arguments)
     {
-        if (count($this->callbacks) < 1) {
+        if (\count($this->callbacks) < 1) {
             throw new \Exception('Callback needs to bet set when using message pacts');
         }
 
-
         $callbacks = $this->callbacks;
-        $uri      = $this->config->getProviderBaseUrl();
+        $uri       = $this->config->getProviderBaseUrl();
 
         $scripts   = $this->installManager->install();
         $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
 
         /**
-         * @return \Generator
          * @throws \Amp\Socket\SocketException
          * @throws \Error
          * @throws \TypeError
+         *
+         * @return \Generator
          */
         $lambdaLoop = function () use ($callbacks, $arguments, $uri) {
             // spin up a server
@@ -153,10 +157,9 @@ class MessageVerifier extends Verifier
             $logger->pushHandler($logHandler);
 
             $server = new Server($servers, new CallableRequestHandler(function (Request $request) use ($callbacks) {
-                if (count($callbacks) == 1) {
-                    $callback = array_pop($callbacks);
-                }
-                else {
+                if (\count($callbacks) === 1) {
+                    $callback = \array_pop($callbacks);
+                } else {
                     $payload = new Payload($request->getBody());
                     $requestBody = yield $payload->buffer();
                     $requestBody = \json_decode($requestBody);

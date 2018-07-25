@@ -27,11 +27,13 @@ class ExampleMessageProvider
 
     /**
      * @param array $metadata
+     *
      * @return ExampleMessageProvider
      */
-    public function setMetadata(array $metadata): ExampleMessageProvider
+    public function setMetadata(array $metadata): self
     {
         $this->metadata = $metadata;
+
         return $this;
     }
 
@@ -45,16 +47,19 @@ class ExampleMessageProvider
 
     /**
      * @param mixed $contents
+     *
      * @return ExampleMessageProvider
      */
     public function setContents($contents)
     {
         $this->contents = $contents;
+
         return $this;
     }
 
     /**
      *  Build metadata and content for message
+     *
      * @return string
      */
     public function Build()

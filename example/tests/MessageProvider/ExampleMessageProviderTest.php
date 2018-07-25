@@ -26,13 +26,13 @@ class ExampleMessageProviderTest extends TestCase
      */
     public function testProcess()
     {
-        $callbacks = array();
-        $callbacks["a hello message"] = function() {
-            $content = new \stdClass();
-            $content->text ="Hello Mary";
+        $callbacks                    = [];
+        $callbacks['a hello message'] = function () {
+            $content       = new \stdClass();
+            $content->text ='Hello Mary';
 
-            $metadata = array();
-            $metadata['queue'] = "myKey";
+            $metadata          = [];
+            $metadata['queue'] = 'myKey';
 
             $provider = (new ExampleMessageProvider())
                 ->setContents($content)
@@ -41,12 +41,12 @@ class ExampleMessageProviderTest extends TestCase
             return $provider->Build();
         };
 
-        $callbacks["You can hear happiness staggering on down the street"] = function() {
-            $content = new \stdClass();
-            $content->song ="And the wind whispers Mary";
+        $callbacks['You can hear happiness staggering on down the street'] = function () {
+            $content       = new \stdClass();
+            $content->song ='And the wind whispers Mary';
 
-            $metadata = array();
-            $metadata['queue'] = "myKey";
+            $metadata          = [];
+            $metadata['queue'] = 'myKey';
 
             $provider = (new ExampleMessageProvider())
                 ->setContents($content)
@@ -62,7 +62,6 @@ class ExampleMessageProviderTest extends TestCase
 
         // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
         $hasException = false;
-
 
         try {
             $verifier = (new MessageVerifier($config))
