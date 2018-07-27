@@ -70,7 +70,7 @@
         "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
         "lint": "php-cs-fixer.phar fix --config .php_cs --dry-run",
         "fix": "php-cs-fixer.phar fix --config .php_cs",
-        "test": "phpunit --debug"
+        "test": "phpunit --debug -c example/phpunit.all.xml"
     },
     "extra": {
         "tools": {

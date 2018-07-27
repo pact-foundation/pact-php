@@ -4,7 +4,7 @@ namespace PhpPact\Standalone\PactMessage;
 
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\Installer\InstallManager;
-use PhpPact\Standalone\Runner\ProcessRunner;
+use PhpPact\Standalone\Runner\AsyncProcessRunner;
 
 class PactMessage
 {
@@ -41,7 +41,7 @@ class PactMessage
         $scripts = $this->installManager->install();
 
         $json    = \json_encode($pact);
-        $process = new ProcessRunner($scripts->getPactMessage(), ['reify', "'" . $json . "'"]);
+        $process = new AsyncProcessRunner($scripts->getPactMessage(), ['reify', "'" . $json . "'"]);
 
         $process->run();
 
@@ -75,7 +75,7 @@ class PactMessage
         $arguments[] = "--pact-dir={$pactDir}";
         $arguments[] = "'" . $pactJson . "'";
 
-        $process = new ProcessRunner($scripts->getPactMessage(), $arguments);
+        $process = new AsyncProcessRunner($scripts->getPactMessage(), $arguments);
         $process->run();
 
         \sleep(1);
