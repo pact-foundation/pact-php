@@ -5,9 +5,7 @@ namespace PhpPact\Standalone\PactMessage;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Runner\ProcessRunner;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\Process;
+
 
 class PactMessage
 {
@@ -26,8 +24,6 @@ class PactMessage
     public function __construct()
     {
         $this->installManager = new InstallManager();
-        $this->fileSystem     = new Filesystem();
-        $this->console        = new ConsoleOutput();
     }
 
     /**
@@ -45,23 +41,14 @@ class PactMessage
     {
         $scripts = $this->installManager->install();
 
-        $json          = \json_encode($pact);
-        $this->process = ProcessRunner::run($scripts->getPactMessage(), ['reify', $json]);
-        $this->process
-            ->setTimeout(600)
-            ->setIdleTimeout(60);
+        $json    = \json_encode($pact);
+        $process = new ProcessRunner($scripts->getPactMessage(), ['reify', "'" . $json . "'"]);
 
-        $this->console->writeln("Running the pact-message with command: {$this->process->getCommandLine()}");
+        $process->run();
 
-        $this->process->start(function ($type, $buffer) {
-            $this->console->write($buffer);
-        });
-        \sleep(1);
-
-        $output = $this->process->getOutput();
+        $output = $process->getOutput();
         \preg_replace("/\r|\n/", '', $output);
 
-        // add error handling if json is not returned
         return $output;
     }
 
@@ -87,18 +74,12 @@ class PactMessage
         $arguments[] = "--consumer={$consumer}";
         $arguments[] = "--provider={$provider}";
         $arguments[] = "--pact-dir={$pactDir}";
-        $arguments[] = $pactJson;
+        $arguments[] = "'" . $pactJson ."'";
 
-        $this->process = ProcessRunner::run($scripts->getPactMessage(), $arguments);
-        $this->process
-            ->setTimeout(600)
-            ->setIdleTimeout(60);
+        $process = new ProcessRunner($scripts->getPactMessage(), $arguments);
+        $process->run();
 
-        $this->console->writeln("Running the pact-message with command: {$this->process->getCommandLine()}");
 
-        $this->process->start(function ($type, $buffer) {
-            $this->console->write($buffer);
-        });
         \sleep(1);
 
         return true;

@@ -150,7 +150,6 @@ class MessageVerifier extends Verifier
                 listen($url)
             ];
 
-            // @todo migrate to Symphony logger
             $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
             $logHandler->setFormatter(new ConsoleFormatter);
             $logger = new Logger('server');
