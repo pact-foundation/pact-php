@@ -2,13 +2,13 @@
 
 namespace PhpPact\Standalone\Runner;
 
+use Amp\ByteStream\Payload;
+use Amp\ByteStream\ResourceOutputStream;
 use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
 use Amp\Loop;
 use Amp\Process\Process;
 use Monolog\Logger;
-use Amp\ByteStream\Payload;
-use Amp\ByteStream\ResourceOutputStream;
 
 /**
  * Wrapper around Process with backwards-compatibility support.
@@ -26,7 +26,7 @@ class ProcessRunner
     /** @var int command exit code */
     private $exitCode;
 
-    /**@var string executable to run*/
+    /** @var string executable to run */
     private $command;
 
     /** @var array arguments for that executable */
@@ -34,9 +34,9 @@ class ProcessRunner
 
     public function __construct(string $command, array $arguments)
     {
-        $this->exitCode = -1;
-        $this->output = null;
-        $this->command = $command;
+        $this->exitCode  = -1;
+        $this->output    = null;
+        $this->command   = $command;
         $this->arguments = $arguments;
     }
 
@@ -88,15 +88,13 @@ class ProcessRunner
         $this->exitCode = $exitCode;
     }
 
-
     /**
      * Run the process and set output
      */
-    public function run() : void
+    public function run(): void
     {
-        $self = &$this; // goofiness to get the output values out
-        $lambdaLoop = function() use (&$self) {
-
+        $self       = &$this; // goofiness to get the output values out
+        $lambdaLoop = function () use (&$self) {
             $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
             $logHandler->setFormatter(new ConsoleFormatter);
             $logger = new Logger('server');
@@ -109,7 +107,7 @@ class ProcessRunner
             $process->start();
 
             $payload = new Payload($process->getStdout());
-            $output = yield $payload->buffer();
+            $output  = yield $payload->buffer();
             $self->setOutput($output);
 
             $logger->debug("Process Output: {$self->getOutput()}");
@@ -117,7 +115,6 @@ class ProcessRunner
             $exitCode = yield $process->join();
             $self->setExitCode($exitCode);
             $logger->debug("Exit code: {$self->getExitCode()}");
-
 
             Loop::stop();
             if ($self->getExitCode() !== 0) {
@@ -127,6 +124,4 @@ class ProcessRunner
 
         Loop::run($lambdaLoop);
     }
-
-
 }

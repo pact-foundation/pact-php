@@ -6,7 +6,6 @@ use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Runner\ProcessRunner;
 
-
 class PactMessage
 {
     /** @var InstallManager */
@@ -74,11 +73,10 @@ class PactMessage
         $arguments[] = "--consumer={$consumer}";
         $arguments[] = "--provider={$provider}";
         $arguments[] = "--pact-dir={$pactDir}";
-        $arguments[] = "'" . $pactJson ."'";
+        $arguments[] = "'" . $pactJson . "'";
 
         $process = new ProcessRunner($scripts->getPactMessage(), $arguments);
         $process->run();
-
 
         \sleep(1);
 
