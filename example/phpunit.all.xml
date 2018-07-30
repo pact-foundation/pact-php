@@ -10,10 +10,10 @@
         <testsuite name="PhpPact Provider Example Tests">
             <directory>./tests/Provider</directory>
         </testsuite>
+        <!--
         <testsuite name="PhpPact Message Consumer Example Tests">
             <directory>./tests/MessageConsumer</directory>
         </testsuite>
-        <!--
         <testsuite name="PhpPact Message Provider Example Tests">
             <directory>./tests/MessageProvider</directory>
         </testsuite>
