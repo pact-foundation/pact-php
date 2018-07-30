@@ -51,8 +51,9 @@ class PactVerifyTest extends TestCase
                     break;
                 }
                 else {
-                    \sleep(1);
+                    \sleep(5);
                     $stopCheck = $this->process->hasBeenStopped();
+                    $exitCode = $this->process->getExitCode();
                 }
             }
             if (!$stopCheck) {
