@@ -11,12 +11,8 @@ use Amp\Process\Process;
 use Monolog\Logger;
 
 /**
- * Wrapper around Process with backwards-compatibility support.
- * Can be replaced with usual Process as soon as symfony 2.x support is dropped.
+ * Wrapper around Process with Amp
  *
- * @see https://symfony.com/doc/current/components/process.html#process-signals for POSIX workaround
- * @see https://github.com/symfony/symfony/pull/21474 how it works in symfony/process ^3.3
- * @see Process
  */
 class AsyncProcessRunner
 {
