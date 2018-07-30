@@ -12,7 +12,6 @@ use Monolog\Logger;
 
 /**
  * Wrapper around Process with Amp
- *
  */
 class AsyncProcessRunner
 {
