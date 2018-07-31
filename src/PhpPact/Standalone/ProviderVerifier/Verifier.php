@@ -213,7 +213,14 @@ class Verifier
 
         $process = new Process($arguments, null, null, null, $this->processTimeout);
         $process->setIdleTimeout($this->processIdleTimeout);
+
         $cmd = $process->getCommandLine();
+
+        // handle deps=low requirements
+        if (\is_array($cmd)) {
+            $cmd = \implode(' ', $cmd);
+        }
+
         $this->console->write("Verifying PACT with script:\n{$cmd}\n\n");
 
         $process->mustRun(function ($type, $buffer) {
