@@ -26,10 +26,18 @@ class PactVerifyTest extends TestCase
     protected function setUp()
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
-        $this->process =
         $this->process = ProcessRunner::run("php", ["-S", "localhost:7202", "-t", "{$publicPath}"]);
-        $this->process->start();
-        echo "\nStarted Process Id: {$this->process->getPid()}\n";
+
+        echo "\n" . $this->process->getCommandLine() . "\n";
+
+        $this->process->start(function ($type, $buffer) {
+                echo "\n$buffer\n";
+        });
+        \sleep(1);
+
+        if ($this->process->isStarted() !== true || $this->process->isRunning() !== true) {
+            throw new ProcessFailedException($this->process);
+        }
     }
 
     /**
@@ -40,29 +48,8 @@ class PactVerifyTest extends TestCase
         echo "\nStopping Process Id: {$this->process->getPid()}\n";
         $this->process->stop();
 
-        try {
-
-            $stopCheck = $this->process->hasBeenStopped();
-            $exitCode = $this->process->getExitCode();
-            for($i=0; $i<10; $i++) {
-
-                echo "\n{$i} : Has Stopped: " . ($stopCheck?"true":"false") . " : Exit Code : {$exitCode}\n";
-                if ($stopCheck) {
-                    break;
-                }
-                else {
-                    \sleep(5);
-                    $stopCheck = $this->process->hasBeenStopped();
-                    $exitCode = $this->process->getExitCode();
-                }
-            }
-            if (!$stopCheck) {
-                throw new \Exception("Unable to kill Process Id: {$this->process->getPid()}");
-            }
-
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-        }
+        \sleep(1);
+        echo "\nProcess Id status: {$this->process->getStatus()}\n";
     }
 
     /**
