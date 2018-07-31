@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="../vendor/autoload.php">
     <testsuites>
-        <!--
-                <testsuite name="PhpPact Core Tests">
-                    <directory>../tests</directory>
-                </testsuite>
-                <testsuite name="PhpPact Consumer Example Tests">
-                    <directory>./tests/Consumer</directory>
-                </testsuite>
-        -->
-<testsuite name="PhpPact Provider Example Tests">
-<directory>./tests/Provider</directory>
-</testsuite>
-<!--
+        <testsuite name="PhpPact Core Tests">
+            <directory>../tests</directory>
+        </testsuite>
+        <testsuite name="PhpPact Consumer Example Tests">
+            <directory>./tests/Consumer</directory>
+        </testsuite>
+        <testsuite name="PhpPact Provider Example Tests">
+            <directory>./tests/Provider</directory>
+        </testsuite>
         <testsuite name="PhpPact Message Consumer Example Tests">
             <directory>./tests/MessageConsumer</directory>
         </testsuite>
-
-    <testsuite name="PhpPact Message Provider Example Tests">
-        <directory>./tests/MessageProvider</directory>
-    </testsuite>
--->
+        <testsuite name="PhpPact Message Provider Example Tests">
+            <directory>./tests/MessageProvider</directory>
+        </testsuite>
     </testsuites>
     <listeners>
         <listener class="PhpPact\Consumer\Listener\PactTestListener">
