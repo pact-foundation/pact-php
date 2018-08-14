@@ -50,11 +50,11 @@ interface PactConfigInterface
     public function getPactSpecificationVersion();
 
     /**
-     * @param float $pactSpecificationVersion pact version
+     * @param string $pactSpecificationVersion pact semver version
      *
      * @return PactConfigInterface
      */
-    public function setPactSpecificationVersion(float $pactSpecificationVersion): self;
+    public function setPactSpecificationVersion($pactSpecificationVersion): self;
 
     /**
      * @return string directory for log output

@@ -2,6 +2,7 @@
 
 namespace PhpPact\Standalone\MockService;
 
+use Composer\Semver\VersionParser;
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\PactConfigInterface;
 use Psr\Http\Message\UriInterface;
@@ -238,8 +239,14 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setPactSpecificationVersion(float $pactSpecificationVersion): PactConfigInterface
+    public function setPactSpecificationVersion($pactSpecificationVersion): PactConfigInterface
     {
+        /*
+         * Parse the version but do not assign it.  If it is an invalid version, an exception is thrown
+         */
+        $parser = new VersionParser();
+        $parser->normalize($pactSpecificationVersion);
+
         $this->pactSpecificationVersion = $pactSpecificationVersion;
 
         return $this;

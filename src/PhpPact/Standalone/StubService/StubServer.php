@@ -58,7 +58,7 @@ class StubServer
             ->setTimeout(600)
             ->setIdleTimeout(60);
 
-        $this->console->writeln("Starting the stub service with command {$this->process->getCommandLine()}.");
+        $this->console->writeln("Starting the stub service with command {$this->process->getCommandLine()}");
 
         $this->process->start(function ($type, $buffer) {
             if (Process::ERR === $type) {
