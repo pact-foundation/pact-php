@@ -23,17 +23,25 @@ class Scripts
     private $stubService;
 
     /**
+     * Path to the PhpPact Pact Message.
+     *
+     * @var string
+     */
+    private $pactMessage;
+
+    /**
      * Path to the PhpPact Provider Verifier.
      *
      * @var string
      */
     private $providerVerifier;
 
-    public function __construct(string $mockService, string $stubService, string $providerVerifier)
+    public function __construct(string $mockService, string $stubService, string $providerVerifier, string $pactMessage)
     {
         $this->mockService      = $mockService;
         $this->stubService      = $stubService;
         $this->providerVerifier = $providerVerifier;
+        $this->pactMessage      = $pactMessage;
     }
 
     /**
@@ -70,5 +78,13 @@ class Scripts
         $this->providerVerifier = $providerVerifier;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPactMessage(): string
+    {
+        return $this->pactMessage;
     }
 }

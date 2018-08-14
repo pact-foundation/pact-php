@@ -13,7 +13,7 @@ class VerifierTest extends TestCase
     {
         $config = new VerifierConfig();
         $config
-            ->setProviderName('SomeProvider')
+            ->setProviderName('someProvider')
             ->setProviderVersion('1.0.0')
             ->setProviderBaseUrl(new Uri('http://myprovider:1234'))
             ->setProviderStatesSetupUrl(new Uri('http://someurl:1234'))

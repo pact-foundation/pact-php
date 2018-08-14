@@ -7,8 +7,8 @@ use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
 use PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
+use PhpPact\Standalone\Runner\ProcessRunner;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Process\Process;
 
 /**
  * This is an example on how you could use the Symfony Process library to start your API to run PACT verification against a Provider.
@@ -25,8 +25,18 @@ class PactVerifyTest extends TestCase
     protected function setUp()
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
-        $this->process = new Process("php -S localhost:58000 -t {$publicPath}");
-        $this->process->start();
+        $this->process = ProcessRunner::run('php', ['-S', 'localhost:7202', '-t', $publicPath]);
+
+        print "\n" . $this->process->getCommandLine() . "\n";
+
+        $this->process->start(function ($type, $buffer) {
+            print "\n$buffer\n";
+        });
+        \sleep(1);
+
+        if ($this->process->isStarted() !== true || $this->process->isRunning() !== true) {
+            throw new ProcessFailedException($this->process);
+        }
     }
 
     /**
@@ -34,7 +44,11 @@ class PactVerifyTest extends TestCase
      */
     protected function tearDown()
     {
+        print "\nStopping Process Id: {$this->process->getPid()}\n";
         $this->process->stop();
+
+        \sleep(1);
+        print "\nProcess Id status: {$this->process->getStatus()}\n";
     }
 
     /**
@@ -47,15 +61,14 @@ class PactVerifyTest extends TestCase
     {
         $config = new VerifierConfig();
         $config
-            ->setProviderName('SomeProvider') // Providers name to fetch.
+            ->setProviderName('someProvider') // Providers name to fetch.
             ->setProviderVersion('1.0.0') // Providers version.
-            ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
-            ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
-            ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
+            ->setProviderBaseUrl(new Uri('http://localhost:7202')) // URL of the Provider.
+            ; // Flag the verifier service to publish the results to the Pact Broker.
 
-        // Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
+        // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
         $verifier = new Verifier($config);
-        $verifier->verify('SomeConsumer', 'master');
+        $verifier->verifyFiles([__DIR__ . '/../../output/someconsumer-someprovider.json']);
 
         // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
         $this->assertTrue(true, 'Pact Verification has failed.');

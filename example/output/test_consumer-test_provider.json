@@ -1,0 +1,53 @@
+{
+  "consumer": {
+    "name": "test_consumer"
+  },
+  "provider": {
+    "name": "test_provider"
+  },
+  "messages": [
+    {
+      "description": "an alligator named Mary exists",
+      "providerStates": [
+        {
+          "name": "a hello message"
+        }
+      ],
+      "contents": {
+        "text": "Hello Mary"
+      },
+      "matchingRules": {
+        "body": {
+        }
+      },
+      "metaData": {
+        "queue": "wind cries",
+        "routing_key": "wind cries"
+      }
+    },
+    {
+      "description": "footprints dressed in red",
+      "providerStates": [
+        {
+          "name": "You can hear happiness staggering on down the street"
+        }
+      ],
+      "contents": {
+        "song": "And the wind whispers Mary"
+      },
+      "matchingRules": {
+        "body": {
+        }
+      },
+      "metaData": {
+        "queue": "And the clowns have all gone to bed",
+        "routing_key": "And the clowns have all gone to bed"
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

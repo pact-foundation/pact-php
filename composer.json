@@ -20,16 +20,22 @@
     "require": {
         "php": "^7.1",
         "ext-openssl": "*",
-        "symfony/process": ">=2.8 <4.1",
+        "symfony/process": ">=3.3 <4.1",
         "symfony/filesystem": ">=2.8 <4.1",
+        "composer/semver": "1.4.2",
         "guzzlehttp/guzzle": "^6.3",
-        "symfony/console": ">=2.8 <4.1"
+        "symfony/console": ">=2.8 <4.1",
+        "amphp/socket": "^0.10.9",
+        "amphp/process": "^0.3.3",
+        "amphp/http-server": "^0.8.2",
+        "amphp/log": "^1.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
         "phpunit/phpunit": "^7.1",
         "mockery/mockery": "^1.0",
         "slim/slim": "^3.9",
+        "php-amqplib/php-amqplib": "^2.7",
         "tm/tooly-composer-script": "^1.2"
     },
     "autoload": {
@@ -43,6 +49,14 @@
             "Consumer\\": [
                 "example/src/Consumer",
                 "example/tests/Consumer"
+            ],
+            "MessageConsumer\\": [
+                "example/src/MessageConsumer",
+                "example/tests/MessageConsumer"
+            ],
+            "MessageProvider\\": [
+                "example/src/MessageProvider",
+                "example/tests/MessageProvider"
             ]
         }
     },
@@ -57,7 +71,7 @@
         "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
         "lint": "php-cs-fixer.phar fix --config .php_cs --dry-run",
         "fix": "php-cs-fixer.phar fix --config .php_cs",
-        "test": "phpunit --debug"
+        "test": "phpunit --debug -c example/phpunit.all.xml"
     },
     "extra": {
         "tools": {

@@ -61,7 +61,7 @@ class MockServer
             ->setTimeout(600)
             ->setIdleTimeout(60);
 
-        $this->console->writeln("Starting the mock service with command {$this->process->getCommandLine()}.");
+        $this->console->writeln("Starting the mock service with command {$this->process->getCommandLine()}");
 
         $this->process->start(function ($type, $buffer) {
             if (Process::ERR === $type) {
@@ -126,7 +126,7 @@ class MockServer
         $results[] = "--port={$this->config->getPort()}";
 
         if ($this->config->hasCors()) {
-            $results[] = '-o';
+            $results[] = '--cors=true';
         }
 
         if ($this->config->getPactSpecificationVersion() !== null) {

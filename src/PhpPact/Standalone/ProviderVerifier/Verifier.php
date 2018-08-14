@@ -20,22 +20,22 @@ use Symfony\Component\Process\Process;
 class Verifier
 {
     /** @var int $processTimeout */
-    private $processTimeout = 60;
+    protected $processTimeout = 60;
 
     /** @var int $processIdleTimeout */
-    private $processIdleTimeout = 10;
+    protected $processIdleTimeout = 10;
 
     /** @var VerifierConfigInterface */
-    private $config;
+    protected $config;
 
     /** @var BrokerHttpClientInterface */
-    private $brokerHttpClient;
+    protected $brokerHttpClient;
 
     /** @var InstallManager */
-    private $installManager;
+    protected $installManager;
 
     /** @var ConsoleOutput */
-    private $console;
+    protected $console;
 
     public function __construct(VerifierConfigInterface $config)
     {
@@ -205,7 +205,7 @@ class Verifier
      * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
      * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
      */
-    private function verifyAction(array $arguments)
+    protected function verifyAction(array $arguments)
     {
         $scripts = $this->installManager->install();
 
@@ -214,14 +214,21 @@ class Verifier
         $process = new Process($arguments, null, null, null, $this->processTimeout);
         $process->setIdleTimeout($this->processIdleTimeout);
 
-        $this->console->write("Verifying PACT with script {$process->getCommandLine()}");
+        $cmd = $process->getCommandLine();
+
+        // handle deps=low requirements
+        if (\is_array($cmd)) {
+            $cmd = \implode(' ', $cmd);
+        }
+
+        $this->console->write("Verifying PACT with script:\n{$cmd}\n\n");
 
         $process->mustRun(function ($type, $buffer) {
             $this->console->write("{$type} > {$buffer}");
         });
     }
 
-    private function getBrokerHttpClient(): BrokerHttpClient
+    protected function getBrokerHttpClient(): BrokerHttpClient
     {
         if (!$this->brokerHttpClient) {
             $this->brokerHttpClient = new BrokerHttpClient(new GuzzleClient(), $this->config->getBrokerUri());

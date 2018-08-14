@@ -8,7 +8,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class InstallerMac implements InstallerInterface
 {
-    const VERSION = '1.38.0';
+    const VERSION = '1.52.2';
 
     /**
      * {@inheritdoc}
@@ -38,7 +38,8 @@ class InstallerMac implements InstallerInterface
         $scripts = new Scripts(
             "{$destinationDir}/pact/bin/pact-mock-service",
             "{$destinationDir}/pact/bin/pact-stub-service",
-            "{$destinationDir}/pact/bin/pact-provider-verifier"
+            "{$destinationDir}/pact/bin/pact-provider-verifier",
+            "{$destinationDir}/pact/bin/pact-message"
         );
 
         return $scripts;
