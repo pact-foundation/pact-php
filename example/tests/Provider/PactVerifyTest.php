@@ -25,7 +25,7 @@ class PactVerifyTest extends TestCase
     protected function setUp()
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
-        $this->process = ProcessRunner::run('php', ['-S', 'localhost:7202', '-t', "{$publicPath}"]);
+        $this->process = ProcessRunner::run('php', ['-S', 'localhost:7202', '-t', $publicPath]);
 
         print "\n" . $this->process->getCommandLine() . "\n";
 

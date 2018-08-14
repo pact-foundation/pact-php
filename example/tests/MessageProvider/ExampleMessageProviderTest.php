@@ -11,16 +11,6 @@ use PHPUnit\Framework\TestCase;
  */
 class ExampleMessageProviderTest extends TestCase
 {
-    public static function setUpBeforeClass()/* The :void return type declaration that should be here would cause a BC issue */
-    {
-        parent::setUpBeforeClass();
-    }
-
-    public static function tearDownAfterClass()/* The :void return type declaration that should be here would cause a BC issue */
-    {
-        parent::tearDownAfterClass();
-    }
-
     /**
      * @throws \Exception
      */
@@ -61,17 +51,11 @@ class ExampleMessageProviderTest extends TestCase
             ->setPublishResults(false); // Flag the verifier service to publish the results to the Pact Broker.
 
         // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
-        $hasException = false;
-
-        try {
-            $verifier = (new MessageVerifier($config))
-                ->setCallbacks($callbacks)
-                ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
-        } catch (\Exception $e) {
-            $hasException = true;
-        }
+        $verifier = (new MessageVerifier($config))
+            ->setCallbacks($callbacks)
+            ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
 
         // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
-        $this->assertFalse($hasException, 'Expects verification to pass without exceptions being thrown');
+        $this->assertTrue(true, 'Expects to reach true by running verification');
     }
 }

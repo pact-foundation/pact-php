@@ -64,13 +64,9 @@ class ExampleMessageConsumerTest extends TestCase
 
         $hasException = false;
 
-        try {
-            $builder->verify();
-        } catch (\Exception $e) {
-            $hasException = true;
-        }
+        $builder->verify();
 
-        $this->assertFalse($hasException, 'Expects verification to pass without exceptions being thrown');
+        $this->assertTrue(true, 'Expects to reach this true statement by running verify()');
     }
 
     /**
