@@ -81,6 +81,13 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     private $cors = false;
 
     /**
+     * The max allowed time the mock server has to be available in. Otherwise it is considered as sick.
+     *
+     * @var int
+     */
+    private $healthCheckTimeout;
+
+    /**
      * {@inheritdoc}
      */
     public function getHost(): string
@@ -286,5 +293,23 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         }
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setHealthCheckTimeout($timeout): MockServerConfigInterface
+    {
+        $this->healthCheckTimeout = $timeout;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHealthCheckTimeout(): int
+    {
+        return $this->healthCheckTimeout;
     }
 }
