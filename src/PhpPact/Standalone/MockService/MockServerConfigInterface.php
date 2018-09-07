@@ -74,4 +74,16 @@ interface MockServerConfigInterface
      * @return MockServerConfigInterface
      */
     public function setCors($flag): self;
+
+    /**
+     * @param int $timeout
+     *
+     * @return MockServerConfigInterface
+     */
+    public function setHealthCheckTimeout($timeout): self;
+
+    /**
+     * @return int
+     */
+    public function getHealthCheckTimeout(): int;
 }
