@@ -3,7 +3,9 @@
 namespace PhpPact\Standalone\ProviderVerifier;
 
 use GuzzleHttp\Psr7\Uri;
+use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
+use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PHPUnit\Framework\TestCase;
 
@@ -48,23 +50,42 @@ class VerifierTest extends TestCase
         $this->assertEmpty((new Verifier(new VerifierConfig()))->getArguments());
     }
 
-    /*
+    /**
      * @dataProvider dataProviderForBrokerPathTest
      *
-     * @param mixed $consumerName
-     * @param mixed $providerName
-     * @param mixed $tag
-     * @param mixed $verison
-     * @param mixed $path
+     * @param string      $consumerName
+     * @param string      $providerName
+     * @param null|string $tag
+     * @param null|string $version
+     * @param string      $path
+     *
+     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
+     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
      */
-    /*
-    public function testBuildValidPathToPactBroker($consumerName, $providerName, $tag, $verison, $path)
+    public function testBuildValidPathToPactBroker($consumerName, $providerName, $tag, $version, $path)
     {
+        $expectedUrltoBroker = 'http://mock/' . $path;
+
         $uriMock = $this->createMock(Uri::class);
         $uriMock->expects($this->once())
             ->method('withPath')
             ->with($path)
             ->willReturn($uriMock);
+
+        $uriMock->expects($this->once())
+            ->method('__toString')
+            ->willReturn($expectedUrltoBroker);
+
+        $installerMock = $this->createMock(InstallManager::class);
+
+        $verifierProcessMock = $this->createMock(VerifierProcess::class);
+        $verifierProcessMock->expects($this->once())
+            ->method('run')
+            ->with(
+                $this->callback(function ($args) use ($expectedUrltoBroker) {
+                    return \in_array($expectedUrltoBroker, $args);
+                })
+            );
 
         $config = new VerifierConfig();
         $config->setProviderName($providerName)
@@ -73,9 +94,9 @@ class VerifierTest extends TestCase
             ->setBrokerUri($uriMock)
             ->setVerbose(true);
 
-        $verifier = new Verifier($config);
+        $verifier = new Verifier($config, $installerMock, $verifierProcessMock);
 
-        $verifier->verify($consumerName, $tag, $verison);
+        $verifier->verify($consumerName, $tag, $version);
     }
 
     public function dataProviderForBrokerPathTest()
@@ -92,5 +113,55 @@ class VerifierTest extends TestCase
             [$consumerName, $providerName, null, null, "pacts/provider/$providerName/consumer/$consumerName/latest/"],
         ];
     }
-    */
+
+    /**
+     * @dataProvider provideDataForVerifyAll
+     *
+     * @param string $providerName
+     * @param string $providerVersion
+     * @param bool   $forceLatest
+     * @param mixed  $expectedProviderVersion
+     *
+     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
+     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
+     */
+    public function testIfDataForVerifyAllIsConvertedCorrectly($providerName, $providerVersion)
+    {
+        $expectedUrl1     = 'expectedUrl1';
+        $expectedUrl2     = 'expectedUrl2';
+        $expectedPactUrls = [$expectedUrl1, $expectedUrl2];
+
+        $installerMock = $this->createMock(InstallManager::class);
+
+        $verifierProcessMock = $this->createMock(VerifierProcess::class);
+        $verifierProcessMock->expects($this->once())
+            ->method('run')
+            ->with(
+                $this->callback(function ($args) use ($expectedUrl1, $expectedUrl2) {
+                    return \in_array($expectedUrl1, $args) && \in_array($expectedUrl2, $args);
+                })
+            );
+
+        $brokerHttpClient = $this->createMock(BrokerHttpClient::class);
+
+        $brokerHttpClient->expects($this->once())
+        ->method('getAllConsumerUrls')
+            ->with($this->equalTo($providerName))
+            ->will($this->returnValue($expectedPactUrls));
+
+        $config = new VerifierConfig();
+        $config->setProviderName($providerName);
+        $config->setProviderVersion($providerVersion);
+
+        $verifier = new Verifier($config, $installerMock, $verifierProcessMock, $brokerHttpClient);
+        $verifier->verifyAll();
+    }
+
+    public function provideDataForVerifyAll()
+    {
+        return [
+          ['someProvider', '1.0.0'],
+          ['someProvider', '1.2.3'],
+        ];
+    }
 }
