@@ -51,7 +51,7 @@ class Interaction implements \JsonSerializable
     /**
      * @return string
      */
-    public function getProviderState(): string
+    public function getProviderState(): ?string
     {
         return $this->providerState;
     }
