@@ -102,7 +102,18 @@ class PactTestListener implements TestListener
             } elseif (!($tag = \getenv('PACT_CONSUMER_TAG'))) {
                 print 'PACT_CONSUMER_TAG environment variable was not set. Skipping PACT file upload.';
             } else {
-                $brokerHttpService = new BrokerHttpClient(new GuzzleClient(), new Uri($pactBrokerUri));
+                $clientConfig = [];
+                if (!($user = \getenv('PACT_BROKER_HTTP_AUTH_USER')) &&
+                    !($pass = \getenv('PACT_BROKER_HTTP_AUTH_PASS'))
+                ) {
+                    $clientConfig = [
+                        'auth' => [$user, $pass],
+                    ];
+                }
+
+                $client = new GuzzleClient($clientConfig);
+
+                $brokerHttpService = new BrokerHttpClient($client, new Uri($pactBrokerUri));
                 $brokerHttpService->publishJson($json, $consumerVersion);
                 $brokerHttpService->tag($this->mockServerConfig->getConsumer(), $consumerVersion, $tag);
                 print 'Pact file has been uploaded to the Broker successfully.';

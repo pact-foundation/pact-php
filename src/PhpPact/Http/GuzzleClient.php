@@ -15,7 +15,7 @@ class GuzzleClient implements ClientInterface
     /** @var Client */
     private $client;
 
-    public function __construct()
+    public function __construct(array $config = [])
     {
         $this->client = new Client();
     }
