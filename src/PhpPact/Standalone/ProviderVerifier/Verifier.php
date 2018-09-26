@@ -224,7 +224,12 @@ class Verifier
     private function getBrokerHttpClient(): BrokerHttpClient
     {
         if (!$this->brokerHttpClient) {
-            $this->brokerHttpClient = new BrokerHttpClient(new GuzzleClient(), $this->config->getBrokerUri());
+            $user = $this->config->getBrokerUsername();
+            $password = $this->config->getBrokerPassword();
+
+            $client = $user && $password ? new GuzzleClient(['auth' => [$user, $password]]) : new GuzzleClient();
+
+            $this->brokerHttpClient = new BrokerHttpClient($client, $this->config->getBrokerUri());
         }
 
         return $this->brokerHttpClient;
