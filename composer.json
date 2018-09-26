@@ -20,10 +20,10 @@
     "require": {
         "php": "^7.1",
         "ext-openssl": "*",
-        "symfony/process": ">=2.8 <4.1",
-        "symfony/filesystem": ">=2.8 <4.1",
+        "symfony/process": "^2.8 || ^3.0 || ^4.0",
+        "symfony/filesystem": "^2.8 || ^3.0 || ^4.0",
         "guzzlehttp/guzzle": "^6.3",
-        "symfony/console": ">=2.8 <4.1"
+        "symfony/console": "^2.8 || ^3.0 || ^4.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
