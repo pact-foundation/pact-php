@@ -17,7 +17,7 @@ class GuzzleClient implements ClientInterface
 
     public function __construct(array $config = [])
     {
-        $this->client = new Client();
+        $this->client = new Client($config);
     }
 
     public function get(UriInterface $uri, array $options = []): ResponseInterface
