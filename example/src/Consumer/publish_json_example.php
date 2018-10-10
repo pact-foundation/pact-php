@@ -6,7 +6,7 @@ use PhpPact\Http\GuzzleClient;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
-$httpService = new BrokerHttpClient(new GuzzleClient(), new Uri('http://localhost:80/'));
+$httpService = new BrokerHttpClient(new GuzzleClient(), new Uri('http://localhost:8080/'));
 
 $json = \json_encode([
     'consumer' => 'someConsumer',
