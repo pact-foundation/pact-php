@@ -12,7 +12,7 @@ services:
   broker_app:
     image: dius/pact-broker
     ports:
-      - "80:80"
+      - "8080:80"
     links:
       - postgres
     environment:

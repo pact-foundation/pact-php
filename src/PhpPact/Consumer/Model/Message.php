@@ -6,7 +6,7 @@ namespace PhpPact\Consumer\Model;
  * Request/Response Pair to be posted to the Ruby Standalone Mock Server for PACT tests.
  * Class Interaction.
  */
-class Interaction implements \JsonSerializable
+class Message implements \JsonSerializable
 {
     /**
      * @var string
@@ -19,14 +19,14 @@ class Interaction implements \JsonSerializable
     private $providerState;
 
     /**
-     * @var ConsumerRequest
+     * @var array
      */
-    private $request;
+    private $metadata;
 
     /**
-     * @var ProviderResponse
+     * @var mixed
      */
-    private $response;
+    private $contents;
 
     /**
      * @return string
@@ -39,7 +39,7 @@ class Interaction implements \JsonSerializable
     /**
      * @param string $description
      *
-     * @return Interaction
+     * @return Message
      */
     public function setDescription(string $description): self
     {
@@ -51,7 +51,7 @@ class Interaction implements \JsonSerializable
     /**
      * @return string
      */
-    public function getProviderState(): ?string
+    public function getProviderState(): string
     {
         return $this->providerState;
     }
@@ -59,7 +59,7 @@ class Interaction implements \JsonSerializable
     /**
      * @param string $providerState
      *
-     * @return Interaction
+     * @return Message
      */
     public function setProviderState(string $providerState): self
     {
@@ -69,41 +69,41 @@ class Interaction implements \JsonSerializable
     }
 
     /**
-     * @return ConsumerRequest
+     * @return array
      */
-    public function getRequest(): ConsumerRequest
+    public function getMetadata(): array
     {
-        return $this->request;
+        return $this->metadata;
     }
 
     /**
-     * @param ConsumerRequest $request
+     * @param array $metadata
      *
-     * @return Interaction
+     * @return Message
      */
-    public function setRequest(ConsumerRequest $request): self
+    public function setMetadata(array $metadata): self
     {
-        $this->request = $request;
+        $this->metadata = $metadata;
 
         return $this;
     }
 
     /**
-     * @return ProviderResponse
+     * @return mixed
      */
-    public function getResponse(): ProviderResponse
+    public function getContents()
     {
-        return $this->response;
+        return $this->contents;
     }
 
     /**
-     * @param ProviderResponse $response
+     * @param mixed $contents
      *
-     * @return Interaction
+     * @return Message
      */
-    public function setResponse(ProviderResponse $response): self
+    public function setContents($contents)
     {
-        $this->response = $response;
+        $this->contents = $contents;
 
         return $this;
     }
@@ -113,11 +113,21 @@ class Interaction implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        return [
-            'description'   => $this->getDescription(),
-            'providerState' => $this->getProviderState(),
-            'request'       => $this->getRequest(),
-            'response'      => $this->getResponse(),
-        ];
+        $out                = [];
+        $out['description'] = $this->getDescription();
+
+        if ($this->providerState) {
+            $out['providerState'] = $this->getProviderState();
+        }
+
+        if ($this->metadata) {
+            $out['metadata'] = $this->getMetadata();
+        }
+
+        if ($this->contents) {
+            $out['contents'] = $this->getContents();
+        }
+
+        return $out;
     }
 }

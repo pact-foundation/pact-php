@@ -2,14 +2,16 @@
 
 namespace PhpPact\Standalone\MockService;
 
+use Composer\Semver\VersionParser;
 use GuzzleHttp\Psr7\Uri;
+use PhpPact\Standalone\PactConfigInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
  * Configuration defining the default PhpPact Ruby Standalone server.
  * Class MockServerConfig.
  */
-class MockServerConfig implements MockServerConfigInterface
+class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
 {
     /**
      * Host on which to bind the service.
@@ -77,6 +79,13 @@ class MockServerConfig implements MockServerConfigInterface
 
     /** @var bool */
     private $cors = false;
+
+    /**
+     * The max allowed time the mock server has to be available in. Otherwise it is considered as sick.
+     *
+     * @var int
+     */
+    private $healthCheckTimeout;
 
     /**
      * {@inheritdoc}
@@ -153,7 +162,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setConsumer(string $consumer): MockServerConfigInterface
+    public function setConsumer(string $consumer): PactConfigInterface
     {
         $this->consumer = $consumer;
 
@@ -171,7 +180,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setProvider(string $provider): MockServerConfigInterface
+    public function setProvider(string $provider): PactConfigInterface
     {
         $this->provider = $provider;
 
@@ -193,7 +202,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setPactDir($pactDir): MockServerConfigInterface
+    public function setPactDir($pactDir): PactConfigInterface
     {
         $this->pactDir = $pactDir;
 
@@ -237,8 +246,14 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setPactSpecificationVersion(float $pactSpecificationVersion): MockServerConfigInterface
+    public function setPactSpecificationVersion($pactSpecificationVersion): PactConfigInterface
     {
+        /*
+         * Parse the version but do not assign it.  If it is an invalid version, an exception is thrown
+         */
+        $parser = new VersionParser();
+        $parser->normalize($pactSpecificationVersion);
+
         $this->pactSpecificationVersion = $pactSpecificationVersion;
 
         return $this;
@@ -255,7 +270,7 @@ class MockServerConfig implements MockServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setLog(string $log): MockServerConfigInterface
+    public function setLog(string $log): PactConfigInterface
     {
         $this->log = $log;
 
@@ -278,5 +293,23 @@ class MockServerConfig implements MockServerConfigInterface
         }
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setHealthCheckTimeout($timeout): MockServerConfigInterface
+    {
+        $this->healthCheckTimeout = $timeout;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHealthCheckTimeout(): int
+    {
+        return $this->healthCheckTimeout;
     }
 }

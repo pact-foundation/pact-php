@@ -13,7 +13,7 @@ use ZipArchive;
  */
 class InstallerWindows implements InstallerInterface
 {
-    const VERSION = '1.38.0';
+    const VERSION = '1.54.4';
 
     /**
      * {@inheritdoc}
@@ -44,7 +44,8 @@ class InstallerWindows implements InstallerInterface
         $scripts = new Scripts(
             $binDir . 'pact-mock-service.bat',
             $binDir . 'pact-stub-service.bat',
-            $binDir . 'pact-provider-verifier.bat'
+            $binDir . 'pact-provider-verifier.bat',
+            $binDir . 'pact-message.bat'
         );
 
         return $scripts;

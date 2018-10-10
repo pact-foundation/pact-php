@@ -36,12 +36,27 @@ class MockServer
     /** @var ConsoleOutput */
     private $console;
 
-    public function __construct(MockServerConfigInterface $config)
+    /** @var MockServerHttpService */
+    private $httpService;
+
+    /**
+     * MockServer constructor.
+     *
+     * @param MockServerConfigInterface  $config
+     * @param null|MockServerHttpService $httpService
+     */
+    public function __construct(MockServerConfigInterface $config, MockServerHttpService $httpService = null)
     {
         $this->config         = $config;
         $this->installManager = new InstallManager();
         $this->fileSystem     = new Filesystem();
         $this->console        = new ConsoleOutput();
+
+        if (!$httpService) {
+            $this->httpService = new MockServerHttpService(new GuzzleClient(), $this->config);
+        } else {
+            $this->httpService = $httpService;
+        }
     }
 
     /**
@@ -61,7 +76,7 @@ class MockServer
             ->setTimeout(600)
             ->setIdleTimeout(60);
 
-        $this->console->writeln("Starting the mock service with command {$this->process->getCommandLine()}.");
+        $this->console->writeln("Starting the mock service with command {$this->process->getCommandLine()}");
 
         $this->process->start(function ($type, $buffer) {
             if (Process::ERR === $type) {
@@ -126,7 +141,7 @@ class MockServer
         $results[] = "--port={$this->config->getPort()}";
 
         if ($this->config->hasCors()) {
-            $results[] = '-o';
+            $results[] = '--cors=true';
         }
 
         if ($this->config->getPactSpecificationVersion() !== null) {
@@ -149,11 +164,11 @@ class MockServer
      */
     private function verifyHealthCheck(): bool
     {
-        $service = new MockServerHttpService(new GuzzleClient(), $this->config);
+        $service = $this->httpService;
 
         // Verify that the service is up.
         $tries    = 0;
-        $maxTries = 10;
+        $maxTries = $this->config->getHealthCheckTimeout();
         do {
             ++$tries;
 

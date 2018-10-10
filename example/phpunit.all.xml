@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="../vendor/autoload.php" colors="true">
     <testsuites>
-        <testsuite name="PhpPact Example Tests">
+        <testsuite name="PhpPact Core Tests">
+            <directory>../tests</directory>
+        </testsuite>
+        <testsuite name="PhpPact Consumer Example Tests">
             <directory>./tests/Consumer</directory>
+        </testsuite>
+        <testsuite name="PhpPact Provider Example Tests">
+            <directory>./tests/Provider</directory>
+        </testsuite>
+        <testsuite name="PhpPact Message Consumer Example Tests">
+            <directory>./tests/MessageConsumer</directory>
+        </testsuite>
+        <testsuite name="PhpPact Message Provider Example Tests">
+            <directory>./tests/MessageProvider</directory>
         </testsuite>
     </testsuites>
     <listeners>
         <listener class="PhpPact\Consumer\Listener\PactTestListener">
             <arguments>
                 <array>
-                     <element key="0">
-                        <string>PhpPact Example Tests</string>
+                    <element key="0">
+                        <string>PhpPact Consumer Example Tests</string>
                     </element>
                 </array>
             </arguments>
@@ -23,8 +35,7 @@
         <env name="PACT_CONSUMER_VERSION" value="1.0.0"/>
         <env name="PACT_CONSUMER_TAG" value="master"/>
         <env name="PACT_PROVIDER_NAME" value="someProvider"/>
-        <env name="PACT_OUTPUT_DIR" value=".\example\output"/>
-        <env name="PACT_MOCK_SERVER_HEALTH_CHECK_TIMEOUT" value="10"/>
-        <!-- <env name="PACT_BROKER_URI" value="http://localhost"/> -->
+        <env name="PACT_OUTPUT_DIR" value=".\example\output\\"/>
+        <env name="PACT_CORS" value="true"/>
     </php>
 </phpunit>

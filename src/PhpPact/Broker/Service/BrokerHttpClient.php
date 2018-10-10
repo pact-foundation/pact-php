@@ -66,7 +66,11 @@ class BrokerHttpClient implements BrokerHttpClientInterface
      */
     public function getAllConsumerUrls(string $provider, string $version = 'latest'): array
     {
-        $uri = $this->baseUri->withPath("/pacts/provider/{$provider}/{$version}");
+        if ($version !== 'latest') {
+            @\trigger_error(\sprintf('The second argument "version" in "%s()" method makes no sense and will be removed in any upcoming major version', __METHOD__), E_USER_DEPRECATED);
+        }
+
+        $uri = $this->baseUri->withPath("/pacts/provider/{$provider}/latest");
 
         $response = $this->httpClient->get($uri, [
             'headers' => [

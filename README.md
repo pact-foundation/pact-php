@@ -40,7 +40,9 @@ Table of contents
 
 ## Versions
 
-Master and the 4.X tags are accompany changes in PHPUnit 7.X which requires a PHP 7.1 or higher.  Thus, 4.X drops support for PHP 7.0.  
+Master adds preliminary support for async messages and pact specification 3.X.  This is incomplete and a preview.
+
+The 4.X tags are accompany changes in PHPUnit 7.X which requires a PHP 7.1 or higher.  Thus, 4.X drops support for PHP 7.0.  
 
 The 3.X tags are a major breaking change to the 2.X versions.   To be similar to the rest of the Pact ecosystem, Pact-PHP migrated to leverage the Ruby backend.  This mirrors the .Net, JS, Python, and Go implementations. 
 
@@ -82,8 +84,8 @@ Alternatively, you can start and stop as in whatever means you would like by fol
     $config = new MockServerConfig();
     $config->setHost('localhost');
     $config->setPort(7200);
-    $config->setConsumer('SomeConsumer');
-    $config->setProvider('SomeProvider');
+    $config->setConsumer('someConsumer');
+    $config->setProvider('someProvider');
     $config->setCors(true);
 
     // Instantiate the mock server object with the config. This can be any
@@ -236,7 +238,7 @@ This will grab the Pact file from a Pact Broker and run the data against the sto
 ```php
 $config = new VerifierConfig();
 $config
-    ->setProviderName('SomeProvider') // Providers name to fetch.
+    ->setProviderName('someProvider') // Providers name to fetch.
     ->setProviderVersion('1.0.0') // Providers version.
     ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
     ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
@@ -244,9 +246,9 @@ $config
     ->setProcessTimeout(60)      // Set process timeout (optional) - default 60
     ->setProcessIdleTimeout(10); // Set process idle timeout (optional) - default 10
 
-// Verify that the Consumer 'SomeConsumer' that is tagged with 'master' is valid.
+// Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
 $verifier = new Verifier($config);
-$verifier->verify('SomeConsumer', 'master'); // The tag is option. If no tag is set it will just grab the latest.
+$verifier->verify('someConsumer', 'master'); // The tag is option. If no tag is set it will just grab the latest.
 
 // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
 $this->assertTrue(true, 'Pact Verification has failed.');
@@ -261,13 +263,13 @@ public function testPactVerifyAll()
 {
     $config = new VerifierConfig();
     $config
-        ->setProviderName('SomeProvider') // Providers name to fetch.
+        ->setProviderName('someProvider') // Providers name to fetch.
         ->setProviderVersion('1.0.0') // Providers version.
         ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
         ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
         ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
 
-    // Verify that all consumers of 'SomeProvider' are valid.
+    // Verify that all consumers of 'someProvider' are valid.
     $verifier = new Verifier($config);
     $verifier->verifyAll();
 
@@ -285,7 +287,7 @@ public function testPactVerifyAll()
 {
     $config = new VerifierConfig();
     $config
-        ->setProviderName('SomeProvider') // Providers name to fetch.
+        ->setProviderName('someProvider') // Providers name to fetch.
         ->setProviderVersion('1.0.0') // Providers version.
         ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
         ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
@@ -326,6 +328,89 @@ No matter which direction you go, you will have to modify something outside of t
 There is a separate repository with an end to end example for both the 2.X and 3.X implementations.   
 - [pact-php-example](https://github.com/mattermack/pact-php-example) for 3.X examples
 - [2.2.1 tag](https://github.com/mattermack/pact-php-example/tree/2.2.1) for 2.X examples
+
+## Message support
+This feature is preliminary as the Pact community as a whole is flushing this out.   
+The goal is not to test the transmission of an object over a bus but instead vet the contents of the message.
+While examples included focus on a Rabbit MQ, the exact message queue is irrelevant. Initial comparisons require a certain
+object type to be created by the Publisher/Producer and the Consumer of the message.  This includes a metadata set where you
+can store the key, queue, exchange, etc that the Publisher and Consumer agree on.  The content format needs to be JSON.
+
+To take advantage of the existing pact-verification tools, the provider side of the equation stands up an http proxy to callback
+to processing class.   Aside from changing default ports, this should be transparent to the users of the libary.
+
+Both the provider and consumer side make heavy use of lambda functions.
+
+### Consumer Side Message Processing
+The examples provided are pretty basic.   See examples\tests\MessageConsumer.
+1. Create the content and metadata (array)
+1. Annotate the MessageBuilder appropriate content and states
+    1. Given = Provider State
+    1. expectsToReceive = Description
+1. Set the callback you want to run when a message is provided
+    1. The callback must accept a JSON string as a parameter
+1. Run Verify.  If nothing blows up, #winning.
+ 
+```php
+$builder    = new MessageBuilder(self::$config);
+
+$contents       = new \stdClass();
+$contents->song = 'And the wind whispers Mary';
+
+$metadata = ['queue'=>'And the clowns have all gone to bed', 'routing_key'=>'And the clowns have all gone to bed'];
+
+$builder
+    ->given('You can hear happiness staggering on down the street')
+    ->expectsToReceive('footprints dressed in red')
+    ->withMetadata($metadata)
+    ->withContent($contents);
+
+// established mechanism to this via callbacks
+$consumerMessage = new ExampleMessageConsumer();
+$callback        = [$consumerMessage, 'ProcessSong'];
+$builder->setCallback($callback);
+
+$builder->verify();
+```
+
+
+### Provider Side Message Validation
+This may evolve as we work through this implementation.   The provider relies heavily on callbacks.
+Some of the complexity lies in a consumer and provider having many messages and states between the each other in a single pact.
+
+For each message, one needs to provide a single provider state.  The name of this provider state must be the key to run 
+a particular message callback on the provider side.  See example\tests\MessageProvider
+
+1. Create your callbacks and states wrapped in a callable object
+    1. The array key is a provider state / given() on the consumer side
+    1. It is helpful to wrap the whole thing in a lambda if you need to customize paramaters to be passed in
+1. Choose your verification method
+1. If nothing explodes, #winning
+
+```php
+
+        $callbacks = array();
+        
+        // a hello message is a provider state / given() on the consumer side
+        $callbacks["a hello message"] = function() {
+            $content = new \stdClass();
+            $content->text ="Hello Mary";
+
+            $metadata = array();
+            $metadata['queue'] = "myKey";
+
+            $provider = (new ExampleMessageProvider())
+                ->setContents($content)
+                ->setMetadata($metadata);
+
+            return $provider->Build();
+        };
+        
+        $verifier = (new MessageVerifier($config))
+            ->setCallbacks($callbacks)
+            ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
+
+```
 
 ## Usage for the optional `pact-stub-service`
 

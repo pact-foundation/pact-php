@@ -11,7 +11,6 @@ use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Process\Process;
 
 /**
  * Wrapper for the Ruby Standalone Verifier service.
@@ -20,30 +19,39 @@ use Symfony\Component\Process\Process;
 class Verifier
 {
     /** @var int $processTimeout */
-    private $processTimeout = 60;
+    protected $processTimeout = 60;
 
     /** @var int $processIdleTimeout */
-    private $processIdleTimeout = 10;
+    protected $processIdleTimeout = 10;
 
     /** @var VerifierConfigInterface */
-    private $config;
+    protected $config;
 
     /** @var BrokerHttpClientInterface */
-    private $brokerHttpClient;
+    protected $brokerHttpClient;
 
     /** @var InstallManager */
-    private $installManager;
+    protected $installManager;
 
     /** @var ConsoleOutput */
-    private $console;
+    protected $console;
 
-    public function __construct(VerifierConfigInterface $config)
-    {
+    public function __construct(
+        VerifierConfigInterface $config,
+        InstallManager $installManager = null,
+        VerifierProcess $verifierProcess = null,
+        BrokerHttpClient $brokerHttpClient = null
+    ) {
         $this->config             = $config;
-        $this->installManager     = new InstallManager();
+        $this->installManager     = $installManager?: new InstallManager();
         $this->console            = new ConsoleOutput();
+        $this->verifierProcess    = $verifierProcess?: new VerifierProcess($this->installManager, $this->console);
         $this->processTimeout     = $config->getProcessTimeout();
         $this->processIdleTimeout = $config->getProcessIdleTimeout();
+
+        if ($brokerHttpClient) {
+            $this->brokerHttpClient = $brokerHttpClient;
+        }
     }
 
     /**
@@ -154,7 +162,7 @@ class Verifier
      */
     public function verifyAll()
     {
-        $arguments = $this->getBrokerHttpClient()->getAllConsumerUrls($this->config->getProviderName(), $this->config->getProviderVersion());
+        $arguments = $this->getBrokerHttpClient()->getAllConsumerUrls($this->config->getProviderName());
 
         $arguments = \array_merge($arguments, $this->getArguments());
 
@@ -198,30 +206,19 @@ class Verifier
     }
 
     /**
-     * Execute the Pact Verifier Service.
+     * Trigger execution of the Pact Verifier Service.
      *
      * @param array $arguments
      *
      * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
      * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
      */
-    private function verifyAction(array $arguments)
+    protected function verifyAction(array $arguments)
     {
-        $scripts = $this->installManager->install();
-
-        $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
-
-        $process = new Process($arguments, null, null, null, $this->processTimeout);
-        $process->setIdleTimeout($this->processIdleTimeout);
-
-        $this->console->write("Verifying PACT with script {$process->getCommandLine()}");
-
-        $process->mustRun(function ($type, $buffer) {
-            $this->console->write("{$type} > {$buffer}");
-        });
+        $this->verifierProcess->run($arguments, $this->processTimeout, $this->processIdleTimeout);
     }
 
-    private function getBrokerHttpClient(): BrokerHttpClient
+    protected function getBrokerHttpClient(): BrokerHttpClient
     {
         if (!$this->brokerHttpClient) {
             $user = $this->config->getBrokerUsername();
