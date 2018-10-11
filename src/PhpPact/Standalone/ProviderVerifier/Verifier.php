@@ -221,7 +221,7 @@ class Verifier
     protected function getBrokerHttpClient(): BrokerHttpClient
     {
         if (!$this->brokerHttpClient) {
-            $user = $this->config->getBrokerUsername();
+            $user     = $this->config->getBrokerUsername();
             $password = $this->config->getBrokerPassword();
 
             $client = $user && $password ? new GuzzleClient(['auth' => [$user, $password]]) : new GuzzleClient();
