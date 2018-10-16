@@ -2,14 +2,13 @@
 
 namespace PhpPact\Standalone\StubService;
 
+use Amp\Process\Process;
+use Amp\Process\ProcessException;
 use Exception;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
-use PhpPact\Standalone\Runner\ProcessRunner;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 /**
  * Ruby Standalone Stub Server Wrapper
@@ -43,7 +42,7 @@ class StubServer
     /**
      * Start the Stub Server. Verify that it is running.
      *
-     * @throws ProcessFailedException
+     * @throws ProcessException
      * @throws Exception
      *
      * @return int process ID of the started Stub Server
@@ -52,39 +51,38 @@ class StubServer
     {
         $scripts = $this->installManager->install();
 
-        $this->process = ProcessRunner::run($scripts->getStubService(), $this->getArguments());
+        $processId = null;
+        \Amp\Loop::run(function () use ($scripts, &$processId) {
+            $this->process = new Process($scripts->getStubService() . ' ' . \implode(' ', $this->getArguments()));
 
-        $this->process
-            ->setTimeout(600)
-            ->setIdleTimeout(60);
+            $this->console->writeln("Starting the mock service with command {$this->process->getCommand()}");
+            $this->process->start();
 
-        $this->console->writeln("Starting the stub service with command {$this->process->getCommandLine()}");
+            $processId = yield $this->process->getPid();
 
-        $this->process->start(function ($type, $buffer) {
-            if (Process::ERR === $type) {
-                $this->console->write($buffer);
-            } else {
-                $this->console->write($buffer);
+            $stream = $this->process->getStdout();
+            $this->console->write(yield $stream->read());
+
+            if (!$this->process->isRunning()) {
+                throw new ProcessException('Failed to start stub server');
             }
+
+            \Amp\Loop::delay($msDelay = 100, 'Amp\\Loop::stop');
         });
-        \sleep(1);
 
-        if ($this->process->isStarted() !== true || $this->process->isRunning() !== true) {
-            throw new ProcessFailedException($this->process);
-        }
-
-        return $this->process->getPid();
+        return $processId;
     }
 
     /**
      * Stop the Stub Server process.
      *
+     * @throws ProcessException
+     *
      * @return bool Was stopping successful?
      */
     public function stop(): bool
     {
-        $exitCode = $this->process->stop();
-        $this->console->writeln("Process exited with code {$exitCode}.");
+        $this->process->kill();
 
         return true;
     }

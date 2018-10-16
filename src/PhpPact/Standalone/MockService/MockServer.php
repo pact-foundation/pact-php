@@ -2,6 +2,8 @@
 
 namespace PhpPact\Standalone\MockService;
 
+use Amp\Process\Process;
+use Amp\Process\ProcessException;
 use Exception;
 use GuzzleHttp\Exception\ConnectException;
 use PhpPact\Http\GuzzleClient;
@@ -9,11 +11,8 @@ use PhpPact\Standalone\Exception\HealthCheckFailedException;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
-use PhpPact\Standalone\Runner\ProcessRunner;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 /**
  * Ruby Standalone Mock Server Wrapper
@@ -62,7 +61,6 @@ class MockServer
     /**
      * Start the Mock Server. Verify that it is running.
      *
-     * @throws ProcessFailedException
      * @throws Exception
      *
      * @return int process ID of the started Mock Server
@@ -71,40 +69,41 @@ class MockServer
     {
         $scripts = $this->installManager->install();
 
-        $this->process = ProcessRunner::run($scripts->getMockService(), $this->getArguments());
-        $this->process
-            ->setTimeout(600)
-            ->setIdleTimeout(60);
+        $processId = null;
 
-        $this->console->writeln("Starting the mock service with command {$this->process->getCommandLine()}");
+        \Amp\Loop::run(function () use ($scripts, &$processId) {
+            $this->process = new Process($scripts->getMockService() . ' ' . \implode(' ', $this->getArguments()));
 
-        $this->process->start(function ($type, $buffer) {
-            if (Process::ERR === $type) {
-                $this->console->write($buffer);
-            } else {
-                $this->console->write($buffer);
+            $this->console->writeln("Starting the mock service with command {$this->process->getCommand()}");
+            $this->process->start();
+
+            $processId = yield $this->process->getPid();
+
+            $stream = $this->process->getStdout();
+            $this->console->write(yield $stream->read());
+
+            if (!$this->process->isRunning()) {
+                throw new ProcessException('Failed to start mock server');
             }
-        });
-        \sleep(1);
 
-        if ($this->process->isStarted() !== true || $this->process->isRunning() !== true) {
-            throw new ProcessFailedException($this->process);
-        }
+            \Amp\Loop::delay($msDelay = 100, 'Amp\\Loop::stop');
+        });
 
         $this->verifyHealthCheck();
 
-        return $this->process->getPid();
+        return $processId;
     }
 
     /**
      * Stop the Mock Server process.
      *
+     * @throws ProcessException
+     *
      * @return bool Was stopping successful?
      */
     public function stop(): bool
     {
-        $exitCode = $this->process->stop();
-        $this->console->writeln("Process exited with code {$exitCode}.");
+        $this->process->kill();
 
         return true;
     }
