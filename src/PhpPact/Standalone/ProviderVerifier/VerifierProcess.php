@@ -2,10 +2,11 @@
 
 namespace PhpPact\Standalone\ProviderVerifier;
 
+use Amp\Process\Process;
+use Amp\Process\ProcessException;
 use PhpPact\Standalone\Installer\InstallManager;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
-use Symfony\Component\Process\Process;
 
 class VerifierProcess
 {
@@ -45,24 +46,28 @@ class VerifierProcess
     {
         $scripts = $this->installManager->install();
 
-        $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
+        $process = new Process($scripts->getProviderVerifier() . ' ' . \implode(' ', $arguments));
+        $process->start();
 
-        $process = new Process($arguments, null, null, null, $processTimeout);
-        $process->setIdleTimeout($processIdleTimeout);
+        $process->getStdout()->read()->onResolve(function ($error, $value) {
+            $this->output->writeln("out > {$value}");
+        });
+        $process->getStderr()->read()->onResolve(function ($error, $value) {
+            $this->output->writeln("out > {$value}");
+        });
 
-        $cmd = $process->getCommandLine();
+        \Amp\Loop::run(function () use ($process) {
+            yield $process->getPid();
 
-        // handle deps=low requirements
-        if (\is_array($cmd)) {
-            $cmd = \implode(' ', $cmd);
-        }
-
-        $this->output->write("Verifying PACT with script:\n{$cmd}\n\n");
-
-        $process->mustRun(
-            function ($type, $buffer) {
-                $this->output->write("{$type} > {$buffer}");
+            if (!$process->isRunning()) {
+                throw new ProcessException('Failed to start mock server');
             }
-        );
+
+            $this->output->write("Verifying PACT with script:\n{$process->getCommand()}\n\n");
+
+            yield $process->join();
+
+            \Amp\Loop::delay($msDelay = 100, 'Amp\\Loop::stop');
+        });
     }
 }

@@ -2,12 +2,13 @@
 
 namespace Provider;
 
+use Amp\Process\Process;
+use Amp\Process\ProcessException;
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
 use PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
-use PhpPact\Standalone\Runner\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -25,18 +26,22 @@ class PactVerifyTest extends TestCase
     protected function setUp()
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
-        $this->process = ProcessRunner::run('php', ['-S', 'localhost:7202', '-t', $publicPath]);
 
-        print "\n" . $this->process->getCommandLine() . "\n";
+        \Amp\Loop::run(function () use ($publicPath) {
+            $this->process = new Process('php' . ' ' . \implode(' ', ['-S', 'localhost:7202', '-t', $publicPath]));
 
-        $this->process->start(function ($type, $buffer) {
-            print "\n$buffer\n";
+            print "\n" . $this->process->getCommand() . "\n";
+            $this->process->start();
+
+//            $stream = $this->process->getStdout();
+//            print yield $stream->read();
+
+            if (!$this->process->isRunning()) {
+                throw new ProcessException('Failed to start mock server');
+            }
+
+            \Amp\Loop::delay($msDelay = 1000, 'Amp\\Loop::stop');
         });
-        \sleep(1);
-
-        if ($this->process->isStarted() !== true || $this->process->isRunning() !== true) {
-            throw new ProcessFailedException($this->process);
-        }
     }
 
     /**
@@ -44,11 +49,14 @@ class PactVerifyTest extends TestCase
      */
     protected function tearDown()
     {
-        print "\nStopping Process Id: {$this->process->getPid()}\n";
-        $this->process->stop();
+        $this->process->getPid()->onResolve(function ($error, $value) {
+            if ($error) {
+                throw new ProcessException($error);
+            }
 
-        \sleep(1);
-        print "\nProcess Id status: {$this->process->getStatus()}\n";
+            print "\nStopping Process Id: {$this->process->getPid()}\n";
+            $this->process->signal(15);
+        });
     }
 
     /**
