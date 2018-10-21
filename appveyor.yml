@@ -25,6 +25,7 @@ install:
 build: off
 
 test_script:
+  - cmd: php .\composer.phar lint
   - cmd: php .\composer.phar test
 
 on_success:
