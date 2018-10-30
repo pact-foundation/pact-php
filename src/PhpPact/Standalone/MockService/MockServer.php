@@ -112,7 +112,7 @@ class MockServer
 
             print "\nStopping Process Id: {$pid}\n";
             $this->process->signal(15);
-            proc_open("kill -9 $pid", array(2 => array('pipe', 'w')), $pipes);
+            \proc_open("kill -9 $pid", [2 => ['pipe', 'w']], $pipes);
         });
 
         return true;
