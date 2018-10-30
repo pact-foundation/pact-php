@@ -84,6 +84,16 @@ class StubServer
     {
         $this->process->kill();
 
+        $this->process->getPid()->onResolve(function ($error, $pid) {
+            if ($error) {
+                throw new ProcessException($error);
+            }
+
+            print "\nStopping Process Id: {$pid}\n";
+            $this->process->signal(15);
+            proc_open("kill -9 $pid", array(2 => array('pipe', 'w')), $pipes);
+        });
+
         return true;
     }
 
