@@ -28,7 +28,7 @@ class PactVerifyTest extends TestCase
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
 
         \Amp\Loop::run(function () use ($publicPath) {
-            $this->process = new Process('php' . ' ' . \implode(' ', ['-S', 'localhost:7202', '-t', $publicPath]));
+            $this->process = new Process('exec php' . ' ' . \implode(' ', ['-S', 'localhost:7202', '-t', $publicPath]));
 
             print "\n" . $this->process->getCommand() . "\n";
             $this->process->start();
@@ -49,13 +49,15 @@ class PactVerifyTest extends TestCase
      */
     protected function tearDown()
     {
-        $this->process->getPid()->onResolve(function ($error, $value) {
+//        $this->process->signal(15);
+        $this->process->getPid()->onResolve(function ($error, $pid) {
             if ($error) {
                 throw new ProcessException($error);
             }
 
-            print "\nStopping Process Id: {$this->process->getPid()}\n";
+            print "\nStopping Process Id: {$pid}\n";
             $this->process->signal(15);
+            proc_open("kill -9 $pid", array(2 => array('pipe', 'w')), $pipes);
         });
     }
 
