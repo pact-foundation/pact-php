@@ -46,10 +46,11 @@ class PactVerifyTest extends TestCase
 
     /**
      * Stop the web server process once complete.
+     * @throws ProcessException
      */
     protected function tearDown()
     {
-//        $this->process->signal(15);
+        $this->process->signal(15);
         $this->process->getPid()->onResolve(function ($error, $pid) {
             if ($error) {
                 throw new ProcessException($error);
