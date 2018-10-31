@@ -82,8 +82,6 @@ class StubServer
      */
     public function stop(): bool
     {
-        $this->process->kill();
-
         $this->process->getPid()->onResolve(function ($error, $pid) {
             if ($error) {
                 throw new ProcessException($error);
@@ -92,6 +90,8 @@ class StubServer
             print "\nStopping Process Id: {$pid}\n";
             $this->process->signal(15);
             \proc_open("kill -9 $pid", [2 => ['pipe', 'w']], $pipes);
+
+            $this->process->kill();
         });
 
         return true;
