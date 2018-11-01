@@ -59,7 +59,23 @@ class PactVerifyTest extends TestCase
 
             print "\nStopping Process Id: {$pid}\n";
             $this->process->signal(15);
-            \proc_open("kill -9 $pid", [2 => ['pipe', 'w']], $pipes);
+
+            if ('\\' === \DIRECTORY_SEPARATOR) {
+                \exec(\sprintf('taskkill /F /T /PID %d 2>&1', $pid), $output, $exitCode);
+                if ($exitCode) {
+                    throw new ProcessException(\sprintf('Unable to kill the process (%s).', \implode(' ', $output)));
+                }
+            } else {
+                if ($ok = \proc_open("kill -9 $pid", [2 => ['pipe', 'w']], $pipes)) {
+                    $ok = false === \fgets($pipes[2]);
+                }
+
+                if (!$ok) {
+                    throw new ProcessException(\sprintf('Error while killing process "%s".', $pid));
+                }
+            }
+
+            $this->process->kill();
         });
     }
 
