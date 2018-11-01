@@ -103,8 +103,6 @@ class MockServer
      */
     public function stop(): bool
     {
-        $this->process->kill();
-
         $this->process->getPid()->onResolve(function ($error, $pid) {
             if ($error) {
                 throw new ProcessException($error);
