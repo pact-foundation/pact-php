@@ -2,7 +2,6 @@
 
 namespace PhpPact\Standalone\Runner;
 
-use Amp\ByteStream\Payload;
 use Amp\ByteStream\ResourceOutputStream;
 use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
@@ -113,15 +112,15 @@ class ProcessRunner
 
             $this->process->start();
 
+            $this->process->getStdout()->read()->onResolve(function (\Throwable $reason = null, $value) {
+                $this->output .= $value;
+            });
+
+            $this->process->getStderr()->read()->onResolve(function (\Throwable $reason = null, $value) {
+                $this->stderr .= $value;
+            });
+
             if ($blocking) {
-                $payload = new Payload($this->process->getStdout());
-                $output  = yield $payload->buffer();
-                $this->setOutput($output);
-
-                $stderrPayload = new Payload($this->process->getStderr());
-                $this->setStderr(yield $stderrPayload->buffer());
-
-                $logger->debug("Process Output: {$this->getOutput()}");
                 $exitCode = yield $this->process->join();
                 $this->setExitCode($exitCode);
                 $logger->debug("Exit code: {$this->getExitCode()}");

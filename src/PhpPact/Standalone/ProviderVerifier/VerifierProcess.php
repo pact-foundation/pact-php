@@ -51,6 +51,6 @@ class VerifierProcess
         $processRunner->run($blocking = true);
 
         $this->output->writeln('out > ' . $processRunner->getOutput());
-        $this->output->writeln('out > ' . $processRunner->getStderr());
+        $this->output->writeln('err > ' . $processRunner->getStderr());
     }
 }
