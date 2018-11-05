@@ -49,9 +49,10 @@ class StubServer
     {
         $scripts = $this->installManager->install();
 
-        $this->processRunner = new ProcessRunner($scripts->getMockService(), $this->getArguments());
+        $this->processRunner = new ProcessRunner($scripts->getStubService(), $this->getArguments());
 
-        $processId =  $this->processRunner->run();
+        $processId =  $this->processRunner->run($blocking = false);
+        \sleep(1); // wait for server to start
 
         return $processId;
     }
