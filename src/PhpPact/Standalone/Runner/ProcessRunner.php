@@ -16,21 +16,27 @@ use Monolog\Logger;
  */
 class ProcessRunner
 {
+    /** @var Process */
+    private $process;
+
     /** @var string command output */
     private $output;
 
     /** @var int command exit code */
     private $exitCode;
 
-    /**
-     * @var Process
-     */
-    private $process;
+    /** @var string */
+    private $stderr;
 
+    /**
+     * @param string $command
+     * @param array  $arguments
+     */
     public function __construct(string $command, array $arguments)
     {
         $this->exitCode  = -1;
         $this->output    = null;
+        $this->stderr    = null;
         $this->process   = new Process($command . ' ' . \implode(' ', $arguments));
     }
 
@@ -66,6 +72,27 @@ class ProcessRunner
         $this->exitCode = $exitCode;
     }
 
+    public function getCommand(): string
+    {
+        return $this->process->getCommand();
+    }
+
+    /**
+     * @return string
+     */
+    public function getStderr(): string
+    {
+        return $this->stderr;
+    }
+
+    /**
+     * @param string $stderr
+     */
+    public function setStderr(string $stderr): void
+    {
+        $this->stderr = $stderr;
+    }
+
     /**
      * Run the process and set output
      *
@@ -92,6 +119,9 @@ class ProcessRunner
                 $payload = new Payload($self->process->getStdout());
                 $output  = yield $payload->buffer();
                 $self->setOutput($output);
+
+                $stderrPayload = new Payload($self->process->getStderr());
+                $self->setStderr(yield $stderrPayload->buffer());
 
                 $logger->debug("Process Output: {$self->getOutput()}");
                 $exitCode = yield $self->process->join();
