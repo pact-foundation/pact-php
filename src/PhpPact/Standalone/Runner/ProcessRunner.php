@@ -107,26 +107,24 @@ class ProcessRunner
         $logger = new Logger('server');
         $logger->pushHandler($logHandler);
 
-        $self       = &$this; // goofiness to get the output values out
-
         $pid        = null;
-        $lambdaLoop = function () use (&$self, $blocking, $logger, &$pid) {
-            $logger->debug("Process command: {$self->process->getCommand()}");
+        $lambdaLoop = function () use ($blocking, $logger, &$pid) {
+            $logger->debug("Process command: {$this->process->getCommand()}");
 
-            $self->process->start();
+            $this->process->start();
 
             if ($blocking) {
-                $payload = new Payload($self->process->getStdout());
+                $payload = new Payload($this->process->getStdout());
                 $output  = yield $payload->buffer();
-                $self->setOutput($output);
+                $this->setOutput($output);
 
-                $stderrPayload = new Payload($self->process->getStderr());
-                $self->setStderr(yield $stderrPayload->buffer());
+                $stderrPayload = new Payload($this->process->getStderr());
+                $this->setStderr(yield $stderrPayload->buffer());
 
-                $logger->debug("Process Output: {$self->getOutput()}");
-                $exitCode = yield $self->process->join();
-                $self->setExitCode($exitCode);
-                $logger->debug("Exit code: {$self->getExitCode()}");
+                $logger->debug("Process Output: {$this->getOutput()}");
+                $exitCode = yield $this->process->join();
+                $this->setExitCode($exitCode);
+                $logger->debug("Exit code: {$this->getExitCode()}");
             }
 
             $pid = yield $this->process->getPid();
@@ -134,8 +132,8 @@ class ProcessRunner
             Loop::stop();
 
             if ($blocking) {
-                if ($self->getExitCode() !== 0) {
-                    throw new \Exception("PactPHP Process returned non-zero exit code: {$self->getExitCode()}");
+                if ($this->getExitCode() !== 0) {
+                    throw new \Exception("PactPHP Process returned non-zero exit code: {$this->getExitCode()}");
                 }
             }
         };
