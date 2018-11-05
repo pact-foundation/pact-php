@@ -13,7 +13,7 @@ use Monolog\Logger;
 /**
  * Wrapper around Process with Amp
  */
-class AsyncProcessRunner
+class ProcessRunner
 {
     /** @var string command output */
     private $output;
@@ -85,11 +85,12 @@ class AsyncProcessRunner
 
     /**
      * Run the process and set output
+     * @param bool $blocking
      */
-    public function run(): void
+    public function run($blocking = false): void
     {
         $self       = &$this; // goofiness to get the output values out
-        $lambdaLoop = function () use (&$self) {
+        $lambdaLoop = function () use (&$self, $blocking) {
             $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
             $logHandler->setFormatter(new ConsoleFormatter);
             $logger = new Logger('server');
@@ -107,9 +108,11 @@ class AsyncProcessRunner
 
             $logger->debug("Process Output: {$self->getOutput()}");
 
-            $exitCode = yield $process->join();
-            $self->setExitCode($exitCode);
-            $logger->debug("Exit code: {$self->getExitCode()}");
+            if ($blocking) {
+                $exitCode = yield $process->join();
+                $self->setExitCode($exitCode);
+                $logger->debug("Exit code: {$self->getExitCode()}");
+            }
 
             Loop::stop();
             if ($self->getExitCode() !== 0) {
