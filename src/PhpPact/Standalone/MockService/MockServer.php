@@ -2,8 +2,6 @@
 
 namespace PhpPact\Standalone\MockService;
 
-use Amp\Process\Process;
-use Amp\Process\ProcessException;
 use Exception;
 use GuzzleHttp\Exception\ConnectException;
 use PhpPact\Http\GuzzleClient;
@@ -11,6 +9,7 @@ use PhpPact\Standalone\Exception\HealthCheckFailedException;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
+use PhpPact\Standalone\Runner\ProcessRunner;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -26,9 +25,6 @@ class MockServer
     /** @var InstallManager */
     private $installManager;
 
-    /** @var Process */
-    private $process;
-
     /** @var Filesystem */
     private $fileSystem;
 
@@ -37,6 +33,9 @@ class MockServer
 
     /** @var MockServerHttpService */
     private $httpService;
+
+    /** @var ProcessRunner */
+    private $processRunner;
 
     /**
      * MockServer constructor.
@@ -69,25 +68,9 @@ class MockServer
     {
         $scripts = $this->installManager->install();
 
-        $processId = null;
+        $this->processRunner = new ProcessRunner($scripts->getMockService(), $this->getArguments());
 
-        \Amp\Loop::run(function () use ($scripts, &$processId) {
-            $this->process = new Process($scripts->getMockService() . ' ' . \implode(' ', $this->getArguments()));
-
-            $this->console->writeln("Starting the mock service with command {$this->process->getCommand()}");
-            $this->process->start();
-
-            $processId = yield $this->process->getPid();
-
-            $stream = $this->process->getStdout();
-            $this->console->write(yield $stream->read());
-
-            if (!$this->process->isRunning()) {
-                throw new ProcessException('Failed to start mock server');
-            }
-
-            \Amp\Loop::delay($msDelay = 100, 'Amp\\Loop::stop');
-        });
+        $processId =  $this->processRunner->run();
 
         $this->verifyHealthCheck();
 
@@ -97,40 +80,11 @@ class MockServer
     /**
      * Stop the Mock Server process.
      *
-     * @throws ProcessException
-     *
      * @return bool Was stopping successful?
      */
     public function stop(): bool
     {
-        $this->process->getPid()->onResolve(function ($error, $pid) {
-            if ($error) {
-                throw new ProcessException($error);
-            }
-
-            print "\nStopping Process Id: {$pid}\n";
-
-            if ('\\' === \DIRECTORY_SEPARATOR) {
-                \exec(\sprintf('taskkill /F /T /PID %d 2>&1', $pid), $output, $exitCode);
-                if ($exitCode) {
-                    throw new ProcessException(\sprintf('Unable to kill the process (%s).', \implode(' ', $output)));
-                }
-            } else {
-                $this->process->signal(15);
-
-                if ($ok = \proc_open("kill -9 $pid", [2 => ['pipe', 'w']], $pipes)) {
-                    $ok = false === \fgets($pipes[2]);
-                }
-
-                if (!$ok) {
-                    throw new ProcessException(\sprintf('Error while killing process "%s".', $pid));
-                }
-            }
-
-            $this->process->kill();
-        });
-
-        return true;
+        return $this->processRunner->stop();
     }
 
     /**

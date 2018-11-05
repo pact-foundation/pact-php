@@ -70,16 +70,20 @@ class ProcessRunner
      * Run the process and set output
      *
      * @param bool $blocking
+     *
+     * @return int
      */
-    public function run($blocking = false): void
+    public function run($blocking = false): int
     {
-        $self       = &$this; // goofiness to get the output values out
-        $lambdaLoop = function () use (&$self, $blocking) {
-            $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
-            $logHandler->setFormatter(new ConsoleFormatter);
-            $logger = new Logger('server');
-            $logger->pushHandler($logHandler);
+        $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
+        $logHandler->setFormatter(new ConsoleFormatter);
+        $logger = new Logger('server');
+        $logger->pushHandler($logHandler);
 
+        $self       = &$this; // goofiness to get the output values out
+
+        $pid        = null;
+        $lambdaLoop = function () use (&$self, $blocking, $logger, &$pid) {
             $logger->debug("Process command: {$self->process->getCommand()}");
 
             $self->process->start();
@@ -95,6 +99,8 @@ class ProcessRunner
                 $logger->debug("Exit code: {$self->getExitCode()}");
             }
 
+            $pid = yield $this->process->getPid();
+
             Loop::stop();
 
             if ($blocking) {
@@ -105,6 +111,8 @@ class ProcessRunner
         };
 
         Loop::run($lambdaLoop);
+
+        return $pid;
     }
 
     public function stop()
@@ -135,5 +143,7 @@ class ProcessRunner
 
             $this->process->kill();
         });
+
+        return true;
     }
 }
