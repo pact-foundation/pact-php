@@ -8,6 +8,7 @@ use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
 use Amp\Loop;
 use Amp\Process\Process;
+use Amp\Process\ProcessException;
 use Monolog\Logger;
 
 /**
@@ -21,34 +22,16 @@ class ProcessRunner
     /** @var int command exit code */
     private $exitCode;
 
-    /** @var string executable to run */
-    private $command;
-
-    /** @var array arguments for that executable */
-    private $arguments;
+    /**
+     * @var Process
+     */
+    private $process;
 
     public function __construct(string $command, array $arguments)
     {
         $this->exitCode  = -1;
         $this->output    = null;
-        $this->command   = $command;
-        $this->arguments = $arguments;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCommand(): string
-    {
-        return $this->command;
-    }
-
-    /**
-     * @return array
-     */
-    public function getArguments(): array
-    {
-        return $this->arguments;
+        $this->process   = new Process($command . ' ' . \implode(' ', $arguments));
     }
 
     /**
@@ -85,6 +68,7 @@ class ProcessRunner
 
     /**
      * Run the process and set output
+     *
      * @param bool $blocking
      */
     public function run($blocking = false): void
@@ -96,30 +80,60 @@ class ProcessRunner
             $logger = new Logger('server');
             $logger->pushHandler($logHandler);
 
-            $command = $self->getCommand() . ' ' . \implode(' ', $self->getArguments());
-            $logger->debug("Process command: {$command}");
+            $logger->debug("Process command: {$self->process->getCommand()}");
 
-            $process = new Process($command);
-            $process->start();
-
-            $payload = new Payload($process->getStdout());
-            $output  = yield $payload->buffer();
-            $self->setOutput($output);
-
-            $logger->debug("Process Output: {$self->getOutput()}");
+            $self->process->start();
 
             if ($blocking) {
-                $exitCode = yield $process->join();
+                $payload = new Payload($self->process->getStdout());
+                $output  = yield $payload->buffer();
+                $self->setOutput($output);
+
+                $logger->debug("Process Output: {$self->getOutput()}");
+                $exitCode = yield $self->process->join();
                 $self->setExitCode($exitCode);
                 $logger->debug("Exit code: {$self->getExitCode()}");
             }
 
             Loop::stop();
-            if ($self->getExitCode() !== 0) {
-                throw new \Exception("PactPHP Process returned non-zero exit code: {$self->getExitCode()}");
+
+            if ($blocking) {
+                if ($self->getExitCode() !== 0) {
+                    throw new \Exception("PactPHP Process returned non-zero exit code: {$self->getExitCode()}");
+                }
             }
         };
 
         Loop::run($lambdaLoop);
+    }
+
+    public function stop()
+    {
+        $this->process->getPid()->onResolve(function ($error, $pid) {
+            if ($error) {
+                throw new ProcessException($error);
+            }
+
+            print "\nStopping Process Id: {$pid}\n";
+
+            if ('\\' === \DIRECTORY_SEPARATOR) {
+                \exec(\sprintf('taskkill /F /T /PID %d 2>&1', $pid), $output, $exitCode);
+                if ($exitCode) {
+                    throw new ProcessException(\sprintf('Unable to kill the process (%s).', \implode(' ', $output)));
+                }
+            } else {
+                $this->process->signal(15);
+
+                if ($ok = \proc_open("kill -9 $pid", [2 => ['pipe', 'w']], $pipes)) {
+                    $ok = false === \fgets($pipes[2]);
+                }
+
+                if (!$ok) {
+                    throw new ProcessException(\sprintf('Error while killing process "%s".', $pid));
+                }
+            }
+
+            $this->process->kill();
+        });
     }
 }

@@ -2,13 +2,12 @@
 
 namespace Provider;
 
-use Amp\Process\Process;
-use Amp\Process\ProcessException;
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
 use PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
+use PhpPact\Standalone\Runner\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,8 +16,8 @@ use PHPUnit\Framework\TestCase;
  */
 class PactVerifyTest extends TestCase
 {
-    /** @var Process */
-    private $process;
+    /** @var ProcessRunner */
+    private $processRunner;
 
     /**
      * Run the PHP build-in web server.
@@ -27,56 +26,17 @@ class PactVerifyTest extends TestCase
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
 
-        \Amp\Loop::run(function () use ($publicPath) {
-            $this->process = new Process('exec php' . ' ' . \implode(' ', ['-S', 'localhost:7202', '-t', $publicPath]));
+        $this->processRunner = new ProcessRunner('exec php', ['-S', 'localhost:7202', '-t', $publicPath]);
 
-            print "\n" . $this->process->getCommand() . "\n";
-            $this->process->start();
-
-//            $stream = $this->process->getStdout();
-//            print yield $stream->read();
-
-            if (!$this->process->isRunning()) {
-                throw new ProcessException('Failed to start mock server');
-            }
-
-            \Amp\Loop::delay($msDelay = 1000, 'Amp\\Loop::stop');
-        });
+        $this->processRunner->run();
     }
 
     /**
      * Stop the web server process once complete.
-     *
-     * @throws ProcessException
      */
     protected function tearDown()
     {
-        $this->process->getPid()->onResolve(function ($error, $pid) {
-            if ($error) {
-                throw new ProcessException($error);
-            }
-
-            print "\nStopping Process Id: {$pid}\n";
-
-            if ('\\' === \DIRECTORY_SEPARATOR) {
-                \exec(\sprintf('taskkill /F /T /PID %d 2>&1', $pid), $output, $exitCode);
-                if ($exitCode) {
-                    throw new ProcessException(\sprintf('Unable to kill the process (%s).', \implode(' ', $output)));
-                }
-            } else {
-                $this->process->signal(15);
-
-                if ($ok = \proc_open("kill -9 $pid", [2 => ['pipe', 'w']], $pipes)) {
-                    $ok = false === \fgets($pipes[2]);
-                }
-
-                if (!$ok) {
-                    throw new ProcessException(\sprintf('Error while killing process "%s".', $pid));
-                }
-            }
-
-            $this->process->kill();
-        });
+        $this->processRunner->stop();
     }
 
     /**
