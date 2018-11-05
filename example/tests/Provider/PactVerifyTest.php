@@ -26,7 +26,7 @@ class PactVerifyTest extends TestCase
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
 
-        $this->processRunner = new ProcessRunner('exec php', ['-S', 'localhost:7202', '-t', $publicPath]);
+        $this->processRunner = new ProcessRunner('php', ['-S', 'localhost:7202', '-t', $publicPath]);
 
         $this->processRunner->run();
     }
