@@ -11,7 +11,7 @@ use PhpPact\Standalone\Runner\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 
 /**
- * This is an example on how you could use the Symfony Process library to start your API to run PACT verification against a Provider.
+ * This is an example on how you could use the included amphp/process wrapper to start your API to run PACT verification against a Provider.
  * Class PactVerifyTest
  */
 class PactVerifyTest extends TestCase
