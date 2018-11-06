@@ -51,7 +51,7 @@ class StubServer
 
         $this->processRunner = new ProcessRunner($scripts->getStubService(), $this->getArguments());
 
-        $processId =  $this->processRunner->run($blocking = false);
+        $processId =  $this->processRunner->run();
         \sleep(1); // wait for server to start
 
         return $processId;

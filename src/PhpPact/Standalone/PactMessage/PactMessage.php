@@ -43,7 +43,7 @@ class PactMessage
         $json    = \json_encode($pact);
         $process = new ProcessRunner($scripts->getPactMessage(), ['reify', "'" . $json . "'"]);
 
-        $process->run($blocking = true);
+        $process->runBlocking();
 
         $output = $process->getOutput();
         \preg_replace("/\r|\n/", '', $output);
@@ -76,7 +76,7 @@ class PactMessage
         $arguments[] = "'" . $pactJson . "'";
 
         $process = new ProcessRunner($scripts->getPactMessage(), $arguments);
-        $process->run($blocking = true);
+        $process->runBlocking();
 
         \sleep(1);
 

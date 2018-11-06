@@ -93,11 +93,19 @@ class ProcessRunner
     }
 
     /**
+     * Run a blocking, synchronous process
+     */
+    public function runBlocking(): int
+    {
+        return $this->run(true);
+    }
+
+    /**
      * Run the process and set output
      *
      * @param bool $blocking
      *
-     * @return int
+     * @return int Process Id
      */
     public function run($blocking = false): int
     {
@@ -142,7 +150,12 @@ class ProcessRunner
         return $pid;
     }
 
-    public function stop()
+    /**
+     * Stop the running process
+     *
+     * @return bool
+     */
+    public function stop(): bool
     {
         $this->process->getPid()->onResolve(function ($error, $pid) {
             if ($error) {

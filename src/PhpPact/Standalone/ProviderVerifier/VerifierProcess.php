@@ -48,7 +48,7 @@ class VerifierProcess
         $processRunner = new ProcessRunner($scripts->getProviderVerifier(), $arguments);
 
         $this->output->write("Verifying PACT with script:\n{$processRunner->getCommand()}\n\n");
-        $processRunner->run($blocking = true);
+        $processRunner->runBlocking();
 
         $this->output->writeln('out > ' . $processRunner->getOutput());
         $this->output->writeln('err > ' . $processRunner->getStderr());
