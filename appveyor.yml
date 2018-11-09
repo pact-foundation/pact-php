@@ -25,6 +25,7 @@ install:
 build: off
 
 test_script:
+  - cmd: php .\vendor\bin\php-cs-fixer.phar fix --config .php_cs --dry-run
   - cmd: php .\composer.phar test
 
 on_success:
