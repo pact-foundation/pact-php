@@ -20,7 +20,6 @@
     "require": {
         "php": "^7.1",
         "ext-openssl": "*",
-        "symfony/process": "^3.3 || ^4.0",
         "symfony/filesystem": "^2.8 || ^3.0 || ^4.0",
         "composer/semver": "1.4.2",
         "guzzlehttp/guzzle": "^6.3",

@@ -8,8 +8,6 @@ use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\Runner\ProcessRunner;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 /**
  * Ruby Standalone Stub Server Wrapper
@@ -23,14 +21,14 @@ class StubServer
     /** @var InstallManager */
     private $installManager;
 
-    /** @var Process */
-    private $process;
-
     /** @var Filesystem */
     private $fileSystem;
 
     /** @var ConsoleOutput */
     private $console;
+
+    /** @var ProcessRunner */
+    private $processRunner;
 
     public function __construct(StubServerConfigInterface $config)
     {
@@ -43,7 +41,6 @@ class StubServer
     /**
      * Start the Stub Server. Verify that it is running.
      *
-     * @throws ProcessFailedException
      * @throws Exception
      *
      * @return int process ID of the started Stub Server
@@ -52,28 +49,12 @@ class StubServer
     {
         $scripts = $this->installManager->install();
 
-        $this->process = ProcessRunner::run($scripts->getStubService(), $this->getArguments());
+        $this->processRunner = new ProcessRunner($scripts->getStubService(), $this->getArguments());
 
-        $this->process
-            ->setTimeout(600)
-            ->setIdleTimeout(60);
+        $processId =  $this->processRunner->run();
+        \sleep(1); // wait for server to start
 
-        $this->console->writeln("Starting the stub service with command {$this->process->getCommandLine()}");
-
-        $this->process->start(function ($type, $buffer) {
-            if (Process::ERR === $type) {
-                $this->console->write($buffer);
-            } else {
-                $this->console->write($buffer);
-            }
-        });
-        \sleep(1);
-
-        if ($this->process->isStarted() !== true || $this->process->isRunning() !== true) {
-            throw new ProcessFailedException($this->process);
-        }
-
-        return $this->process->getPid();
+        return $processId;
     }
 
     /**
@@ -83,10 +64,7 @@ class StubServer
      */
     public function stop(): bool
     {
-        $exitCode = $this->process->stop();
-        $this->console->writeln("Process exited with code {$exitCode}.");
-
-        return true;
+        return $this->processRunner->stop();
     }
 
     /**

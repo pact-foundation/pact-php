@@ -11,13 +11,13 @@ use PhpPact\Standalone\Runner\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 
 /**
- * This is an example on how you could use the Symfony Process library to start your API to run PACT verification against a Provider.
+ * This is an example on how you could use the included amphp/process wrapper to start your API to run PACT verification against a Provider.
  * Class PactVerifyTest
  */
 class PactVerifyTest extends TestCase
 {
-    /** @var Process */
-    private $process;
+    /** @var ProcessRunner */
+    private $processRunner;
 
     /**
      * Run the PHP build-in web server.
@@ -25,18 +25,10 @@ class PactVerifyTest extends TestCase
     protected function setUp()
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
-        $this->process = ProcessRunner::run('php', ['-S', 'localhost:7202', '-t', $publicPath]);
 
-        print "\n" . $this->process->getCommandLine() . "\n";
+        $this->processRunner = new ProcessRunner('php', ['-S', 'localhost:7202', '-t', $publicPath]);
 
-        $this->process->start(function ($type, $buffer) {
-            print "\n$buffer\n";
-        });
-        \sleep(1);
-
-        if ($this->process->isStarted() !== true || $this->process->isRunning() !== true) {
-            throw new ProcessFailedException($this->process);
-        }
+        $this->processRunner->run();
     }
 
     /**
@@ -44,11 +36,7 @@ class PactVerifyTest extends TestCase
      */
     protected function tearDown()
     {
-        print "\nStopping Process Id: {$this->process->getPid()}\n";
-        $this->process->stop();
-
-        \sleep(1);
-        print "\nProcess Id status: {$this->process->getStatus()}\n";
+        $this->processRunner->stop();
     }
 
     /**
