@@ -111,6 +111,10 @@ class PactTestListener implements TestListener
                     ];
                 }
 
+                if (($sslVerify = \getenv('PACT_BROKER_SSL_VERIFY'))) {
+                    $clientConfig['verify'] = $sslVerify !== 'no';
+                }
+
                 $client = new GuzzleClient($clientConfig);
 
                 $brokerHttpService = new BrokerHttpClient($client, new Uri($pactBrokerUri));
