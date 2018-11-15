@@ -79,7 +79,7 @@ class InstallManager
      */
     public static function uninstall()
     {
-        self::delTree(self::$destinationDir . DIRECTORY_SEPARATOR . 'pact');
+        yield \Amp\File\rmdir(self::$destinationDir . DIRECTORY_SEPARATOR . 'pact');
     }
 
     /**
