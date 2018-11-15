@@ -40,7 +40,7 @@ Table of contents
 
 ## Versions
 
-Master adds preliminary support for async messages and pact specification 3.X.  This is incomplete and a preview.
+5.X adds preliminary support for async messages and pact specification 3.X.  This does not yet support the full pact specification 3.X as the backend implementations are incomplete. However, pact-messages are supported.
 
 The 4.X tags are accompany changes in PHPUnit 7.X which requires a PHP 7.1 or higher.  Thus, 4.X drops support for PHP 7.0.  
 
