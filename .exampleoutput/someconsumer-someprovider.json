@@ -1,0 +1,61 @@
+{
+  "consumer": {
+    "name": "someConsumer"
+  },
+  "provider": {
+    "name": "someProvider"
+  },
+  "interactions": [
+    {
+      "description": "A get request to /goodbye/{name}",
+      "providerState": "Get Goodbye",
+      "request": {
+        "method": "GET",
+        "path": "/goodbye/Bob",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json;charset=utf-8"
+        },
+        "body": {
+          "message": "Goodbye, Bob"
+        }
+      }
+    },
+    {
+      "description": "A get request to /hello/{name}",
+      "providerState": "Get Hello",
+      "request": {
+        "method": "GET",
+        "path": "/hello/Bob",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json;charset=utf-8"
+        },
+        "body": {
+          "message": "Hello, Bob"
+        },
+        "matchingRules": {
+          "$.body.message": {
+            "match": "regex",
+            "regex": "(Hello, )[A-Za-z]"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}

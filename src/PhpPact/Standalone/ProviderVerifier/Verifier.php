@@ -10,7 +10,6 @@ use PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Wrapper for the Ruby Standalone Verifier service.
@@ -33,9 +32,6 @@ class Verifier
     /** @var InstallManager */
     protected $installManager;
 
-    /** @var ConsoleOutput */
-    protected $console;
-
     public function __construct(
         VerifierConfigInterface $config,
         InstallManager $installManager = null,
@@ -44,8 +40,7 @@ class Verifier
     ) {
         $this->config             = $config;
         $this->installManager     = $installManager?: new InstallManager();
-        $this->console            = new ConsoleOutput();
-        $this->verifierProcess    = $verifierProcess?: new VerifierProcess($this->installManager, $this->console);
+        $this->verifierProcess    = $verifierProcess?: new VerifierProcess($this->installManager);
         $this->processTimeout     = $config->getProcessTimeout();
         $this->processIdleTimeout = $config->getProcessIdleTimeout();
 
