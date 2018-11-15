@@ -6,8 +6,6 @@ use Exception;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\Runner\ProcessRunner;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Ruby Standalone Stub Server Wrapper
@@ -21,11 +19,6 @@ class StubServer
     /** @var InstallManager */
     private $installManager;
 
-    /** @var Filesystem */
-    private $fileSystem;
-
-    /** @var ConsoleOutput */
-    private $console;
 
     /** @var ProcessRunner */
     private $processRunner;
@@ -34,8 +27,6 @@ class StubServer
     {
         $this->config         = $config;
         $this->installManager = new InstallManager();
-        $this->fileSystem     = new Filesystem();
-        $this->console        = new ConsoleOutput();
     }
 
     /**

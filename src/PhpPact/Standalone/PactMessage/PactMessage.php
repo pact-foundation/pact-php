@@ -11,14 +11,6 @@ class PactMessage
     /** @var InstallManager */
     private $installManager;
 
-    /** @var Process */
-    private $process;
-
-    /** @var Filesystem */
-    private $fileSystem;
-
-    /** @var ConsoleOutput */
-    private $console;
 
     public function __construct()
     {

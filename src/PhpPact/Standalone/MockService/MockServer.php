@@ -10,8 +10,6 @@ use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 use PhpPact\Standalone\Runner\ProcessRunner;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Ruby Standalone Mock Server Wrapper
@@ -24,13 +22,7 @@ class MockServer
 
     /** @var InstallManager */
     private $installManager;
-
-    /** @var Filesystem */
-    private $fileSystem;
-
-    /** @var ConsoleOutput */
-    private $console;
-
+   
     /** @var MockServerHttpService */
     private $httpService;
 
@@ -47,9 +39,7 @@ class MockServer
     {
         $this->config         = $config;
         $this->installManager = new InstallManager();
-        $this->fileSystem     = new Filesystem();
-        $this->console        = new ConsoleOutput();
-
+        
         if (!$httpService) {
             $this->httpService = new MockServerHttpService(new GuzzleClient(), $this->config);
         } else {
