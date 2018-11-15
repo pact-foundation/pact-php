@@ -82,7 +82,6 @@ class InstallManager
         yield \Amp\File\rmdir(self::$destinationDir . DIRECTORY_SEPARATOR . 'pact');
     }
 
-
     /**
      * Get the first downloader that meets the systems eligibility.
      *
