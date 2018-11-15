@@ -82,25 +82,6 @@ class InstallManager
         yield \Amp\File\rmdir(self::$destinationDir . DIRECTORY_SEPARATOR . 'pact');
     }
 
-    /**
-     * Simple recrusive
-     *
-     * @link http://php.net/manual/en/function.rmdir.php#114183
-     *
-     * @param unknown $dir
-     *
-     * @return bool
-     */
-    public static function delTree($dir)
-    {
-        $files = \array_diff(\scandir($dir), ['.', '..']);
-        foreach ($files as $file) {
-            $fullPath = $dir . DIRECTORY_SEPARATOR . $file;
-            (\is_dir($fullPath) && !\is_link($dir)) ? self::delTree($fullPath) : \unlink($fullPath);
-        }
-
-        return \rmdir($dir);
-    }
 
     /**
      * Get the first downloader that meets the systems eligibility.
