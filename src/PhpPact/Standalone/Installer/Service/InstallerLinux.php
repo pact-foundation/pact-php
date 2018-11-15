@@ -4,7 +4,6 @@ namespace PhpPact\Standalone\Installer\Service;
 
 use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
 use PhpPact\Standalone\Installer\Model\Scripts;
-use Symfony\Component\Filesystem\Filesystem;
 
 class InstallerLinux implements InstallerInterface
 {
@@ -23,9 +22,7 @@ class InstallerLinux implements InstallerInterface
      */
     public function install(string $destinationDir): Scripts
     {
-        $fs = new Filesystem();
-
-        if ($fs->exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
+        if (\file_exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
             $fileName     = 'pact-' . self::VERSION . '-linux-x86_64.tar.gz';
             $tempFilePath = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
 
@@ -100,8 +97,7 @@ class InstallerLinux implements InstallerInterface
      */
     private function deleteCompressed(string $filePath): self
     {
-        $fs = new Filesystem();
-        $fs->remove($filePath);
+        \unlink($filePath);
 
         return $this;
     }
