@@ -11,7 +11,6 @@ class PactMessage
     /** @var InstallManager */
     private $installManager;
 
-
     public function __construct()
     {
         $this->installManager = new InstallManager();

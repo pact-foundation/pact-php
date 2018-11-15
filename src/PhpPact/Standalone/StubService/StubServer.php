@@ -19,7 +19,6 @@ class StubServer
     /** @var InstallManager */
     private $installManager;
 
-
     /** @var ProcessRunner */
     private $processRunner;
 

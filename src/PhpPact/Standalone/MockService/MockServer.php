@@ -22,7 +22,7 @@ class MockServer
 
     /** @var InstallManager */
     private $installManager;
-   
+
     /** @var MockServerHttpService */
     private $httpService;
 
@@ -39,7 +39,7 @@ class MockServer
     {
         $this->config         = $config;
         $this->installManager = new InstallManager();
-        
+
         if (!$httpService) {
             $this->httpService = new MockServerHttpService(new GuzzleClient(), $this->config);
         } else {
