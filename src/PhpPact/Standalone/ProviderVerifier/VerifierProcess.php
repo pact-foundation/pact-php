@@ -2,10 +2,12 @@
 
 namespace PhpPact\Standalone\ProviderVerifier;
 
+use Amp\ByteStream\ResourceOutputStream;
+use Amp\Log\ConsoleFormatter;
+use Amp\Log\StreamHandler;
+use Monolog\Logger;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Runner\ProcessRunner;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
 
 class VerifierProcess
 {
@@ -15,20 +17,13 @@ class VerifierProcess
     private $installManager;
 
     /**
-     * @var ConsoleOutput
-     */
-    private $output;
-
-    /**
      * VerifierProcess constructor.
      *
-     * @param null|InstallManager         $installManager
-     * @param null|ConsoleOutputInterface $output
+     * @param null|InstallManager $installManager
      */
-    public function __construct(InstallManager $installManager, ConsoleOutputInterface $output)
+    public function __construct(InstallManager $installManager)
     {
         $this->installManager = $installManager;
-        $this->output         = $output;
     }
 
     /**
@@ -47,10 +42,15 @@ class VerifierProcess
 
         $processRunner = new ProcessRunner($scripts->getProviderVerifier(), $arguments);
 
-        $this->output->write("Verifying PACT with script:\n{$processRunner->getCommand()}\n\n");
+        $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
+        $logHandler->setFormatter(new ConsoleFormatter);
+        $logger = new Logger('console');
+        $logger->pushHandler($logHandler);
+
+        $logger->addInfo("Verifying PACT with script:\n{$processRunner->getCommand()}\n\n");
         $processRunner->runBlocking();
 
-        $this->output->writeln('out > ' . $processRunner->getOutput());
-        $this->output->writeln('err > ' . $processRunner->getStderr());
+        $logger->addInfo('out > ' . $processRunner->getOutput());
+        $logger->addError('err > ' . $processRunner->getStderr());
     }
 }
