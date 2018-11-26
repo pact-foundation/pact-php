@@ -204,6 +204,10 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
      */
     public function setPactDir($pactDir): PactConfigInterface
     {
+        if ('\\' !== \DIRECTORY_SEPARATOR) {
+            $pactDir = \str_replace('\\', \DIRECTORY_SEPARATOR, $pactDir);
+        }
+
         $this->pactDir = $pactDir;
 
         return $this;
