@@ -3,6 +3,9 @@
 namespace PhpPact\Consumer;
 
 use GuzzleHttp\Exception\ConnectException;
+use PhpPact\Consumer\Model\ConsumerRequest;
+use PhpPact\Consumer\Model\ProviderResponse;
+use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Exception\HealthCheckFailedException;
 use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PhpPact\Standalone\MockService\MockServer;
@@ -64,5 +67,70 @@ class MockServerTest extends TestCase
             $mockServer->stop();
             \putenv('PACT_MOCK_SERVER_HEALTH_CHECK_TIMEOUT=' . $orig);
         }
+    }
+
+    /**
+     *	Test that the mock server writes to the appropriate location if getPactJson is not called
+     */
+    public function testFileWrittenWithGracefulExit()
+    {
+        // build and start the mock server
+        $mockServerConfig = new MockServerEnvConfig();
+        $mockServerConfig->setConsumer('gracefultest');
+        $mockServerConfig->setPort('7203');
+
+        // delete original file if it exists
+        $filePath = $mockServerConfig->getPactDir() . \strtolower($mockServerConfig->getConsumer()) . '-' . \strtolower($mockServerConfig->getProvider()) . '.json';
+        if (\file_exists($filePath)) {
+            \unlink($filePath);
+        }
+
+        // start the server
+        $mockServer = new MockServer($mockServerConfig);
+        $pid        = $mockServer->start();
+
+        // build the expected consumer request / provider response
+        $path    = '/gracefullyWrite';
+        $request = new ConsumerRequest();
+        $request
+            ->setMethod('GET')
+            ->setPath($path)
+            ->addHeader('Content-Type', 'application/json');
+
+        $body         = new \stdClass();
+        $body->results= 'write me';
+
+        $response = new ProviderResponse();
+        $response
+            ->setStatus(200)
+            ->addHeader('Content-Type', 'application/json')
+            ->setBody($body);
+
+        // build up the expected results and appropriate responses
+        $mockService = new InteractionBuilder($mockServerConfig);
+        $mockService->given('Graceful Test')
+            ->uponReceiving('A GET request to return JSON')
+            ->with($request)
+            ->willRespondWith($response);
+
+        $httpClient = new GuzzleClient();
+        $uri        = $mockServerConfig->getBaseUri();
+        $uri        = $uri->withPath($path);
+        $httpResponse   = $httpClient->get($uri, [
+            'headers' => ['Content-Type' => 'application/json']
+        ]);
+
+        $mockService->verify();
+
+        // run the veritfy interactions
+        $httpService = new MockServerHttpService(new GuzzleClient(), $mockServerConfig);
+        $httpService->verifyInteractions();
+        
+        $result = $mockServer->stop();
+        $this->assertTrue($result);
+        
+        $this->assertTrue(\file_exists($filePath), 'expect the pact to have been written without calling getPactJson');
+        
+       
     }
 }

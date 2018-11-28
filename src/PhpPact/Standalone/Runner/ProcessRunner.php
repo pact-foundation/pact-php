@@ -172,7 +172,7 @@ class ProcessRunner
             } else {
                 $this->process->signal(15);
 
-                if ($ok = \proc_open("kill -9 $pid", [2 => ['pipe', 'w']], $pipes)) {
+                if ($ok = \proc_open("kill $pid", [2 => ['pipe', 'w']], $pipes)) {
                     $ok = false === \fgets($pipes[2]);
                 }
 
