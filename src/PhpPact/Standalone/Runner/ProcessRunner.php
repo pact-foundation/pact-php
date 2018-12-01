@@ -136,13 +136,13 @@ class ProcessRunner
 
             $pid = yield $this->process->getPid();
 
-            Loop::stop();
-
             if ($blocking) {
                 if ($this->getExitCode() !== 0) {
                     throw new \Exception("PactPHP Process returned non-zero exit code: {$this->getExitCode()}");
                 }
             }
+
+            Loop::stop();
         };
 
         Loop::run($lambdaLoop);
@@ -172,7 +172,7 @@ class ProcessRunner
             } else {
                 $this->process->signal(15);
 
-                if ($ok = \proc_open("kill -9 $pid", [2 => ['pipe', 'w']], $pipes)) {
+                if ($ok = \proc_open("kill $pid", [2 => ['pipe', 'w']], $pipes)) {
                     $ok = false === \fgets($pipes[2]);
                 }
 
