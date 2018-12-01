@@ -3,9 +3,6 @@
 namespace PhpPact\Consumer;
 
 use GuzzleHttp\Exception\ConnectException;
-use PhpPact\Consumer\Model\ConsumerRequest;
-use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Exception\HealthCheckFailedException;
 use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PhpPact\Standalone\MockService\MockServer;

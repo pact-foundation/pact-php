@@ -162,12 +162,12 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
     /**
      * Wrapper for getPactJson to force the Ruby server to write the pact file to disk
-     * 
-     * If the Pact-PHP does not gracefully kill the Ruby Server, it will not write the   
-     * file to disk.  This enables a work around. 
+     *
+     * If the Pact-PHP does not gracefully kill the Ruby Server, it will not write the
+     * file to disk.  This enables a work around.
      */
     public function writePact(): string
     {
-	return $this->getPactJson();
+        return $this->getPactJson();
     }
 }
