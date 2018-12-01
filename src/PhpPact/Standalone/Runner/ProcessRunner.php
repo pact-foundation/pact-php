@@ -136,13 +136,13 @@ class ProcessRunner
 
             $pid = yield $this->process->getPid();
 
-            Loop::stop();
-
             if ($blocking) {
                 if ($this->getExitCode() !== 0) {
                     throw new \Exception("PactPHP Process returned non-zero exit code: {$this->getExitCode()}");
                 }
             }
+
+            Loop::stop();
         };
 
         Loop::run($lambdaLoop);
