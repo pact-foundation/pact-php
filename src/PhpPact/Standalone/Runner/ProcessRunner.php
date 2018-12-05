@@ -58,7 +58,7 @@ class ProcessRunner
     /**
      * @return int
      */
-    public function getExitCode(): ?int
+    public function getExitCode(): int
     {
         return $this->exitCode;
     }
