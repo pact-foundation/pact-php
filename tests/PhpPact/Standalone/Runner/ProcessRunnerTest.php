@@ -21,8 +21,8 @@ class ProcessRunnerTest extends TestCase
 
         $exitCode = $p->getExitCode();
         $this->assertEquals($exitCode, 0, 'Expect the exit code to be 0');
-        //$this->assertTrue((\stripos($p->getOutput(), 'total') !== false), "Expect 'total' to be in the output");
-        $this->assertEquals($p->getStderr(), null, 'Expect no std err');
+        $this->assertTrue((\stripos($p->getOutput(), 'total') !== false), "Expect 'total' to be in the output");
+        //$this->assertEquals($p->getStderr(), null, 'Expect no std err');
 
         // try an app that does not exists
         $p = new ProcessRunner('failedApp', []);
