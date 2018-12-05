@@ -12,9 +12,11 @@ class ProcessRunnerTest extends TestCase
     public function testBlockingProcess()
     {
         if ('\\' !== \DIRECTORY_SEPARATOR) {
-            $p = new ProcessRunner('ls', ['-alt']);
+            $p              = new ProcessRunner('ls', ['-alt']);
+            $expectedOutput = 'total';
         } else {
-            $p = new ProcessRunner('dir', []);
+            $p              = new ProcessRunner('dir', []);
+            $expectedOutput = 'pact';
         }
 
         $p->runBlocking();
@@ -22,7 +24,7 @@ class ProcessRunnerTest extends TestCase
         $exitCode = $p->getExitCode();
         $this->assertEquals($exitCode, 0, 'Expect the exit code to be 0');
         print "\n***************** \n" . \print_r($p->getOutput(), true) . "\n***************** \n";
-        $this->assertTrue((\stripos($p->getOutput(), 'total') !== false), "Expect 'total' to be in the output");
+        $this->assertTrue((\stripos($p->getOutput(), $expectedOutput) !== false), "Expect '{$expectedOutput}' to be in the output");
         //$this->assertEquals($p->getStderr(), null, 'Expect no std err');
 
         // try an app that does not exists
