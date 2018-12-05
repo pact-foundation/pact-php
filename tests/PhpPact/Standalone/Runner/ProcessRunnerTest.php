@@ -14,9 +14,11 @@ class ProcessRunnerTest extends TestCase
         if ('\\' !== \DIRECTORY_SEPARATOR) {
             $p              = new ProcessRunner('ls', ['-alt']);
             $expectedOutput = 'total';
+            $expectedErr    = 'failedApp';
         } else {
             $p              = new ProcessRunner('dir', []);
             $expectedOutput = 'pact';
+            $expectedErr    = 'failedApp';
         }
 
         $p->runBlocking();
@@ -39,6 +41,6 @@ class ProcessRunnerTest extends TestCase
         //$this->assertEquals($p->getOutput(), null, 'Expect no output');
         print "\n*****************- \n" . \print_r($p->getStderr(), true) . "\n***************** \n";
 
-        $this->assertTrue((\stripos($p->getStderr(), 'failedApp') !== false), "Expect 'failedApp' to be in the stderr");
+        $this->assertTrue((\stripos($p->getStderr(), $expectedErr) !== false), "Expect '{$expectedErr}' to be in the stderr");
     }
 }
