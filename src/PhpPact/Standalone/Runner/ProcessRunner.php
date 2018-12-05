@@ -42,7 +42,7 @@ class ProcessRunner
     /**
      * @return string
      */
-    public function getOutput(): ?string
+    public function getOutput(): string
     {
         return $this->output;
     }
@@ -79,7 +79,7 @@ class ProcessRunner
     /**
      * @return string
      */
-    public function getStderr(): ?string
+    public function getStderr(): string
     {
         return $this->stderr;
     }
