@@ -23,7 +23,6 @@ class ProcessRunnerTest extends TestCase
 
         $exitCode = $p->getExitCode();
         $this->assertEquals($exitCode, 0, 'Expect the exit code to be 0');
-        print "\n***************** \n" . \print_r($p->getOutput(), true) . "\n***************** \n";
         $this->assertTrue((\stripos($p->getOutput(), $expectedOutput) !== false), "Expect '{$expectedOutput}' to be in the output");
         //$this->assertEquals($p->getStderr(), null, 'Expect no std err');
 
@@ -38,6 +37,8 @@ class ProcessRunnerTest extends TestCase
         $exitCode = $p->getExitCode();
         $this->assertNotEquals($exitCode, 0, 'Expect the exit code to be non-zero: ' . $exitCode);
         //$this->assertEquals($p->getOutput(), null, 'Expect no output');
+        print "\n*****************- \n" . \print_r($p->getStderr(), true) . "\n***************** \n";
+
         $this->assertTrue((\stripos($p->getStderr(), 'failedApp') !== false), "Expect 'failedApp' to be in the stderr");
     }
 }
