@@ -103,8 +103,8 @@ class PactTestListener implements TestListener
                 print 'PACT_CONSUMER_TAG environment variable was not set. Skipping PACT file upload.';
             } else {
                 $clientConfig = [];
-                if (!($user = \getenv('PACT_BROKER_HTTP_AUTH_USER')) &&
-                    !($pass = \getenv('PACT_BROKER_HTTP_AUTH_PASS'))
+                if (($user = \getenv('PACT_BROKER_HTTP_AUTH_USER')) &&
+                    ($pass = \getenv('PACT_BROKER_HTTP_AUTH_PASS'))
                 ) {
                     $clientConfig = [
                         'auth' => [$user, $pass],
