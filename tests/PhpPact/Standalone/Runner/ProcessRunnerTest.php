@@ -22,14 +22,19 @@ class ProcessRunnerTest extends TestCase
         }
 
         $p->runBlocking();
-
         $exitCode = $p->getExitCode();
+
         $this->assertEquals($exitCode, 0, 'Expect the exit code to be 0');
         $this->assertTrue((\stripos($p->getOutput(), $expectedOutput) !== false), "Expect '{$expectedOutput}' to be in the output");
-        //$this->assertEquals($p->getStderr(), null, 'Expect no std err');
 
         // try an app that does not exists
-        $p = new ProcessRunner('failedApp', []);
+        if ('\\' !== \DIRECTORY_SEPARATOR) {
+            $p              = new ProcessRunner('failedApp', []);
+            $expectedErr    = 'failedApp';
+        } else {
+            $p              = new ProcessRunner('dir', ['failed.xx']);
+            $expectedErr    = 'failed.xx';
+        }
 
         try {
             $p->runBlocking();
@@ -37,10 +42,8 @@ class ProcessRunnerTest extends TestCase
         }
 
         $exitCode = $p->getExitCode();
-        $this->assertNotEquals($exitCode, 0, 'Expect the exit code to be non-zero: ' . $exitCode);
-        //$this->assertEquals($p->getOutput(), null, 'Expect no output');
-        print "\n*****************- \n" . \print_r($p->getStderr(), true) . "\n***************** \n";
 
+        $this->assertNotEquals($exitCode, 0, 'Expect the exit code to be non-zero: ' . $exitCode);
         $this->assertTrue((\stripos($p->getStderr(), $expectedErr) !== false), "Expect '{$expectedErr}' to be in the stderr");
     }
 }
