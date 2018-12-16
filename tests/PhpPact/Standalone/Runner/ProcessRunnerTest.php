@@ -26,6 +26,7 @@ class ProcessRunnerTest extends TestCase
 
         $this->assertEquals($exitCode, 0, 'Expect the exit code to be 0');
         $this->assertTrue((\stripos($p->getOutput(), $expectedOutput) !== false), "Expect '{$expectedOutput}' to be in the output");
+        $this->assertEquals($p->getStderr(), null, 'Expect a null stderr');
 
         // try an app that does not exists
         if ('\\' !== \DIRECTORY_SEPARATOR) {
@@ -44,6 +45,7 @@ class ProcessRunnerTest extends TestCase
         $exitCode = $p->getExitCode();
 
         $this->assertNotEquals($exitCode, 0, 'Expect the exit code to be non-zero: ' . $exitCode);
+        $this->assertEquals($p->getOutput(), null, 'Expect a null output');
         $this->assertTrue((\stripos($p->getStderr(), $expectedErr) !== false), "Expect '{$expectedErr}' to be in the stderr");
     }
 }
