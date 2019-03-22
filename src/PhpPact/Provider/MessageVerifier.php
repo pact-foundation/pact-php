@@ -13,11 +13,11 @@ use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
 use Amp\Loop;
 use Amp\Process\Process;
+use function Amp\Socket\listen;
 use GuzzleHttp\Psr7\Uri;
 use Monolog\Logger;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
-use function Amp\Socket\listen;
 
 class MessageVerifier extends Verifier
 {

@@ -14,7 +14,7 @@ class Interaction implements \JsonSerializable
     private $description;
 
     /**
-     * @var string
+     * @var null|string
      */
     private $providerState;
 
@@ -49,7 +49,7 @@ class Interaction implements \JsonSerializable
     }
 
     /**
-     * @return string
+     * @return null|string
      */
     public function getProviderState(): ?string
     {
@@ -113,11 +113,19 @@ class Interaction implements \JsonSerializable
      */
     public function jsonSerialize()
     {
+        if ($this->getProviderState()) {
+            return [
+                'description'   => $this->getDescription(),
+                'providerState' => $this->getProviderState(),
+                'request'       => $this->getRequest(),
+                'response'      => $this->getResponse(),
+            ];
+        }
+
         return [
-            'description'   => $this->getDescription(),
-            'providerState' => $this->getProviderState(),
-            'request'       => $this->getRequest(),
-            'response'      => $this->getResponse(),
-        ];
+                'description'   => $this->getDescription(),
+                'request'       => $this->getRequest(),
+                'response'      => $this->getResponse(),
+            ];
     }
 }

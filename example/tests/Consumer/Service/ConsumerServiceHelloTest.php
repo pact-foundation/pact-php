@@ -40,7 +40,6 @@ class ConsumerServiceHelloTest extends TestCase
         $config  = new MockServerEnvConfig();
         $builder = new InteractionBuilder($config);
         $builder
-            ->given('Get Hello')
             ->uponReceiving('A get request to /hello/{name}')
             ->with($request)
             ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
