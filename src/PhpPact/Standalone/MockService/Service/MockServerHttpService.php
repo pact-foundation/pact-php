@@ -2,6 +2,7 @@
 
 namespace PhpPact\Standalone\MockService\Service;
 
+use GuzzleHttp\Exception\RequestException;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Exception\ConnectionException;
@@ -134,12 +135,18 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     {
         $uri = $this->config->getBaseUri()->withPath('/interactions/verification');
 
-        $this->client->get($uri, [
-            'headers' => [
-                'Content-Type'        => 'application/json',
-                'X-Pact-Mock-Service' => true,
-            ],
-        ]);
+        try {
+            $this->client->get(
+                $uri, [
+                'headers' => [
+                    'Content-Type'        => 'application/json',
+                    'X-Pact-Mock-Service' => true,
+                ],
+            ]
+            );
+        } catch (RequestException $e) {
+            return false;
+        }
 
         return true;
     }

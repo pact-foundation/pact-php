@@ -95,7 +95,7 @@ class MockServerHttpServiceTest extends TestCase
             ->setMethod('GET');
 
         $response = new ProviderResponse();
-        $response->setStatus(200);
+        $response->setStatus(500);
 
         $interaction = new Interaction();
         $interaction
