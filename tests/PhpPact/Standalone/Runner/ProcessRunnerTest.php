@@ -56,16 +56,14 @@ class ProcessRunnerTest extends TestCase
 
         $p              = new ProcessRunner($cmd, []);
         $expectedOutput = 'third line';
-        $expectedErr = 'fourth line';
+        $expectedErr    = 'fourth line';
 
         try {
             $p->runBlocking();
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
         }
 
         $this->assertTrue((\stripos($p->getOutput(), $expectedOutput) !== false), "Expect '{$expectedOutput}' to be in the output:");
         $this->assertTrue((\stripos($p->getStderr(), $expectedErr) !== false), "Expect '{$expectedErr}' to be in the stderr");
-
     }
 }

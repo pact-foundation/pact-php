@@ -33,11 +33,13 @@ class VerifierProcess
 
     /**
      * @param Logger $logger
+     *
      * @return VerifierProcess
      */
-    public function setLogger(Logger $logger): VerifierProcess
+    public function setLogger(Logger $logger): self
     {
         $this->logger = $logger;
+
         return $this;
     }
 
@@ -60,6 +62,7 @@ class VerifierProcess
         $logger = $this->getLogger();
 
         $logger->addInfo("Verifying PACT with script:\n{$processRunner->getCommand()}\n\n");
+
         try {
             $processRunner->runBlocking();
 
