@@ -120,14 +120,6 @@ class ProcessRunner
 
             $this->process->start();
 
-            $this->process->getStdout()->read()->onResolve(function (\Throwable $reason = null, $value) {
-                $this->output .= $value;
-            });
-
-            $this->process->getStderr()->read()->onResolve(function (\Throwable $reason = null, $value) {
-                $this->stderr .= $value;
-            });
-
             if ($blocking) {
                 $exitCode = yield $this->process->join();
                 $this->setExitCode($exitCode);
@@ -135,6 +127,16 @@ class ProcessRunner
             }
 
             $pid = yield $this->process->getPid();
+
+            $stream = $this->process->getStdout();
+            while (null !== $chunk = yield $stream->read()) {
+                $this->output .= $chunk;
+            }
+
+            $stream = $this->process->getStderr();
+            while (null !== $chunk = yield $stream->read()) {
+                $this->stderr .= $chunk;
+            }
 
             if ($blocking) {
                 if ($this->getExitCode() !== 0) {
