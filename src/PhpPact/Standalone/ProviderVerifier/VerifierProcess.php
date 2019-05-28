@@ -17,6 +17,11 @@ class VerifierProcess
     private $installManager;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * VerifierProcess constructor.
      *
      * @param null|InstallManager $installManager
@@ -24,6 +29,16 @@ class VerifierProcess
     public function __construct(InstallManager $installManager)
     {
         $this->installManager = $installManager;
+    }
+
+    /**
+     * @param Logger $logger
+     * @return VerifierProcess
+     */
+    public function setLogger(Logger $logger): VerifierProcess
+    {
+        $this->logger = $logger;
+        return $this;
     }
 
     /**
@@ -42,15 +57,34 @@ class VerifierProcess
 
         $processRunner = new ProcessRunner($scripts->getProviderVerifier(), $arguments);
 
-        $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
-        $logHandler->setFormatter(new ConsoleFormatter);
-        $logger = new Logger('console');
-        $logger->pushHandler($logHandler);
+        $logger = $this->getLogger();
 
         $logger->addInfo("Verifying PACT with script:\n{$processRunner->getCommand()}\n\n");
-        $processRunner->runBlocking();
+        try {
+            $processRunner->runBlocking();
 
-        $logger->addInfo('out > ' . $processRunner->getOutput());
-        $logger->addError('err > ' . $processRunner->getStderr());
+            $logger->addInfo('out > ' . $processRunner->getOutput());
+            $logger->addError('err > ' . $processRunner->getStderr());
+        } catch (\Exception $e) {
+            $logger->addInfo('out > ' . $processRunner->getOutput());
+            $logger->addError('err > ' . $processRunner->getStderr());
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @return Logger
+     */
+    private function getLogger()
+    {
+        if (null === $this->logger) {
+            $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
+            $logHandler->setFormatter(new ConsoleFormatter);
+            $this->logger = new Logger('console');
+            $this->logger->pushHandler($logHandler);
+        }
+
+        return $this->logger;
     }
 }
