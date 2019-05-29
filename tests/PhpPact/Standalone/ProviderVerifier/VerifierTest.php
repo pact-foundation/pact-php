@@ -198,8 +198,8 @@ class VerifierTest extends TestCase
         $logMessages = $handler->getRecords();
 
         $this->assertCount(3, $logMessages);
-        $this->assertEquals("out > first line\n", $logMessages[1]['message']);
-        $this->assertEquals("err > second line\n", $logMessages[2]['message']);
+        $this->assertContains("out > first line", $logMessages[1]['message']);
+        $this->assertContains("err > second line", $logMessages[2]['message']);
 
         $this->assertNotNull($exception);
     }
