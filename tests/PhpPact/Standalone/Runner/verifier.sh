@@ -10,4 +10,4 @@ echo "third line"
 echoerr "fourth line"
 echo "fifth line"
 
-exit 1
+exit 42

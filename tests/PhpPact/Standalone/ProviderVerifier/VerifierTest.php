@@ -69,6 +69,7 @@ class VerifierTest extends TestCase
     {
         $expectedUrltoBroker = 'http://mock/' . $path;
 
+        /** @var Uri $uriMock */
         $uriMock = $this->createMock(Uri::class);
         $uriMock->expects($this->once())
             ->method('withPath')
@@ -170,7 +171,11 @@ class VerifierTest extends TestCase
 
     public function testRunShouldLogOutputIfCmdFails()
     {
-        $cmd = __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.sh';
+        if ('\\' !== \DIRECTORY_SEPARATOR) {
+            $cmd = __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.sh';
+        } else {
+            $cmd = 'start cmd /c' . __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.bat';
+        }
 
         $scriptsMock = $this->createMock(Scripts::class);
         $scriptsMock->method('getProviderVerifier')->willReturn($cmd);

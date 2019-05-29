@@ -52,7 +52,11 @@ class ProcessRunnerTest extends TestCase
      */
     public function testProcessRunnerShouldReturnCompleteOutput()
     {
-        $cmd = __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.sh';
+        if ('\\' !== \DIRECTORY_SEPARATOR) {
+            $cmd = __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.sh';
+        } else {
+            $cmd = 'start cmd /c' . __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.bat';
+        }
 
         $p              = new ProcessRunner($cmd, []);
         $expectedOutput = 'third line';

@@ -7,4 +7,4 @@ echoerr() { echo "$@" 1>&2; }
 echo "first line"
 echoerr "second line"
 
-exit 1
+exit 42
