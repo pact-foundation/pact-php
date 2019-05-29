@@ -131,10 +131,10 @@ class ProcessRunner
                     $this->stderr .= $chunk;
                 }
             } else {
-                $this->process->getStdout()->read()->onResolve(function (\Throwable $reason = null, $value = null) {
+                $this->process->getStdout()->read()->onResolve(function (\Throwable $reason = null, $value) {
                     $this->output .= $value;
                 });
-                $this->process->getStderr()->read()->onResolve(function (\Throwable $reason = null, $value = null) {
+                $this->process->getStderr()->read()->onResolve(function (\Throwable $reason = null, $value) {
                     $this->stderr .= $value;
                 });
             }
