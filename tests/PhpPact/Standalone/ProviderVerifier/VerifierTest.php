@@ -174,7 +174,7 @@ class VerifierTest extends TestCase
         if ('\\' !== \DIRECTORY_SEPARATOR) {
             $cmd = __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.sh';
         } else {
-            $cmd = 'start cmd /c' . __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.bat';
+            $cmd = 'cmd /c' . __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.bat';
         }
 
         $scriptsMock = $this->createMock(Scripts::class);
