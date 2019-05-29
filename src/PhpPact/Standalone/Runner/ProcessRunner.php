@@ -110,7 +110,7 @@ class ProcessRunner
     public function run($blocking = false): int
     {
         $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
-        $logHandler->setFormatter(new ConsoleFormatter);
+        $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
         $logger = new Logger('server');
         $logger->pushHandler($logHandler);
 

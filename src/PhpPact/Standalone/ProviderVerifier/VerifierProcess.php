@@ -83,7 +83,7 @@ class VerifierProcess
     {
         if (null === $this->logger) {
             $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
-            $logHandler->setFormatter(new ConsoleFormatter);
+            $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
             $this->logger = new Logger('console');
             $this->logger->pushHandler($logHandler);
         }
