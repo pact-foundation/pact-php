@@ -14,11 +14,9 @@ class ProcessRunnerTest extends TestCase
         if ('\\' !== \DIRECTORY_SEPARATOR) {
             $p              = new ProcessRunner('ls', ['-alt']);
             $expectedOutput = 'total';
-            $expectedErr    = 'failedApp';
         } else {
             $p              = new ProcessRunner('dir', []);
             $expectedOutput = 'pact';
-            $expectedErr    = 'failedApp';
         }
 
         $p->runBlocking();
@@ -46,6 +44,30 @@ class ProcessRunnerTest extends TestCase
 
         $this->assertNotEquals($exitCode, 0, 'Expect the exit code to be non-zero: ' . $exitCode);
         $this->assertEquals($p->getOutput(), null, 'Expect a null output');
+        $this->assertTrue((\stripos($p->getStderr(), $expectedErr) !== false), "Expect '{$expectedErr}' to be in the stderr");
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testProcessRunnerShouldReturnCompleteOutput()
+    {
+        if ('\\' !== \DIRECTORY_SEPARATOR) {
+            $cmd = __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.sh';
+        } else {
+            $cmd = 'cmd /c' . __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.bat';
+        }
+
+        $p              = new ProcessRunner($cmd, []);
+        $expectedOutput = 'third line';
+        $expectedErr    = 'fourth line';
+
+        try {
+            $p->runBlocking();
+        } catch (\Exception $e) {
+        }
+
+        $this->assertTrue((\stripos($p->getOutput(), $expectedOutput) !== false), "Expect '{$expectedOutput}' to be in the output:");
         $this->assertTrue((\stripos($p->getStderr(), $expectedErr) !== false), "Expect '{$expectedErr}' to be in the stderr");
     }
 }

@@ -3,9 +3,12 @@
 namespace PhpPact\Standalone\ProviderVerifier;
 
 use GuzzleHttp\Psr7\Uri;
+use Monolog\Handler\TestHandler;
+use Monolog\Logger;
 use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
 use PhpPact\Standalone\Installer\InstallManager;
+use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PHPUnit\Framework\TestCase;
 
@@ -66,6 +69,7 @@ class VerifierTest extends TestCase
     {
         $expectedUrltoBroker = 'http://mock/' . $path;
 
+        /** @var Uri $uriMock */
         $uriMock = $this->createMock(Uri::class);
         $uriMock->expects($this->once())
             ->method('withPath')
@@ -163,5 +167,40 @@ class VerifierTest extends TestCase
           ['someProvider', '1.0.0'],
           ['someProvider', '1.2.3'],
         ];
+    }
+
+    public function testRunShouldLogOutputIfCmdFails()
+    {
+        if ('\\' !== \DIRECTORY_SEPARATOR) {
+            $cmd = __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.sh';
+        } else {
+            $cmd = 'cmd /c' . __DIR__ . \DIRECTORY_SEPARATOR . 'verifier.bat';
+        }
+
+        $scriptsMock = $this->createMock(Scripts::class);
+        $scriptsMock->method('getProviderVerifier')->willReturn($cmd);
+
+        $installerMock = $this->createMock(InstallManager::class);
+        $installerMock->method('install')->willReturn($scriptsMock);
+
+        $process = new VerifierProcess($installerMock);
+
+        $logger = new Logger('console', [$handler = new TestHandler()]);
+        $process->setLogger($logger);
+
+        try {
+            $exception = null;
+            $process->run([], 60, 10);
+        } catch (\Exception $e) {
+            $exception = $e;
+        }
+
+        $logMessages = $handler->getRecords();
+
+        $this->assertCount(3, $logMessages);
+        $this->assertContains('first line', $logMessages[1]['message']);
+        $this->assertContains('second line', $logMessages[2]['message']);
+
+        $this->assertNotNull($exception);
     }
 }

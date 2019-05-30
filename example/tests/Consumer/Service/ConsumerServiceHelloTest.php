@@ -31,7 +31,7 @@ class ConsumerServiceHelloTest extends TestCase
         $response = new ProviderResponse();
         $response
             ->setStatus(200)
-            ->addHeader('Content-Type', 'application/json;charset=utf-8')
+            ->addHeader('Content-Type', 'application/json')
             ->setBody([
                 'message' => $matcher->term('Hello, Bob', '(Hello, )[A-Za-z]')
             ]);
