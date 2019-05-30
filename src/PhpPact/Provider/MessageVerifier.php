@@ -137,21 +137,6 @@ class MessageVerifier extends Verifier
     }
 
     /**
-     * @return Logger
-     */
-    private function getLogger()
-    {
-        if (null === $this->logger) {
-            $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
-            $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
-            $this->logger = new Logger('server');
-            $this->logger->pushHandler($logHandler);
-        }
-
-        return $this->logger;
-    }
-
-    /**
      * @param array $arguments
      *
      * @throws \Exception
@@ -234,5 +219,20 @@ class MessageVerifier extends Verifier
         };
 
         Loop::run($lambdaLoop);
+    }
+
+    /**
+     * @return Logger
+     */
+    private function getLogger()
+    {
+        if (null === $this->logger) {
+            $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
+            $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
+            $this->logger = new Logger('server');
+            $this->logger->pushHandler($logHandler);
+        }
+
+        return $this->logger;
     }
 }

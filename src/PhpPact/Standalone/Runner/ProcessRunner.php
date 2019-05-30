@@ -55,21 +55,6 @@ class ProcessRunner
     }
 
     /**
-     * @return Logger
-     */
-    private function getLogger()
-    {
-        if (null === $this->logger) {
-            $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
-            $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
-            $this->logger = new Logger('server');
-            $this->logger->pushHandler($logHandler);
-        }
-
-        return $this->logger;
-    }
-
-    /**
      * @return string
      */
     public function getOutput(): ?string
@@ -222,5 +207,20 @@ class ProcessRunner
         });
 
         return true;
+    }
+
+    /**
+     * @return Logger
+     */
+    private function getLogger()
+    {
+        if (null === $this->logger) {
+            $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
+            $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
+            $this->logger = new Logger('server');
+            $this->logger->pushHandler($logHandler);
+        }
+
+        return $this->logger;
     }
 }
