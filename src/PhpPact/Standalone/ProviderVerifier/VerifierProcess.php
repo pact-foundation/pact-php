@@ -44,6 +44,21 @@ class VerifierProcess
     }
 
     /**
+     * @return Logger
+     */
+    private function getLogger()
+    {
+        if (null === $this->logger) {
+            $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
+            $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
+            $this->logger = new Logger('console');
+            $this->logger->pushHandler($logHandler);
+        }
+
+        return $this->logger;
+    }
+
+    /**
      * Execute the Pact Verifier Service.
      *
      * @param array $arguments
@@ -57,9 +72,9 @@ class VerifierProcess
     {
         $scripts = $this->installManager->install();
 
+        $logger        = $this->getLogger();
         $processRunner = new ProcessRunner($scripts->getProviderVerifier(), $arguments);
-
-        $logger = $this->getLogger();
+        $processRunner->setLogger($logger);
 
         $logger->addInfo("Verifying PACT with script:\n{$processRunner->getCommand()}\n\n");
 
@@ -74,20 +89,5 @@ class VerifierProcess
 
             throw $e;
         }
-    }
-
-    /**
-     * @return Logger
-     */
-    private function getLogger()
-    {
-        if (null === $this->logger) {
-            $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
-            $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
-            $this->logger = new Logger('console');
-            $this->logger->pushHandler($logHandler);
-        }
-
-        return $this->logger;
     }
 }

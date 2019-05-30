@@ -28,15 +28,30 @@ class ProcessRunner
     private $stderr;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param string $command
      * @param array  $arguments
      */
     public function __construct(string $command, array $arguments)
     {
         $this->exitCode  = -1;
-        $this->output    = null;
-        $this->stderr    = null;
         $this->process   = new Process($command . ' ' . \implode(' ', $arguments));
+    }
+
+    /**
+     * @param Logger $logger
+     *
+     * @return ProcessRunner
+     */
+    public function setLogger(Logger $logger): self
+    {
+        $this->logger = $logger;
+
+        return $this;
     }
 
     /**
@@ -109,11 +124,7 @@ class ProcessRunner
      */
     public function run($blocking = false): int
     {
-        $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
-        $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
-        $logger = new Logger('server');
-        $logger->pushHandler($logHandler);
-
+        $logger     = $this->getLogger();
         $pid        = null;
         $lambdaLoop = function () use ($blocking, $logger, &$pid) {
             $logger->debug("Process command: {$this->process->getCommand()}");
@@ -196,5 +207,20 @@ class ProcessRunner
         });
 
         return true;
+    }
+
+    /**
+     * @return Logger
+     */
+    private function getLogger()
+    {
+        if (null === $this->logger) {
+            $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
+            $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
+            $this->logger = new Logger('server');
+            $this->logger->pushHandler($logHandler);
+        }
+
+        return $this->logger;
     }
 }

@@ -55,6 +55,11 @@ class MessageVerifier extends Verifier
     protected $verificationDelaySec;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * MessageVerifier constructor.
      *
      * @param VerifierConfigInterface $config
@@ -120,6 +125,33 @@ class MessageVerifier extends Verifier
     }
 
     /**
+     * @param Logger $logger
+     *
+     * @return MessageVerifier
+     */
+    public function setLogger(Logger $logger): self
+    {
+        $this->logger = $logger;
+
+        return $this;
+    }
+
+    /**
+     * @return Logger
+     */
+    private function getLogger()
+    {
+        if (null === $this->logger) {
+            $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
+            $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
+            $this->logger = new Logger('console');
+            $this->logger->pushHandler($logHandler);
+        }
+
+        return $this->logger;
+    }
+
+    /**
      * @param array $arguments
      *
      * @throws \Exception
@@ -150,10 +182,7 @@ class MessageVerifier extends Verifier
                 listen($url)
             ];
 
-            $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
-            $logHandler->setFormatter(new ConsoleFormatter);
-            $logger = new Logger('server');
-            $logger->pushHandler($logHandler);
+            $logger = $this->getLogger();
 
             $server = new Server($servers, new CallableRequestHandler(function (Request $request) use ($callbacks) {
                 if (\count($callbacks) === 1) {
