@@ -4,10 +4,6 @@ namespace PhpPact\Standalone\Runner;
 
 use PHPUnit\Framework\TestCase;
 
-use Amp\ByteStream;
-use Amp\Loop;
-use Amp\Process\Process;
-
 class ProcessRunnerTest extends TestCase
 {
     /**

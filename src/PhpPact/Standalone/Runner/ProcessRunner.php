@@ -2,10 +2,10 @@
 
 namespace PhpPact\Standalone\Runner;
 
+use Amp\ByteStream;
 use Amp\ByteStream\ResourceOutputStream;
 use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
-use Amp\ByteStream;
 use Amp\Loop;
 use Amp\Process\Process;
 use Amp\Process\ProcessException;
@@ -108,18 +108,18 @@ class ProcessRunner
             $logger->debug("Process command: {$this->process->getCommand()}");
 
             $pid = yield $this->process->start();
-            
+
             $this->output .= yield ByteStream\buffer($this->process->getStdout());
             $this->stderr .= yield ByteStream\buffer($this->process->getStderr());
-        
+
             $exitCode = yield $this->process->join();
             $this->setExitCode($exitCode);
             $logger->debug("Exit code: {$this->getExitCode()}");
-            
+
             if ($this->getExitCode() !== 0) {
                 throw new \Exception("PactPHP Process returned non-zero exit code: {$this->getExitCode()}");
             }
-            
+
             Loop::stop();
         };
 
@@ -139,29 +139,29 @@ class ProcessRunner
         $logger->pushHandler($logHandler);
 
         $pid        = null;
-                
+
         $lambdaLoop = function () use ($logger, &$pid) {
             $logger->debug("start background command: {$this->process->getCommand()}");
-            
+
             $pid = yield $this->process->start();
-            
-            $this->process->getStdout()->read()->onResolve(function(\Throwable $reason = null, $value) {
+
+            $this->process->getStdout()->read()->onResolve(function (\Throwable $reason = null, $value) {
                 $this->output .= $value;
             });
-            $this->process->getStderr()->read()->onResolve(function(\Throwable $reason = null, $value) {
+            $this->process->getStderr()->read()->onResolve(function (\Throwable $reason = null, $value) {
                 $this->output .= $value;
             });
-            
+
             Loop::stop();
         };
 
         Loop::run($lambdaLoop);
-        
+
         $logger->debug("started process pid=$pid");
 
         return $pid;
     }
-    
+
     /**
      * Run the process and set output
      *
@@ -186,7 +186,7 @@ class ProcessRunner
         if (!$this->process->isRunning()) {
             return true;
         }
-        
+
         $pid = $this->process->getPid();
 
         print "\nStopping Process Id: {$pid}\n";
@@ -209,7 +209,7 @@ class ProcessRunner
         }
 
         $this->process->kill();
-        
+
         return true;
     }
 }
