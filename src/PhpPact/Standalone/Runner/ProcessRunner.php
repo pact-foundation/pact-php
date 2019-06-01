@@ -5,6 +5,7 @@ namespace PhpPact\Standalone\Runner;
 use Amp\ByteStream\ResourceOutputStream;
 use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
+use Amp\ByteStream;
 use Amp\Loop;
 use Amp\Process\Process;
 use Amp\Process\ProcessException;
@@ -97,62 +98,28 @@ class ProcessRunner
      */
     public function runBlocking(): int
     {
-        return $this->run(true);
-    }
-
-    /**
-     * Run the process and set output
-     *
-     * @param bool $blocking
-     *
-     * @return int Process Id
-     */
-    public function run($blocking = false): int
-    {
         $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
         $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
         $logger = new Logger('server');
         $logger->pushHandler($logHandler);
 
         $pid        = null;
-        $lambdaLoop = function () use ($blocking, $logger, &$pid) {
+        $lambdaLoop = function () use ($logger, &$pid) {
             $logger->debug("Process command: {$this->process->getCommand()}");
 
-            $this->process->start();
-
-            if ($blocking) {
-                $stream = $this->process->getStdout();
-                while (null !== $chunk = yield $stream->read()) {
-                    $this->output .= $chunk;
-                }
-
-                $stream = $this->process->getStderr();
-                while (null !== $chunk = yield $stream->read()) {
-                    $this->stderr .= $chunk;
-                }
-            } else {
-                $this->process->getStdout()->read()->onResolve(function (\Throwable $reason = null, $value) {
-                    $this->output .= $value;
-                });
-                $this->process->getStderr()->read()->onResolve(function (\Throwable $reason = null, $value) {
-                    $this->stderr .= $value;
-                });
+            $pid = yield $this->process->start();
+            
+            $this->output .= yield ByteStream\buffer($this->process->getStdout());
+            $this->stderr .= yield ByteStream\buffer($this->process->getStderr());
+        
+            $exitCode = yield $this->process->join();
+            $this->setExitCode($exitCode);
+            $logger->debug("Exit code: {$this->getExitCode()}");
+            
+            if ($this->getExitCode() !== 0) {
+                throw new \Exception("PactPHP Process returned non-zero exit code: {$this->getExitCode()}");
             }
-
-            if ($blocking) {
-                $exitCode = yield $this->process->join();
-                $this->setExitCode($exitCode);
-                $logger->debug("Exit code: {$this->getExitCode()}");
-            }
-
-            $pid = yield $this->process->getPid();
-
-            if ($blocking) {
-                if ($this->getExitCode() !== 0) {
-                    throw new \Exception("PactPHP Process returned non-zero exit code: {$this->getExitCode()}");
-                }
-            }
-
+            
             Loop::stop();
         };
 
@@ -162,39 +129,87 @@ class ProcessRunner
     }
 
     /**
+     * Run a blocking, synchronous process
+     */
+    public function runNonBlocking(): int
+    {
+        $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
+        $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
+        $logger = new Logger('server');
+        $logger->pushHandler($logHandler);
+
+        $pid        = null;
+                
+        $lambdaLoop = function () use ($logger, &$pid) {
+            $logger->debug("start background command: {$this->process->getCommand()}");
+            
+            $pid = yield $this->process->start();
+            
+            $this->process->getStdout()->read()->onResolve(function(\Throwable $reason = null, $value) {
+                $this->output .= $value;
+            });
+            $this->process->getStderr()->read()->onResolve(function(\Throwable $reason = null, $value) {
+                $this->output .= $value;
+            });
+            
+            Loop::stop();
+        };
+
+        Loop::run($lambdaLoop);
+        
+        $logger->debug("started process pid=$pid");
+
+        return $pid;
+    }
+    
+    /**
+     * Run the process and set output
+     *
+     * @param bool $blocking
+     *
+     * @return int Process Id
+     */
+    public function run($blocking = false): int
+    {
+        return $blocking
+            ? $this->runBlocking()
+            : $this->runNonBlocking();
+    }
+
+    /**
      * Stop the running process
      *
      * @return bool
      */
     public function stop(): bool
     {
-        $this->process->getPid()->onResolve(function ($error, $pid) {
-            if ($error) {
-                throw new ProcessException($error);
+        if (!$this->process->isRunning()) {
+            return true;
+        }
+        
+        $pid = $this->process->getPid();
+
+        print "\nStopping Process Id: {$pid}\n";
+
+        if ('\\' === \DIRECTORY_SEPARATOR) {
+            \exec(\sprintf('taskkill /F /T /PID %d 2>&1', $pid), $output, $exitCode);
+            if ($exitCode) {
+                throw new ProcessException(\sprintf('Unable to kill the process (%s).', \implode(' ', $output)));
+            }
+        } else {
+            $this->process->signal(15);
+
+            if ($ok = \proc_open("kill $pid", [2 => ['pipe', 'w']], $pipes)) {
+                $ok = false === \fgets($pipes[2]);
             }
 
-            print "\nStopping Process Id: {$pid}\n";
-
-            if ('\\' === \DIRECTORY_SEPARATOR) {
-                \exec(\sprintf('taskkill /F /T /PID %d 2>&1', $pid), $output, $exitCode);
-                if ($exitCode) {
-                    throw new ProcessException(\sprintf('Unable to kill the process (%s).', \implode(' ', $output)));
-                }
-            } else {
-                $this->process->signal(15);
-
-                if ($ok = \proc_open("kill $pid", [2 => ['pipe', 'w']], $pipes)) {
-                    $ok = false === \fgets($pipes[2]);
-                }
-
-                if (!$ok) {
-                    throw new ProcessException(\sprintf('Error while killing process "%s".', $pid));
-                }
+            if (!$ok) {
+                throw new ProcessException(\sprintf('Error while killing process "%s".', $pid));
             }
+        }
 
-            $this->process->kill();
-        });
-
+        $this->process->kill();
+        
         return true;
     }
 }
