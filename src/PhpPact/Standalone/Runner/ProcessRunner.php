@@ -179,8 +179,9 @@ class ProcessRunner
     /**
      * Stop the running process
      *
-     * @return bool
      * @throws ProcessException
+     *
+     * @return bool
      */
     public function stop(): bool
     {
