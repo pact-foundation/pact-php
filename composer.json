@@ -24,7 +24,6 @@
         "guzzlehttp/guzzle": "^6.3",
         "amphp/socket": "^0.10.9",
         "amphp/process": "^1.1.0",
-        "amphp/parallel": "^1.1.1",
         "amphp/http-server": "^1.0.1",
         "amphp/log": "^1.0"
     },
