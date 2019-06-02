@@ -193,6 +193,13 @@ class ProcessRunner
 
         print "\nStopping Process Id: {$pid}\n";
 
+        if ('\\' === \DIRECTORY_SEPARATOR) {
+            \exec(\sprintf('taskkill /F /T /PID %d 2>&1', $pid), $output, $exitCode);
+            if ($exitCode) {
+                throw new ProcessException(\sprintf('Unable to kill the process (%s).', \implode(' ', $output)));
+            }
+        }
+
         $this->process->kill();
 
         if ($this->process->isRunning()) {
