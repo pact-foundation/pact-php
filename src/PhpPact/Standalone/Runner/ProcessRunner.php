@@ -180,6 +180,7 @@ class ProcessRunner
      * Stop the running process
      *
      * @return bool
+     * @throws ProcessException
      */
     public function stop(): bool
     {
@@ -191,24 +192,11 @@ class ProcessRunner
 
         print "\nStopping Process Id: {$pid}\n";
 
-        if ('\\' === \DIRECTORY_SEPARATOR) {
-            \exec(\sprintf('taskkill /F /T /PID %d 2>&1', $pid), $output, $exitCode);
-            if ($exitCode) {
-                throw new ProcessException(\sprintf('Unable to kill the process (%s).', \implode(' ', $output)));
-            }
-        } else {
-            $this->process->signal(15);
-
-            if ($ok = \proc_open("kill $pid", [2 => ['pipe', 'w']], $pipes)) {
-                $ok = false === \fgets($pipes[2]);
-            }
-
-            if (!$ok) {
-                throw new ProcessException(\sprintf('Error while killing process "%s".', $pid));
-            }
-        }
-
         $this->process->kill();
+
+        if ($this->process->isRunning()) {
+            throw new ProcessException(\sprintf('Error while killing process "%s".', $pid));
+        }
 
         return true;
     }
