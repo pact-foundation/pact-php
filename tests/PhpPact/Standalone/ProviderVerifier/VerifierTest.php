@@ -197,9 +197,9 @@ class VerifierTest extends TestCase
 
         $logMessages = $handler->getRecords();
 
-        $this->assertCount(3, $logMessages);
-        $this->assertContains('first line', $logMessages[1]['message']);
-        $this->assertContains('second line', $logMessages[2]['message']);
+        $this->assertGreaterThan(2, \count($logMessages));
+        $this->assertContains('first line', $logMessages[\count($logMessages) - 2]['message']);
+        $this->assertContains('second line', $logMessages[\count($logMessages) - 1]['message']);
 
         $this->assertNotNull($exception);
     }
