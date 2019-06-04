@@ -188,7 +188,7 @@ class MessageVerifier extends Verifier
             Loop::delay($delay, function () use ($arguments) {
                 $cmd = \implode(' ', $arguments);
                 $process = new Process($cmd);
-                $process->start();
+                yield $process->start();
 
                 $payload = new Payload($process->getStdout());
                 print yield $payload->buffer();
