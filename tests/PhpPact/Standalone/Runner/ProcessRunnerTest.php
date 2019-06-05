@@ -15,7 +15,7 @@ class ProcessRunnerTest extends TestCase
             $p              = new ProcessRunner('ls', ['-alt']);
             $expectedOutput = 'total';
         } else {
-            $p              = new ProcessRunner('dir', []);
+            $p              = new ProcessRunner('cmd /c dir', []);
             $expectedOutput = 'pact';
         }
 
@@ -23,16 +23,16 @@ class ProcessRunnerTest extends TestCase
         $exitCode = $p->getExitCode();
 
         $this->assertEquals($exitCode, 0, 'Expect the exit code to be 0');
-        $this->assertTrue((\stripos($p->getOutput(), $expectedOutput) !== false), "Expect '{$expectedOutput}' to be in the output");
-        $this->assertEquals($p->getStderr(), null, 'Expect a null stderr');
+        $this->assertContains($expectedOutput, $p->getOutput(), "Expect '{$expectedOutput}' to be in the output");
+        $this->assertEquals(null, $p->getStderr(), 'Expect a null stderr');
 
         // try an app that does not exists
         if ('\\' !== \DIRECTORY_SEPARATOR) {
             $p              = new ProcessRunner('failedApp', []);
             $expectedErr    = 'failedApp';
         } else {
-            $p              = new ProcessRunner('dir', ['failed.xx']);
-            $expectedErr    = 'failed.xx';
+            $p              = new ProcessRunner('cmd /c echo myError 1>&2 && exit 42', []);
+            $expectedErr    = 'myError';
         }
 
         try {
@@ -43,8 +43,8 @@ class ProcessRunnerTest extends TestCase
         $exitCode = $p->getExitCode();
 
         $this->assertNotEquals($exitCode, 0, 'Expect the exit code to be non-zero: ' . $exitCode);
-        $this->assertEquals($p->getOutput(), null, 'Expect a null output');
-        $this->assertTrue((\stripos($p->getStderr(), $expectedErr) !== false), "Expect '{$expectedErr}' to be in the stderr");
+        $this->assertContains($expectedErr, $p->getStderr(), "Expect '{$expectedErr}' to be in the stderr");
+        $this->assertEquals(null, $p->getOutput(), 'Expect a null stdout');
     }
 
     /**

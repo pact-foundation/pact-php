@@ -57,9 +57,9 @@ class VerifierProcess
     {
         $scripts = $this->installManager->install();
 
+        $logger        = $this->getLogger();
         $processRunner = new ProcessRunner($scripts->getProviderVerifier(), $arguments);
-
-        $logger = $this->getLogger();
+        $processRunner->setLogger($logger);
 
         $logger->addInfo("Verifying PACT with script:\n{$processRunner->getCommand()}\n\n");
 
