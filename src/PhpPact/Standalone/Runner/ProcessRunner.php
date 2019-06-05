@@ -144,10 +144,7 @@ class ProcessRunner
      */
     public function runNonBlocking(): int
     {
-        $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
-        $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
-        $logger = new Logger('server');
-        $logger->pushHandler($logHandler);
+        $logger     = $this->getLogger();
 
         $pid        = null;
 
