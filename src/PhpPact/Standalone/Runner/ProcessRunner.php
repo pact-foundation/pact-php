@@ -193,7 +193,6 @@ class ProcessRunner
      */
     public function stop(): bool
     {
-
         $pid = $this->process->getPid();
 
         print "\nStopping Process Id: {$pid}\n";
