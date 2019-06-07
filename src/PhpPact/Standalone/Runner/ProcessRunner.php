@@ -193,26 +193,16 @@ class ProcessRunner
      */
     public function stop(): bool
     {
-        if (!$this->process->isRunning()) {
-            return true;
-        }
 
         $pid = $this->process->getPid();
 
         print "\nStopping Process Id: {$pid}\n";
 
         if ('\\' === \DIRECTORY_SEPARATOR) {
-            \exec(\sprintf('taskkill /F /T /PID %d /fi "STATUS eq RUNNING" 2>&1', $pid), $output, $exitCode);
-            if ($exitCode) {
-                throw new ProcessException(\sprintf('Unable to kill the process (%s).', \implode(' ', $output)));
-            }
+            \exec(\sprintf('taskkill /F /T /PID %d 2>&1', $pid), $output, $exitCode);
         }
 
         $this->process->kill();
-
-        if ($this->process->isRunning()) {
-            throw new ProcessException(\sprintf('Error while killing process "%s".', $pid));
-        }
 
         return true;
     }
