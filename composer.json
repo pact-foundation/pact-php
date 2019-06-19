@@ -20,7 +20,7 @@
     "require": {
         "php": "^7.1",
         "ext-openssl": "*",
-        "composer/semver": "1.4.2",
+        "composer/semver": "^1.4.2",
         "guzzlehttp/guzzle": "^6.3",
         "amphp/socket": "^0.10.9",
         "amphp/process": "^1.1.0",
