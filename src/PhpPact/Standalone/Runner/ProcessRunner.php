@@ -203,6 +203,11 @@ class ProcessRunner
 
         $this->process->kill();
 
+
+        if ($this->process->isRunning()) {
+            throw new ProcessException(\sprintf('Error while killing process "%s".', $pid));
+        }
+
         return true;
     }
 
