@@ -118,8 +118,8 @@ class PactTestListener implements TestListener
                 $client = new GuzzleClient($clientConfig);
 
                 $brokerHttpService = new BrokerHttpClient($client, new Uri($pactBrokerUri));
-                $brokerHttpService->publishJson($json, $consumerVersion);
                 $brokerHttpService->tag($this->mockServerConfig->getConsumer(), $consumerVersion, $tag);
+                $brokerHttpService->publishJson($json, $consumerVersion);
                 print 'Pact file has been uploaded to the Broker successfully.';
             }
         }
