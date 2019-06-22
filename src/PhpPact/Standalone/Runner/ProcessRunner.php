@@ -144,10 +144,7 @@ class ProcessRunner
      */
     public function runNonBlocking(): int
     {
-        $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));
-        $logHandler->setFormatter(new ConsoleFormatter(null, null, true));
-        $logger = new Logger('server');
-        $logger->pushHandler($logHandler);
+        $logger     = $this->getLogger();
 
         $pid        = null;
 
@@ -196,19 +193,12 @@ class ProcessRunner
      */
     public function stop(): bool
     {
-        if (!$this->process->isRunning()) {
-            return true;
-        }
-
         $pid = $this->process->getPid();
 
         print "\nStopping Process Id: {$pid}\n";
 
         if ('\\' === \DIRECTORY_SEPARATOR) {
             \exec(\sprintf('taskkill /F /T /PID %d 2>&1', $pid), $output, $exitCode);
-            if ($exitCode) {
-                throw new ProcessException(\sprintf('Unable to kill the process (%s).', \implode(' ', $output)));
-            }
         }
 
         $this->process->kill();
