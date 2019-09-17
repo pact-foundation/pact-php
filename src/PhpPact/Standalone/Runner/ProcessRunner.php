@@ -10,6 +10,7 @@ use Amp\Loop;
 use Amp\Process\Process;
 use Amp\Process\ProcessException;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Wrapper around Process with Amp
@@ -29,7 +30,7 @@ class ProcessRunner
     private $stderr;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -44,11 +45,11 @@ class ProcessRunner
     }
 
     /**
-     * @param Logger $logger
+     * @param LoggerInterface $logger
      *
      * @return ProcessRunner
      */
-    public function setLogger(Logger $logger): self
+    public function setLogger(LoggerInterface $logger): self
     {
         $this->logger = $logger;
 
@@ -211,7 +212,7 @@ class ProcessRunner
     }
 
     /**
-     * @return Logger
+     * @return LoggerInterface
      */
     private function getLogger()
     {

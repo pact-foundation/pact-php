@@ -7,7 +7,7 @@ use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
 use Monolog\Logger;
 use PhpPact\Standalone\Installer\InstallManager;
-use PhpPact\Standalone\Runner\ProcessRunner;
+use Psr\Log\LoggerInterface;
 
 class VerifierProcess
 {
@@ -17,26 +17,33 @@ class VerifierProcess
     private $installManager;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     private $logger;
 
     /**
+     * @var ProcessRunnerFactory
+     */
+    private $processRunnerFactory;
+
+    /**
      * VerifierProcess constructor.
      *
-     * @param null|InstallManager $installManager
+     * @param InstallManager       $installManager
+     * @param ProcessRunnerFactory $processRunnerFactory
      */
-    public function __construct(InstallManager $installManager)
+    public function __construct(InstallManager $installManager, ProcessRunnerFactory $processRunnerFactory = null)
     {
-        $this->installManager = $installManager;
+        $this->installManager       = $installManager;
+        $this->processRunnerFactory = $processRunnerFactory?: new ProcessRunnerFactory();
     }
 
     /**
-     * @param Logger $logger
+     * @param LoggerInterface $logger
      *
      * @return VerifierProcess
      */
-    public function setLogger(Logger $logger): self
+    public function setLogger(LoggerInterface $logger): self
     {
         $this->logger = $logger;
 
@@ -58,26 +65,29 @@ class VerifierProcess
         $scripts = $this->installManager->install();
 
         $logger        = $this->getLogger();
-        $processRunner = new ProcessRunner($scripts->getProviderVerifier(), $arguments);
-        $processRunner->setLogger($logger);
+        $processRunner = $this->processRunnerFactory->createRunner(
+            $scripts->getProviderVerifier(),
+            $arguments,
+            $logger
+        );
 
-        $logger->addInfo("Verifying PACT with script:\n{$processRunner->getCommand()}\n\n");
+        $logger->info("Verifying PACT with script:\n{$processRunner->getCommand()}\n\n");
 
         try {
             $processRunner->runBlocking();
 
-            $logger->addInfo('out > ' . $processRunner->getOutput());
-            $logger->addError('err > ' . $processRunner->getStderr());
+            $logger->info('out > ' . $processRunner->getOutput());
+            $logger->error('err > ' . $processRunner->getStderr());
         } catch (\Exception $e) {
-            $logger->addInfo('out > ' . $processRunner->getOutput());
-            $logger->addError('err > ' . $processRunner->getStderr());
+            $logger->info('out > ' . $processRunner->getOutput());
+            $logger->error('err > ' . $processRunner->getStderr());
 
             throw $e;
         }
     }
 
     /**
-     * @return Logger
+     * @return LoggerInterface
      */
     private function getLogger()
     {
