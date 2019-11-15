@@ -27,6 +27,10 @@ class MockServerEnvConfig extends MockServerConfig
             ->setPactDir($this->parseEnv('PACT_OUTPUT_DIR', false))
             ->setCors($this->parseEnv('PACT_CORS', false));
 
+        if ($logDir = $this->parseEnv('PACT_LOG', false)) {
+            $this->setLog($logDir);
+        }
+
         $timeout = $this->parseEnv('PACT_MOCK_SERVER_HEALTH_CHECK_TIMEOUT', false);
         if (!$timeout) {
             $timeout = 10;
