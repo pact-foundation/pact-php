@@ -17,13 +17,21 @@ class BrokerHttpClient implements BrokerHttpClientInterface
     /** @var UriInterface */
     private $baseUri;
 
+    /** @var array */
+    private $headers;
+
     /**
      * {@inheritdoc}
      */
-    public function __construct(ClientInterface $httpClient, UriInterface $baseUri)
+    public function __construct(ClientInterface $httpClient, UriInterface $baseUri, array $headers = array())
     {
         $this->httpClient = $httpClient;
         $this->baseUri    = $baseUri;
+        $this->headers    = $headers;
+
+        if(! array_key_exists('Content-Type', $headers)){
+            $this->headers['Content-Type'] = 'application/json';
+        }
     }
 
     /**
@@ -39,9 +47,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
         $uri = $this->baseUri->withPath("/pacts/provider/{$provider}/consumer/{$consumer}/version/{$version}");
 
         $this->httpClient->put($uri, [
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
+            'headers' => $this->headers,
             'body' => $json,
         ]);
     }
@@ -53,11 +59,8 @@ class BrokerHttpClient implements BrokerHttpClientInterface
     {
         /** @var UriInterface $uri */
         $uri = $this->baseUri->withPath("/pacticipants/{$consumer}/versions/{$version}/tags/{$tag}");
-
         $this->httpClient->put($uri, [
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
+            'headers' => $this->headers,
         ]);
     }
 
@@ -73,9 +76,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
         $uri = $this->baseUri->withPath("/pacts/provider/{$provider}/latest");
 
         $response = $this->httpClient->get($uri, [
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
+            'headers' => $this->headers,
         ]);
 
         $json = \json_decode($response->getBody()->getContents(), true);
@@ -96,9 +97,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
         $uri = $this->baseUri->withPath("/pacts/provider/{$provider}/latest/{$tag}");
 
         $response = $this->httpClient->get($uri, [
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
+            'headers' => $this->headers,
         ]);
 
         $json = \json_decode($response->getBody()->getContents(), true);

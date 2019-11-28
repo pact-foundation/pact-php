@@ -14,10 +14,11 @@ interface BrokerHttpClientInterface
     /**
      * HttpServiceInterface constructor.
      *
-     * @param ClientInterface $client  Http Client
-     * @param UriInterface    $baseUri Base URI for the PhpPact Broker
+     * @param ClientInterface $client Http Client
+     * @param UriInterface $baseUri Base URI for the PhpPact Broker
+     * @param array $headers additional headers
      */
-    public function __construct(ClientInterface $client, UriInterface $baseUri);
+    public function __construct(ClientInterface $client, UriInterface $baseUri, array $headers);
 
     /**
      * Publish JSON.
