@@ -115,9 +115,14 @@ class PactTestListener implements TestListener
                     $clientConfig['verify'] = $sslVerify !== 'no';
                 }
 
+                $headers = [];
+                if ($bearerToken = \getenv('PACT_BROKER_BEARER_TOKEN')) {
+                    $headers['Authorization'] = 'Bearer ' . $bearerToken;
+                }
+
                 $client = new GuzzleClient($clientConfig);
 
-                $brokerHttpService = new BrokerHttpClient($client, new Uri($pactBrokerUri));
+                $brokerHttpService = new BrokerHttpClient($client, new Uri($pactBrokerUri), $headers);
                 $brokerHttpService->tag($this->mockServerConfig->getConsumer(), $consumerVersion, $tag);
                 $brokerHttpService->publishJson($json, $consumerVersion);
                 print 'Pact file has been uploaded to the Broker successfully.';
