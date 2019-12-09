@@ -2,14 +2,13 @@
 
 namespace PhpPact\Consumer\Hook;
 
-use PHPUnit\Runner\AfterLastTestHook;
+use Exception;
+use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
-use PhpPact\Http\GuzzleClient;
-use RuntimeException;
 use PHPUnit\Framework\AssertionFailedError;
-use Exception;
-
+use PHPUnit\Runner\AfterLastTestHook;
+use RuntimeException;
 
 class ContractDownloader implements AfterLastTestHook
 {
@@ -32,16 +31,14 @@ class ContractDownloader implements AfterLastTestHook
      */
     public function executeAfterLastTest(): void
     {
-        try
-        {
+        try {
             $this->getMockServerService()->verifyInteractions();
         } catch (Exception $e) {
             throw new AssertionFailedError('Pact interaction verification failed', $e);
         }
 
-        try
-        {
-            file_put_contents($this->getPactFilename(), $this->getPactJson());
+        try {
+            \file_put_contents($this->getPactFilename(), $this->getPactJson());
         } catch (Exception $e) {
             throw new RuntimeException('Pact contract generation failed', $e);
         }
@@ -55,7 +52,7 @@ class ContractDownloader implements AfterLastTestHook
         );
     }
 
-    private function getPactFilename() : string
+    private function getPactFilename(): string
     {
         return $this->mockServerConfig->getPactDir()
         . DIRECTORY_SEPARATOR
@@ -64,7 +61,7 @@ class ContractDownloader implements AfterLastTestHook
         . $this->mockServerConfig->getProvider() . '.json';
     }
 
-    private function getPactJson() : string
+    private function getPactJson(): string
     {
         $uri      = $this->mockServerConfig->getBaseUri()->withPath('/pact');
         $response = $this->client->post(
@@ -74,7 +71,7 @@ class ContractDownloader implements AfterLastTestHook
                     'Content-Type'        => 'application/json',
                     'X-Pact-Mock-Service' => true,
                 ],
-                'body' => json_encode([
+                'body' => \json_encode([
                     'consumer' => ['name' => $this->mockServerConfig->getConsumer()],
                     'provider' => ['name' => $this->mockServerConfig->getProvider()]
                 ])
