@@ -3,6 +3,7 @@
 namespace PhpPact\Consumer\Hook;
 
 use Exception;
+use PhpPact\Http\ClientInterface;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
@@ -14,6 +15,9 @@ class ContractDownloader implements AfterLastTestHook
 {
     /** @var MockServerConfigInterface */
     private $mockServerConfig;
+
+    /** @var ClientInterface */
+    private $client;
 
     /**
      * ContractDownloader constructor.
@@ -47,9 +51,18 @@ class ContractDownloader implements AfterLastTestHook
     private function getMockServerService(): MockServerHttpService
     {
         return new MockServerHttpService(
-            new GuzzleClient(),
+            $this->getClient(),
             $this->mockServerConfig
         );
+    }
+
+    private function getClient(): ClientInterface
+    {
+        if (!$this->client) {
+            $this->client = new GuzzleClient();
+        }
+
+        return $this->client;
     }
 
     private function getPactFilename(): string
@@ -64,7 +77,7 @@ class ContractDownloader implements AfterLastTestHook
     private function getPactJson(): string
     {
         $uri      = $this->mockServerConfig->getBaseUri()->withPath('/pact');
-        $response = $this->client->post(
+        $response = $this->getClient()->post(
             $uri,
             [
                 'headers' => [
