@@ -64,6 +64,10 @@ class Verifier
             $parameters[] = "--provider-app-version={$this->config->getProviderVersion()}";
         }
 
+        if ($this->config->getProviderVersionTag() !== null) {
+            $parameters[] = "--provider-version-tag={$this->config->getProviderVersionTag()}";
+        }
+
         if ($this->config->getProviderStatesSetupUrl() !== null) {
             $parameters[] = "--provider-states-setup-url={$this->config->getProviderStatesSetupUrl()}";
         }
