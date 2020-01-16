@@ -25,7 +25,7 @@ class MessageBuilder implements BuilderInterface
     private $message;
 
     /**
-     * constructor.
+     * @param PactConfigInterface $config
      */
     public function __construct(PactConfigInterface $config)
     {
@@ -60,9 +60,9 @@ class MessageBuilder implements BuilderInterface
      *
      * @return MessageBuilder
      */
-    public function given(string $name, array $params = [], $overwrite = false): self
+    public function given(string $name, array $params = [], bool $overwrite = false): self
     {
-        $this->message->addProviderState($name, $params);
+        $this->message->addProviderState($name, $params, $overwrite);
 
         return $this;
     }

@@ -170,32 +170,18 @@ class MessageVerifier extends Verifier
             $logger = $this->getLogger();
 
             $server = new Server($servers, new CallableRequestHandler(function (Request $request) use ($callbacks) {
-                if (\count($callbacks) === 1) {
-                    $callback = \array_pop($callbacks);
-                } else {
-                    $payload = new Payload($request->getBody());
-                    $requestBody = yield $payload->buffer();
-                    $requestBody = \json_decode($requestBody);
-                    $providerStates = $requestBody->providerStates;
+                $payload = new Payload($request->getBody());
+                $requestBody = yield $payload->buffer();
+                $requestBody = \json_decode($requestBody);
 
-                    $callback = false;
+                $description = $requestBody->description;
+                $providerStates = $requestBody->providerStates;
 
-                    // for now, call the first call back
-                    foreach ($providerStates as $providerState) {
-                        if (isset($this->callbacks[$providerState->name])) {
-                            $callback = $this->callbacks[$providerState->name];
-
-                            // don't we need to actually uses two call backs in the case of multiple states?
-                            break;
-                        }
-                    }
-
-                    if ($callback === false) {
-                        throw new \Exception("Pacts with multiple states need to have callbacks key'ed by the providerState name");
-                    }
+                if (!isset($callbacks[$description])) {
+                    throw new \Exception('Callback should be key by description');
                 }
 
-                $out = \call_user_func($callback);
+                $out = \call_user_func($callbacks[$description], $providerStates);
 
                 // return response should only happen if the \call_user_fun()
                 return new Response(Status::OK, [

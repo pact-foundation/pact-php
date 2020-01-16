@@ -59,11 +59,11 @@ class Message implements \JsonSerializable
     /**
      * @param string $name
      * @param array  $params
-     * @param array  $overwrite - if true reset the entire state
+     * @param bool   $overwrite - if true reset the entire state
      *
      * @return Message
      */
-    public function addProviderState(string $name, array $params, $overwrite = false): self
+    public function addProviderState(string $name, array $params, bool $overwrite = false): self
     {
         $providerState         = new \stdClass();
         $providerState->name   = $name;

@@ -382,33 +382,30 @@ For each message, one needs to provide a single provider state.  The name of thi
 a particular message callback on the provider side.  See example\tests\MessageProvider
 
 1. Create your callbacks and states wrapped in a callable object
-    1. The array key is a provider state / given() on the consumer side
-    1. It is helpful to wrap the whole thing in a lambda if you need to customize paramaters to be passed in
+    1. The array key is the description on the consumer side
+    1. It is helpful to wrap the whole thing in a lambda if you need to customize parameters to be passed in
 1. Choose your verification method
 1. If nothing explodes, #winning
 
 ```php
+    $callbacks = [];
+    $callbacks['an alligator named Mary exists'] = function ($providerStates) {
+        $content = new \stdClass();
+        $content->text = $providerStates[0]->name === 'a message' ? 'Hello Mary' : 'Bye Mary';
 
-        $callbacks = array();
-        
-        // a hello message is a provider state / given() on the consumer side
-        $callbacks["a hello message"] = function() {
-            $content = new \stdClass();
-            $content->text ="Hello Mary";
+        $metadata = [];
+        $metadata['queue'] = 'myKey';
 
-            $metadata = array();
-            $metadata['queue'] = "myKey";
+        $provider = (new ExampleMessageProvider())
+            ->setContents($content)
+            ->setMetadata($metadata);
 
-            $provider = (new ExampleMessageProvider())
-                ->setContents($content)
-                ->setMetadata($metadata);
+        return $provider->Build();
+    };
 
-            return $provider->Build();
-        };
-        
-        $verifier = (new MessageVerifier($config))
-            ->setCallbacks($callbacks)
-            ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
+    $verifier = (new MessageVerifier($config))
+                ->setCallbacks($callbacks)
+                ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
 
 ```
 

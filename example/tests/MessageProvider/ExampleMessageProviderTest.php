@@ -16,10 +16,10 @@ class ExampleMessageProviderTest extends TestCase
      */
     public function testProcess()
     {
-        $callbacks                    = [];
-        $callbacks['a message']       = function () {
+        $callbacks                                         = [];
+        $callbacks['an alligator named Mary exists']       = function ($providerStates) {
             $content       = new \stdClass();
-            $content->text ='Hello Mary';
+            $content->text =  $providerStates[0]->name === 'a message' ? 'Hello Mary' : 'Bye Mary';
 
             $metadata          = [];
             $metadata['queue'] = 'myKey';
@@ -31,7 +31,7 @@ class ExampleMessageProviderTest extends TestCase
             return $provider->Build();
         };
 
-        $callbacks['You can hear happiness staggering on down the street'] = function () {
+        $callbacks['footprints dressed in red'] = function () {
             $content       = new \stdClass();
             $content->song ='And the wind whispers Mary';
 

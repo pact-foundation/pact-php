@@ -25,7 +25,8 @@
         "amphp/socket": "^0.10.9",
         "amphp/process": "^1.1.0",
         "amphp/http-server": "^1.0.1",
-        "amphp/log": "^1.0"
+        "amphp/log": "^1.0",
+        "ext-json": "*"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

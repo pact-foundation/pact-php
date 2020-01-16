@@ -62,8 +62,6 @@ class ExampleMessageConsumerTest extends TestCase
         $callback        = [$consumerMessage, 'ProcessText'];
         $builder->setCallback($callback);
 
-        $hasException = false;
-
         $builder->verify();
 
         $this->assertTrue(true, 'Expects to reach this true statement by running verify()');
