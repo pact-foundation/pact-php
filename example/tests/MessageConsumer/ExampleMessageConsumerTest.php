@@ -52,7 +52,7 @@ class ExampleMessageConsumerTest extends TestCase
         $metadata = ['queue'=>'wind cries', 'routing_key'=>'wind cries'];
 
         $builder
-            ->given('a message')
+            ->given('a message', ['foo'])
             ->expectsToReceive('an alligator named Mary exists')
             ->withMetadata($metadata)
             ->withContent($contents);
