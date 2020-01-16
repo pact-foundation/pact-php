@@ -41,6 +41,7 @@ class ProcessRunner
     public function __construct(string $command, array $arguments)
     {
         $this->exitCode  = -1;
+        print "\n" . $command . ' ' . \implode(' ', $arguments) . "\n";
         $this->process   = new Process($command . ' ' . \implode(' ', $arguments));
     }
 

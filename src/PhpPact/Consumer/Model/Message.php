@@ -14,9 +14,9 @@ class Message implements \JsonSerializable
     private $description;
 
     /**
-     * @var string
+     * @var array
      */
-    private $providerState;
+    private $providerStates = [];
 
     /**
      * @var array
@@ -49,21 +49,31 @@ class Message implements \JsonSerializable
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getProviderState(): string
+    public function getProviderStates(): array
     {
-        return $this->providerState;
+        return $this->providerStates;
     }
 
     /**
-     * @param string $providerState
+     * @param string $name
+     * @param array  $params
+     * @param array  $overwrite - if true reset the entire state
      *
      * @return Message
      */
-    public function setProviderState(string $providerState): self
+    public function addProviderState(string $name, array $params, $overwrite = false): self
     {
-        $this->providerState = $providerState;
+        $providerState         = new \stdClass();
+        $providerState->name   = $name;
+        $providerState->params = (object) $params;
+
+        if ($overwrite === true) {
+            $this->providerStates = [];
+        }
+
+        $this->providerStates[] = $providerState;
 
         return $this;
     }
@@ -116,8 +126,8 @@ class Message implements \JsonSerializable
         $out                = [];
         $out['description'] = $this->getDescription();
 
-        if ($this->providerState) {
-            $out['providerState'] = $this->getProviderState();
+        if (\count($this->providerStates) > 0) {
+            $out['providerState'] = $this->getProviderStates();
         }
 
         if ($this->metadata) {
@@ -127,6 +137,8 @@ class Message implements \JsonSerializable
         if ($this->contents) {
             $out['contents'] = $this->getContents();
         }
+
+        print \json_encode($out);
 
         return $out;
     }

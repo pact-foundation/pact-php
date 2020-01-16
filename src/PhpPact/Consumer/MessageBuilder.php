@@ -49,13 +49,15 @@ class MessageBuilder implements BuilderInterface
     }
 
     /**
-     * @param string $providerState what is given to the request
+     * @param string $name      what is given to the request
+     * @param array  $params    for that request
+     * @param bool   $overwrite clear pass states completely and start this array
      *
      * @return MessageBuilder
      */
-    public function given(string $providerState): self
+    public function given(string $name, array $params = [], $overwrite = false): self
     {
-        $this->message->setProviderState($providerState);
+        $this->message->addProviderState($name, $params);
 
         return $this;
     }

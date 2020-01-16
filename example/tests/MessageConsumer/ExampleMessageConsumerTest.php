@@ -52,7 +52,8 @@ class ExampleMessageConsumerTest extends TestCase
         $metadata = ['queue'=>'wind cries', 'routing_key'=>'wind cries'];
 
         $builder
-            ->given('a hello message')
+            ->given('a message', ['hello'])
+            ->given('another message', ['goodbye'])
             ->expectsToReceive('an alligator named Mary exists')
             ->withMetadata($metadata)
             ->withContent($contents);
@@ -70,9 +71,9 @@ class ExampleMessageConsumerTest extends TestCase
     }
 
     /**
-     * @throws \Exception
+     * @todo \Exception
      */
-    public function testProcessSong()
+    public function tProcessSong()
     {
         $builder    = new MessageBuilder(self::$config);
 
