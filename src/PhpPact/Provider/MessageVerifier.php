@@ -181,15 +181,15 @@ class MessageVerifier extends Verifier
                     $callback = false;
 
                     // for now, call the first call back
-                    foreach($providerStates as $providerState) {
+                    foreach ($providerStates as $providerState) {
                         if (isset($this->callbacks[$providerState->name])) {
                             $callback = $this->callbacks[$providerState->name];
-                        
+
                             // don't we need to actually uses two call backs in the case of multiple states?
                             break;
                         }
                     }
-                    
+
                     if ($callback === false) {
                         throw new \Exception("Pacts with multiple states need to have callbacks key'ed by the providerState name");
                     }

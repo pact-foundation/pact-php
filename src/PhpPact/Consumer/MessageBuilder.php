@@ -38,18 +38,18 @@ class MessageBuilder implements BuilderInterface
      * Retrieve the verification call back
      *
      * @param callable $callback
-     * @param string $providerStateName name of the state the call back is for
+     * @param string   $providerStateName name of the state the call back is for
      *
      * @return MessageBuilder
      */
     public function setCallback(callable $callback, $providerStateName = false): self
     {
         if ($providerStateName) {
-            $this->callback[$providerStateName] = $callback;  
-        }
-        else {
+            $this->callback[$providerStateName] = $callback;
+        } else {
             $this->callback[0] = $callback;
         }
+
         return $this;
     }
 
@@ -122,7 +122,7 @@ class MessageBuilder implements BuilderInterface
      * Wrapper around verify()
      *
      * @param callable $callback
-     * @param string $providerStateName
+     * @param string   $providerStateName
      *
      * @throws \Exception
      *
@@ -143,7 +143,7 @@ class MessageBuilder implements BuilderInterface
      */
     public function verify(): bool
     {
-        if (count($this->callback) < 1) {
+        if (\count($this->callback) < 1) {
             throw new \Exception('Callbacks need to exist to run verify.');
         }
 
@@ -151,9 +151,10 @@ class MessageBuilder implements BuilderInterface
 
         // call the function to actually run the logic
         try {
-            foreach($this->callback as $callback) {
+            foreach ($this->callback as $callback) {
                 \call_user_func($callback, $pactJson);
             }
+
             return $this->writePact();
         } catch (\Exception $e) {
             return false;

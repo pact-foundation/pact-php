@@ -17,7 +17,7 @@ class ExampleMessageProviderTest extends TestCase
     public function testProcess()
     {
         $callbacks                    = [];
-        $callbacks['a message'] = function () {
+        $callbacks['a message']       = function () {
             $content       = new \stdClass();
             $content->text ='Hello Mary';
 

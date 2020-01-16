@@ -67,7 +67,7 @@ class Message implements \JsonSerializable
     {
         $providerState         = new \stdClass();
         $providerState->name   = $name;
-        $providerState->params = $params;  
+        $providerState->params = $params;
 
         if ($overwrite === true) {
             $this->providerStates = [];
