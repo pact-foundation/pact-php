@@ -18,7 +18,7 @@ class MessageBuilder implements BuilderInterface
     /** @var PactConfigInterface */
     protected $config;
 
-    /** @var callable */
+    /** @var array callable */
     protected $callback;
 
     /** @var Message */
@@ -38,13 +38,18 @@ class MessageBuilder implements BuilderInterface
      * Retrieve the verification call back
      *
      * @param callable $callback
+     * @param string $providerStateName name of the state the call back is for
      *
      * @return MessageBuilder
      */
-    public function setCallback(callable $callback): self
+    public function setCallback(callable $callback, $providerStateName = false): self
     {
-        $this->callback = $callback;
-
+        if ($providerStateName) {
+            $this->callback[$providerStateName] = $callback;  
+        }
+        else {
+            $this->callback[0] = $callback;
+        }
         return $this;
     }
 
@@ -117,16 +122,17 @@ class MessageBuilder implements BuilderInterface
      * Wrapper around verify()
      *
      * @param callable $callback
+     * @param string $providerStateName
      *
      * @throws \Exception
      *
      * @return bool
      */
-    public function verifyMessage($callback): bool
+    public function verifyMessage($callback, $providerStateName = false): bool
     {
-        $this->setCallback($callback);
+        $this->setCallback($callback, $providerStateName);
 
-        return $this->verify();
+        return $this->verify($providerStateName);
     }
 
     /**
@@ -137,7 +143,7 @@ class MessageBuilder implements BuilderInterface
      */
     public function verify(): bool
     {
-        if (!$this->callback) {
+        if (count($this->callback) < 1) {
             throw new \Exception('Callbacks need to exist to run verify.');
         }
 
@@ -145,8 +151,9 @@ class MessageBuilder implements BuilderInterface
 
         // call the function to actually run the logic
         try {
-            \call_user_func($this->callback, $pactJson);
-
+            foreach($this->callback as $callback) {
+                \call_user_func($callback, $pactJson);
+            }
             return $this->writePact();
         } catch (\Exception $e) {
             return false;

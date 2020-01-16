@@ -176,13 +176,23 @@ class MessageVerifier extends Verifier
                     $payload = new Payload($request->getBody());
                     $requestBody = yield $payload->buffer();
                     $requestBody = \json_decode($requestBody);
-                    $providerState = $requestBody->providerStates[0]->name;
+                    $providerStates = $requestBody->providerStates;
 
-                    if (!isset($this->callbacks[$providerState])) {
+                    $callback = false;
+
+                    // for now, call the first call back
+                    foreach($providerStates as $providerState) {
+                        if (isset($this->callbacks[$providerState->name])) {
+                            $callback = $this->callbacks[$providerState->name];
+                        
+                            // don't we need to actually uses two call backs in the case of multiple states?
+                            break;
+                        }
+                    }
+                    
+                    if ($callback === false) {
                         throw new \Exception("Pacts with multiple states need to have callbacks key'ed by the providerState name");
                     }
-
-                    $callback = $this->callbacks[$providerState];
                 }
 
                 $out = \call_user_func($callback);
