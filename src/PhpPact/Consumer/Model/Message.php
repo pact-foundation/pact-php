@@ -67,7 +67,7 @@ class Message implements \JsonSerializable
     {
         $providerState         = new \stdClass();
         $providerState->name   = $name;
-        $providerState->params = (object) $params;
+        $providerState->params = $params;  
 
         if ($overwrite === true) {
             $this->providerStates = [];
@@ -127,7 +127,7 @@ class Message implements \JsonSerializable
         $out['description'] = $this->getDescription();
 
         if (\count($this->providerStates) > 0) {
-            $out['providerState'] = $this->getProviderStates();
+            $out['providerStates'] = $this->getProviderStates();
         }
 
         if ($this->metadata) {
@@ -137,8 +137,6 @@ class Message implements \JsonSerializable
         if ($this->contents) {
             $out['contents'] = $this->getContents();
         }
-
-        print \json_encode($out);
 
         return $out;
     }

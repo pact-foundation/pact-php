@@ -71,9 +71,9 @@ class ExampleMessageConsumerTest extends TestCase
     }
 
     /**
-     * @todo \Exception
+     * @throws \Exception
      */
-    public function tProcessSong()
+    public function testProcessSong()
     {
         $builder    = new MessageBuilder(self::$config);
 
