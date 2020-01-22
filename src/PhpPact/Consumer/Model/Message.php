@@ -57,6 +57,16 @@ class Message implements \JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public function setProviderStates(string $name, array $params = array()): array
+    {
+        $this->addProviderState($name, $params, true);
+        
+        return $this->providerStates;
+    }
+
+    /**
      * @param string $name
      * @param array  $params
      * @param array  $overwrite - if true reset the entire state
