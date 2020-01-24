@@ -42,7 +42,7 @@ class InteractionBuilder implements BuilderInterface
      */
     public function given(string $providerState): self
     {
-        $this->interaction->setProviderStates($providerState);
+        $this->interaction->setProviderState($providerState);
 
         return $this;
     }

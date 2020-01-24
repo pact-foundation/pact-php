@@ -62,7 +62,7 @@ class MessageBuilder implements BuilderInterface
      */
     public function given(string $name, array $params = [], $overwrite = false): self
     {
-        $this->message->setProviderStates($name, $params, $overwrite);
+        $this->message->setProviderState($name, $params, $overwrite);
 
         return $this;
     }

@@ -59,7 +59,7 @@ class Message implements \JsonSerializable
     /**
      * @return array
      */
-    public function setProviderStates(string $name, array $params = []): array
+    public function setProviderState(string $name, array $params = []): array
     {
         $this->addProviderState($name, $params, true);
 
