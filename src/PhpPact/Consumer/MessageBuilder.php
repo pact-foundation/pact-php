@@ -138,7 +138,7 @@ class MessageBuilder implements BuilderInterface
     /**
      * Verify the use of the pact by calling the callback
      * It also calls finalize to write the pact
-     * 
+     *
      * @param string $description description of the pact and thus callback
      *
      * @throws \Exception if callback is not set

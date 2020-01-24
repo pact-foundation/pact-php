@@ -182,8 +182,8 @@ class MessageVerifier extends Verifier
 
                     if (isset($this->callbacks[$description])) {
                         $callback = $this->callbacks[$description];
-                    } 
-                    
+                    }
+
                     if ($callback === false) {
                         throw new \Exception("Pacts with multiple states need to have callbacks key'ed by the description");
                     }
