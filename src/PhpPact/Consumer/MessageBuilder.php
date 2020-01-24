@@ -18,7 +18,7 @@ class MessageBuilder implements BuilderInterface
     /** @var PactConfigInterface */
     protected $config;
 
-    /** @var callable */
+    /** @var array callable */
     protected $callback;
 
     /** @var Message */
@@ -38,24 +38,31 @@ class MessageBuilder implements BuilderInterface
      * Retrieve the verification call back
      *
      * @param callable $callback
+     * @param string   $description of the call back in case of multiple
      *
      * @return MessageBuilder
      */
-    public function setCallback(callable $callback): self
+    public function setCallback(callable $callback, $description = false): self
     {
-        $this->callback = $callback;
+        if ($description) {
+            $this->callback[$description] = $callback;
+        } else {
+            $this->callback[0] = $callback;
+        }
 
         return $this;
     }
 
     /**
-     * @param string $providerState what is given to the request
+     * @param string $name      what is given to the request
+     * @param array  $params    for that request
+     * @param bool   $overwrite clear pass states completely and start this array
      *
      * @return MessageBuilder
      */
-    public function given(string $providerState): self
+    public function given(string $name, array $params = [], $overwrite = false): self
     {
-        $this->message->setProviderState($providerState);
+        $this->message->setProviderState($name, $params, $overwrite);
 
         return $this;
     }
@@ -115,27 +122,30 @@ class MessageBuilder implements BuilderInterface
      * Wrapper around verify()
      *
      * @param callable $callback
+     * @param string   $description description of the pact and thus callback
      *
      * @throws \Exception
      *
      * @return bool
      */
-    public function verifyMessage($callback): bool
+    public function verifyMessage($callback, $description = false): bool
     {
-        $this->setCallback($callback);
+        $this->setCallback($callback, $description);
 
-        return $this->verify();
+        return $this->verify($description);
     }
 
     /**
      * Verify the use of the pact by calling the callback
      * It also calls finalize to write the pact
      *
+     * @param string $description description of the pact and thus callback
+     *
      * @throws \Exception if callback is not set
      */
-    public function verify(): bool
+    public function verify($description = false): bool
     {
-        if (!$this->callback) {
+        if (\count($this->callback) < 1) {
             throw new \Exception('Callbacks need to exist to run verify.');
         }
 
@@ -143,7 +153,10 @@ class MessageBuilder implements BuilderInterface
 
         // call the function to actually run the logic
         try {
-            \call_user_func($this->callback, $pactJson);
+            foreach ($this->callback as $callback) {
+                //@todo .. what do with the providerState
+                \call_user_func($callback, $pactJson);
+            }
 
             return $this->writePact();
         } catch (\Exception $e) {

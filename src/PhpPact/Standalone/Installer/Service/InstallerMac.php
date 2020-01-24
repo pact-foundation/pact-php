@@ -7,7 +7,7 @@ use PhpPact\Standalone\Installer\Model\Scripts;
 
 class InstallerMac implements InstallerInterface
 {
-    const VERSION = '1.54.4';
+    const VERSION = '1.74.0';
 
     /**
      * {@inheritdoc}
