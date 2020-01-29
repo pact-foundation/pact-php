@@ -21,6 +21,9 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var string */
     private $providerVersion;
 
+    /** @var null|string */
+    private $providerVersionTag;
+
     /** @var bool */
     private $publishResults = false;
 
@@ -116,6 +119,24 @@ class VerifierConfig implements VerifierConfigInterface
     public function setProviderVersion(string $providerVersion): VerifierConfigInterface
     {
         $this->providerVersion = $providerVersion;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getProviderVersionTag()
+    {
+        return $this->providerVersionTag;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setProviderVersionTag(string $providerVersionTag): VerifierConfigInterface
+    {
+        $this->providerVersionTag = $providerVersionTag;
 
         return $this;
     }
