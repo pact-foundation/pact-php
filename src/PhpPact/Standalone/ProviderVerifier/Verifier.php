@@ -86,7 +86,7 @@ class Verifier
 
         if ($this->config->getCustomProviderHeaders() !== null) {
             foreach ($this->config->getCustomProviderHeaders() as $customProviderHeader) {
-                $parameters[] = "--custom-provider-header={$customProviderHeader}";
+                $parameters[] = "--custom-provider-header=\"{$customProviderHeader}\"";
             }
         }
 
