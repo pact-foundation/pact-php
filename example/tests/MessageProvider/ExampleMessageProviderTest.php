@@ -53,7 +53,7 @@ class ExampleMessageProviderTest extends TestCase
         // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
         $verifier = (new MessageVerifier($config))
             ->setCallbacks($callbacks)
-            ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
+            ->verifyFiles([__DIR__ . '/../../pacts/test_consumer-test_provider.json']);
 
         // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
         $this->assertTrue(true, 'Expects to reach true by running verification');
