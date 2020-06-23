@@ -19,7 +19,6 @@ git checkout -b ${BRANCH_NAME}
 for file in $VERSION_FILES; do
   cat ${file} | sed "s/.*const VERSION = .*/\    const VERSION = '${STANDALONE_VERSION}';/" > tmp-version-file
   mv tmp-version-file ${file}
-
 done
 
 
