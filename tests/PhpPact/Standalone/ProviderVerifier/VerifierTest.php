@@ -26,6 +26,7 @@ class VerifierTest extends TestCase
             ->setPublishResults(true)
             ->setBrokerUsername('someusername')
             ->setBrokerPassword('somepassword')
+            ->setBrokerToken('sometoken')
             ->addCustomProviderHeader('key1', 'value1')
             ->addCustomProviderHeader('key2', 'value2')
             ->setVerbose(true)
@@ -42,6 +43,7 @@ class VerifierTest extends TestCase
         $this->assertContains('--publish-verification-results', $arguments);
         $this->assertContains('--broker-username=someusername', $arguments);
         $this->assertContains('--broker-password=somepassword', $arguments);
+        $this->assertContains('--broker-token=sometoken', $arguments);
         $this->assertContains('--custom-provider-header="key1: value1"', $arguments);
         $this->assertContains('--custom-provider-header="key2: value2"', $arguments);
         $this->assertContains('--verbose', $arguments);

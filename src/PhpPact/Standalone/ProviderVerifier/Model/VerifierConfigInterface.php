@@ -119,6 +119,18 @@ interface VerifierConfigInterface
     public function setBrokerPassword(string $brokerPassword);
 
     /**
+     * @return null|string API token for the pact broker if secured
+     */
+    public function getBrokerToken();
+
+    /**
+     * @param string $brokerToken API token for the pact broker if secured
+     *
+     * @return VerifierConfigInterface
+     */
+    public function setBrokerToken(string $brokerToken);
+
+    /**
      * @return null|\string[] custom headers for the request to the provider such as authorization
      */
     public function getCustomProviderHeaders();

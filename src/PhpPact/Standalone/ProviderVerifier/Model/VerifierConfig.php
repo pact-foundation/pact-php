@@ -36,6 +36,9 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var null|string */
     private $brokerPassword;
 
+    /** @var null|string */
+    private $brokerToken;
+
     /** @var string[] */
     private $customProviderHeaders;
 
@@ -209,6 +212,24 @@ class VerifierConfig implements VerifierConfigInterface
     public function setBrokerPassword(string $brokerPassword)
     {
         $this->brokerPassword = $brokerPassword;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBrokerToken()
+    {
+        return $this->brokerToken;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setBrokerToken(string $brokerToken)
+    {
+        $this->brokerToken = $brokerToken;
 
         return $this;
     }

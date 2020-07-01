@@ -84,6 +84,10 @@ class Verifier
             $parameters[] = "--broker-password={$this->config->getBrokerPassword()}";
         }
 
+        if ($this->config->getBrokerToken() !== null) {
+            $parameters[] = "--broker-token={$this->config->getBrokerToken()}";
+        }
+
         if ($this->config->getCustomProviderHeaders() !== null) {
             foreach ($this->config->getCustomProviderHeaders() as $customProviderHeader) {
                 $parameters[] = "--custom-provider-header=\"{$customProviderHeader}\"";
