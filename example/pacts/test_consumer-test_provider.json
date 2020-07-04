@@ -10,7 +10,10 @@
       "description": "an alligator named Mary exists",
       "providerStates": [
         {
-          "name": "a hello message"
+          "name": "a message",
+          "params": [
+            "foo"
+          ]
         }
       ],
       "contents": {
@@ -29,7 +32,10 @@
       "description": "footprints dressed in red",
       "providerStates": [
         {
-          "name": "You can hear happiness staggering on down the street"
+          "name": "You can hear happiness staggering on down the street",
+          "params": [
+
+          ]
         }
       ],
       "contents": {

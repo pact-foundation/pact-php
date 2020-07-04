@@ -56,7 +56,7 @@ class PactVerifyTest extends TestCase
 
         // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
         $verifier = new Verifier($config);
-        $verifier->verifyFiles([__DIR__ . '/../../output/someconsumer-someprovider.json']);
+        $verifier->verifyFiles([__DIR__ . '/../../pacts/someconsumer-someprovider.json']);
 
         // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
         $this->assertTrue(true, 'Pact Verification has failed.');

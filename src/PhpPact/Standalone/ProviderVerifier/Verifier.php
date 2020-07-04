@@ -17,10 +17,10 @@ use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
  */
 class Verifier
 {
-    /** @var int $processTimeout */
+    /** @var int */
     protected $processTimeout = 60;
 
-    /** @var int $processIdleTimeout */
+    /** @var int */
     protected $processIdleTimeout = 10;
 
     /** @var VerifierConfigInterface */
