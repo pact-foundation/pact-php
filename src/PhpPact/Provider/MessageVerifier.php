@@ -186,6 +186,7 @@ class MessageVerifier extends Verifier
                     $callback = $callbacks[$providerState];
                 }
 
+                //@todo pass $providerStates to the call back
                 $out = \call_user_func($callback);
 
                 // return response should only happen if the \call_user_fun()

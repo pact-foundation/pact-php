@@ -13,7 +13,7 @@ PHP version of [Pact](https://pact.io). Enables consumer driven contract testing
 
 Table of contents
 =================
-
+ 
 * [Versions](#versions)
 * [Specifications](#specifications)
 * [Installation](#installation)
@@ -416,7 +416,7 @@ a particular message callback on the provider side.  See example\tests\MessagePr
 
 If you would like to test with fixtures, you can use the `pact-stub-service` like this:
 
-```
+```php
 $pactLocation             = __DIR__ . '/someconsumer-someprovider.json';
 $host                     = 'localhost';
 $port                     = 7201;

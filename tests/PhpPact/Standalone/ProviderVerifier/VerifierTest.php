@@ -20,6 +20,7 @@ class VerifierTest extends TestCase
         $config
             ->setProviderName('someProvider')
             ->setProviderVersion('1.0.0')
+            ->setProviderVersionTag('prod')
             ->setProviderBaseUrl(new Uri('http://myprovider:1234'))
             ->setProviderStatesSetupUrl(new Uri('http://someurl:1234'))
             ->setPublishResults(true)
@@ -41,10 +42,11 @@ class VerifierTest extends TestCase
         $this->assertContains('--publish-verification-results', $arguments);
         $this->assertContains('--broker-username=someusername', $arguments);
         $this->assertContains('--broker-password=somepassword', $arguments);
-        $this->assertContains('--custom-provider-header=key1: value1', $arguments);
-        $this->assertContains('--custom-provider-header=key2: value2', $arguments);
+        $this->assertContains('--custom-provider-header="key1: value1"', $arguments);
+        $this->assertContains('--custom-provider-header="key2: value2"', $arguments);
         $this->assertContains('--verbose', $arguments);
         $this->assertContains('--format=someformat', $arguments);
+        $this->assertContains('--provider-version-tag=prod', $arguments);
         $this->assertSame(['process_timeout' => 30, 'process_idle_timeout' => 5], $server->getTimeoutValues());
     }
 
