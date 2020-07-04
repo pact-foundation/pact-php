@@ -42,10 +42,10 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var string */
     private $format;
 
-    /** @var int $processTimeout */
+    /** @var int */
     private $processTimeout = 60;
 
-    /** @var int $processIdleTimeout */
+    /** @var int */
     private $processIdleTimeout = 10;
 
     /**
