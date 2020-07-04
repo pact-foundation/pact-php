@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "ext-openssl": "*",
         "composer/semver": "^1.4.2",
         "guzzlehttp/guzzle": "^6.3",
