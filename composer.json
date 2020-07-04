@@ -22,9 +22,9 @@
         "ext-openssl": "*",
         "composer/semver": "^1.4.2",
         "guzzlehttp/guzzle": "^6.3",
-        "amphp/socket": "^0.10.9",
-        "amphp/process": "^1.1.0",
-        "amphp/http-server": "^1.0.1",
+        "amphp/socket": "^1.0",
+        "amphp/process": "^1.0",
+        "amphp/http-server": "^2.0",
         "amphp/log": "^1.0"
     },
     "require-dev": {

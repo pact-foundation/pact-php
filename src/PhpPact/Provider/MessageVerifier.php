@@ -176,13 +176,14 @@ class MessageVerifier extends Verifier
                     $payload = new Payload($request->getBody());
                     $requestBody = yield $payload->buffer();
                     $requestBody = \json_decode($requestBody);
+            
                     $providerState = $requestBody->providerStates[0]->name;
 
-                    if (!isset($this->callbacks[$providerState])) {
+                    if (!isset($callbacks[$providerState])) {
                         throw new \Exception("Pacts with multiple states need to have callbacks key'ed by the providerState name");
                     }
 
-                    $callback = $this->callbacks[$providerState];
+                    $callback = $callbacks[$providerState];
                 }
 
                 $out = \call_user_func($callback);
