@@ -10,7 +10,7 @@
       "description": "an alligator named Mary exists",
       "providerStates": [
         {
-          "name": "a hello message"
+          "name": "a message"
         }
       ],
       "contents": {
