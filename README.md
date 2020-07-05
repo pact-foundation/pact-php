@@ -5,7 +5,7 @@
 [![Packagist](https://img.shields.io/packagist/v/pact-foundation/pact-php?style=flat-square)](https://packagist.org/pact-foundation/pact-php)
 
 [![Downloads](https://img.shields.io/packagist/dt/pact-foundation/pact-php?style=flat-square)](https://packagist.org/packages/pact-foundation/pact-php)
-[![Downloads This Month](https://img.shields.io/packagist/dm/pact-foundation/pact-php?style=flat-square))](https://packagist.org/packages/pact-foundation/pact-php)
+[![Downloads This Month](https://img.shields.io/packagist/dm/pact-foundation/pact-php?style=flat-square)](https://packagist.org/packages/pact-foundation/pact-php)
 
 PHP version of [Pact](https://pact.io). Enables consumer driven contract testing. Please read the [Pact.io](https://pact.io) for specific information about PACT.
 
