@@ -89,11 +89,10 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
 
     /**
      * The seconds between health checks of mock server
-     * 
+     *
      * @var int
      */
     private $healthCheckRetrySec;
-
 
     /**
      * {@inheritdoc}
@@ -325,7 +324,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         return $this->healthCheckTimeout;
     }
 
-        /**
+    /**
      * {@inheritdoc}
      */
     public function setHealthCheckRetrySec($seconds): MockServerConfigInterface

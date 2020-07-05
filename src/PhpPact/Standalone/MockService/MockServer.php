@@ -67,7 +67,7 @@ class MockServer
             $retrySec = $this->config->getHealthCheckRetrySec();
             \sleep($retrySec);
         }
-        
+
         return $processId;
     }
 
@@ -147,6 +147,7 @@ class MockServer
 
             try {
                 $status = $service->healthCheck();
+
                 return $status;
             } catch (ConnectException $e) {
                 \sleep($retrySec);

@@ -2,8 +2,7 @@
 <phpunit bootstrap="../vendor/autoload.php" colors="true">
     <testsuites>
         <testsuite name="PhpPact Core Tests">
-            <!--<directory>../tests</directory>-->
-            <file>../tests/PhpPact/Standalone/MockServer/Service/MockServerHttpServiceTest.php</file>
+            <directory>../tests</directory>
         </testsuite>
     </testsuites>
     <listeners>
@@ -27,6 +26,6 @@
         <env name="PACT_OUTPUT_DIR" value=".\example\output\\"/>
         <env name="PACT_CORS" value="true"/>
         <env name="PACT_MOCK_SERVER_HEALTH_CHECK_TIMEOUT" value="15"/>
-        <env name="PACT_MOCK_SERVER_HEALTH_CHECK_RETRY_SEC" value="2"/>
+        <env name="PACT_MOCK_SERVER_HEALTH_CHECK_RETRY_SEC" value="10"/>
     </php>
 </phpunit>
