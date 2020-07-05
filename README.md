@@ -2,12 +2,10 @@
 
 [![AppVeyor](https://img.shields.io/appveyor/ci/mattermack/pact-php.svg?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/mattermack/pact-php/branch/master)
 [![Travis](https://img.shields.io/travis/pact-foundation/pact-php.svg?style=flat-square&logo=travis)](https://travis-ci.org/pact-foundation/pact-php)
-[![Packagist](https://img.shields.io/packagist/v/mattersight/phppact.svg?style=flat-square&label=stable)](https://packagist.org/packages/mattersight/phppact)
-[![Packagist Pre Release](https://img.shields.io/packagist/vpre/mattersight/phppact.svg?style=flat-square&label=unstable)](https://packagist.org/packages/mattersight/phppact)
+[![Packagist](https://img.shields.io/packagist/v/pact-foundation/pact-php?style=flat-square)](https://packagist.org/pact-foundation/pact-php)
 
-[![Downloads](https://img.shields.io/packagist/dt/mattersight/phppact.svg?style=flat-square)](https://packagist.org/packages/mattersight/phppact)
-[![Downloads This Month](https://img.shields.io/packagist/dm/mattersight/phppact.svg?style=flat-square)](https://packagist.org/packages/mattersight/phppact)
-[![Downloads Today](https://img.shields.io/packagist/dd/mattersight/phppact.svg?style=flat-square)](https://packagist.org/packages/mattersight/phppact)
+[![Downloads](https://img.shields.io/packagist/dt/pact-foundation/pact-php?style=flat-square)](https://packagist.org/packages/pact-foundation/pact-php)
+[![Downloads This Month](https://img.shields.io/packagist/dm/pact-foundation/pact-php?style=flat-square))](https://packagist.org/packages/pact-foundation/pact-php)
 
 PHP version of [Pact](https://pact.io). Enables consumer driven contract testing. Please read the [Pact.io](https://pact.io) for specific information about PACT.
 
