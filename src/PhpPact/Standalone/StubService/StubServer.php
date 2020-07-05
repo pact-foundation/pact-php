@@ -31,18 +31,19 @@ class StubServer
     /**
      * Start the Stub Server. Verify that it is running.
      *
+     * @param $wait seconds to delay for the server to come up
      * @throws Exception
      *
      * @return int process ID of the started Stub Server
      */
-    public function start(): int
+    public function start($wait = 1): int
     {
         $scripts = $this->installManager->install();
 
         $this->processRunner = new ProcessRunner($scripts->getStubService(), $this->getArguments());
 
         $processId =  $this->processRunner->run();
-        \sleep(1); // wait for server to start
+        \sleep($wait); // wait for server to start
 
         return $processId;
     }
