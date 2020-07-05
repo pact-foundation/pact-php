@@ -62,8 +62,12 @@ class MockServer
 
         $processId =  $this->processRunner->run();
 
-        $this->verifyHealthCheck();
-
+        $result = $this->verifyHealthCheck();
+        if ($result) {
+            $retrySec = $this->config->getHealthCheckRetrySec();
+            \sleep($retrySec);
+        }
+        
         return $processId;
     }
 
@@ -137,15 +141,15 @@ class MockServer
         // Verify that the service is up.
         $tries    = 0;
         $maxTries = $this->config->getHealthCheckTimeout();
+        $retrySec = $this->config->getHealthCheckRetrySec();
         do {
             ++$tries;
 
             try {
                 $status = $service->healthCheck();
-
                 return $status;
             } catch (ConnectException $e) {
-                \sleep(1);
+                \sleep($retrySec);
             }
         } while ($tries <= $maxTries);
 

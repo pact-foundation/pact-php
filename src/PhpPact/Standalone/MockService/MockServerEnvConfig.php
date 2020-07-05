@@ -37,6 +37,12 @@ class MockServerEnvConfig extends MockServerConfig
         }
         $this->setHealthCheckTimeout($timeout);
 
+        $seconds = $this->parseEnv('PACT_MOCK_SERVER_HEALTH_CHECK_RETRY_SEC', false);
+        if (!$seconds) {
+            $seconds = 1;
+        }
+        $this->setHealthCheckRetrySec($seconds);
+
         $version = $this->parseEnv('PACT_SPECIFICATION_VERSION', false);
         if (!$version) {
             $version = static::DEFAULT_SPECIFICATION_VERSION;
