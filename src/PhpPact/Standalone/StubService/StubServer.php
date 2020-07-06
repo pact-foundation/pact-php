@@ -32,6 +32,7 @@ class StubServer
      * Start the Stub Server. Verify that it is running.
      *
      * @param $wait seconds to delay for the server to come up
+     *
      * @throws Exception
      *
      * @return int process ID of the started Stub Server
