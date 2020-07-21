@@ -337,7 +337,7 @@ class VerifierConfig implements VerifierConfigInterface
     public function setEnablePending(bool $pending): VerifierConfigInterface
     {
         $this->enablePending = $pending;
-        
+
         return $this;
     }
 

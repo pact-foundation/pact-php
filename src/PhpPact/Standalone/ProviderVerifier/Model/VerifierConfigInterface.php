@@ -187,18 +187,18 @@ interface VerifierConfigInterface
     public function getProcessIdleTimeout(): int;
 
     /**
-     * @return bool Allow pacts which are in pending state to be verified without causing the overall task to fail.
+     * @return bool allow pacts which are in pending state to be verified without causing the overall task to fail
      */
     public function setEnablePending(bool $pending): self;
 
     /**
-     * @return bool is enabled pending pacts 
+     * @return bool is enabled pending pacts
      */
     public function isEnablePending(): bool;
 
     /**
-     * @param string $date Includes pact marked as WIP since this date. 
-     * Accepted formats: Y-m-d (2020-01-30) or c (ISO 8601 date 2004-02-12T15:19:21+00:00)
+     * @param string $date Includes pact marked as WIP since this date.
+     *                     Accepted formats: Y-m-d (2020-01-30) or c (ISO 8601 date 2004-02-12T15:19:21+00:00)
      *
      * @return VerifierConfigInterface
      */
