@@ -98,6 +98,14 @@ class Verifier
             $parameters[] = "--format={$this->config->getFormat()}";
         }
 
+        if ($this->config->isEnablePending() === true) {
+            $parameters[] = '--enable-pending';
+        }
+
+        if ($this->config->getIncludeWipPactSince() !== null) {
+            $parameters[] = "--include-wip-pacts-since={$this->config->getIncludeWipPactSince()}";
+        }
+
         return $parameters;
     }
 
