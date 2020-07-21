@@ -51,6 +51,12 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var int */
     private $processIdleTimeout = 10;
 
+    /** @var bool */
+    private $enablePending = false;
+
+    /** @var null|string */
+    private $wipPactSince;
+
     /**
      * {@inheritdoc}
      */
@@ -315,5 +321,41 @@ class VerifierConfig implements VerifierConfigInterface
     public function getProcessIdleTimeout(): int
     {
         return $this->processIdleTimeout;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEnablePending(): bool
+    {
+        return $this->enablePending;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setEnablePending(bool $pending): VerifierConfigInterface
+    {
+        $this->enablePending = $pending;
+        
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setIncludeWipPactSince(string $date): VerifierConfigInterface
+    {
+        $this->wipPactSince = $date;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIncludeWipPactSince()
+    {
+        return $this->wipPactSince;
     }
 }

@@ -31,7 +31,9 @@ class VerifierTest extends TestCase
             ->setVerbose(true)
             ->setFormat('someformat')
             ->setProcessTimeout(30)
-            ->setProcessIdleTimeout(5);
+            ->setProcessIdleTimeout(5)
+            ->setEnablePending(true)
+            ->setIncludeWipPactSince('2020-01-30');
 
         /** @var BrokerHttpClientInterface $brokerHttpService */
         $server    = new Verifier($config);
@@ -48,6 +50,8 @@ class VerifierTest extends TestCase
         $this->assertContains('--format=someformat', $arguments);
         $this->assertContains('--provider-version-tag=prod', $arguments);
         $this->assertSame(['process_timeout' => 30, 'process_idle_timeout' => 5], $server->getTimeoutValues());
+        $this->assertContains('--enable-pending', $arguments);
+        $this->assertContains('--include-wip-pacts-since=2020-01-30', $arguments);
     }
 
     public function testGetArgumentsEmptyConfig()
