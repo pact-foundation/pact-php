@@ -95,6 +95,18 @@ interface VerifierConfigInterface
     public function setBrokerUri(UriInterface $brokerUri): self;
 
     /**
+     * @return null|string token for the pact broker
+     */
+    public function getBrokerToken(): ?string;
+
+    /**
+     * @param null|string $brokerToken token for the pact broker
+     *
+     * @return VerifierConfigInterface
+     */
+    public function setBrokerToken(?string $brokerToken): self;
+
+    /**
      * @return null|string username for the pact broker if secured
      */
     public function getBrokerUsername();

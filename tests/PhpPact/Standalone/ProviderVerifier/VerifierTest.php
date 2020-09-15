@@ -24,6 +24,7 @@ class VerifierTest extends TestCase
             ->setProviderBaseUrl(new Uri('http://myprovider:1234'))
             ->setProviderStatesSetupUrl(new Uri('http://someurl:1234'))
             ->setPublishResults(true)
+            ->setBrokerToken('someToken')
             ->setBrokerUsername('someusername')
             ->setBrokerPassword('somepassword')
             ->addCustomProviderHeader('key1', 'value1')
@@ -42,6 +43,7 @@ class VerifierTest extends TestCase
         $this->assertContains('--provider-base-url=http://myprovider:1234', $arguments);
         $this->assertContains('--provider-states-setup-url=http://someurl:1234', $arguments);
         $this->assertContains('--publish-verification-results', $arguments);
+        $this->assertContains('--broker-token=someToken', $arguments);
         $this->assertContains('--broker-username=someusername', $arguments);
         $this->assertContains('--broker-password=somepassword', $arguments);
         $this->assertContains('--custom-provider-header="key1: value1"', $arguments);
