@@ -76,6 +76,10 @@ class Verifier
             $parameters[] = '--publish-verification-results';
         }
 
+        if ($this->config->getBrokerToken() !== null) {
+            $parameters[] = "--broker-token={$this->config->getBrokerToken()}";
+        }
+
         if ($this->config->getBrokerUsername() !== null) {
             $parameters[] = "--broker-username={$this->config->getBrokerUsername()}";
         }

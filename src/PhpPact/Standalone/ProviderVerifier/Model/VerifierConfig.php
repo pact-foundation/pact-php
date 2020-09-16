@@ -31,6 +31,9 @@ class VerifierConfig implements VerifierConfigInterface
     private $brokerUri;
 
     /** @var null|string */
+    private $brokerToken;
+
+    /** @var null|string */
     private $brokerUsername;
 
     /** @var null|string */
@@ -179,6 +182,24 @@ class VerifierConfig implements VerifierConfigInterface
     public function setBrokerUri(UriInterface $brokerUri): VerifierConfigInterface
     {
         $this->brokerUri = $brokerUri;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}}
+     */
+    public function getBrokerToken(): ?string
+    {
+        return $this->brokerToken;
+    }
+
+    /**
+     * {@inheritdoc }
+     */
+    public function setBrokerToken(?string $brokerToken): VerifierConfigInterface
+    {
+        $this->brokerToken = $brokerToken;
 
         return $this;
     }
