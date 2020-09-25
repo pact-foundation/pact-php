@@ -234,8 +234,13 @@ class Verifier
         if (!$this->brokerHttpClient) {
             $user     = $this->config->getBrokerUsername();
             $password = $this->config->getBrokerPassword();
+            $token    = $this->config->getBrokerToken();
 
-            $client = $user && $password ? new GuzzleClient(['auth' => [$user, $password]]) : new GuzzleClient();
+            if (\strlen($token) > 0) {
+                $client = new GuzzleClient(['headers' => ['Authorization' => 'Bearer ' . $token]]);
+            } elseif ($user && $password) {
+                $client = new GuzzleClient(['auth' => [$user, $password]]);
+            }
 
             $this->brokerHttpClient = new BrokerHttpClient($client, $this->config->getBrokerUri());
         }
