@@ -216,6 +216,7 @@ class MessageVerifier extends Verifier
 
                 // if the provider verification cmd returns a non-zero number, the test failed
                 if ($code !== 0) {
+                    $this->getLogger()->warning(yield $process->getStderr()->read());
                     throw new \Exception("Pact failed to validate.  Exit code: {$code}");
                 }
 
