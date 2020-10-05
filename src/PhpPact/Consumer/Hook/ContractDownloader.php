@@ -38,13 +38,13 @@ class ContractDownloader implements AfterLastTestHook
         try {
             $this->getMockServerService()->verifyInteractions();
         } catch (Exception $e) {
-            throw new AssertionFailedError('Pact interaction verification failed', $e);
+            throw new AssertionFailedError('Pact interaction verification failed', 0, $e);
         }
 
         try {
             \file_put_contents($this->getPactFilename(), $this->getPactJson());
         } catch (Exception $e) {
-            throw new RuntimeException('Pact contract generation failed', $e);
+            throw new RuntimeException('Pact contract generation failed', 0, $e);
         }
     }
 
