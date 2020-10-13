@@ -50,8 +50,9 @@ class Verifier
     }
 
     /**
-     * @return array parameters to be passed into the process
      * @throws \Exception
+     *
+     * @return array parameters to be passed into the process
      */
     public function getArguments(): array
     {
@@ -65,13 +66,13 @@ class Verifier
             $parameters[] = "--provider-app-version={$this->config->getProviderVersion()}";
         }
 
-        if (count($this->config->getConsumerVersionTag()) > 0) {
+        if (\count($this->config->getConsumerVersionTag()) > 0) {
             foreach ($this->config->getConsumerVersionTag() as $tag) {
                 $parameters[] = "--consumer-version-tag={$tag}";
             }
         }
 
-        if (count($this->config->getProviderVersionTag()) > 0) {
+        if (\count($this->config->getProviderVersionTag()) > 0) {
             foreach ($this->config->getProviderVersionTag() as $tag) {
                 $parameters[] = "--provider-version-tag={$tag}";
             }

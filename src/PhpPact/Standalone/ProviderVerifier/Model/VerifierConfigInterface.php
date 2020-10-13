@@ -77,12 +77,14 @@ interface VerifierConfigInterface
 
     /**
      * @param string $consumerVersionTag consumers version tag
+     *
      * @return VerifierConfigInterface
      */
     public function addConsumerVersionTag(string $consumerVersionTag): self;
 
     /**
      * @param string $providerVersionTag provider version tag
+     *
      * @return VerifierConfigInterface
      */
     public function addProviderVersionTag(string $providerVersionTag): self;

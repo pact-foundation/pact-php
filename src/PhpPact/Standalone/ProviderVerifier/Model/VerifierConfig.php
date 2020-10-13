@@ -181,6 +181,7 @@ class VerifierConfig implements VerifierConfigInterface
 
     /**
      * @param string $consumerVersionTag
+     *
      * @return VerifierConfigInterface
      */
     public function setConsumerVersionTag(string $consumerVersionTag): VerifierConfigInterface
