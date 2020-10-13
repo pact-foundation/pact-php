@@ -13,7 +13,7 @@ use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
 use Amp\Loop;
 use Amp\Process\Process;
-use function Amp\Socket\listen;
+use Amp\Socket;
 use GuzzleHttp\Psr7\Uri;
 use Monolog\Logger;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
@@ -164,7 +164,7 @@ class MessageVerifier extends Verifier
             // spin up a server
             $url     = "{$uri->getHost()}:{$uri->getPort()}";
             $servers = [
-                listen($url)
+                Socket\Server::listen($url)
             ];
 
             $logger = $this->getLogger();
