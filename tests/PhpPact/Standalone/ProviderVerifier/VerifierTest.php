@@ -20,7 +20,9 @@ class VerifierTest extends TestCase
         $config
             ->setProviderName('someProvider')
             ->setProviderVersion('1.0.0')
-            ->setProviderVersionTag('prod')
+            ->addProviderVersionTag('prod')
+            ->addProviderVersionTag('dev')
+            ->addConsumerVersionTag('dev')
             ->setProviderBaseUrl(new Uri('http://myprovider:1234'))
             ->setProviderStatesSetupUrl(new Uri('http://someurl:1234'))
             ->setPublishResults(true)
@@ -51,6 +53,8 @@ class VerifierTest extends TestCase
         $this->assertContains('--verbose', $arguments);
         $this->assertContains('--format=someformat', $arguments);
         $this->assertContains('--provider-version-tag=prod', $arguments);
+        $this->assertContains('--provider-version-tag=dev', $arguments);
+        $this->assertContains('--consumer-version-tag=dev', $arguments);
         $this->assertSame(['process_timeout' => 30, 'process_idle_timeout' => 5], $server->getTimeoutValues());
         $this->assertContains('--enable-pending', $arguments);
         $this->assertContains('--include-wip-pacts-since=2020-01-30', $arguments);
@@ -157,9 +161,9 @@ class VerifierTest extends TestCase
         $brokerHttpClient = $this->createMock(BrokerHttpClient::class);
 
         $brokerHttpClient->expects($this->once())
-        ->method('getAllConsumerUrls')
+            ->method('getAllConsumerUrls')
             ->with($this->equalTo($providerName))
-            ->will($this->returnValue($expectedPactUrls));
+            ->willReturn($expectedPactUrls);
 
         $config = new VerifierConfig();
         $config->setProviderName($providerName);

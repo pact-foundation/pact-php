@@ -21,8 +21,8 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var string */
     private $providerVersion;
 
-    /** @var null|string */
-    private $providerVersionTag;
+    /** @var array */
+    private $providerVersionTag = [];
 
     /** @var bool */
     private $publishResults = false;
@@ -59,6 +59,9 @@ class VerifierConfig implements VerifierConfigInterface
 
     /** @var null|string */
     private $wipPactSince;
+
+    /** @var array */
+    private $consumerVersionTag = [];
 
     /**
      * {@inheritdoc}
@@ -145,9 +148,44 @@ class VerifierConfig implements VerifierConfigInterface
      */
     public function setProviderVersionTag(string $providerVersionTag): VerifierConfigInterface
     {
-        $this->providerVersionTag = $providerVersionTag;
+        return $this->addProviderVersionTag($providerVersionTag);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConsumerVersionTag()
+    {
+        return $this->consumerVersionTag;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addConsumerVersionTag(string $consumerVersionTag): VerifierConfigInterface
+    {
+        $this->consumerVersionTag[] = $consumerVersionTag;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addProviderVersionTag(string $providerVersionTag): VerifierConfigInterface
+    {
+        $this->providerVersionTag[] = $providerVersionTag;
+
+        return $this;
+    }
+
+    /**
+     * @param string $consumerVersionTag
+     * @return VerifierConfigInterface
+     */
+    public function setConsumerVersionTag(string $consumerVersionTag): VerifierConfigInterface
+    {
+        return $this->addConsumerVersionTag($consumerVersionTag);
     }
 
     /**
