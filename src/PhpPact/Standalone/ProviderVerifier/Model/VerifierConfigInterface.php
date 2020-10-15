@@ -59,7 +59,7 @@ interface VerifierConfigInterface
     public function setProviderVersion(string $providerAppVersion): self;
 
     /**
-     * @return null|string providers version tag
+     * @return array providers version tag
      */
     public function getProviderVersionTag();
 
@@ -69,6 +69,25 @@ interface VerifierConfigInterface
      * @return VerifierConfigInterface
      */
     public function setProviderVersionTag(string $providerVersionTag): self;
+
+    /**
+     * @return array consumers version tag
+     */
+    public function getConsumerVersionTag();
+
+    /**
+     * @param string $consumerVersionTag consumers version tag
+     *
+     * @return VerifierConfigInterface
+     */
+    public function addConsumerVersionTag(string $consumerVersionTag): self;
+
+    /**
+     * @param string $providerVersionTag provider version tag
+     *
+     * @return VerifierConfigInterface
+     */
+    public function addProviderVersionTag(string $providerVersionTag): self;
 
     /**
      * @return bool are results going to be published
