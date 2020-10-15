@@ -104,9 +104,9 @@ class MockServer
     {
         $results = [];
 
-        $consumer = escapeshellarg($this->config->getConsumer());
-        $provider = escapeshellarg($this->config->getProvider());
-        $pactDir = escapeshellarg($this->config->getPactDir());
+        $consumer = \escapeshellarg($this->config->getConsumer());
+        $provider = \escapeshellarg($this->config->getProvider());
+        $pactDir  = \escapeshellarg($this->config->getPactDir());
 
         $results[] = 'service';
         $results[] = "--consumer={$consumer}";
