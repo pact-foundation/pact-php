@@ -69,12 +69,13 @@ interface PactConfigInterface
     public function setLog(string $log): self;
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getLogLevel();
 
     /**
      * @param string $logLevel
+     *
      * @return $this
      */
     public function setLogLevel(string $logLevel): self;
