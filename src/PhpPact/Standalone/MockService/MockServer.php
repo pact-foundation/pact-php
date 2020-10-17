@@ -115,7 +115,7 @@ class MockServer
         $results[] = "--host={$this->config->getHost()}";
         $results[] = "--port={$this->config->getPort()}";
 
-        if ($log !== '') {
+        if (!empty($log)) {
             $results[] = "--log={$log}";
         }
 
