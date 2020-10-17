@@ -45,6 +45,8 @@ class PactMessageConfig implements PactConfigInterface
      * @var string
      */
     private $log;
+    /** @var string */
+    private $logLevel;
 
     /**
      * {@inheritdoc}
@@ -144,6 +146,22 @@ class PactMessageConfig implements PactConfigInterface
     public function setLog(string $log): PactConfigInterface
     {
         $this->log = $log;
+
+        return $this;
+    }
+
+    public function getLogLevel()
+    {
+        return $this->logLevel;
+    }
+
+    public function setLogLevel(string $logLevel): PactConfigInterface
+    {
+        $logLevel = \strtoupper($logLevel);
+        if (!\in_array($logLevel, ['DEBUG', 'INFO', 'WARN', 'ERROR'])) {
+            throw new \InvalidArgumentException('LogLevel ' . $logLevel . ' not supported.');
+        }
+        $this->logLevel = $logLevel;
 
         return $this;
     }
