@@ -104,7 +104,6 @@ class MockServer
     {
         $results = [];
 
-        $log      = \escapeshellarg($this->config->getLog());
         $logLevel = $this->config->getLogLevel();
 
         $results[] = 'service';
@@ -114,10 +113,6 @@ class MockServer
         $results[] = "--pact-file-write-mode={$this->config->getPactFileWriteMode()}";
         $results[] = "--host={$this->config->getHost()}";
         $results[] = "--port={$this->config->getPort()}";
-
-        if (!empty($log)) {
-            $results[] = "--log={$log}";
-        }
 
         if ($logLevel) {
             $results[] = \sprintf('--log-level=%s', \escapeshellarg($logLevel));
@@ -131,8 +126,9 @@ class MockServer
             $results[] = "--pact-specification-version={$this->config->getPactSpecificationVersion()}";
         }
 
-        if ($this->config->getLog() !== null) {
-            $results[] = "--log={$this->config->getLog()}";
+        if (!empty($this->config->getLog())) {
+            $log = \escapeshellarg($this->config->getLog());
+            $results[] = sprintf('--log=%s', $log);
         }
 
         return $results;
