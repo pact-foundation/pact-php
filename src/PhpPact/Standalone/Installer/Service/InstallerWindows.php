@@ -4,7 +4,6 @@ namespace PhpPact\Standalone\Installer\Service;
 
 use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
 use PhpPact\Standalone\Installer\Model\Scripts;
-use ZipArchive;
 
 /**
  * Download the Ruby Standalone binaries for Windows.
