@@ -114,7 +114,10 @@ class MockServer
         $results[] = "--pact-file-write-mode={$this->config->getPactFileWriteMode()}";
         $results[] = "--host={$this->config->getHost()}";
         $results[] = "--port={$this->config->getPort()}";
-        $results[] = "--log={$log}";
+
+        if ($log !== '') {
+            $results[] = "--log={$log}";
+        }
 
         if ($logLevel) {
             $results[] = \sprintf('--log-level=%s', \escapeshellarg($logLevel));
