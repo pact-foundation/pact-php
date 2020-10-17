@@ -127,7 +127,7 @@ class MockServer
         }
 
         if (!empty($this->config->getLog())) {
-            $log = \escapeshellarg($this->config->getLog());
+            $log       = \escapeshellarg($this->config->getLog());
             $results[] = \sprintf('--log=%s', $log);
         }
 
