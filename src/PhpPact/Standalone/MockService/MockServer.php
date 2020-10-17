@@ -104,6 +104,9 @@ class MockServer
     {
         $results = [];
 
+        $log = \escapeshellarg($this->config->getLog());
+        $logLevel = $this->config->getLogLevel();
+
         $results[] = 'service';
         $results[] = "--consumer={$this->config->getConsumer()}";
         $results[] = "--provider={$this->config->getProvider()}";
@@ -111,6 +114,11 @@ class MockServer
         $results[] = "--pact-file-write-mode={$this->config->getPactFileWriteMode()}";
         $results[] = "--host={$this->config->getHost()}";
         $results[] = "--port={$this->config->getPort()}";
+        $results[] = "--log={$log}";
+
+        if ($logLevel) {
+            $results[] = sprintf("--log-level=%s", \escapeshellarg($logLevel));
+        }
 
         if ($this->config->hasCors()) {
             $results[] = '--cors=true';

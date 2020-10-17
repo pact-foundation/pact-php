@@ -31,6 +31,10 @@ class MockServerEnvConfig extends MockServerConfig
             $this->setLog($logDir);
         }
 
+        if ($logLevel = $this->parseEnv('PACT_LOGLEVEL', false)) {
+            $this->setLogLevel($logLevel);
+        }
+
         $timeout = $this->parseEnv('PACT_MOCK_SERVER_HEALTH_CHECK_TIMEOUT', false);
         if (!$timeout) {
             $timeout = 10;
