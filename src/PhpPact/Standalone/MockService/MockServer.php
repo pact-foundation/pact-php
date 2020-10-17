@@ -104,10 +104,14 @@ class MockServer
     {
         $results = [];
 
+        $consumer = \escapeshellarg($this->config->getConsumer());
+        $provider = \escapeshellarg($this->config->getProvider());
+        $pactDir  = \escapeshellarg($this->config->getPactDir());
+
         $results[] = 'service';
-        $results[] = "--consumer={$this->config->getConsumer()}";
-        $results[] = "--provider={$this->config->getProvider()}";
-        $results[] = "--pact-dir={$this->config->getPactDir()}";
+        $results[] = "--consumer={$consumer}";
+        $results[] = "--provider={$provider}";
+        $results[] = "--pact-dir={$pactDir}";
         $results[] = "--pact-file-write-mode={$this->config->getPactFileWriteMode()}";
         $results[] = "--host={$this->config->getHost()}";
         $results[] = "--port={$this->config->getPort()}";
