@@ -117,7 +117,7 @@ class MockServer
         $results[] = "--log={$log}";
 
         if ($logLevel) {
-            $results[] = sprintf("--log-level=%s", \escapeshellarg($logLevel));
+            $results[] = \sprintf("--log-level=%s", \escapeshellarg($logLevel));
         }
 
         if ($this->config->hasCors()) {

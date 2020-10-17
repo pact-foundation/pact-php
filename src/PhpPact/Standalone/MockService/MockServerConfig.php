@@ -303,7 +303,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     public function setLogLevel(string $logLevel): PactConfigInterface
     {
         $logLevel = strtoupper($logLevel);
-        if (!in_array($logLevel, ['DEBUG', 'INFO','WARN','ERROR'])) {
+        if (!\in_array($logLevel, ['DEBUG', 'INFO','WARN','ERROR'])) {
             throw new \InvalidArgumentException('LogLevel ' . $logLevel . ' not supported.');
         }
         $this->logLevel = $logLevel;
