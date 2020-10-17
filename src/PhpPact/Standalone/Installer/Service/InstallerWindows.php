@@ -88,12 +88,8 @@ class InstallerWindows implements InstallerInterface
      */
     private function extract(string $sourceFile, string $destinationDir): self
     {
-        $zip = new ZipArchive();
-
-        if ($zip->open($sourceFile)) {
-            $zip->extractTo($destinationDir);
-            $zip->close();
-        }
+        $p = new \PharData($sourceFile);
+        $p->extractTo($destinationDir);
 
         return $this;
     }
