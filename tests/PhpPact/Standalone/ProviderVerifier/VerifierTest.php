@@ -11,6 +11,7 @@ use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 
 class VerifierTest extends TestCase
 {
@@ -36,7 +37,12 @@ class VerifierTest extends TestCase
             ->setProcessTimeout(30)
             ->setProcessIdleTimeout(5)
             ->setEnablePending(true)
-            ->setIncludeWipPactSince('2020-01-30');
+            ->setIncludeWipPactSince('2020-01-30')
+            ->setRequestFilter(
+                function (RequestInterface $r) {
+                    return $r->withHeader('MY_SPECIAL_HEADER', 'my special value');
+                }
+            );
 
         /** @var BrokerHttpClientInterface $brokerHttpService */
         $server    = new Verifier($config);

@@ -243,10 +243,14 @@ $config
     ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
     ->setPublishResults(true) // Flag the verifier service to publish the results to the Pact Broker.
     ->setProcessTimeout(60)      // Set process timeout (optional) - default 60
-    ->setProcessIdleTimeout(10); // Set process idle timeout (optional) - default 10
+    ->setProcessIdleTimeout(10) // Set process idle timeout (optional) - default 10
     ->setEnablePending(true) // Flag to enable pending pacts feature (check pact docs for further info)
     ->setIncludeWipPactSince('2020-01-30') //Start date of WIP Pacts (check pact docs for further info)
-
+    ->setRequestFilter(
+        function (RequestInterface $r) {
+            return $r->withHeader('MY_SPECIAL_HEADER', 'my special value');
+        }
+    );
 // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
 $verifier = new Verifier($config);
 $verifier->verify('someConsumer', 'master'); // The tag is option. If no tag is set it will just grab the latest.
