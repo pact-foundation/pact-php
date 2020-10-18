@@ -427,7 +427,7 @@ class VerifierConfig implements VerifierConfigInterface
         return $this->requestFilter;
     }
 
-    public function setRequestFilter(callable $requestFilter): self
+    public function setRequestFilter(callable $requestFilter): VerifierConfigInterface
     {
         $this->requestFilter = $requestFilter;
 
