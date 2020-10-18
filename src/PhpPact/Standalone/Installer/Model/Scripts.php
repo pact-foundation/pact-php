@@ -36,12 +36,18 @@ class Scripts
      */
     private $providerVerifier;
 
-    public function __construct(string $mockService, string $stubService, string $providerVerifier, string $pactMessage)
+    /**
+     * @var string
+     */
+    private $broker;
+
+    public function __construct(string $mockService, string $stubService, string $providerVerifier, string $pactMessage, string $broker)
     {
         $this->mockService      = $mockService;
         $this->stubService      = $stubService;
         $this->providerVerifier = $providerVerifier;
         $this->pactMessage      = $pactMessage;
+        $this->broker           = $broker;
     }
 
     /**
@@ -78,6 +84,14 @@ class Scripts
         $this->providerVerifier = $providerVerifier;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBroker(): string
+    {
+        return $this->broker;
     }
 
     /**

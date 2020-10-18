@@ -11,14 +11,14 @@ use PhpPact\Standalone\Installer\Model\Scripts;
  */
 class InstallerWindows implements InstallerInterface
 {
-    const VERSION = '1.87.5';
+    const VERSION = '1.88.14';
 
     /**
      * {@inheritdoc}
      */
     public function isEligible(): bool
     {
-        return \strtoupper(\substr(PHP_OS, 0, 3)) === 'WIN';
+        return PHP_OS_FAMILY === 'Windows';
     }
 
     /**
@@ -41,7 +41,8 @@ class InstallerWindows implements InstallerInterface
             $binDir . 'pact-mock-service.bat',
             $binDir . 'pact-stub-service.bat',
             $binDir . 'pact-provider-verifier.bat',
-            $binDir . 'pact-message.bat'
+            $binDir . 'pact-message.bat',
+            $binDir . 'pact-broker.bat'
         );
 
         return $scripts;

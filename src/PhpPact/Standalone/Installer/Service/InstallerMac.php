@@ -7,7 +7,7 @@ use PhpPact\Standalone\Installer\Model\Scripts;
 
 class InstallerMac implements InstallerInterface
 {
-    const VERSION = '1.87.5';
+    const VERSION = '1.88.14';
 
     /**
      * {@inheritdoc}
@@ -36,7 +36,8 @@ class InstallerMac implements InstallerInterface
             "{$destinationDir}/pact/bin/pact-mock-service",
             "{$destinationDir}/pact/bin/pact-stub-service",
             "{$destinationDir}/pact/bin/pact-provider-verifier",
-            "{$destinationDir}/pact/bin/pact-message"
+            "{$destinationDir}/pact/bin/pact-message",
+            "{$destinationDir}/pact/bin/pact-broker"
         );
 
         return $scripts;
