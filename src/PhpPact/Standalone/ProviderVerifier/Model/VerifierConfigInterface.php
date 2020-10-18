@@ -247,6 +247,7 @@ interface VerifierConfigInterface
 
     /**
      * @param callable $requestFilter
+     *
      * @return $this
      */
     public function setRequestFilter(callable $requestFilter): self;
