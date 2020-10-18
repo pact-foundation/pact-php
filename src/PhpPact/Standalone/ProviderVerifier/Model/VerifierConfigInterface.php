@@ -239,4 +239,16 @@ interface VerifierConfigInterface
      * @return null|string get start date of included WIP Pacts
      */
     public function getIncludeWipPactSince();
+
+    /**
+     * @return null|callable
+     */
+    public function getRequestFilter(): ?callable;
+
+    /**
+     * @param callable $requestFilter
+     *
+     * @return $this
+     */
+    public function setRequestFilter(callable $requestFilter): self;
 }
