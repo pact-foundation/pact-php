@@ -63,6 +63,9 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var array */
     private $consumerVersionTag = [];
 
+    /** @var callable|null */
+    private $requestFilter;
+
     /**
      * {@inheritdoc}
      */
@@ -417,5 +420,17 @@ class VerifierConfig implements VerifierConfigInterface
     public function getIncludeWipPactSince()
     {
         return $this->wipPactSince;
+    }
+
+    public function getRequestFilter(): ?callable
+    {
+        return $this->requestFilter;
+    }
+
+    public function setRequestFilter(callable $requestFilter): self
+    {
+        $this->requestFilter = $requestFilter;
+
+        return $this;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace PhpPact\Standalone\ProviderVerifier;
 
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
 use PhpPact\Http\GuzzleClient;
@@ -31,6 +33,9 @@ class Verifier
 
     /** @var InstallManager */
     protected $installManager;
+
+    /** @var VerifierProcess|null */
+    protected $verifierProcess;
 
     public function __construct(
         VerifierConfigInterface $config,
@@ -242,15 +247,23 @@ class Verifier
     protected function getBrokerHttpClient(): BrokerHttpClient
     {
         if (!$this->brokerHttpClient) {
-            $user     = $this->config->getBrokerUsername();
-            $password = $this->config->getBrokerPassword();
-            $token    = $this->config->getBrokerToken();
+            $user      = $this->config->getBrokerUsername();
+            $password  = $this->config->getBrokerPassword();
+            $token     = $this->config->getBrokerToken();
+            $reqFilter = $this->config->getRequestFilter();
 
+            $config = [];
             if (\strlen($token) > 0) {
-                $client = new GuzzleClient(['headers' => ['Authorization' => 'Bearer ' . $token]]);
+                $config = ['headers' => ['Authorization' => 'Bearer ' . $token]];
             } elseif ($user && $password) {
-                $client = new GuzzleClient(['auth' => [$user, $password]]);
+                $config = ['auth' => [$user, $password]];
             }
+            if (is_callable($reqFilter)) {
+                $stack = HandlerStack::create();
+                $stack->push(Middleware::mapRequest($reqFilter), 'requestFilter');
+                $config['handler'] = $stack;
+            }
+            $client = new GuzzleClient($config);
 
             $this->brokerHttpClient = new BrokerHttpClient($client, $this->config->getBrokerUri());
         }
