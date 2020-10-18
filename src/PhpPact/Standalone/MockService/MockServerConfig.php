@@ -93,6 +93,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
      * @var int
      */
     private $healthCheckRetrySec;
+    private $logLevel;
 
     /**
      * {@inheritdoc}
@@ -284,6 +285,28 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     public function setLog(string $log): PactConfigInterface
     {
         $this->log = $log;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLogLevel()
+    {
+        return $this->logLevel;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogLevel(string $logLevel): PactConfigInterface
+    {
+        $logLevel = \strtoupper($logLevel);
+        if (!\in_array($logLevel, ['DEBUG', 'INFO', 'WARN', 'ERROR'])) {
+            throw new \InvalidArgumentException('LogLevel ' . $logLevel . ' not supported.');
+        }
+        $this->logLevel = $logLevel;
 
         return $this;
     }

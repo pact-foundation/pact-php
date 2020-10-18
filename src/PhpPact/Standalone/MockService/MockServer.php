@@ -104,6 +104,7 @@ class MockServer
     {
         $results = [];
 
+        $logLevel = $this->config->getLogLevel();
         $consumer = \escapeshellarg($this->config->getConsumer());
         $provider = \escapeshellarg($this->config->getProvider());
         $pactDir  = \escapeshellarg($this->config->getPactDir());
@@ -116,6 +117,10 @@ class MockServer
         $results[] = "--host={$this->config->getHost()}";
         $results[] = "--port={$this->config->getPort()}";
 
+        if ($logLevel) {
+            $results[] = \sprintf('--log-level=%s', \escapeshellarg($logLevel));
+        }
+
         if ($this->config->hasCors()) {
             $results[] = '--cors=true';
         }
@@ -124,8 +129,9 @@ class MockServer
             $results[] = "--pact-specification-version={$this->config->getPactSpecificationVersion()}";
         }
 
-        if ($this->config->getLog() !== null) {
-            $results[] = "--log={$this->config->getLog()}";
+        if (!empty($this->config->getLog())) {
+            $log       = \escapeshellarg($this->config->getLog());
+            $results[] = \sprintf('--log=%s', $log);
         }
 
         return $results;
