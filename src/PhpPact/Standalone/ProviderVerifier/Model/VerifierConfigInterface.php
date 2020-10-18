@@ -241,7 +241,7 @@ interface VerifierConfigInterface
     public function getIncludeWipPactSince();
 
     /**
-     * @return callable|null
+     * @return null|callable
      */
     public function getRequestFilter(): ?callable;
 }

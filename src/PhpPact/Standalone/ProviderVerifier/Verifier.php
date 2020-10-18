@@ -34,7 +34,7 @@ class Verifier
     /** @var InstallManager */
     protected $installManager;
 
-    /** @var VerifierProcess|null */
+    /** @var null|VerifierProcess */
     protected $verifierProcess;
 
     public function __construct(
@@ -258,7 +258,7 @@ class Verifier
             } elseif ($user && $password) {
                 $config = ['auth' => [$user, $password]];
             }
-            if (is_callable($reqFilter)) {
+            if (\is_callable($reqFilter)) {
                 $stack = HandlerStack::create();
                 $stack->push(Middleware::mapRequest($reqFilter), 'requestFilter');
                 $config['handler'] = $stack;
