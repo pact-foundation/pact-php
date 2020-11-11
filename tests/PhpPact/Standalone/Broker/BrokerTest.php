@@ -9,6 +9,7 @@ class BrokerTest extends TestCase
 {
     /**
      * @test
+     *
      * @throws \Exception
      */
     public function publish(): void
@@ -30,7 +31,8 @@ class BrokerTest extends TestCase
      */
     public function getArguments(): void
     {
-        $arguments = (new Broker((new BrokerConfig())
+        $arguments = (new Broker(
+            (new BrokerConfig())
             ->setBrokerToken('someToken')
             ->setBrokerUsername('someusername')
             ->setBrokerPassword('somepassword')
@@ -59,13 +61,14 @@ class BrokerTest extends TestCase
 
     /**
      * @test
+     *
      * @throws \Exception
      */
     public function describeVersion(): void
     {
         $this->assertArrayHasKey('number', (new Broker(
             (new BrokerConfig())
-                ->setPacticipant(rawurlencode('Animal Profile Service'))
+                ->setPacticipant(\rawurlencode('Animal Profile Service'))
                 ->setBrokerUri(new Uri('https://test.pact.dius.com.au'))
                 ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
                 ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1')
@@ -74,6 +77,7 @@ class BrokerTest extends TestCase
 
     /**
      * @test
+     *
      * @throws \Exception
      */
     public function listLatestPactVersions(): void

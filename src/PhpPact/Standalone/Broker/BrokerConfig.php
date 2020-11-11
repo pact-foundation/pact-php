@@ -21,7 +21,7 @@ class BrokerConfig
     /** @var bool */
     private $verbose = false;
 
-    /** @var string|null */
+    /** @var null|string */
     private $pacticipant;
 
     /** @var null|string */
@@ -56,7 +56,7 @@ class BrokerConfig
     private $pactLocations;
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getRepositoryUrl(): ?string
     {
@@ -64,17 +64,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $repositoryUrl
+     * @param null|string $repositoryUrl
+     *
      * @return BrokerConfig
      */
-    public function setRepositoryUrl(?string $repositoryUrl): BrokerConfig
+    public function setRepositoryUrl(?string $repositoryUrl): self
     {
         $this->repositoryUrl = $repositoryUrl;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getUrl(): ?string
     {
@@ -82,17 +84,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $url
+     * @param null|string $url
+     *
      * @return BrokerConfig
      */
-    public function setUrl(?string $url): BrokerConfig
+    public function setUrl(?string $url): self
     {
         $this->url = $url;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getVersion(): ?string
     {
@@ -100,17 +104,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $version
+     * @param null|string $version
+     *
      * @return BrokerConfig
      */
-    public function setVersion(?string $version): BrokerConfig
+    public function setVersion(?string $version): self
     {
         $this->version = $version;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getTag(): ?string
     {
@@ -118,17 +124,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $tag
+     * @param null|string $tag
+     *
      * @return BrokerConfig
      */
-    public function setTag(?string $tag): BrokerConfig
+    public function setTag(?string $tag): self
     {
         $this->tag = $tag;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getName(): ?string
     {
@@ -136,17 +144,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $name
+     * @param null|string $name
+     *
      * @return BrokerConfig
      */
-    public function setName(?string $name): BrokerConfig
+    public function setName(?string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getRequest(): ?string
     {
@@ -154,17 +164,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $request
+     * @param null|string $request
+     *
      * @return BrokerConfig
      */
-    public function setRequest(?string $request): BrokerConfig
+    public function setRequest(?string $request): self
     {
         $this->request = $request;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getHeader(): ?string
     {
@@ -172,17 +184,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $header
+     * @param null|string $header
+     *
      * @return BrokerConfig
      */
-    public function setHeader(?string $header): BrokerConfig
+    public function setHeader(?string $header): self
     {
         $this->header = $header;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getData(): ?string
     {
@@ -190,17 +204,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $data
+     * @param null|string $data
+     *
      * @return BrokerConfig
      */
-    public function setData(?string $data): BrokerConfig
+    public function setData(?string $data): self
     {
         $this->data = $data;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getUser(): ?string
     {
@@ -208,17 +224,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $user
+     * @param null|string $user
+     *
      * @return BrokerConfig
      */
-    public function setUser(?string $user): BrokerConfig
+    public function setUser(?string $user): self
     {
         $this->user = $user;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getConsumer(): ?string
     {
@@ -226,17 +244,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $consumer
+     * @param null|string $consumer
+     *
      * @return BrokerConfig
      */
-    public function setConsumer(?string $consumer): BrokerConfig
+    public function setConsumer(?string $consumer): self
     {
         $this->consumer = $consumer;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getProvider(): ?string
     {
@@ -244,17 +264,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $provider
+     * @param null|string $provider
+     *
      * @return BrokerConfig
      */
-    public function setProvider(?string $provider): BrokerConfig
+    public function setProvider(?string $provider): self
     {
         $this->provider = $provider;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getDescription(): ?string
     {
@@ -262,17 +284,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $description
+     * @param null|string $description
+     *
      * @return BrokerConfig
      */
-    public function setDescription(?string $description): BrokerConfig
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getUuid(): ?string
     {
@@ -280,12 +304,14 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $uuid
+     * @param null|string $uuid
+     *
      * @return BrokerConfig
      */
-    public function setUuid(?string $uuid): BrokerConfig
+    public function setUuid(?string $uuid): self
     {
         $this->uuid = $uuid;
+
         return $this;
     }
 
@@ -295,7 +321,7 @@ class BrokerConfig
     }
 
     /**
-     * @return UriInterface|null
+     * @return null|UriInterface
      */
     public function getBrokerUri(): ?UriInterface
     {
@@ -303,16 +329,17 @@ class BrokerConfig
     }
 
     /**
-     * @param UriInterface|null $brokerUri
+     * @param null|UriInterface $brokerUri
      */
     public function setBrokerUri(?UriInterface $brokerUri): self
     {
         $this->brokerUri = $brokerUri;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getBrokerToken(): ?string
     {
@@ -320,16 +347,17 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $brokerToken
+     * @param null|string $brokerToken
      */
     public function setBrokerToken(?string $brokerToken): self
     {
         $this->brokerToken = $brokerToken;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getBrokerUsername(): ?string
     {
@@ -337,16 +365,17 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $brokerUsername
+     * @param null|string $brokerUsername
      */
     public function setBrokerUsername(?string $brokerUsername): self
     {
         $this->brokerUsername = $brokerUsername;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getBrokerPassword(): ?string
     {
@@ -354,11 +383,12 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $brokerPassword
+     * @param null|string $brokerPassword
      */
     public function setBrokerPassword(?string $brokerPassword): self
     {
         $this->brokerPassword = $brokerPassword;
+
         return $this;
     }
 
@@ -368,16 +398,17 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $pacticipant
+     * @param null|string $pacticipant
      */
     public function setPacticipant(?string $pacticipant): self
     {
         $this->pacticipant = $pacticipant;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getConsumerVersion(): ?string
     {
@@ -385,17 +416,19 @@ class BrokerConfig
     }
 
     /**
-     * @param string|null $consumerVersion
+     * @param null|string $consumerVersion
+     *
      * @return BrokerConfig
      */
     public function setConsumerVersion(?string $consumerVersion): self
     {
         $this->consumerVersion = $consumerVersion;
+
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getPactLocations(): ?string
     {
@@ -404,11 +437,13 @@ class BrokerConfig
 
     /**
      * @param string $locations
+     *
      * @return BrokerConfig
      */
     public function setPactLocations(string $locations): self
     {
         $this->pactLocations = $locations;
+
         return $this;
     }
 }

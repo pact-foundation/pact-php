@@ -20,9 +20,9 @@ class Broker
 
     public function __construct(BrokerConfig $config)
     {
-        $this->config = $config;
+        $this->config  = $config;
         $this->command = (new InstallManager())->install()->getBroker();
-        $this->logger = (new Logger('console'))
+        $this->logger  = (new Logger('console'))
             ->pushHandler(
                 (new StreamHandler(new ResourceOutputStream(\STDOUT)))
                     ->setFormatter(new ConsoleFormatter(null, null, true))
@@ -33,7 +33,7 @@ class Broker
     {
         $runner = new ProcessRunner(
             $this->command,
-            array_merge(
+            \array_merge(
                 [
                     'can-i-deploy',
                     '--pacticipant=' . $this->config->getPacticipant(),
@@ -48,7 +48,7 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true);
     }
 
     /**
@@ -81,7 +81,7 @@ class Broker
     {
         $runner = new ProcessRunner(
             $this->command,
-            array_merge(
+            \array_merge(
                 [
                     'create-or-update-pacticipant',
                     '--name=' . $this->config->getName(),
@@ -96,14 +96,14 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true);
     }
 
     public function createOrUpdateWebhook()
     {
         $runner = new ProcessRunner(
             $this->command,
-            array_merge(
+            \array_merge(
                 [
                     'create-or-update-webhook',
                     $this->config->getUrl(),
@@ -114,7 +114,7 @@ class Broker
                     '--consumer=' . $this->config->getConsumer(),
                     '--provider=' . $this->config->getProvider(),
                     '--description=' . $this->config->getDescription(),
-                    '--uuid=' . $this->config->getUuid(), 
+                    '--uuid=' . $this->config->getUuid(),
                 ],
                 $this->getArguments()
             )
@@ -125,14 +125,14 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true);
     }
 
     public function createVersionTag()
     {
         $runner = new ProcessRunner(
             $this->command,
-            array_merge(
+            \array_merge(
                 [
                     'create-version-tag',
                     '--pacticipant=' . $this->config->getPacticipant(),
@@ -148,14 +148,14 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true);
     }
 
     public function createWebhook()
     {
         $runner = new ProcessRunner(
             $this->command,
-            array_merge(
+            \array_merge(
                 [
                     'create-webhook',
                     $this->config->getUrl(),
@@ -176,14 +176,14 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true);
     }
 
     public function describeVersion()
     {
         $runner = new ProcessRunner(
             $this->command,
-            array_merge(
+            \array_merge(
                 [
                     'describe-version',
                     '--pacticipant=' . $this->config->getPacticipant(),
@@ -198,14 +198,14 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true);
     }
 
     public function listLatestPactVersions()
     {
         $runner = new ProcessRunner(
             $this->command,
-            array_merge(
+            \array_merge(
                 [
                     'list-latest-pact-versions',
                     '--output=json',
@@ -219,14 +219,14 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true);
     }
 
     public function publish(): void
     {
         $runner = new ProcessRunner(
             $this->command,
-            array_merge(
+            \array_merge(
                 [
                     'publish',
                     $this->config->getPactLocations(),
@@ -249,7 +249,7 @@ class Broker
     {
         $runner = new ProcessRunner(
             $this->command,
-            array_merge(
+            \array_merge(
                 [
                     'test-webhook',
                     '--uuid=' . $this->config->getUuid(),
@@ -263,7 +263,7 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true);
     }
 
     public function generateUuid(): string
@@ -271,6 +271,6 @@ class Broker
         $runner = new ProcessRunner($this->command, ['generate-uuid']);
         $runner->runBlocking();
 
-        return rtrim($runner->getOutput());
+        return \rtrim($runner->getOutput());
     }
 }
