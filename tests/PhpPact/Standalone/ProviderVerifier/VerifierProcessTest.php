@@ -71,7 +71,7 @@ class VerifierProcessTest extends TestCase
 
     public function testRunForwardsException()
     {
-        $this->expectExceptionMessage("foo");
+        $this->expectExceptionMessage('foo');
         $this->expectException(\RuntimeException::class);
 
         $verifier  = 'foo';
