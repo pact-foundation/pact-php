@@ -24,7 +24,7 @@ class StubServerHttpServiceTest extends TestCase
      * @throws MissingEnvVariableException
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $pactLocation = __DIR__ . '/../../../../_resources/someconsumer-someprovider.json';
         $host         = 'localhost';
@@ -42,7 +42,7 @@ class StubServerHttpServiceTest extends TestCase
         $this->service = new StubServerHttpService(new GuzzleClient(), $this->config);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->stubServer->stop();
     }
