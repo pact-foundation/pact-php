@@ -10,13 +10,15 @@ $app = AppFactory::create();
 
 $app->get('/hello/{name}', function (Request $request, Response $response) {
     $name = $request->getAttribute('name');
-    $response->getBody()->write(json_encode(['message' => "Hello, {$name}"]));
+    $response->getBody()->write(\json_encode(['message' => "Hello, {$name}"]));
+
     return $response->withHeader('Content-Type', 'application/json');
 });
 
 $app->get('/goodbye/{name}', function (Request $request, Response $response) {
     $name = $request->getAttribute('name');
-    $response->getBody()->write(json_encode(['message' => "Goodbye, {$name}"]));
+    $response->getBody()->write(\json_encode(['message' => "Goodbye, {$name}"]));
+
     return $response->withHeader('Content-Type', 'application/json');
 });
 
