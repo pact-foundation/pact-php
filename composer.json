@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.3",
         "ext-openssl": "*",
         "ext-json": "*",
         "composer/semver": "^3.2.4",
