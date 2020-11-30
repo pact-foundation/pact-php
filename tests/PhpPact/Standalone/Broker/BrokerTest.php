@@ -54,10 +54,10 @@ class BrokerTest extends TestCase
     /**
      * @test
      */
-    public function generateUuid(): void
-    {
-        $this->assertContains('-', (new Broker(new BrokerConfig()))->generateUuid());
-    }
+    //public function generateUuid(): void
+    //{
+    //    $this->assertContains('-', (new Broker(new BrokerConfig()))->generateUuid());
+    //}
 
     /**
      * @test
