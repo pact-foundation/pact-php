@@ -22,7 +22,7 @@ class PactVerifyTest extends TestCase
     /**
      * Run the PHP build-in web server.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
 
@@ -34,7 +34,7 @@ class PactVerifyTest extends TestCase
     /**
      * Stop the web server process once complete.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->processRunner->stop();
     }

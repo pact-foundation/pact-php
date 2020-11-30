@@ -25,7 +25,7 @@ class InteractionBuilderTest extends TestCase
      * @throws MissingEnvVariableException
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $config           = new MockServerEnvConfig();
         $this->mockServer = new MockServer($config);
@@ -33,7 +33,7 @@ class InteractionBuilderTest extends TestCase
         $this->service = new MockServerHttpService(new GuzzleClient(), $config);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->mockServer->stop();
     }

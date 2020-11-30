@@ -32,7 +32,7 @@ class MockServerHttpServiceTest extends TestCase
      * @throws MissingEnvVariableException
      * @throws \Exception
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->config     = new MockServerEnvConfig();
         $this->mockServer = new MockServer($this->config);
@@ -40,7 +40,7 @@ class MockServerHttpServiceTest extends TestCase
         $this->service = new MockServerHttpService(new GuzzleClient(), $this->config);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->mockServer->stop();
     }

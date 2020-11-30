@@ -69,12 +69,11 @@ class VerifierProcessTest extends TestCase
         $process->run($arguments, 42, 23);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage foo
-     */
     public function testRunForwardsException()
     {
+        $this->expectExceptionMessage('foo');
+        $this->expectException(\RuntimeException::class);
+
         $verifier  = 'foo';
         $arguments = ['foo' => 'bar'];
 

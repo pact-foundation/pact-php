@@ -10,7 +10,7 @@ class MatcherTest extends TestCase
     /** @var Matcher */
     private $matcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->matcher = new Matcher();
     }

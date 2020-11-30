@@ -1,26 +1,25 @@
 <?php
 
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Factory\AppFactory;
 
 require __DIR__ . '/../../../../vendor/autoload.php';
 
-$app = new \Slim\App();
+$app = AppFactory::create();
 
 $app->get('/hello/{name}', function (Request $request, Response $response) {
     $name = $request->getAttribute('name');
+    $response->getBody()->write(\json_encode(['message' => "Hello, {$name}"]));
 
-    return $response
-            ->withJson(['message' => "Hello, {$name}"])
-            ->withHeader('Content-Type', 'application/json');
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
 $app->get('/goodbye/{name}', function (Request $request, Response $response) {
     $name = $request->getAttribute('name');
+    $response->getBody()->write(\json_encode(['message' => "Goodbye, {$name}"]));
 
-    return $response
-        ->withJson(['message' => "Goodbye, {$name}"])
-        ->withHeader('Content-Type', 'application/json');
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
 $app->run();

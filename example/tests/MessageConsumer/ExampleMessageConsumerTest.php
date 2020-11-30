@@ -17,7 +17,7 @@ class ExampleMessageConsumerTest extends TestCase
 {
     private static $config;
 
-    public static function setUpBeforeClass()/* The :void return type declaration that should be here would cause a BC issue */
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -27,7 +27,7 @@ class ExampleMessageConsumerTest extends TestCase
                         ->setPactDir(__DIR__ . '/../../output/');
     }
 
-    public static function tearDownAfterClass()/* The :void return type declaration that should be here would cause a BC issue */
+    public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
 
