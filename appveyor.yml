@@ -1,0 +1,35 @@
+version: 6.0.{build}
+
+skip_tags: false
+
+skip_non_tags: false
+
+skip_commits:
+  message: /Created.*\.(png|jpg|jpeg|bmp|gif)/      # Regex for matching commit message
+
+max_jobs: 1
+
+image: Visual Studio 2017
+
+init:
+  - git config --global core.autocrlf input
+
+install:
+  - cinst php --version 7.3.25
+  - set PATH=C:\tools\php73;%PATH%
+  - cmd: copy /Y .\tests\PhpPact\php.ini C:\tools\php73\
+  - cmd: php -v
+  - appveyor DownloadFile https://getcomposer.org/composer.phar
+  - cmd: php .\composer.phar update
+
+build: off
+
+test_script:
+  - cmd: php .\vendor\tm\tooly-composer-script\bin\php-cs-fixer.phar fix --config .php_cs --dry-run
+  - cmd: php .\composer.phar test
+
+on_success:
+  - echo Success
+
+on_failure:
+  - echo Failure
