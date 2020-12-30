@@ -51,9 +51,7 @@ jobs:
           php-version: ${{ matrix.php }}
 
       - name: Copy the inis 
-        run: |
-          Copy-Item -Path .\tests\PhpPact\php.ini -Destination C:\tools\php\ -Force
-          done      
+        run: Copy-Item -Path .\tests\PhpPact\php.ini -Destination C:\tools\php\ -Force
         
       - name: Composer install
         uses: ramsey/composer-install@v1
