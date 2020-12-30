@@ -1,0 +1,64 @@
+name: pact-php
+
+on:
+  push:
+  pull_request_target:
+  pull_request:
+
+jobs:
+  php-cs:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [ '7.3', '7.4' ]
+    
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout repository
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: 'locked'
+
+      - name: Static Code Analysis
+        run: composer lint
+
+  test:
+    runs-on: ${{ matrix.operating-system }}
+    needs:
+      - php-cs
+    strategy:
+      fail-fast: true
+      matrix:
+        operating-system: [ ubuntu-latest, macos-latest, windows-latest ]
+        php: [ '7.3', '7.4' ]
+        dependencies: [ 'lowest', 'locked' ]
+
+    name: PHP ${{ matrix.php }} on ${{ matrix.operating-system }} with ${{ matrix.dependencies }} dependencies
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout repository
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - name: Copy the inis 
+        if: runner.os == 'Windows'
+        run: Copy-Item -Path .\tests\PhpPact\php.ini -Destination C:\tools\php\ -Force
+                
+      - name: Composer install
+        uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+          composer-options: ${{ matrix.composer-options }}
+
+      - name: Composer test
+        run: composer test
