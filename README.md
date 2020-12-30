@@ -37,6 +37,7 @@ Table of contents
         
 
 ## Versions
+7.x updates internal dependencies and libraries, mostly to Guzzle 7.X.  This results in dropping support for PHP 7.2.
 6.x updates internal dependencies, mostly surrounding the Amp library.  This results in dropping support for PHP 7.1.
 
 5.X adds preliminary support for async messages and pact specification 3.X.  This does not yet support the full pact specification 3.X as the backend implementations are incomplete. However, pact-messages are supported.
