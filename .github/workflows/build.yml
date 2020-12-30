@@ -49,12 +49,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-      
-      - name: copy file
-        uses: canastro/copy-file-action@master
-        with:
-          source: ".\\tests\\PhpPact\\php.ini"
-          target: "C:\\tools\\php\\php.ini"
+
+      - name: Copy the inis 
+        run: |
+          copy /Y .\tests\PhpPact\php.ini C:\tools\php73\
+          done      
         
       - name: Composer install
         uses: ramsey/composer-install@v1
