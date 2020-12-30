@@ -6,21 +6,6 @@ on:
   pull_request:
 
 jobs:
-  php-cs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        name: Checkout repository
-
-      - uses: ramsey/composer-install@v1
-        with:
-          dependency-versions: 'locked'
-
-      - name: Static Code Analysis
-        run: composer lint
-
-  test:
-    runs-on: ${{ matrix.operating-system }}
     needs:
       - php-cs
     strategy:
@@ -46,6 +31,9 @@ jobs:
         with:
           dependency-versions: ${{ matrix.dependencies }}
           composer-options: ${{ matrix.composer-options }}
+
+      - name: Composer lint
+        run: composer lint
 
       - name: Composer test
         run: composer test
