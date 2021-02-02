@@ -17,7 +17,7 @@ use PhpPact\Standalone\Runner\ProcessRunner;
  */
 class MockServer
 {
-    /** @var MockServerConfigInterface */
+    /** @var MockServerConfig */
     private $config;
 
     /** @var InstallManager */
@@ -32,10 +32,10 @@ class MockServer
     /**
      * MockServer constructor.
      *
-     * @param MockServerConfigInterface  $config
+     * @param MockServerConfig           $config
      * @param null|MockServerHttpService $httpService
      */
-    public function __construct(MockServerConfigInterface $config, MockServerHttpService $httpService = null)
+    public function __construct(MockServerConfig $config, MockServerHttpService $httpService = null)
     {
         $this->config         = $config;
         $this->installManager = new InstallManager();
