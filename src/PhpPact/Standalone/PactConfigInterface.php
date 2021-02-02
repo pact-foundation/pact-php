@@ -45,7 +45,7 @@ interface PactConfigInterface
     public function setPactDir($pactDir): self;
 
     /**
-     * @return float pact version
+     * @return string pact version
      */
     public function getPactSpecificationVersion();
 

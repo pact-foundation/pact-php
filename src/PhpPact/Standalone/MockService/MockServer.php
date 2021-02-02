@@ -17,7 +17,7 @@ use PhpPact\Standalone\Runner\ProcessRunner;
  */
 class MockServer
 {
-    /** @var MockServerConfig */
+    /** @var MockServerConfigInterface */
     private $config;
 
     /** @var InstallManager */

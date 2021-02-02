@@ -25,7 +25,7 @@ class MessageBuilder implements BuilderInterface
     private $message;
 
     /**
-     * constructor.
+     * @param PactConfigInterface $config
      */
     public function __construct(PactConfigInterface $config)
     {
@@ -37,8 +37,8 @@ class MessageBuilder implements BuilderInterface
     /**
      * Retrieve the verification call back
      *
-     * @param callable $callback
-     * @param string   $description of the call back in case of multiple
+     * @param callable     $callback
+     * @param false|string $description of the callback in case of multiple
      *
      * @return MessageBuilder
      */
@@ -96,7 +96,7 @@ class MessageBuilder implements BuilderInterface
      *
      * @param mixed $contents required to be in the message
      *
-     * @return bool returns true on success
+     * @return self
      */
     public function withContent($contents): self
     {
@@ -121,14 +121,14 @@ class MessageBuilder implements BuilderInterface
     /**
      * Wrapper around verify()
      *
-     * @param callable $callback
-     * @param string   $description description of the pact and thus callback
+     * @param callable     $callback
+     * @param false|string $description description of the pact and thus callback
      *
      * @throws \Exception
      *
      * @return bool
      */
-    public function verifyMessage($callback, $description = false): bool
+    public function verifyMessage(callable $callback, $description = false): bool
     {
         $this->setCallback($callback, $description);
 
@@ -139,9 +139,11 @@ class MessageBuilder implements BuilderInterface
      * Verify the use of the pact by calling the callback
      * It also calls finalize to write the pact
      *
-     * @param string $description description of the pact and thus callback
+     * @param false|string $description description of the pact and thus callback
      *
      * @throws \Exception if callback is not set
+     *
+     * @return bool
      */
     public function verify($description = false): bool
     {

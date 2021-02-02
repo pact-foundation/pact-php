@@ -150,12 +150,12 @@ interface VerifierConfigInterface
     public function setBrokerPassword(string $brokerPassword);
 
     /**
-     * @return null|\string[] custom headers for the request to the provider such as authorization
+     * @return null|string[] custom headers for the request to the provider such as authorization
      */
     public function getCustomProviderHeaders();
 
     /**
-     * @param \string[] $customProviderHeaders custom headers for the requests to the provider such as authorization
+     * @param string[] $customProviderHeaders custom headers for the requests to the provider such as authorization
      *
      * @return VerifierConfigInterface
      */
@@ -218,7 +218,9 @@ interface VerifierConfigInterface
     public function getProcessIdleTimeout(): int;
 
     /**
-     * @return bool allow pacts which are in pending state to be verified without causing the overall task to fail
+     * @param bool $pending allow pacts which are in pending state to be verified without causing the overall task to fail
+     *
+     * @return VerifierConfigInterface
      */
     public function setEnablePending(bool $pending): self;
 

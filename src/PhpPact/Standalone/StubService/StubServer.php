@@ -13,7 +13,7 @@ use PhpPact\Standalone\Runner\ProcessRunner;
  */
 class StubServer
 {
-    /** @var StubServerConfig */
+    /** @var StubServerConfigInterface */
     private $config;
 
     /** @var InstallManager */
@@ -31,7 +31,7 @@ class StubServer
     /**
      * Start the Stub Server. Verify that it is running.
      *
-     * @param $wait seconds to delay for the server to come up
+     * @param int $wait seconds to delay for the server to come up
      *
      * @throws Exception
      *

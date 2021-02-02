@@ -28,7 +28,7 @@ class Verifier
     /** @var VerifierConfigInterface */
     protected $config;
 
-    /** @var BrokerHttpClientInterface */
+    /** @var null|BrokerHttpClientInterface */
     protected $brokerHttpClient;
 
     /** @var InstallManager */
@@ -244,7 +244,7 @@ class Verifier
         $this->verifierProcess->run($arguments, $this->processTimeout, $this->processIdleTimeout);
     }
 
-    protected function getBrokerHttpClient(): BrokerHttpClient
+    protected function getBrokerHttpClient(): BrokerHttpClientInterface
     {
         if (!$this->brokerHttpClient) {
             $user      = $this->config->getBrokerUsername();
