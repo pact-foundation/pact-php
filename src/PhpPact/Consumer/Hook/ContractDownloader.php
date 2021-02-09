@@ -6,7 +6,7 @@ use Exception;
 use PhpPact\Http\ClientInterface;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Exception\MissingEnvVariableException;
-use PhpPact\Standalone\MockService\MockServerConfigInterface;
+use PhpPact\Standalone\MockService\MockServerConfig;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 use PHPUnit\Framework\AssertionFailedError;
@@ -15,7 +15,7 @@ use RuntimeException;
 
 class ContractDownloader implements AfterLastTestHook
 {
-    /** @var MockServerConfigInterface */
+    /** @var MockServerConfig */
     private $mockServerConfig;
 
     /** @var null|ClientInterface */
