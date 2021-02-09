@@ -30,7 +30,7 @@ class PactTestListener implements TestListener
     /**
      * Name of the test suite configured in your phpunit config.
      *
-     * @var string
+     * @var string[]
      */
     private $testSuiteNames;
 

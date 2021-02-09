@@ -66,7 +66,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * The pact specification version to use when writing the pact. Note that only versions 1 and 2 are currently supported.
      *
-     * @var float
+     * @var string
      */
     private $pactSpecificationVersion;
 

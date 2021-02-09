@@ -79,7 +79,6 @@ class InstallerLinux implements InstallerInterface
      * @param string $destinationDir
      *
      * @return InstallerLinux
-     * @return string
      */
     private function extract(string $sourceFile, string $destinationDir): self
     {

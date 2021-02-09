@@ -21,7 +21,7 @@ class Matcher
     /**
      * Alias for the `like()` function.
      *
-     * @param $value
+     * @param mixed $value
      *
      * @throws \Exception
      *
@@ -107,7 +107,7 @@ class Matcher
     /**
      * Alias for the term matcher.
      *
-     * @param $value
+     * @param mixed  $value
      * @param string $pattern
      *
      * @throws \Exception

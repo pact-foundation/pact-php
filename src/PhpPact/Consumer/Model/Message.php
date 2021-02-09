@@ -71,7 +71,7 @@ class Message implements \JsonSerializable
     /**
      * @param string $name
      * @param array  $params
-     * @param array  $overwrite - if true reset the entire state
+     * @param bool   $overwrite - if true reset the entire state
      *
      * @return Message
      */

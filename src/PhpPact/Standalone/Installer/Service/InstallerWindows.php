@@ -85,7 +85,6 @@ class InstallerWindows implements InstallerInterface
      * @param string $destinationDir
      *
      * @return InstallerWindows
-     * @return string
      */
     private function extract(string $sourceFile, string $destinationDir): self
     {

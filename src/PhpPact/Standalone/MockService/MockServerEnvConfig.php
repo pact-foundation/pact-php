@@ -21,7 +21,7 @@ class MockServerEnvConfig extends MockServerConfig
     {
         $this
             ->setHost($this->parseEnv('PACT_MOCK_SERVER_HOST'))
-            ->setPort($this->parseEnv('PACT_MOCK_SERVER_PORT'))
+            ->setPort((int) $this->parseEnv('PACT_MOCK_SERVER_PORT'))
             ->setConsumer($this->parseEnv('PACT_CONSUMER_NAME'))
             ->setProvider($this->parseEnv('PACT_PROVIDER_NAME'))
             ->setPactDir($this->parseEnv('PACT_OUTPUT_DIR', false))

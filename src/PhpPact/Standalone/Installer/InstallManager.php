@@ -107,9 +107,9 @@ class InstallManager
         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
         THE SOFTWARE.
 
-     * @param unknown $files
+     * @param mixed $files
      *
-     * @throws IOException
+     * @throws \Exception
      */
     public static function rmdir($files)
     {

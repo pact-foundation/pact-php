@@ -79,7 +79,6 @@ class InstallerMac implements InstallerInterface
      * @param string $destinationDir
      *
      * @return InstallerMac
-     * @return string
      */
     private function extract(string $sourceFile, string $destinationDir): self
     {
