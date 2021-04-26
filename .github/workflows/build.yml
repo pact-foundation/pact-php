@@ -39,7 +39,7 @@ jobs:
     needs:
       - php-cs
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         operating-system: [ ubuntu-latest, macos-latest, windows-latest ]
         php: [ '7.3', '7.4', '8.0' ]
