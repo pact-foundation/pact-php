@@ -28,11 +28,11 @@ jobs:
       - name: Static Code Analysis
         run: composer lint
 
-      - uses: docker://oskarstark/phpstan-ga
-        env:
-          REQUIRE_DEV: true
-        with:
-          args: analyse src/ --level=5
+      # - uses: docker://oskarstark/phpstan-ga
+      #   env:
+      #     REQUIRE_DEV: true
+      #   with:
+      #     args: analyse src/ --level=5
 
   test:
     runs-on: ${{ matrix.operating-system }}
