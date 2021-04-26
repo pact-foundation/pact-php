@@ -23,7 +23,7 @@ jobs:
 
       - uses: ramsey/composer-install@v1
         with:
-          dependency-versions: 'locked'
+          dependency-versions: 'highest'
 
       - name: Static Code Analysis
         run: composer lint
@@ -43,7 +43,7 @@ jobs:
       matrix:
         operating-system: [ ubuntu-latest, macos-latest, windows-latest ]
         php: [ '7.3', '7.4', '8.0' ]
-        dependencies: [ 'lowest', 'locked' ]
+        dependencies: [ 'lowest', 'highest' ]
 
     name: PHP ${{ matrix.php }} on ${{ matrix.operating-system }} with ${{ matrix.dependencies }} dependencies
 
