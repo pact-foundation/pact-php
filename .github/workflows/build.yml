@@ -20,6 +20,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          tools: phpstan
 
       - uses: ramsey/composer-install@v1
         with:
@@ -28,11 +29,11 @@ jobs:
       - name: Static Code Analysis
         run: composer lint
 
-      # - uses: docker://oskarstark/phpstan-ga
-      #   env:
-      #     REQUIRE_DEV: true
-      #   with:
-      #     args: analyse src/ --level=5
+      - name: PHPStan
+        env:
+          REQUIRE_DEV: true
+        run: |
+          phpstan analyse src/ --level=5
 
   test:
     runs-on: ${{ matrix.operating-system }}
