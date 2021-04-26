@@ -55,6 +55,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: sockets
 
       - name: Copy the inis
         if: runner.os == 'Windows'
