@@ -164,6 +164,7 @@ class MockServer
             }
         } while ($tries <= $maxTries);
 
+        // @phpstan-ignore-next-line
         throw new HealthCheckFailedException("Failed to make connection to Mock Server in {$maxTries} attempts.");
     }
 }
