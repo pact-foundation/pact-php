@@ -20,31 +20,33 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          tools: phpstan
 
       - uses: ramsey/composer-install@v1
         with:
-          dependency-versions: 'highest'
+          dependency-versions: 'locked'
+
+      - name: Code Style Analysis
+        uses: docker://oskarstark/php-cs-fixer-ga:2.19.0
+        with:
+          args: --config=.php_cs --diff --dry-run
 
       - name: Static Code Analysis
-        run: composer lint
-
-      - name: PHPStan
+        uses: docker://oskarstark/phpstan-ga
         env:
           REQUIRE_DEV: true
-        run: |
-          phpstan analyse src/ --level=5
+        with:
+          args: analyse src/ --level=5
 
   test:
     runs-on: ${{ matrix.operating-system }}
     needs:
       - php-cs
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         operating-system: [ ubuntu-latest, macos-latest, windows-latest ]
         php: [ '7.3', '7.4', '8.0' ]
-        dependencies: [ 'lowest', 'highest' ]
+        dependencies: [ 'lowest', 'locked' ]
 
     name: PHP ${{ matrix.php }} on ${{ matrix.operating-system }} with ${{ matrix.dependencies }} dependencies
 
@@ -56,7 +58,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: sockets
 
       - name: Copy the inis
         if: runner.os == 'Windows'
