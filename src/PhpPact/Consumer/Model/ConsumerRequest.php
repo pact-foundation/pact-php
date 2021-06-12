@@ -95,11 +95,11 @@ class ConsumerRequest implements \JsonSerializable
 
     /**
      * @param string $header
-     * @param string $value
+     * @param array | string $value
      *
      * @return ConsumerRequest
      */
-    public function addHeader(string $header, string $value): self
+    public function addHeader(string $header, $value): self
     {
         $this->headers[$header] = $value;
 
