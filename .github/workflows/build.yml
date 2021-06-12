@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ '7.3', '7.4' ]
+        php: [ '7.3', '7.4', '8.0' ]
 
     steps:
       - uses: actions/checkout@v2
@@ -25,10 +25,13 @@ jobs:
         with:
           dependency-versions: 'locked'
 
-      - name: Static Code Analysis
-        run: composer lint
+      - name: Code Style Analysis
+        uses: docker://oskarstark/php-cs-fixer-ga:2.19.0
+        with:
+          args: --config=.php_cs --diff --dry-run
 
-      - uses: docker://oskarstark/phpstan-ga
+      - name: Static Code Analysis
+        uses: docker://oskarstark/phpstan-ga
         env:
           REQUIRE_DEV: true
         with:
@@ -42,7 +45,7 @@ jobs:
       fail-fast: true
       matrix:
         operating-system: [ ubuntu-latest, macos-latest, windows-latest ]
-        php: [ '7.3', '7.4' ]
+        php: [ '7.3', '7.4', '8.0' ]
         dependencies: [ 'lowest', 'locked' ]
 
     name: PHP ${{ matrix.php }} on ${{ matrix.operating-system }} with ${{ matrix.dependencies }} dependencies
