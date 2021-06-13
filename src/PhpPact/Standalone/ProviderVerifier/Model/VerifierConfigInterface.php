@@ -5,288 +5,235 @@ namespace PhpPact\Standalone\ProviderVerifier\Model;
 use Psr\Http\Message\UriInterface;
 
 /**
- * Configuration to use with the verifier server.
  * Interface VerifierServerConfigInterface.
  */
 interface VerifierConfigInterface
 {
     /**
-     * @return null|UriInterface providers base url
+     * @return null|string
      */
-    public function getProviderBaseUrl();
+    public function getBasePath(): ?string;
 
     /**
-     * @param UriInterface $providerBaseUrl providers base url
+     * @param string $basePath
      *
-     * @return VerifierConfigInterface
+     * @return $this
      */
-    public function setProviderBaseUrl(UriInterface $providerBaseUrl): self;
+    public function setBasePath(string $basePath): self;
 
     /**
-     * @return null|string Base URL to setup the provider states at
+     * @return null|UriInterface
      */
-    public function getProviderStatesSetupUrl();
+    public function getStateChangeUrl(): ?UriInterface;
 
     /**
-     * @param string $providerStatesSetupUrl Base URL to setup the provider states at
+     * @param UriInterface $stateChangeUrl
      *
-     * @return VerifierConfigInterface
+     * @return $this
      */
-    public function setProviderStatesSetupUrl(string $providerStatesSetupUrl): self;
+    public function setStateChangeUrl(UriInterface $stateChangeUrl): self;
 
     /**
-     * @return null|string name of the provider
+     * @return null|string
      */
-    public function getProviderName();
+    public function getProviderName(): ?string;
 
     /**
-     * @param string $name Name of the provider
+     * @param string $providerName
      *
-     * @return VerifierConfigInterface
+     * @return $this
      */
-    public function setProviderName(string $name): self;
+    public function setProviderName(string $providerName): self;
 
     /**
-     * @return null|string providers version
+     * @return string
      */
-    public function getProviderVersion();
+    public function getProviderVersion(): string;
 
     /**
-     * @param string $providerAppVersion providers version
+     * @param string $providerVersion
      *
-     * @return VerifierConfigInterface
+     * @return $this
      */
-    public function setProviderVersion(string $providerAppVersion): self;
+    public function setProviderVersion(string $providerVersion): self;
 
     /**
-     * @param string $providerBranch providers branch name
+     * @return array
+     */
+    public function getProviderTags(): array;
+
+    /**
+     * @param array|string[] $providerTags
      *
-     * @return VerifierConfigInterface
+     * @return $this
      */
-    public function setProviderBranch(string $providerBranch): self;
+    public function setProviderTags(array $providerTags): self;
 
     /**
-     * @return array providers version tag
-     */
-    public function getProviderVersionTag();
-
-    /**
-     * @return null|string providers branch name
+     * @return string|null
      */
     public function getProviderBranch(): ?string;
 
     /**
-     * @param string $providerVersionTag providers version tag
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setProviderVersionTag(string $providerVersionTag): self;
-
-    /**
-     * @return array consumers version tag
-     */
-    public function getConsumerVersionTag();
-
-    /**
-     * @param string $consumerVersionTag consumers version tag
-     *
-     * @return VerifierConfigInterface
-     */
-    public function addConsumerVersionTag(string $consumerVersionTag): self;
-
-    /**
-     * @param string $providerVersionTag provider version tag
-     *
-     * @return VerifierConfigInterface
-     */
-    public function addProviderVersionTag(string $providerVersionTag): self;
-
-    /**
-     * @return ConsumerVersionSelectors
-     */
-    public function getConsumerVersionSelectors(): ConsumerVersionSelectors;
-
-    /**
-     * @param ConsumerVersionSelectors $selectors Consumer version selectors
+     * @param string $providerBranch
      *
      * @return $this
      */
-    public function setConsumerVersionSelectors(ConsumerVersionSelectors $selectors): self;
+    public function setProviderBranch(string $providerBranch): VerifierConfigInterface;
 
     /**
-     * @return bool are results going to be published
+     * @return bool
      */
     public function isPublishResults(): bool;
 
     /**
-     * @param bool $publishResults flag to publish results
+     * @param bool $publishResults
      *
-     * @return VerifierConfigInterface
+     * @return $this
      */
     public function setPublishResults(bool $publishResults): self;
 
     /**
-     * @return null|UriInterface url to the pact broker
+     * @return bool
      */
-    public function getBrokerUri();
+    public function isDisableSslVerification(): bool;
 
     /**
-     * @param UriInterface $brokerUri uri to the pact broker
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setBrokerUri(UriInterface $brokerUri): self;
-
-    /**
-     * @return null|string token for the pact broker
-     */
-    public function getBrokerToken(): ?string;
-
-    /**
-     * @param null|string $brokerToken token for the pact broker
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setBrokerToken(?string $brokerToken): self;
-
-    /**
-     * @return null|string username for the pact broker if secured
-     */
-    public function getBrokerUsername();
-
-    /**
-     * @param string $brokerUsername username for the pact broker if secured
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setBrokerUsername(string $brokerUsername);
-
-    /**
-     * @return null|string password for the pact broker if secured
-     */
-    public function getBrokerPassword();
-
-    /**
-     * @param string $brokerPassword password for the pact broker if secured
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setBrokerPassword(string $brokerPassword);
-
-    /**
-     * @return null|string[] custom headers for the request to the provider such as authorization
-     */
-    public function getCustomProviderHeaders();
-
-    /**
-     * @param string[] $customProviderHeaders custom headers for the requests to the provider such as authorization
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setCustomProviderHeaders(array $customProviderHeaders): self;
-
-    /**
-     * @param string $name
-     * @param string $value
-     *
-     * @return VerifierConfigInterface
-     */
-    public function addCustomProviderHeader(string $name, string $value): self;
-
-    /**
-     * @return bool is verbosity level increased
-     */
-    public function isVerbose(): bool;
-
-    /**
-     * @param bool $verbose increase verbosity level
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setVerbose(bool $verbose): self;
-
-    /**
-     * @return null|string set the directory for the pact.log file
-     */
-    public function getLogDirectory();
-
-    /**
-     * @param string $log set the directory for the pact.log file
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setLogDirectory(string $log): self;
-
-    /**
-     * @return null|string RSpec formatter. Defaults to custom Pact formatter. json and RspecJunitFormatter may also be used
-     */
-    public function getFormat();
-
-    /**
-     * @param string $format RSpec formatter. Defaults to custom Pact formatter. json and RspecJunitFormatter may also be used
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setFormat(string $format): self;
-
-    /**
-     * @param int $timeout
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setProcessTimeout(int $timeout): self;
-
-    /**
-     * @param int $timeout
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setProcessIdleTimeout(int $timeout): self;
-
-    /**
-     * @return int
-     */
-    public function getProcessTimeout(): int;
-
-    /**
-     * @return int
-     */
-    public function getProcessIdleTimeout(): int;
-
-    /**
-     * @param bool $pending allow pacts which are in pending state to be verified without causing the overall task to fail
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setEnablePending(bool $pending): self;
-
-    /**
-     * @return bool is enabled pending pacts
-     */
-    public function isEnablePending(): bool;
-
-    /**
-     * @param string $date Includes pact marked as WIP since this date.
-     *                     Accepted formats: Y-m-d (2020-01-30) or c (ISO 8601 date 2004-02-12T15:19:21+00:00)
-     *
-     * @return VerifierConfigInterface
-     */
-    public function setIncludeWipPactSince(string $date): self;
-
-    /**
-     * @return null|string get start date of included WIP Pacts
-     */
-    public function getIncludeWipPactSince();
-
-    /**
-     * @return null|callable
-     */
-    public function getRequestFilter(): ?callable;
-
-    /**
-     * @param callable $requestFilter
+     * @param bool $disableSslVerification
      *
      * @return $this
      */
-    public function setRequestFilter(callable $requestFilter): self;
+    public function setDisableSslVerification(bool $disableSslVerification): self;
+
+    /**
+     * @param bool $stateChangeAsQuery
+     *
+     * @return $this
+     */
+    public function setStateChangeAsQuery(bool $stateChangeAsQuery): self;
+
+    /**
+     * @return bool
+     */
+    public function isStateChangeAsQuery(): bool;
+
+    /**
+     * @param bool $stateChangeTeardown
+     *
+     * @return $this
+     */
+    public function setStateChangeTeardown(bool $stateChangeTeardown): self;
+
+    /**
+     * @return bool
+     */
+    public function isStateChangeTeardown(): bool;
+
+    /**
+     * @return null|UriInterface
+     */
+    public function getBuildUrl(): ?UriInterface;
+
+    /**
+     * @param UriInterface $buildUrl
+     *
+     * @return $this
+     */
+    public function setBuildUrl(UriInterface $buildUrl): self;
+
+    /**
+     * @param int $requestTimeout
+     *
+     * @return $this
+     */
+    public function setRequestTimeout(int $requestTimeout): self;
+
+    /**
+     * @return int
+     */
+    public function getRequestTimeout(): int;
+
+    /**
+     * @param string ...$filterConsumerNames
+     *
+     * @return $this
+     */
+    public function setFilterConsumerNames(string ...$filterConsumerNames): self;
+
+    /**
+     * @return array
+     */
+    public function getFilterConsumerNames(): array;
+
+    /**
+     * @param string $filterDescription
+     *
+     * @return $this
+     */
+    public function setFilterDescription(string $filterDescription): self;
+
+    /**
+     * @return null|string
+     */
+    public function getFilterDescription(): ?string;
+
+    /**
+     * @param bool $filterNoState
+     *
+     * @return $this
+     */
+    public function setFilterNoState(bool $filterNoState): self;
+
+    /**
+     * @return bool
+     */
+    public function getFilterNoState(): bool;
+
+    /**
+     * @param string $filterState
+     *
+     * @return $this
+     */
+    public function setFilterState(string $filterState): self;
+
+    /**
+     * @return null|string
+     */
+    public function getFilterState(): ?string;
+
+    /**
+     * @return null|string
+     */
+    public function getScheme(): ?string;
+
+    /**
+     * @param string $scheme
+     *
+     * @return $this
+     */
+    public function setScheme(string $scheme): self;
+
+    /**
+     * @return null|string
+     */
+    public function getHost(): ?string;
+
+    /**
+     * @param string $host
+     *
+     * @return $this
+     */
+    public function setHost(string $host): self;
+
+    /**
+     * @return null|int
+     */
+    public function getPort(): ?int;
+
+    /**
+     * @param int $port
+     *
+     * @return $this
+     */
+    public function setPort(int $port): self;
 }

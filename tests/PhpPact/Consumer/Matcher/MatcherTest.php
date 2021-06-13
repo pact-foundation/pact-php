@@ -7,8 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class MatcherTest extends TestCase
 {
-    /** @var Matcher */
-    private $matcher;
+    private Matcher $matcher;
 
     protected function setUp(): void
     {

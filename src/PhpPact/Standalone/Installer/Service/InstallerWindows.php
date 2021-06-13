@@ -2,17 +2,40 @@
 
 namespace PhpPact\Standalone\Installer\Service;
 
-use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
 use PhpPact\Standalone\Installer\Model\Scripts;
-use ZipArchive;
 
 /**
- * Download the Ruby Standalone binaries for Windows.
- * Class BinaryDownloaderWindows.
+ * Class InstallerWindows.
  */
-class InstallerWindows implements InstallerInterface
+class InstallerWindows extends AbstractInstaller
 {
-    public const VERSION = '1.88.83';
+    public const FILES = [
+        [
+            'repo'          => 'pact-ruby-standalone',
+            'filename'      => 'pact-' . self::PACT_RUBY_STANDALONE_VERSION . '-win32.zip',
+            'version'       => self::PACT_RUBY_STANDALONE_VERSION,
+            'versionPrefix' => 'v',
+            'extract'       => true,
+        ],
+        [
+            'repo'          => 'pact-stub-server',
+            'filename'      => 'pact-stub-server-windows-x86_64.exe.gz',
+            'version'       => self::PACT_STUB_SERVER_VERSION,
+            'versionPrefix' => 'v',
+            'extract'       => true,
+            'extractTo'     => 'pact-stub-server.exe',
+            'executable'    => true,
+        ],
+        [
+            'repo'          => 'pact-reference',
+            'filename'      => 'pact_ffi-windows-x86_64.dll.gz',
+            'version'       => self::PACT_FFI_VERSION,
+            'versionPrefix' => 'libpact_ffi-v',
+            'extract'       => true,
+            'extractTo'     => 'pact_ffi.dll',
+        ],
+        ...parent::FILES,
+    ];
 
     /**
      * {@inheritdoc}
@@ -25,90 +48,16 @@ class InstallerWindows implements InstallerInterface
     /**
      * {@inheritdoc}
      */
-    public function install(string $destinationDir): Scripts
+    protected function getScripts(string $destinationDir): Scripts
     {
-        if (\file_exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
-            $fileName     = 'pact-' . self::VERSION . '-win32.zip';
-            $tempFilePath = __DIR__ . DIRECTORY_SEPARATOR . $fileName;
+        $destinationDir = $destinationDir . DIRECTORY_SEPARATOR;
+        $binDir         = $destinationDir . 'pact' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR;
 
-            $this
-                ->download($fileName, $tempFilePath)
-                ->extract($tempFilePath, $destinationDir)
-                ->deleteCompressed($tempFilePath);
-        }
-
-        $binDir  = $destinationDir . DIRECTORY_SEPARATOR . 'pact' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR;
-        $scripts = new Scripts(
-            $binDir . 'pact-mock-service.bat',
-            $binDir . 'pact-stub-service.bat',
-            $binDir . 'pact-provider-verifier.bat',
-            $binDir . 'pact-message.bat',
+        return new Scripts(
+            $destinationDir . 'pact.h',
+            $destinationDir . 'pact_ffi.dll',
+            $destinationDir . 'pact-stub-server.exe',
             $binDir . 'pact-broker.bat'
         );
-
-        return $scripts;
-    }
-
-    /**
-     * Download the binaries.
-     *
-     * @param string $fileName     name of the file to be downloaded
-     * @param string $tempFilePath location to download the file
-     *
-     * @throws FileDownloadFailureException
-     *
-     * @return InstallerWindows
-     */
-    private function download(string $fileName, string $tempFilePath): self
-    {
-        $uri = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v' . self::VERSION . "/{$fileName}";
-
-        $data = \file_get_contents($uri);
-
-        if ($data === false) {
-            throw new FileDownloadFailureException('Failed to download binary from Github for Ruby Standalone!');
-        }
-
-        $result = \file_put_contents($tempFilePath, $data);
-
-        if ($result === false) {
-            throw new FileDownloadFailureException('Failed to save binaries for Ruby Standalone!');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Uncompress the temp file and install the binaries in the destination directory.
-     *
-     * @param string $sourceFile
-     * @param string $destinationDir
-     *
-     * @return InstallerWindows
-     */
-    private function extract(string $sourceFile, string $destinationDir): self
-    {
-        $zip = new ZipArchive();
-
-        if ($zip->open($sourceFile)) {
-            $zip->extractTo($destinationDir);
-            $zip->close();
-        }
-
-        return $this;
-    }
-
-    /**
-     * Delete the temp file.
-     *
-     * @param string $filePath
-     *
-     * @return InstallerWindows
-     */
-    private function deleteCompressed(string $filePath): self
-    {
-        \unlink($filePath);
-
-        return $this;
     }
 }

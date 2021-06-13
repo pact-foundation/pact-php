@@ -6,18 +6,28 @@ use Amp\ByteStream\ResourceOutputStream;
 use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
 use Monolog\Logger;
+use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
+use PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Runner\ProcessRunner;
 
+/**
+ * Class Broker.
+ */
 class Broker
 {
-    /** @var Logger */
-    private $logger;
-    /** @var BrokerConfig */
-    private $config;
-    /** @var string */
-    private $command;
+    private Logger $logger;
+    private BrokerConfig $config;
+    private string $command;
 
+    /**
+     * Broker constructor.
+     *
+     * @param BrokerConfig $config
+     *
+     * @throws FileDownloadFailureException
+     * @throws NoDownloaderFoundException
+     */
     public function __construct(BrokerConfig $config)
     {
         $this->config  = $config;

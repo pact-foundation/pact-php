@@ -2,13 +2,11 @@
 
 namespace PhpPact\Consumer\Listener;
 
+use Exception;
 use GuzzleHttp\Psr7\Uri;
-use PhpPact\Broker\Service\BrokerHttpClient;
-use PhpPact\Http\GuzzleClient;
-use PhpPact\Standalone\Exception\MissingEnvVariableException;
-use PhpPact\Standalone\MockService\MockServer;
+use PhpPact\Standalone\Broker\Broker;
+use PhpPact\Standalone\Broker\BrokerConfig;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
-use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestListener;
@@ -23,46 +21,25 @@ class PactTestListener implements TestListener
 {
     use TestListenerDefaultImplementation;
 
-    /** @var MockServer */
-    private $server;
-
     /**
      * Name of the test suite configured in your phpunit config.
      *
      * @var string[]
      */
-    private $testSuiteNames;
+    private array $testSuiteNames;
 
-    /** @var MockServerEnvConfig */
-    private $mockServerConfig;
-
-    /** @var bool */
-    private $failed;
+    private MockServerEnvConfig $builderConfig;
+    private bool $failed = false;
 
     /**
      * PactTestListener constructor.
      *
      * @param string[] $testSuiteNames test suite names that need evaluated with the listener
-     *
-     * @throws MissingEnvVariableException
      */
     public function __construct(array $testSuiteNames)
     {
-        $this->testSuiteNames   = $testSuiteNames;
-        $this->mockServerConfig = new MockServerEnvConfig();
-    }
-
-    /**
-     * @param TestSuite $suite
-     *
-     * @throws \Exception
-     */
-    public function startTestSuite(TestSuite $suite): void
-    {
-        if (\in_array($suite->getName(), $this->testSuiteNames)) {
-            $this->server = new MockServer($this->mockServerConfig);
-            $this->server->start();
-        }
+        $this->testSuiteNames = $testSuiteNames;
+        $this->builderConfig  = new MockServerEnvConfig();
     }
 
     public function addError(Test $test, \Throwable $t, float $time): void
@@ -79,19 +56,12 @@ class PactTestListener implements TestListener
      * Publish JSON results to PACT Broker and stop the Mock Server.
      *
      * @param TestSuite $suite
+     *
+     * @throws Exception
      */
     public function endTestSuite(TestSuite $suite): void
     {
         if (\in_array($suite->getName(), $this->testSuiteNames)) {
-            try {
-                $httpService = new MockServerHttpService(new GuzzleClient(), $this->mockServerConfig);
-                $httpService->verifyInteractions();
-
-                $json = $httpService->getPactJson();
-            } finally {
-                $this->server->stop();
-            }
-
             if ($this->failed === true) {
                 print 'A unit test has failed. Skipping PACT file upload.';
             } elseif (!($pactBrokerUri = \getenv('PACT_BROKER_URI'))) {
@@ -101,29 +71,26 @@ class PactTestListener implements TestListener
             } elseif (!($tag = \getenv('PACT_CONSUMER_TAG'))) {
                 print 'PACT_CONSUMER_TAG environment variable was not set. Skipping PACT file upload.';
             } else {
-                $clientConfig = [];
+                $brokerConfig = new BrokerConfig();
+                $brokerConfig->setPacticipant($this->builderConfig->getConsumer());
+                $brokerConfig->setPactLocations($this->builderConfig->getPactDir());
+                $brokerConfig->setBrokerUri(new Uri($pactBrokerUri));
+                $brokerConfig->setConsumerVersion($consumerVersion);
+                $brokerConfig->setTag($tag);
                 if (($user = \getenv('PACT_BROKER_HTTP_AUTH_USER')) &&
                     ($pass = \getenv('PACT_BROKER_HTTP_AUTH_PASS'))
                 ) {
-                    $clientConfig = [
-                        'auth' => [$user, $pass],
-                    ];
+                    $brokerConfig->setBrokerUsername($user);
+                    $brokerConfig->setBrokerPassword($pass);
                 }
 
-                if (($sslVerify = \getenv('PACT_BROKER_SSL_VERIFY'))) {
-                    $clientConfig['verify'] = $sslVerify !== 'no';
-                }
-
-                $headers = [];
                 if ($bearerToken = \getenv('PACT_BROKER_BEARER_TOKEN')) {
-                    $headers['Authorization'] = 'Bearer ' . $bearerToken;
+                    $brokerConfig->setBrokerToken($bearerToken);
                 }
 
-                $client = new GuzzleClient($clientConfig);
-
-                $brokerHttpService = new BrokerHttpClient($client, new Uri($pactBrokerUri), $headers);
-                $brokerHttpService->tag($this->mockServerConfig->getConsumer(), $consumerVersion, $tag);
-                $brokerHttpService->publishJson($consumerVersion, $json);
+                $broker = new Broker($brokerConfig);
+                $broker->createVersionTag();
+                $broker->publish();
                 print 'Pact file has been uploaded to the Broker successfully.';
             }
         }

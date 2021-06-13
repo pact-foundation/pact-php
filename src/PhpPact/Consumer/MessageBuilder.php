@@ -2,36 +2,30 @@
 
 namespace PhpPact\Consumer;
 
-use PhpPact\Consumer\Model\Message;
-use PhpPact\Standalone\PactConfigInterface;
-use PhpPact\Standalone\PactMessage\PactMessage;
+use Exception;
+use PhpPact\Ffi\Helper;
+use PhpPact\Standalone\MockService\MockServerConfigInterface;
 
 /**
- * Build a message and send it to the Ruby Standalone Mock Service
+ * Build a message and send it to the Pact Rust FFI
  * Class MessageBuilder.
  */
-class MessageBuilder implements BuilderInterface
+class MessageBuilder extends AbstractBuilder
 {
-    /** @var PactMessage */
-    protected $pactMessage;
-
-    /** @var PactConfigInterface */
-    protected $config;
-
-    /** @var array callable */
-    protected $callback;
-
-    /** @var Message */
-    private $message;
+    protected array $callback;
+    protected int $messagePact;
+    protected int $message;
 
     /**
-     * @param PactConfigInterface $config
+     * MessageBuilder constructor.
+     *
+     * {@inheritdoc}
      */
-    public function __construct(PactConfigInterface $config)
+    public function __construct(MockServerConfigInterface $config)
     {
-        $this->config      = $config;
-        $this->message     = new Message();
-        $this->pactMessage = new PactMessage();
+        parent::__construct($config);
+        $this->messagePact = $this->ffi->pactffi_new_message_pact($config->getConsumer(), $config->getProvider());
+        $this->message     = $this->ffi->pactffi_new_message($this->messagePact, '');
     }
 
     /**
@@ -54,15 +48,20 @@ class MessageBuilder implements BuilderInterface
     }
 
     /**
-     * @param string $name      what is given to the request
-     * @param array  $params    for that request
-     * @param bool   $overwrite clear pass states completely and start this array
+     * @param string $description what is given to the request
+     * @param array  $params      for that request
      *
      * @return MessageBuilder
      */
-    public function given(string $name, array $params = [], $overwrite = false): self
+    public function given(string $description, array $params = []): self
     {
-        $this->message->setProviderState($name, $params, $overwrite);
+        if (\count($params) > 0) {
+            foreach ($params as $name => $value) {
+                $this->ffi->pactffi_message_given_with_param($this->message, $description, (string) $name, $value);
+            }
+        } else {
+            $this->ffi->pactffi_message_given($this->message, $description);
+        }
 
         return $this;
     }
@@ -74,19 +73,21 @@ class MessageBuilder implements BuilderInterface
      */
     public function expectsToReceive(string $description): self
     {
-        $this->message->setDescription($description);
+        $this->ffi->pactffi_message_expects_to_receive($this->message, $description);
 
         return $this;
     }
 
     /**
-     * @param mixed $metadata what is the additional metadata of the message
+     * @param array $metadata what is the additional metadata of the message
      *
      * @return MessageBuilder
      */
-    public function withMetadata($metadata): self
+    public function withMetadata(array $metadata): self
     {
-        $this->message->setMetadata($metadata);
+        foreach ($metadata as $key => $value) {
+            $this->ffi->pactffi_message_with_metadata($this->message, $key, $value);
+        }
 
         return $this;
     }
@@ -100,7 +101,15 @@ class MessageBuilder implements BuilderInterface
      */
     public function withContent($contents): self
     {
-        $this->message->setContents($contents);
+        if (\is_string($contents)) {
+            $contentType = 'text/plain';
+        } else {
+            $contents    = \json_encode($contents);
+            $contentType = 'application/json';
+        }
+
+        $contents = Helper::getString($contents);
+        $this->ffi->pactffi_message_with_contents($this->message, $contentType, $contents->getValue(), $contents->getSize());
 
         return $this;
     }
@@ -108,14 +117,11 @@ class MessageBuilder implements BuilderInterface
     /**
      * Run reify to create an example pact from the message (i.e. create messages from matchers)
      *
-     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
-     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
-     *
      * @return string
      */
     public function reify(): string
     {
-        return $this->pactMessage->reify($this->message);
+        return $this->ffi->pactffi_message_reify($this->message);
     }
 
     /**
@@ -124,7 +130,7 @@ class MessageBuilder implements BuilderInterface
      * @param callable     $callback
      * @param false|string $description description of the pact and thus callback
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return bool
      */
@@ -132,53 +138,35 @@ class MessageBuilder implements BuilderInterface
     {
         $this->setCallback($callback, $description);
 
-        return $this->verify($description);
+        return $this->verify();
     }
 
     /**
      * Verify the use of the pact by calling the callback
      * It also calls finalize to write the pact
      *
-     * @param false|string $description description of the pact and thus callback
-     *
-     * @throws \Exception if callback is not set
+     * @throws Exception if callback is not set
      *
      * @return bool
      */
-    public function verify($description = false): bool
+    public function verify(): bool
     {
         if (\count($this->callback) < 1) {
             throw new \Exception('Callbacks need to exist to run verify.');
         }
 
-        $pactJson = $this->reify();
+        $contents = $this->reify();
 
         // call the function to actually run the logic
         try {
             foreach ($this->callback as $callback) {
                 //@todo .. what do with the providerState
-                \call_user_func($callback, $pactJson);
+                \call_user_func($callback, $contents);
             }
 
-            return $this->writePact();
+            return !$this->ffi->pactffi_write_message_pact_file($this->messagePact, $this->config->getPactDir(), true);
         } catch (\Exception $e) {
             return false;
         }
-    }
-
-    /**
-     * Write the Pact without deleting the interactions.
-     *
-     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
-     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
-     *
-     * @return bool
-     */
-    public function writePact(): bool
-    {
-        // you do not want to save the reified json
-        $pactJson = \json_encode($this->message);
-
-        return $this->pactMessage->update($pactJson, $this->config->getConsumer(), $this->config->getProvider(), $this->config->getPactDir());
     }
 }

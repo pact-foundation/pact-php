@@ -2,37 +2,43 @@
 
 namespace PhpPact\Consumer;
 
+use PhpPact\Consumer\Exception\MockServerNotStartedException;
 use PhpPact\Consumer\Model\ConsumerRequest;
-use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
-use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 
 /**
- * Build an interaction and send it to the Ruby Standalone Mock Service
+ * Build an interaction and send it to the Pact Rust FFI
  * Class InteractionBuilder.
  */
-class InteractionBuilder implements BuilderInterface
+class InteractionBuilder extends AbstractBuilder
 {
-    /** @var MockServerHttpService */
-    protected $mockServerHttpService;
-
-    /** @var MockServerConfigInterface */
-    protected $config;
-    /** @var Interaction */
-    private $interaction;
+    protected int $pact;
+    protected int $interaction;
+    protected ?int $port = null;
 
     /**
      * InteractionBuilder constructor.
      *
-     * @param MockServerConfigInterface $config
+     * {@inheritdoc}
      */
     public function __construct(MockServerConfigInterface $config)
     {
-        $this->config                = $config;
-        $this->mockServerHttpService = new MockServerHttpService(new GuzzleClient(), $config);
-        $this->interaction           = new Interaction();
+        parent::__construct($config);
+        $this->pact = $this->ffi->pactffi_new_pact($config->getConsumer(), $config->getProvider());
+        $this->ffi->pactffi_with_specification($this->pact, $this->getPactSpecificationVersion());
+    }
+
+    /**
+     * @param string $description what is received when the request is made
+     *
+     * @return InteractionBuilder
+     */
+    public function newInteraction(string $description = ''): self
+    {
+        $this->interaction = $this->ffi->pactffi_new_interaction($this->pact, $description);
+
+        return $this;
     }
 
     /**
@@ -42,7 +48,7 @@ class InteractionBuilder implements BuilderInterface
      */
     public function given(string $providerState): self
     {
-        $this->interaction->setProviderState($providerState);
+        $this->ffi->pactffi_given($this->interaction, $providerState);
 
         return $this;
     }
@@ -54,7 +60,7 @@ class InteractionBuilder implements BuilderInterface
      */
     public function uponReceiving(string $description): self
     {
-        $this->interaction->setDescription($description);
+        $this->ffi->pactffi_upon_receiving($this->interaction, $description);
 
         return $this;
     }
@@ -66,55 +72,84 @@ class InteractionBuilder implements BuilderInterface
      */
     public function with(ConsumerRequest $request): self
     {
-        $this->interaction->setRequest($request);
+        $this->ffi->pactffi_with_request($this->interaction, $request->getMethod(), $request->getPath());
+        foreach ($request->getHeaders() as $header => $values) {
+            foreach ($values as $index => $value) {
+                $this->ffi->pactffi_with_header($this->interaction, $this->ffi->InteractionPart_Request, $header, $index, $value);
+            }
+        }
+        foreach ($request->getQuery() as $key => $values) {
+            $values = \is_array($values) ? $values : [$values];
+            foreach ($values as $index => $value) {
+                $this->ffi->pactffi_with_query_parameter($this->interaction, $key, $index, $value);
+            }
+        }
+        if (!\is_null($request->getBody())) {
+            $this->ffi->pactffi_with_body($this->interaction, $this->ffi->InteractionPart_Request, null, $request->getBody());
+        }
 
         return $this;
     }
 
     /**
-     * Make the http request to the Mock Service to register the interaction.
-     *
      * @param ProviderResponse $response mock of response received
      *
-     * @return bool returns true on success
+     * @return InteractionBuilder
      */
-    public function willRespondWith(ProviderResponse $response): bool
+    public function willRespondWith(ProviderResponse $response): self
     {
-        $this->interaction->setResponse($response);
+        $this->ffi->pactffi_response_status($this->interaction, $response->getStatus());
+        foreach ($response->getHeaders() as $header => $values) {
+            foreach ($values as $index => $value) {
+                $this->ffi->pactffi_with_header($this->interaction, $this->ffi->InteractionPart_Response, $header, $index, $value);
+            }
+        }
+        if (!\is_null($response->getBody())) {
+            $this->ffi->pactffi_with_body($this->interaction, $this->ffi->InteractionPart_Response, null, $response->getBody());
+        }
 
-        return $this->mockServerHttpService->registerInteraction($this->interaction);
+        return $this;
+    }
+
+    public function createMockServer(): void
+    {
+        $this->port = $this->ffi->pactffi_create_mock_server_for_pact($this->pact, '127.0.0.1:0', false);
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @throws MockServerNotStartedException
      */
     public function verify(): bool
     {
-        return $this->mockServerHttpService->verifyInteractions();
+        if ($this->port === null) {
+            throw new MockServerNotStartedException('Mock server is not started.');
+        }
+
+        $result = $this->ffi->pactffi_mock_server_matched($this->port);
+
+        if ($result) {
+            $this->ffi->pactffi_write_pact_file($this->port, $this->config->getPactDir(), true);
+        }
+
+        $this->ffi->pactffi_cleanup_mock_server($this->port);
+        $this->port = null;
+
+        return $result;
     }
 
     /**
-     * Writes the file to disk and deletes interactions from mock server.
+     * @throws MockServerNotStartedException
+     *
+     * @return string
      */
-    public function finalize(): bool
+    public function getBaseUri(): string
     {
-        // Write the pact file to disk.
-        $this->mockServerHttpService->getPactJson();
+        if ($this->port === null) {
+            throw new MockServerNotStartedException('Mock server is not started.');
+        }
 
-        // Delete the interactions.
-        $this->mockServerHttpService->deleteAllInteractions();
-
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function writePact(): bool
-    {
-        // Write the pact file to disk.
-        $this->mockServerHttpService->getPactJson();
-
-        return true;
+        return \sprintf('http://localhost:%d', $this->port);
     }
 }

@@ -47,7 +47,7 @@
         "matchingRules": {
           "$.body.message": {
             "match": "regex",
-            "regex": "(Hello, )[A-Za-z]"
+            "regex": "(Hello, )[A-Za-z]*"
           }
         }
       },

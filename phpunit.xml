@@ -18,14 +18,10 @@
     <junit outputFile="./test_results/reports/unit_test_results.xml"/>
   </logging>
   <php>
-    <env name="PACT_MOCK_SERVER_HOST" value="localhost"/>
-    <env name="PACT_MOCK_SERVER_PORT" value="7200"/>
     <env name="PACT_CONSUMER_NAME" value="someConsumer"/>
     <env name="PACT_CONSUMER_VERSION" value="1.0.0"/>
-    <env name="PACT_PROVIDER_NAME" value="someProvider"/>
     <env name="PACT_BROKER_URI" value="http://localhost"/>
     <env name="PACT_LOGLEVEL" value="DEBUG"/>
     <!-- <env name="PACT_BROKER_BEARER_TOKEN" value="someToken"/> -->
-    <env name="PACT_CORS" value="true"/>
   </php>
 </phpunit>

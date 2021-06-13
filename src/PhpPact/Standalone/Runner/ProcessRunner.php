@@ -11,28 +11,18 @@ use Amp\Process\Process;
 use Amp\Process\ProcessException;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 /**
  * Wrapper around Process with Amp
  */
 class ProcessRunner
 {
-    /** @var Process */
-    private $process;
-
-    /** @var string command output */
-    private $output;
-
-    /** @var int command exit code */
-    private $exitCode;
-
-    /** @var string */
-    private $stderr;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private Process $process;
+    private ?string $output = null;
+    private int $exitCode;
+    private ?string $stderr          = null;
+    private ?LoggerInterface $logger = null;
 
     /**
      * @param string $command
@@ -154,10 +144,10 @@ class ProcessRunner
 
             $pid = yield $this->process->start();
 
-            $this->process->getStdout()->read()->onResolve(function (\Throwable $reason = null, $value) {
+            $this->process->getStdout()->read()->onResolve(function (Throwable $reason = null, $value) {
                 $this->output .= $value;
             });
-            $this->process->getStderr()->read()->onResolve(function (\Throwable $reason = null, $value) {
+            $this->process->getStderr()->read()->onResolve(function (Throwable $reason = null, $value) {
                 $this->output .= $value;
             });
 
@@ -178,7 +168,7 @@ class ProcessRunner
      *
      * @return int Process Id
      */
-    public function run($blocking = false): int
+    public function run(bool $blocking = false): int
     {
         return $blocking
             ? $this->runBlocking()

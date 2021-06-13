@@ -15,7 +15,8 @@ Table of contents
 * [Specifications](#specifications)
 * [Installation](#installation)
 * [Basic Consumer Usage](#basic-consumer-usage)
-    * [Start and Stop the Mock Server](#start-and-stop-the-mock-server)
+    * [Configure PHPUnit](#configure-phpunit)
+    * [Create Mock Server Config](#create-mock-server-config)
     * [Create Consumer Unit Test](#create-consumer-unit-test)
     * [Create Mock Request](#create-mock-request)
     * [Create Mock Response](#create-mock-response)
@@ -35,6 +36,7 @@ Table of contents
     * [Examples](#additional-examples)
 
 ## Versions
+8.x adds support for pact specification 3.X & 4.X via Pact FFI.  This results in dropping support for PHP 7.3.
 7.x updates internal dependencies and libraries, mostly to Guzzle 7.X.  This results in dropping support for PHP 7.2.
 6.x updates internal dependencies, mostly surrounding the Amp library.  This results in dropping support for PHP 7.1.
 
@@ -48,7 +50,12 @@ If you wish to stick with the 2.X implementation, you can continue to pull from 
 
 ## Specifications
 
-The 3.X version is the version of Pact-PHP, not the pact specification version that it supports.   Pact-Php 3.X supports [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2).
+The 3.X version is the version of Pact-PHP, not the pact specification version that it supports.
+
+Pact-Php 3.X supports [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2).
+Pact-Php 8.X supports:
+    * [Pact-Specification 3.X](https://github.com/pact-foundation/pact-specification/tree/version-3).
+    * [Pact-Specification 4.X](https://github.com/pact-foundation/pact-specification/tree/version-4).
 
 ## Installation
 
@@ -64,37 +71,59 @@ Composer hosts older versions under `mattersight/phppact`, which is abandoned. P
 
 All of the following code will be used exclusively for the Consumer.
 
-### Start and Stop the Mock Server
+### Configure PHPUnit
 
-This library contains a wrapper for the [Ruby Standalone Mock Service](https://github.com/pact-foundation/pact-mock_service).
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="../vendor/autoload.php" colors="true">
+    <testsuites>
+        <testsuite name="PhpPact Example Tests">
+            <directory>./tests/Consumer</directory>
+        </testsuite>
+    </testsuites>
+    <listeners>
+        <listener class="PhpPact\Consumer\Listener\PactTestListener">
+            <arguments>
+                <array>
+                    <element key="0">
+                        <string>PhpPact Example Tests</string>
+                    </element>
+                </array>
+            </arguments>
+        </listener>
+    </listeners>
+    <php>
+        <env name="PACT_CONSUMER_NAME" value="someConsumer"/>
+        <env name="PACT_CONSUMER_VERSION" value="1.0.0"/>
+        <env name="PACT_CONSUMER_TAG" value="master"/>
+        <env name="PACT_OUTPUT_DIR" value=".\example\output"/>
+        <!-- <env name="PACT_BROKER_URI" value="https://test.pact.dius.com.au"/> -->
+        <!-- <env name="PACT_BROKER_BEARER_TOKEN" value="token"/> -->
+    </php>
+</phpunit>
+```
 
-The easiest way to configure this is to use a [PHPUnit Listener](https://phpunit.de/manual/current/en/appendixes.configuration.html#appendixes.configuration.test-listeners). A default listener is included in this project, see [PactTestListener.php](/src/PhpPact/Consumer/Listener/PactTestListener.php). This utilizes environmental variables for configurations. These env variables can either be added to the system or to the phpunit.xml configuration file. Here is an example [phpunit.xml](/example/phpunit.consumer.xml) file configured to use the default. Keep in mind that both the test suite and the arguments array must be the same value.
+### Create Mock Server Config
 
-Alternatively, you can start and stop as in whatever means you would like by following this example:
+Create mock server config from environment variables:
 
 ```php
-<?php
-    use PhpPact\Standalone\MockService\MockServer;
-    use PhpPact\Standalone\MockService\MockServerConfig;
+use PhpPact\Standalone\MockService\MockServerEnvConfig;
 
-    // Create your basic configuration. The host and port will need to match
-    // whatever your Http Service will be using to access the providers data.
-    $config = new MockServerConfig();
-    $config->setHost('localhost');
-    $config->setPort(7200);
-    $config->setConsumer('someConsumer');
-    $config->setProvider('someProvider');
-    $config->setCors(true);
+$config  = new MockServerEnvConfig();
+$config->setProvider('someProvider');
+```
 
-    // Instantiate the mock server object with the config. This can be any
-    // instance of MockServerConfigInterface.
-    $server = new MockServer($config);
+Or create it manually:
 
-    // Create the process.
-    $server->start();
+```php
+use PhpPact\Standalone\MockService\MockServerConfig;
 
-    // Stop the process.
-    $server->stop();
+$config = new MockServerConfig();
+$config->setConsumer('someConsumer');
+$config->setProvider('someProvider');
+$config->setPactDir('.\example\output');
+$config->setPactSpecificationVersion('3.0.0');
 ```
 
 ### Create Consumer Unit Test
@@ -108,6 +137,8 @@ Create a standard PHPUnit test case class and function.
 This will define what the expected request coming from your http service will look like.
 
 ```php
+use PhpPact\Consumer\Model\ConsumerRequest;
+
 $request = new ConsumerRequest();
 $request
     ->setMethod('GET')
@@ -122,6 +153,9 @@ You can also create a body just like you will see in the provider example.
 This will define what the response from the provider should look like.
 
 ```php
+use PhpPact\Consumer\Matcher\Matcher;
+use PhpPact\Consumer\Model\ProviderResponse;
+
 $matcher = new Matcher();
 
 $response = new ProviderResponse();
@@ -136,6 +170,9 @@ $response
 In this example, we are using matchers. This allows us to add flexible rules when matching the expectation with the actual value. In the example, you will see regex is used to validate that the response is valid.
 
 ```php
+use PhpPact\Consumer\Matcher\Matcher;
+use PhpPact\Consumer\Model\ProviderResponse;
+
 $matcher = new Matcher();
 
 $response = new ProviderResponse();
@@ -175,22 +212,27 @@ ipv6Address | Regex to match a ipv6 address. | Value (Defaults to ::ffff:192.0.2
 Now that we have the request and response, we need to build the interaction and ship it over to the mock server.
 
 ```php
+use PhpPact\Consumer\InteractionBuilder;
+use PhpPact\Standalone\MockService\MockServerEnvConfig;
+
 // Create a configuration that reflects the server that was started. You can
 // create a custom MockServerConfigInterface if needed. This configuration
 // is the same that is used via the PactTestListener and uses environment variables.
 $config  = new MockServerEnvConfig();
 $builder = new InteractionBuilder($config);
 $builder
+    ->newInteraction() // Support multiple interactions per mock server. Call to create new interaction.
     ->given('a person exists')
     ->uponReceiving('a get request to /hello/{name}')
     ->with($request)
-    ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
+    ->willRespondWith($response)
+    ->createMockServer(); // This has to be last.
 ```
 
 ### Make the Request
 
 ```php
-$service = new HttpClientService($config->getBaseUri()); // Pass in the URL to the Mock Server.
+$service = new HttpClientService($builder->getBaseUri()); // Pass in the URL to the Mock Server.
 $result  = $service->getHelloString('Bob'); // Make the real API request against the Mock Server.
 ```
 
@@ -200,7 +242,7 @@ Verify that all interactions took place that were registered.
 This typically should be in each test, that way the test that failed to verify is marked correctly.
 
 ```php
-$builder->verify();
+$this->assertTrue($builder->verify());
 ```
 
 ### Make Assertions
@@ -234,29 +276,55 @@ There are three ways to verify Pact files. See the examples below.
 This will grab the Pact file from a Pact Broker and run the data against the stood up API.
 
 ```php
+use PhpPact\Standalone\ProviderVerifier\Verifier;
+use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
+use PhpPact\Standalone\ProviderVerifier\Model\ConsumerVersionSelectors;
+use PhpPact\Standalone\ProviderVerifier\Model\Source\Broker;
+
+$selectors = (new ConsumerVersionSelectors())
+    ->addSelector('{"tag":"foo","latest":true}')
+    ->addSelector('{"tag":"bar","latest":true}');
+
 $config = new VerifierConfig();
 $config
     ->setProviderName('someProvider') // Providers name to fetch.
     ->setProviderVersion('1.0.0') // Providers version.
-    ->setProviderBranch('main') // Providers git branch name.
-    ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
-    ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
-    ->setPublishResults(true) // Flag the verifier service to publish the results to the Pact Broker.
-    ->setProcessTimeout(60)      // Set process timeout (optional) - default 60
-    ->setProcessIdleTimeout(10) // Set process idle timeout (optional) - default 10
-    ->setEnablePending(true) // Flag to enable pending pacts feature (check pact docs for further info)
-    ->setIncludeWipPactSince('2020-01-30') //Start date of WIP Pacts (check pact docs for further info)
-    ->setRequestFilter(
-        function (RequestInterface $r) {
-            return $r->withHeader('MY_SPECIAL_HEADER', 'my special value');
-        }
-    );
-// Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
-$verifier = new Verifier($config);
-$verifier->verify('someConsumer', 'master'); // The tag is option. If no tag is set it will just grab the latest.
+    ->setProviderTags(['prod' ,'dev'])
+    ->setProviderBranch('main')
+    ->setScheme('http')
+    ->setHost('localhost')
+    ->setPort(58000)
+    ->setBasePath('/')
+    ->setStateChangeUrl(new Uri('http://localhost:58000/change-state'))
+    ->setBuildUrl(new Uri('http://build.domain.com'))
+    ->setFilterConsumerNames('someConsumer', 'otherConsumer')
+    ->setFilterDescription('Send POST to create')
+    ->setFilterNoState(true)
+    ->setFilterState('state')
+    ->setPublishResults(true)
+    ->setDisableSslVerification(true)
+    ->setStateChangeAsQuery(true)
+    ->setStateChangeTeardown(true)
+    ->setRequestTimeout(500);
 
-// This will not be reached if the PACT verifier throws an error, otherwise it was successful.
-$this->assertTrue(true, 'Pact Verification has failed.');
+$broker = new Broker();
+$broker
+    ->setUrl(new Uri('http://localhost'))
+    ->setUsername('user')
+    ->setPassword('pass')
+    ->setToken('token')
+    ->setEnablePending(true)
+    ->setIncludeWipPactSince('2020-01-30')
+    ->setProviderTags(['prod'])
+    ->setProviderBranch('main')
+    ->setConsumerVersionSelectors($selectors)
+    ->setConsumerVersionTags(['dev']);
+
+$verifier = new Verifier();
+$verifier->newHandle($config);
+$verifier->addBroker($broker);
+
+$this->assertTrue($verifier->verify());
 ```
 
 ##### Verify All from Pact Broker
@@ -264,25 +332,22 @@ $this->assertTrue(true, 'Pact Verification has failed.');
 This will grab every Pact file associated with the given provider.
 
 ```php
+use PhpPact\Standalone\ProviderVerifier\Verifier;
+use PhpPact\Standalone\ProviderVerifier\Model\Source\Broker;
+
 public function testPactVerifyAll()
 {
-    $config = new VerifierConfig();
-    $config
-        ->setProviderName('someProvider') // Providers name to fetch.
-        ->setProviderVersion('1.0.0') // Providers version.
-        ->setProviderBranch('main') // Providers git branch name.
-        ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
-        ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
-        ->setPublishResults(true) // Flag the verifier service to publish the results to the Pact Broker.
-        ->setEnablePending(true) // Flag to enable pending pacts feature (check pact docs for further info)
-        ->setIncludeWipPactSince('2020-01-30') //Start date of WIP Pacts (check pact docs for further info)
+    $broker = new Broker();
+    $broker
+        ->setUrl(new Uri('http://localhost'))
+        ->setUsername('user')
+        ->setPassword('pass')
+        ->setToken('token');
 
-    // Verify that all consumers of 'someProvider' are valid.
-    $verifier = new Verifier($config);
-    $verifier->verifyAll();
+    /** @var Verifier $verifier */
+    $verifier->addBroker($broker);
 
-    // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
-    $this->assertTrue(true, 'Pact Verification has failed.');
+    $this->assertTrue($verifier->verify());
 }
 ```
 
@@ -291,25 +356,14 @@ public function testPactVerifyAll()
 This allows local Pact file testing.
 
 ```php
-public function testPactVerifyAll()
+use PhpPact\Standalone\ProviderVerifier\Verifier;
+
+public function testPactVerifyLocal()
 {
-    $config = new VerifierConfig();
-    $config
-        ->setProviderName('someProvider') // Providers name to fetch.
-        ->setProviderVersion('1.0.0') // Providers version.
-        ->setProviderBranch('main') // Providers git branch name.
-        ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
-        ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
-        ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
-        ->setEnablePending(true) // Flag to enable pending pacts feature (check pact docs for further info)
-        ->setIncludeWipPactSince('2020-01-30') //Start date of WIP Pacts (check pact docs for further info)
+    /** @var Verifier $verifier */
+    $verifier->addFile('C:\SomePath\consumer-provider.json');
 
-    // Verify that the files in the array are valid.
-    $verifier = new Verifier($config);
-    $verifier->verifyFiles(['C:\SomePath\consumer-provider.json']);
-
-    // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
-    $this->assertTrue(true, 'Pact Verification has failed.');
+    $this->assertTrue($verifier->verify());
 }
 ```
 
@@ -341,7 +395,6 @@ There is a separate repository with an end to end example for both the 2.X and 3
 - [2.2.1 tag](https://github.com/mattermack/pact-php-example/tree/2.2.1) for 2.X examples
 
 ## Message support
-This feature is preliminary as the Pact community as a whole is flushing this out.
 The goal is not to test the transmission of an object over a bus but instead vet the contents of the message.
 While examples included focus on a Rabbit MQ, the exact message queue is irrelevant. Initial comparisons require a certain
 object type to be created by the Publisher/Producer and the Consumer of the message.  This includes a metadata set where you
@@ -363,7 +416,11 @@ The examples provided are pretty basic.   See examples\tests\MessageConsumer.
 1. Run Verify.  If nothing blows up, #winning.
 
 ```php
-$builder    = new MessageBuilder(self::$config);
+use PhpPact\Consumer\MessageBuilder;
+use MessageConsumer\ExampleMessageConsumer;
+
+$config  = new MockServerEnvConfig();
+$builder = new MessageBuilder($config);
 
 $contents       = new \stdClass();
 $contents->song = 'And the wind whispers Mary';
@@ -381,61 +438,39 @@ $consumerMessage = new ExampleMessageConsumer();
 $callback        = [$consumerMessage, 'ProcessSong'];
 $builder->setCallback($callback);
 
-$builder->verify();
+$this->assertTrue($builder->verify());
 ```
 
 
 ### Provider Side Message Validation
-This may evolve as we work through this implementation.   The provider relies heavily on callbacks.
-Some of the complexity lies in a consumer and provider having many messages and states between the each other in a single pact.
 
-For each message, one needs to provide a single provider state.  The name of this provider state must be the key to run
-a particular message callback on the provider side.  See example\tests\MessageProvider
+Create a proxy to handle these requests:
 
-1. Create your callbacks and states wrapped in a callable object
-    1. The array key is a provider state / given() on the consumer side
-    1. It is helpful to wrap the whole thing in a lambda if you need to customize paramaters to be passed in
-1. Choose your verification method
-1. If nothing explodes, #winning
+1. POST /change-state
+    1. Set up your database to meet the expectations of the request
+    1. Reset the database to its original state.
+2. POST /
+    1. Return message's content in body
+    2. Return message's metadata in header `PACT-MESSAGE-METADATA`
+3. If nothing matches, proxy the request to provider
 
-```php
-
-        $callbacks = array();
-
-        // a hello message is a provider state / given() on the consumer side
-        $callbacks["a hello message"] = function() {
-            $content = new \stdClass();
-            $content->text ="Hello Mary";
-
-            $metadata = array();
-            $metadata['queue'] = "myKey";
-
-            $provider = (new ExampleMessageProvider())
-                ->setContents($content)
-                ->setMetadata($metadata);
-
-            return $provider->Build();
-        };
-
-        $verifier = (new MessageVerifier($config))
-            ->setCallbacks($callbacks)
-            ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
-
-```
+[Click here](/example/tests/Provider/public/proxy.php) to see the full sample file.
 
 ## Usage for the optional `pact-stub-service`
 
 If you would like to test with fixtures, you can use the `pact-stub-service` like this:
 
 ```php
+use PhpPact\Standalone\StubService\StubServerConfig;
+use PhpPact\Standalone\StubService\StubServer;
+use PhpPact\Standalone\StubService\Service\StubServerHttpService;
+
 $pactLocation             = __DIR__ . '/someconsumer-someprovider.json';
-$host                     = 'localhost';
 $port                     = 7201;
 $endpoint                 = 'test';
 
 $config = (new StubServerConfig())
-            ->setPactLocation($pactLocation)
-            ->setHost($host)
+            ->setFiles($pactLocation)
             ->setPort($port)
             ->setEndpoint($endpoint);
 
