@@ -2,8 +2,6 @@
 
 namespace PhpPact\Standalone\MockService;
 
-use Psr\Http\Message\UriInterface;
-
 /**
  * Mock Server configuration interface to allow for simple overrides that are reusable.
  * Interface MockServerConfigInterface.
@@ -11,91 +9,50 @@ use Psr\Http\Message\UriInterface;
 interface MockServerConfigInterface
 {
     /**
-     * @return string the host of the mock service
+     * @return string
      */
-    public function getHost(): string;
+    public function getConsumer(): string;
 
     /**
-     * @param string $host The host of the mock service
+     * @param string $consumer consumers name
      *
      * @return MockServerConfigInterface
      */
-    public function setHost(string $host): self;
+    public function setConsumer(string $consumer): self;
 
     /**
-     * @return int the port of the mock service
+     * @return string
      */
-    public function getPort(): int;
+    public function getProvider(): string;
 
     /**
-     * @param int $port the port of the mock service
+     * @param string $provider providers name
      *
      * @return MockServerConfigInterface
      */
-    public function setPort(int $port): self;
+    public function setProvider(string $provider): self;
 
     /**
-     * @return bool true if https
+     * @return string url to place the pact files when written to disk
      */
-    public function isSecure(): bool;
+    public function getPactDir(): string;
 
     /**
-     * @param bool $secure set to true for https
+     * @param string $pactDir url to place the pact files when written to disk
      *
      * @return MockServerConfigInterface
      */
-    public function setSecure(bool $secure): self;
+    public function setPactDir(string $pactDir): self;
 
     /**
-     * @return UriInterface
+     * @return string pact version
      */
-    public function getBaseUri(): UriInterface;
+    public function getPactSpecificationVersion(): string;
 
     /**
-     * @return string 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
-     */
-    public function getPactFileWriteMode(): string;
-
-    /**
-     * @param string $pactFileWriteMode 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
+     * @param string $pactSpecificationVersion pact specification version
      *
      * @return MockServerConfigInterface
      */
-    public function setPactFileWriteMode(string $pactFileWriteMode): self;
-
-    /**
-     * @return bool
-     */
-    public function hasCors(): bool;
-
-    /**
-     * @param bool|string $flag
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setCors($flag): self;
-
-    /**
-     * @param int $timeout
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setHealthCheckTimeout($timeout): self;
-
-    /**
-     * @return int
-     */
-    public function getHealthCheckTimeout(): int;
-
-    /**
-     * @param int $seconds
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setHealthCheckRetrySec($seconds): self;
-
-    /**
-     * @return int
-     */
-    public function getHealthCheckRetrySec(): int;
+    public function setPactSpecificationVersion(string $pactSpecificationVersion): self;
 }

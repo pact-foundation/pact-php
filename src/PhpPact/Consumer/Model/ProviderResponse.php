@@ -6,22 +6,11 @@ namespace PhpPact\Consumer\Model;
  * Response expectation that would be in response to a Consumer request from the Provider.
  * Class ProviderResponse.
  */
-class ProviderResponse implements \JsonSerializable
+class ProviderResponse
 {
-    /**
-     * @var int
-     */
-    private $status;
-
-    /**
-     * @var null|string[]
-     */
-    private $headers;
-
-    /**
-     * @var null|array
-     */
-    private $body;
+    private int $status;
+    private ?string $body  = null;
+    private array $headers = [];
 
     /**
      * @return int
@@ -44,76 +33,81 @@ class ProviderResponse implements \JsonSerializable
     }
 
     /**
-     * @return null|string[]
+     * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
 
     /**
-     * @param string[] $headers
+     * @param array $headers
      *
      * @return ProviderResponse
      */
     public function setHeaders(array $headers): self
     {
-        $this->headers = $headers;
+        $this->headers = [];
+        foreach ($headers as $header => $values) {
+            $this->addHeader($header, $values);
+        }
 
         return $this;
     }
 
     /**
      * @param string       $header
-     * @param array|string $value
+     * @param array|string $values
      *
      * @return ProviderResponse
      */
-    public function addHeader(string $header, $value): self
+    public function addHeader(string $header, $values): self
     {
-        $this->headers[$header] = $value;
+        $this->headers[$header] = [];
+        if (\is_array($values)) {
+            foreach ($values as $value) {
+                $this->addHeaderValue($header, $value);
+            }
+        } else {
+            $this->addHeaderValue($header, $values);
+        }
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return null|string
      */
-    public function getBody()
+    public function getBody(): ?string
     {
         return $this->body;
     }
 
     /**
-     * @param iterable $body
+     * @param mixed $body
      *
      * @return ProviderResponse
      */
     public function setBody($body): self
     {
-        $this->body = $body;
+        if (\is_string($body)) {
+            $this->body = $body;
+        } elseif (!\is_null($body)) {
+            $this->body = \json_encode($body);
+            $this->addHeader('Content-Type', 'application/json');
+        } else {
+            $this->body = null;
+        }
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $header
+     * @param string $value
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    private function addHeaderValue(string $header, string $value): void
     {
-        $results = [
-            'status' => $this->getStatus(),
-        ];
-
-        if ($this->getHeaders() !== null) {
-            $results['headers'] = $this->getHeaders();
-        }
-
-        if ($this->getBody() !== null) {
-            $results['body'] = $this->getBody();
-        }
-
-        return $results;
+        $this->headers[$header][] = $value;
     }
 }

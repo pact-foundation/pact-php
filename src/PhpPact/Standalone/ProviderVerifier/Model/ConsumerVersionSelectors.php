@@ -7,11 +7,10 @@ use Iterator;
 
 class ConsumerVersionSelectors implements Iterator, Countable
 {
-    /** @var int */
-    private $position = 0;
+    private int $position = 0;
 
     /** @var string[] */
-    private $selectors = [];
+    private array $selectors = [];
 
     /**
      * @param string[] $selectors
@@ -28,38 +27,32 @@ class ConsumerVersionSelectors implements Iterator, Countable
         return $this;
     }
 
-    #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): string
     {
         return $this->selectors[$this->position];
     }
 
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         ++$this->position;
     }
 
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): int
     {
         return $this->position;
     }
 
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->selectors[$this->position]);
     }
 
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
 
-    #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): int
     {
         return \count($this->selectors);
     }

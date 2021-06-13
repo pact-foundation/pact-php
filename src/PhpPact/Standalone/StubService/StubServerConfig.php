@@ -11,49 +11,39 @@ use Psr\Http\Message\UriInterface;
  */
 class StubServerConfig implements StubServerConfigInterface
 {
-    /**
-     * Host on which to bind the service.
-     *
-     * @var string
-     */
-    private $host = 'localhost';
+    private ?UriInterface $brokerUrl         = null;
+    private array $dirs                      = [];
+    private ?string $extension               = null;
+    private array $files                     = [];
+    private ?string $logLevel                = null;
+    private ?int $port                       = null;
+    private ?string $providerState           = null;
+    private ?string $providerStateHeaderName = null;
+    private ?string $token                   = null;
+    private array $urls                      = [];
+    private ?string $user                    = null;
 
-    /**
-     * Port on which to run the service.
-     *
-     * @var int
-     */
-    private $port = 7201;
+    private bool $cors               = false;
+    private bool $corsReferer        = false;
+    private bool $emptyProviderState = false;
+    private bool $insecureTls        = false;
 
-    /**
-     * @var bool
-     */
-    private $secure = false;
-
-    /**
-     * File to which to log output.
-     *
-     * @var string
-     */
-    private $log;
-
-    private $pactLocation;
-    private $endpoint;
+    private string $endpoint;
 
     /**
      * {@inheritdoc}
      */
-    public function getHost(): string
+    public function getBrokerUrl(): ?UriInterface
     {
-        return $this->host;
+        return $this->brokerUrl;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setHost(string $host): StubServerConfigInterface
+    public function setBrokerUrl(UriInterface $brokerUrl): StubServerConfigInterface
     {
-        $this->host = $host;
+        $this->brokerUrl = $brokerUrl;
 
         return $this;
     }
@@ -61,7 +51,79 @@ class StubServerConfig implements StubServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getPort(): int
+    public function setDirs(string ...$dirs): StubServerConfigInterface
+    {
+        $this->dirs = $dirs;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDirs(): array
+    {
+        return $this->dirs;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExtension(): ?string
+    {
+        return $this->extension;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setExtension(string $extension): StubServerConfigInterface
+    {
+        $this->extension = $extension;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFiles(string ...$files): StubServerConfigInterface
+    {
+        $this->files = $files;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFiles(): array
+    {
+        return $this->files;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogLevel(string $logLevel): StubServerConfigInterface
+    {
+        $this->logLevel = $logLevel;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLogLevel(): ?string
+    {
+        return $this->logLevel;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPort(): ?int
     {
         return $this->port;
     }
@@ -79,17 +141,161 @@ class StubServerConfig implements StubServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function isSecure(): bool
+    public function getProviderState(): ?string
     {
-        return $this->secure;
+        return $this->providerState;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setSecure(bool $secure): StubServerConfigInterface
+    public function setProviderState(string $providerState): StubServerConfigInterface
     {
-        $this->secure = $secure;
+        $this->providerState = $providerState;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getProviderStateHeaderName(): ?string
+    {
+        return $this->providerStateHeaderName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setProviderStateHeaderName(string $providerStateHeaderName): StubServerConfigInterface
+    {
+        $this->providerStateHeaderName = $providerStateHeaderName;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setToken(?string $token): StubServerConfigInterface
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUrls(string ...$urls): StubServerConfigInterface
+    {
+        $this->urls = $urls;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUrls(): array
+    {
+        return $this->urls;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUser(): ?string
+    {
+        return $this->user;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUser(string $user): StubServerConfigInterface
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isCors(): bool
+    {
+        return $this->cors;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCors(bool $cors): StubServerConfigInterface
+    {
+        $this->cors = $cors;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isCorsReferer(): bool
+    {
+        return $this->corsReferer;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCorsReferer(bool $corsReferer): StubServerConfigInterface
+    {
+        $this->corsReferer = $corsReferer;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEmptyProviderState(): bool
+    {
+        return $this->emptyProviderState;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setEmptyProviderState(bool $emptyProviderState): StubServerConfigInterface
+    {
+        $this->emptyProviderState = $emptyProviderState;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isInsecureTls(): bool
+    {
+        return $this->insecureTls;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setInsecureTls(bool $insecureTls): StubServerConfigInterface
+    {
+        $this->insecureTls = $insecureTls;
 
         return $this;
     }
@@ -99,47 +305,21 @@ class StubServerConfig implements StubServerConfigInterface
      */
     public function getBaseUri(): UriInterface
     {
-        $protocol = $this->secure ? 'https' : 'http';
-
-        return new Uri("{$protocol}://{$this->getHost()}:{$this->getPort()}");
+        return new Uri("http://localhost:{$this->getPort()}");
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getLog()
-    {
-        return $this->log;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLog(string $log): StubServerConfigInterface
-    {
-        $this->log = $log;
-
-        return $this;
-    }
-
-    public function getPactLocation(): string
-    {
-        return $this->pactLocation;
-    }
-
-    public function setPactLocation(string $location)
-    {
-        $this->pactLocation = $location;
-
-        return $this;
-    }
-
     public function getEndpoint(): string
     {
         return $this->endpoint;
     }
 
-    public function setEndpoint(string $endpoint)
+    /**
+     * {@inheritdoc}
+     */
+    public function setEndpoint(string $endpoint): StubServerConfigInterface
     {
         $this->endpoint = $endpoint;
 

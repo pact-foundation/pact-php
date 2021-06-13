@@ -2,9 +2,11 @@
 
 namespace PhpPact\Standalone\StubService\Service;
 
+use GuzzleHttp\Psr7\Uri;
 use PhpPact\Exception\ConnectionException;
 use PhpPact\Http\ClientInterface;
 use PhpPact\Standalone\StubService\StubServerConfigInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Http Service that interacts with the Ruby Standalone Stub Server.
@@ -14,15 +16,8 @@ use PhpPact\Standalone\StubService\StubServerConfigInterface;
  */
 class StubServerHttpService implements StubServerHttpServiceInterface
 {
-    /**
-     * @var ClientInterface
-     */
-    private $client;
-
-    /**
-     * @var StubServerConfigInterface
-     */
-    private $config;
+    private ClientInterface $client;
+    private StubServerConfigInterface $config;
 
     /**
      * StubServerHttpService constructor.

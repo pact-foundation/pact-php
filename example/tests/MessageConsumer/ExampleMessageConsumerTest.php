@@ -2,12 +2,9 @@
 
 namespace MessageConsumer;
 
-require_once __DIR__ . '/../../src/MessageConsumer/ExampleMessageConsumer.php';
-
-use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Consumer\MessageBuilder;
-use PhpPact\Http\GuzzleClient;
-use PhpPact\Standalone\PactMessage\PactMessageConfig;
+use PhpPact\Standalone\MockService\MockServerConfigInterface;
+use PhpPact\Standalone\MockService\MockServerEnvConfig;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,28 +12,16 @@ use PHPUnit\Framework\TestCase;
  */
 class ExampleMessageConsumerTest extends TestCase
 {
-    private static $config;
+    private static MockServerConfigInterface $config;
 
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
-        self::$config = (new PactMessageConfig())
+        self::$config = (new MockServerEnvConfig())
                         ->setConsumer('test_consumer')
                         ->setProvider('test_provider')
                         ->setPactDir(__DIR__ . '/../../output/');
-    }
-
-    public static function tearDownAfterClass(): void
-    {
-        parent::tearDownAfterClass();
-
-        // build out brokerHttpService as your example
-        /*
-        $brokerHttpService = new BrokerHttpClient(new GuzzleClient(), new Uri($pactBrokerUri));
-        $brokerHttpService->publishJson($json, $consumerVersion);
-        $brokerHttpService->tag($this->mockServerConfig->getConsumer(), $consumerVersion, $tag);
-        */
     }
 
     /**
@@ -62,11 +47,7 @@ class ExampleMessageConsumerTest extends TestCase
         $callback        = [$consumerMessage, 'ProcessText'];
         $builder->setCallback($callback);
 
-        $hasException = false;
-
-        $builder->verify();
-
-        $this->assertTrue(true, 'Expects to reach this true statement by running verify()');
+        $this->assertTrue($builder->verify());
     }
 
     /**
@@ -92,14 +73,6 @@ class ExampleMessageConsumerTest extends TestCase
         $callback        = [$consumerMessage, 'ProcessSong'];
         $builder->setCallback($callback);
 
-        $hasException = false;
-
-        try {
-            $builder->verify();
-        } catch (\Exception $e) {
-            $hasException = true;
-        }
-
-        $this->assertFalse($hasException, 'Expects verification to pass without exceptions being thrown');
+        $this->assertTrue($builder->verify());
     }
 }

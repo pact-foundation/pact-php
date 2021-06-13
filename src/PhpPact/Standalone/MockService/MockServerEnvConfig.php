@@ -10,7 +10,7 @@ use PhpPact\Standalone\Exception\MissingEnvVariableException;
  */
 class MockServerEnvConfig extends MockServerConfig
 {
-    public const DEFAULT_SPECIFICATION_VERSION = '2.0.0';
+    public const DEFAULT_SPECIFICATION_VERSION = '3.0.0';
 
     /**
      * MockServerEnvConfig constructor.
@@ -19,32 +19,9 @@ class MockServerEnvConfig extends MockServerConfig
      */
     public function __construct()
     {
-        $this->setHost($this->parseEnv('PACT_MOCK_SERVER_HOST'));
-        $this->setPort((int) $this->parseEnv('PACT_MOCK_SERVER_PORT'));
+        parent::__construct();
         $this->setConsumer($this->parseEnv('PACT_CONSUMER_NAME'));
-        $this->setProvider($this->parseEnv('PACT_PROVIDER_NAME'));
-        $this->setPactDir($this->parseEnv('PACT_OUTPUT_DIR', false));
-        $this->setCors($this->parseEnv('PACT_CORS', false));
-
-        if ($logDir = $this->parseEnv('PACT_LOG', false)) {
-            $this->setLog($logDir);
-        }
-
-        if ($logLevel = $this->parseEnv('PACT_LOGLEVEL', false)) {
-            $this->setLogLevel($logLevel);
-        }
-
-        $timeout = $this->parseEnv('PACT_MOCK_SERVER_HEALTH_CHECK_TIMEOUT', false);
-        if (!$timeout) {
-            $timeout = 10;
-        }
-        $this->setHealthCheckTimeout($timeout);
-
-        $seconds = $this->parseEnv('PACT_MOCK_SERVER_HEALTH_CHECK_RETRY_SEC', false);
-        if (!$seconds) {
-            $seconds = 1;
-        }
-        $this->setHealthCheckRetrySec($seconds);
+        $this->setPactDir($this->parseEnv('PACT_OUTPUT_DIR'));
 
         $version = $this->parseEnv('PACT_SPECIFICATION_VERSION', false);
         if (!$version) {

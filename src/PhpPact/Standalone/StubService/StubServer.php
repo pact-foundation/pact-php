@@ -2,6 +2,7 @@
 
 namespace PhpPact\Standalone\StubService;
 
+use Amp\Process\ProcessException;
 use Exception;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
@@ -13,14 +14,9 @@ use PhpPact\Standalone\Runner\ProcessRunner;
  */
 class StubServer
 {
-    /** @var StubServerConfigInterface */
-    private $config;
-
-    /** @var InstallManager */
-    private $installManager;
-
-    /** @var ProcessRunner */
-    private $processRunner;
+    private StubServerConfigInterface $config;
+    private InstallManager $installManager;
+    private ProcessRunner $processRunner;
 
     public function __construct(StubServerConfigInterface $config)
     {
@@ -37,11 +33,9 @@ class StubServer
      *
      * @return int process ID of the started Stub Server
      */
-    public function start($wait = 1): int
+    public function start(int $wait = 1): int
     {
-        $scripts = $this->installManager->install();
-
-        $this->processRunner = new ProcessRunner($scripts->getStubService(), $this->getArguments());
+        $this->processRunner = new ProcessRunner($this->installManager->install()->getStubService(), $this->getArguments());
 
         $processId =  $this->processRunner->run();
         \sleep($wait); // wait for server to start
@@ -51,6 +45,8 @@ class StubServer
 
     /**
      * Stop the Stub Server process.
+     *
+     * @throws ProcessException
      *
      * @return bool Was stopping successful?
      */
@@ -82,12 +78,64 @@ class StubServer
     {
         $results = [];
 
-        $results[] = $this->config->getPactLocation();
-        $results[] = "--host={$this->config->getHost()}";
-        $results[] = "--port={$this->config->getPort()}";
+        if ($this->config->getBrokerUrl() !== null) {
+            $results[] = "--broker-url={$this->config->getBrokerUrl()}";
+        }
 
-        if ($this->config->getLog() !== null) {
-            $results[] = "--log={$this->config->getLog()}";
+        foreach ($this->config->getDirs() as $dir) {
+            $results[] = "--dir={$dir}";
+        }
+
+        if ($this->config->getExtension() !== null) {
+            $results[] = "--extension={$this->config->getExtension()}";
+        }
+
+        foreach ($this->config->getFiles() as $file) {
+            $results[] = "--file={$file}";
+        }
+
+        if ($this->config->getLogLevel() !== null) {
+            $results[] = "--loglevel={$this->config->getLogLevel()}";
+        }
+
+        if ($this->config->getPort() !== null) {
+            $results[] = "--port={$this->config->getPort()}";
+        }
+
+        if ($this->config->getProviderState() !== null) {
+            $results[] = "--provider-state={$this->config->getProviderState()}";
+        }
+
+        if ($this->config->getProviderStateHeaderName() !== null) {
+            $results[] = "--provider-state-header-name={$this->config->getProviderStateHeaderName()}";
+        }
+
+        if ($this->config->getToken() !== null) {
+            $results[] = "--token={$this->config->getToken()}";
+        }
+
+        foreach ($this->config->getUrls() as $url) {
+            $results[] = "--url={$url}";
+        }
+
+        if ($this->config->getUser() !== null) {
+            $results[] = "--user={$this->config->getUser()}";
+        }
+
+        if ($this->config->isCors()) {
+            $results[] = '--cors';
+        }
+
+        if ($this->config->isCorsReferer()) {
+            $results[] = '--cors-referer';
+        }
+
+        if ($this->config->isEmptyProviderState()) {
+            $results[] = '--empty-provider-state';
+        }
+
+        if ($this->config->isInsecureTls()) {
+            $results[] = '--insecure-tls';
         }
 
         return $results;
