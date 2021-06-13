@@ -1,0 +1,6 @@
+parameters:
+	excludePaths:
+		- src/PhpPact/Consumer/InteractionBuilder.php
+		- src/PhpPact/Consumer/MessageBuilder.php
+		- src/PhpPact/Consumer/AbstractBuilder.php
+		- src/PhpPact/Standalone/ProviderVerifier/Verifier.php

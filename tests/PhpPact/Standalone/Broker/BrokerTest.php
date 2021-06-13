@@ -50,7 +50,7 @@ class BrokerTest extends TestCase
         $this->assertArrayHasKey('number', (new Broker(
             (new BrokerConfig())
                 ->setPacticipant(\rawurlencode('Animal Profile Service'))
-                ->setBrokerUri(new Uri('https://test.pact.dius.com.au'))
+                ->setBrokerUri(new Uri('https://test.pactflow.io'))
                 ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
                 ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1')
         ))->describeVersion());
@@ -65,7 +65,7 @@ class BrokerTest extends TestCase
     {
         $this->assertArrayHasKey('pacts', (new Broker(
             (new BrokerConfig())
-                ->setBrokerUri(new Uri('https://test.pact.dius.com.au'))
+                ->setBrokerUri(new Uri('https://test.pactflow.io'))
                 ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
                 ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1')
         ))->listLatestPactVersions());

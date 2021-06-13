@@ -2,12 +2,40 @@
 
 namespace PhpPact\Standalone\Installer\Service;
 
-use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
 use PhpPact\Standalone\Installer\Model\Scripts;
 
-class InstallerMac implements InstallerInterface
+/**
+ * Class InstallerMac.
+ */
+class InstallerMac extends AbstractInstaller
 {
-    public const VERSION = '1.88.83';
+    public const FILES = [
+        [
+            'repo'          => 'pact-ruby-standalone',
+            'filename'      => 'pact-' . self::PACT_RUBY_STANDALONE_VERSION . '-osx.tar.gz',
+            'version'       => self::PACT_RUBY_STANDALONE_VERSION,
+            'versionPrefix' => 'v',
+            'extract'       => true,
+        ],
+        [
+            'repo'          => 'pact-stub-server',
+            'filename'      => 'pact-stub-server-osx-x86_64.gz',
+            'version'       => self::PACT_STUB_SERVER_VERSION,
+            'versionPrefix' => 'v',
+            'extract'       => true,
+            'extractTo'     => 'pact-stub-server',
+            'executable'    => true,
+        ],
+        [
+            'repo'          => 'pact-reference',
+            'filename'      => 'libpact_ffi-osx-x86_64.dylib.gz',
+            'version'       => self::PACT_FFI_VERSION,
+            'versionPrefix' => 'libpact_ffi-v',
+            'extract'       => true,
+            'extractTo'     => 'libpact_ffi.dylib',
+        ],
+        ...parent::FILES,
+    ];
 
     /**
      * {@inheritdoc}
@@ -20,85 +48,16 @@ class InstallerMac implements InstallerInterface
     /**
      * {@inheritdoc}
      */
-    public function install(string $destinationDir): Scripts
+    protected function getScripts(string $destinationDir): Scripts
     {
-        if (\file_exists($destinationDir . DIRECTORY_SEPARATOR . 'pact') === false) {
-            $fileName     = 'pact-' . self::VERSION . '-osx.tar.gz';
-            $tempFilePath = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+        $destinationDir = $destinationDir . DIRECTORY_SEPARATOR;
+        $binDir         = $destinationDir . 'pact' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR;
 
-            $this
-                ->download($fileName, $tempFilePath)
-                ->extract($tempFilePath, $destinationDir)
-                ->deleteCompressed($tempFilePath);
-        }
-
-        $scripts = new Scripts(
-            "{$destinationDir}/pact/bin/pact-mock-service",
-            "{$destinationDir}/pact/bin/pact-stub-service",
-            "{$destinationDir}/pact/bin/pact-provider-verifier",
-            "{$destinationDir}/pact/bin/pact-message",
-            "{$destinationDir}/pact/bin/pact-broker"
+        return new Scripts(
+            $destinationDir . 'pact.h',
+            $destinationDir . 'libpact_ffi.dylib',
+            $destinationDir . 'pact-stub-server',
+            $binDir . 'pact-broker'
         );
-
-        return $scripts;
-    }
-
-    /**
-     * Download the binaries.
-     *
-     * @param string $fileName     name of the file to be downloaded
-     * @param string $tempFilePath location to download the file
-     *
-     * @throws FileDownloadFailureException
-     *
-     * @return InstallerMac
-     */
-    private function download(string $fileName, string $tempFilePath): self
-    {
-        $uri = 'https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v' . self::VERSION . "/{$fileName}";
-
-        $data = \file_get_contents($uri);
-
-        if ($data === false) {
-            throw new FileDownloadFailureException('Failed to download binary from Github for Ruby Standalone!');
-        }
-
-        $result = \file_put_contents($tempFilePath, $data);
-
-        if ($result === false) {
-            throw new FileDownloadFailureException('Failed to save binaries for Ruby Standalone!');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Uncompress the temp file and install the binaries in the destination directory.
-     *
-     * @param string $sourceFile
-     * @param string $destinationDir
-     *
-     * @return InstallerMac
-     */
-    private function extract(string $sourceFile, string $destinationDir): self
-    {
-        $p = new \PharData($sourceFile);
-        $p->extractTo($destinationDir);
-
-        return $this;
-    }
-
-    /**
-     * Delete the temp file.
-     *
-     * @param string $filePath
-     *
-     * @return InstallerMac
-     */
-    private function deleteCompressed(string $filePath): self
-    {
-        \unlink($filePath);
-
-        return $this;
     }
 }

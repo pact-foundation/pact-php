@@ -17,11 +17,9 @@ class ConsumerRequestTest extends TestCase
                 'currentCity' => 'Austin',
             ]);
 
-        $data = \json_decode(\json_encode($model->jsonSerialize()), true);
-
-        $this->assertEquals('PUT', $data['method']);
-        $this->assertEquals('application/json', $data['headers']['Content-Type']);
-        $this->assertEquals('/somepath', $data['path']);
-        $this->assertEquals('Austin', $data['body']['currentCity']);
+        $this->assertEquals('PUT', $model->getMethod());
+        $this->assertEquals(['Content-Type' => ['application/json']], $model->getHeaders());
+        $this->assertEquals('/somepath', $model->getPath());
+        $this->assertEquals('{"currentCity":"Austin"}', $model->getBody());
     }
 }

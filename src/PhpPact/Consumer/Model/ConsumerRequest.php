@@ -6,32 +6,13 @@ namespace PhpPact\Consumer\Model;
  * Request initiated by the consumer.
  * Class ConsumerRequest.
  */
-class ConsumerRequest implements \JsonSerializable
+class ConsumerRequest
 {
-    /**
-     * @var string
-     */
-    private $method;
-
-    /**
-     * @var string
-     */
-    private $path;
-
-    /**
-     * @var string[]
-     */
-    private $headers;
-
-    /**
-     * @var mixed
-     */
-    private $body;
-
-    /**
-     * @var string
-     */
-    private $query;
+    private string $method;
+    private string $path;
+    private ?string $body  = null;
+    private array $headers = [];
+    private array $query   = [];
 
     /**
      * @return string
@@ -56,7 +37,7 @@ class ConsumerRequest implements \JsonSerializable
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -74,42 +55,52 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @return string[]
+     * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
 
     /**
-     * @param string[] $headers
+     * @param array $headers
      *
      * @return ConsumerRequest
      */
     public function setHeaders(array $headers): self
     {
-        $this->headers = $headers;
+        $this->headers = [];
+        foreach ($headers as $header => $values) {
+            $this->addHeader($header, $values);
+        }
 
         return $this;
     }
 
     /**
      * @param string       $header
-     * @param array|string $value
+     * @param array|string $values
      *
      * @return ConsumerRequest
      */
-    public function addHeader(string $header, $value): self
+    public function addHeader(string $header, $values): self
     {
-        $this->headers[$header] = $value;
+        $this->headers[$header] = [];
+        if (\is_array($values)) {
+            foreach ($values as $value) {
+                $this->addHeaderValue($header, $value);
+            }
+        } else {
+            $this->addHeaderValue($header, $values);
+        }
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return null|string
      */
-    public function getBody()
+    public function getBody(): ?string
     {
         return $this->body;
     }
@@ -119,17 +110,24 @@ class ConsumerRequest implements \JsonSerializable
      *
      * @return ConsumerRequest
      */
-    public function setBody($body)
+    public function setBody($body): self
     {
-        $this->body = $body;
+        if (\is_string($body)) {
+            $this->body = $body;
+        } elseif (!\is_null($body)) {
+            $this->body = \json_encode($body);
+            $this->addHeader('Content-Type', 'application/json');
+        } else {
+            $this->body = null;
+        }
 
         return $this;
     }
 
     /**
-     * @return null|string
+     * @return array
      */
-    public function getQuery()
+    public function getQuery(): array
     {
         return $this->query;
     }
@@ -141,7 +139,9 @@ class ConsumerRequest implements \JsonSerializable
      */
     public function setQuery(string $query): self
     {
-        $this->query = $query;
+        foreach (\explode('&', $query) as $parameter) {
+            $this->addQueryParameter(...\explode('=', $parameter));
+        }
 
         return $this;
     }
@@ -154,41 +154,17 @@ class ConsumerRequest implements \JsonSerializable
      */
     public function addQueryParameter(string $key, string $value): self
     {
-        if ($this->query === null) {
-            $this->query = "{$key}={$value}";
-        } else {
-            $this->query = "{$this->query}&{$key}={$value}";
-        }
+        $this->query[$key][] = $value;
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $header
+     * @param string $value
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    private function addHeaderValue(string $header, string $value): void
     {
-        $results = [];
-
-        $results['method'] = $this->getMethod();
-
-        if ($this->getHeaders() !== null) {
-            $results['headers'] = $this->getHeaders();
-        }
-
-        if ($this->getPath() !== null) {
-            $results['path'] = $this->getPath();
-        }
-
-        if ($this->getBody() !== null) {
-            $results['body'] = $this->getBody();
-        }
-
-        if ($this->getQuery() !== null) {
-            $results['query'] = $this->getQuery();
-        }
-
-        return $results;
+        $this->headers[$header][] = $value;
     }
 }

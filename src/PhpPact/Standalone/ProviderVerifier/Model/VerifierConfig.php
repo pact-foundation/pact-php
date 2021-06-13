@@ -5,95 +5,47 @@ namespace PhpPact\Standalone\ProviderVerifier\Model;
 use Psr\Http\Message\UriInterface;
 
 /**
- * {@inheritdoc}
+ * Class VerifierConfig.
  */
 class VerifierConfig implements VerifierConfigInterface
 {
-    /** @var null|UriInterface */
-    private $providerBaseUrl;
+    private ?string $basePath             = null;
+    private ?string $scheme               = null;
+    private ?string $host                 = null;
+    private ?int $port                    = null;
+    private ?UriInterface $stateChangeUrl = null;
+    private ?string $providerName         = null;
+    private array $providerTags           = [];
+    private ?string $providerBranch       = null;
+    private ?UriInterface $buildUrl       = null;
+    private int $requestTimeout           = 5000;
 
-    /** @var null|string */
-    private $providerStatesSetupUrl;
+    private string $providerVersion;
 
-    /** @var string */
-    private $providerName;
+    private array $filterConsumerNames = [];
+    private ?string $filterDescription = null;
+    private bool $filterNoState        = false;
+    private ?string $filterState       = null;
 
-    /** @var string */
-    private $providerVersion;
+    private bool $publishResults         = false;
+    private bool $disableSslVerification = false;
+    private bool $stateChangeAsQuery     = false;
+    private bool $stateChangeTeardown    = false;
 
-    /** @var null|string */
-    private $providerBranch;
-
-    /** @var array */
-    private $providerVersionTag = [];
-
-    /** @var bool */
-    private $publishResults = false;
-
-    /** @var null|UriInterface */
-    private $brokerUri;
-
-    /** @var null|string */
-    private $brokerToken;
-
-    /** @var null|string */
-    private $brokerUsername;
-
-    /** @var null|string */
-    private $brokerPassword;
-
-    /** @var string[] */
-    private $customProviderHeaders;
-
-    /** @var bool */
-    private $verbose = false;
-
-    /** @var null|string */
-    private $logDirectory;
-
-    /** @var string */
-    private $format;
-
-    /** @var int */
-    private $processTimeout = 60;
-
-    /** @var int */
-    private $processIdleTimeout = 10;
-
-    /** @var bool */
-    private $enablePending = false;
-
-    /** @var null|string */
-    private $wipPactSince;
-
-    /** @var array */
-    private $consumerVersionTag = [];
-
-    /** @var ConsumerVersionSelectors */
-    private $consumerVersionSelectors;
-
-    /** @var null|callable */
-    private $requestFilter;
-
-    public function __construct()
+    /**
+     * {@inheritdoc}
+     */
+    public function getBasePath(): ?string
     {
-        $this->consumerVersionSelectors = new ConsumerVersionSelectors();
+        return $this->basePath;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getProviderBaseUrl()
+    public function setBasePath(string $basePath): VerifierConfigInterface
     {
-        return $this->providerBaseUrl;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setProviderBaseUrl(UriInterface $providerBaseUrl): VerifierConfigInterface
-    {
-        $this->providerBaseUrl = $providerBaseUrl;
+        $this->basePath = $basePath;
 
         return $this;
     }
@@ -101,17 +53,17 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderStatesSetupUrl()
+    public function getStateChangeUrl(): ?UriInterface
     {
-        return $this->providerStatesSetupUrl;
+        return $this->stateChangeUrl;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setProviderStatesSetupUrl(string $providerStatesSetupUrl): VerifierConfigInterface
+    public function setStateChangeUrl(UriInterface $stateChangeUrl): VerifierConfigInterface
     {
-        $this->providerStatesSetupUrl = $providerStatesSetupUrl;
+        $this->stateChangeUrl = $stateChangeUrl;
 
         return $this;
     }
@@ -119,9 +71,9 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderName(): string
+    public function getProviderName(): ?string
     {
-        return (string) $this->providerName;
+        return $this->providerName;
     }
 
     /**
@@ -137,7 +89,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderVersion()
+    public function getProviderVersion(): string
     {
         return $this->providerVersion;
     }
@@ -155,33 +107,17 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderVersionTag()
+    public function getProviderTags(): array
     {
-        return $this->providerVersionTag;
+        return $this->providerTags;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setProviderVersionTag(string $providerVersionTag): VerifierConfigInterface
+    public function setProviderTags(array $providerTags): VerifierConfigInterface
     {
-        return $this->addProviderVersionTag($providerVersionTag);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getConsumerVersionTag()
-    {
-        return $this->consumerVersionTag;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addConsumerVersionTag(string $consumerVersionTag): VerifierConfigInterface
-    {
-        $this->consumerVersionTag[] = $consumerVersionTag;
+        $this->providerTags = $providerTags;
 
         return $this;
     }
@@ -189,31 +125,17 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function addProviderVersionTag(string $providerVersionTag): VerifierConfigInterface
+    public function getProviderBranch(): ?string
     {
-        $this->providerVersionTag[] = $providerVersionTag;
-
-        return $this;
+        return $this->providerBranch;
     }
 
     /**
-     * @param string $consumerVersionTag
-     *
-     * @return VerifierConfigInterface
+     * {@inheritdoc}
      */
-    public function setConsumerVersionTag(string $consumerVersionTag): VerifierConfigInterface
+    public function setProviderBranch(string $providerBranch): VerifierConfigInterface
     {
-        return $this->addConsumerVersionTag($consumerVersionTag);
-    }
-
-    public function getConsumerVersionSelectors(): ConsumerVersionSelectors
-    {
-        return $this->consumerVersionSelectors;
-    }
-
-    public function setConsumerVersionSelectors(ConsumerVersionSelectors $selectors): VerifierConfigInterface
-    {
-        $this->consumerVersionSelectors = $selectors;
+        $this->providerBranch = $providerBranch;
 
         return $this;
     }
@@ -239,211 +161,75 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getBrokerUri()
+    public function isDisableSslVerification(): bool
     {
-        return $this->brokerUri;
+        return $this->disableSslVerification;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setBrokerUri(UriInterface $brokerUri): VerifierConfigInterface
+    public function setDisableSslVerification(bool $disableSslVerification): VerifierConfigInterface
     {
-        $this->brokerUri = $brokerUri;
+        $this->disableSslVerification = $disableSslVerification;
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}}
-     */
-    public function getBrokerToken(): ?string
-    {
-        return $this->brokerToken;
-    }
-
-    /**
-     * {@inheritdoc }
-     */
-    public function setBrokerToken(?string $brokerToken): VerifierConfigInterface
-    {
-        $this->brokerToken = $brokerToken;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBrokerUsername()
-    {
-        return $this->brokerUsername;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setBrokerUsername(string $brokerUsername)
-    {
-        $this->brokerUsername = $brokerUsername;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBrokerPassword()
-    {
-        return $this->brokerPassword;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setBrokerPassword(string $brokerPassword)
-    {
-        $this->brokerPassword = $brokerPassword;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomProviderHeaders()
-    {
-        return $this->customProviderHeaders;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setCustomProviderHeaders(array $customProviderHeaders): VerifierConfigInterface
-    {
-        $this->customProviderHeaders = $customProviderHeaders;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addCustomProviderHeader(string $name, string $value): VerifierConfigInterface
-    {
-        $this->customProviderHeaders[] = "{$name}: {$value}";
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isVerbose(): bool
-    {
-        return $this->verbose;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setVerbose(bool $verbose): VerifierConfigInterface
-    {
-        $this->verbose = $verbose;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLogDirectory()
-    {
-        return $this->logDirectory;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLogDirectory(string $log): VerifierConfigInterface
-    {
-        $this->logDirectory = $log;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormat()
-    {
-        return $this->format;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setFormat(string $format): VerifierConfigInterface
-    {
-        $this->format = $format;
-
-        return $this;
-    }
-
-    /**
-     * @param int $timeout
+     * @param bool $stateChangeAsQuery
      *
      * @return VerifierConfigInterface
      */
-    public function setProcessTimeout(int $timeout): VerifierConfigInterface
+    public function setStateChangeAsQuery(bool $stateChangeAsQuery): VerifierConfigInterface
     {
-        $this->processTimeout = $timeout;
+        $this->stateChangeAsQuery = $stateChangeAsQuery;
 
         return $this;
     }
 
     /**
-     * @param int $timeout
+     * @return bool
+     */
+    public function isStateChangeAsQuery(): bool
+    {
+        return $this->stateChangeAsQuery;
+    }
+
+    /**
+     * @param bool $stateChangeTeardown
      *
      * @return VerifierConfigInterface
      */
-    public function setProcessIdleTimeout(int $timeout): VerifierConfigInterface
+    public function setStateChangeTeardown(bool $stateChangeTeardown): VerifierConfigInterface
     {
-        $this->processIdleTimeout = $timeout;
+        $this->stateChangeTeardown = $stateChangeTeardown;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return bool
      */
-    public function getProcessTimeout(): int
+    public function isStateChangeTeardown(): bool
     {
-        return $this->processTimeout;
-    }
-
-    /**
-     * @return int
-     */
-    public function getProcessIdleTimeout(): int
-    {
-        return $this->processIdleTimeout;
+        return $this->stateChangeTeardown;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isEnablePending(): bool
+    public function getBuildUrl(): ?UriInterface
     {
-        return $this->enablePending;
+        return $this->buildUrl;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setEnablePending(bool $pending): VerifierConfigInterface
+    public function setBuildUrl(UriInterface $buildUrl): VerifierConfigInterface
     {
-        $this->enablePending = $pending;
+        $this->buildUrl = $buildUrl;
 
         return $this;
     }
@@ -451,9 +237,9 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setIncludeWipPactSince(string $date): VerifierConfigInterface
+    public function setRequestTimeout(int $requestTimeout): VerifierConfigInterface
     {
-        $this->wipPactSince = $date;
+        $this->requestTimeout = $requestTimeout;
 
         return $this;
     }
@@ -461,19 +247,17 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getIncludeWipPactSince()
+    public function getRequestTimeout(): int
     {
-        return $this->wipPactSince;
+        return $this->requestTimeout;
     }
 
-    public function getRequestFilter(): ?callable
+    /**
+     * {@inheritdoc}
+     */
+    public function setFilterConsumerNames(string ...$filterConsumerNames): VerifierConfigInterface
     {
-        return $this->requestFilter;
-    }
-
-    public function setRequestFilter(callable $requestFilter): VerifierConfigInterface
-    {
-        $this->requestFilter = $requestFilter;
+        $this->filterConsumerNames = $filterConsumerNames;
 
         return $this;
     }
@@ -481,9 +265,25 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setProviderBranch(string $providerBranch): VerifierConfigInterface
+    public function getFilterConsumerNames(): array
     {
-        $this->providerBranch = $providerBranch;
+        return $this->filterConsumerNames;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFilterDescription(): ?string
+    {
+        return $this->filterDescription;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFilterDescription(string $filterDescription): VerifierConfigInterface
+    {
+        $this->filterDescription = $filterDescription;
 
         return $this;
     }
@@ -491,8 +291,90 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderBranch(): ?string
+    public function getFilterNoState(): bool
     {
-        return $this->providerBranch;
+        return $this->filterNoState;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFilterNoState(bool $filterNoState): VerifierConfigInterface
+    {
+        $this->filterNoState = $filterNoState;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFilterState(): ?string
+    {
+        return $this->filterState;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFilterState(string $filterState): VerifierConfigInterface
+    {
+        $this->filterState = $filterState;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getScheme(): ?string
+    {
+        return $this->scheme;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setScheme(string $scheme): VerifierConfigInterface
+    {
+        $this->scheme = $scheme;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHost(): ?string
+    {
+        return $this->host;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setHost(string $host): VerifierConfigInterface
+    {
+        $this->host = $host;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPort(): ?int
+    {
+        return $this->port;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPort(int $port): VerifierConfigInterface
+    {
+        $this->port = $port;
+
+        return $this;
     }
 }

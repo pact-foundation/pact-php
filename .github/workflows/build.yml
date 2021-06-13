@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ '7.3', '7.4', '8.0' ]
+        php: [ '7.4', '8.0' ]
 
     steps:
       - uses: actions/checkout@v2
@@ -39,7 +39,7 @@ jobs:
       fail-fast: true
       matrix:
         operating-system: [ ubuntu-latest, macos-latest, windows-latest ]
-        php: [ '7.3', '7.4', '8.0' ]
+        php: [ '7.4', '8.0' ]
         dependencies: [ 'lowest', 'locked' ]
 
     name: PHP ${{ matrix.php }} on ${{ matrix.operating-system }} with ${{ matrix.dependencies }} dependencies
@@ -52,6 +52,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: ffi
 
       - name: Copy the inis
         if: runner.os == 'Windows'

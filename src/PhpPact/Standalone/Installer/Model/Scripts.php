@@ -3,59 +3,56 @@
 namespace PhpPact\Standalone\Installer\Model;
 
 /**
- * Represents locations of Ruby Standalone full path and scripts.
- * Class BinaryScripts.
+ * Class Scripts.
  */
 class Scripts
 {
     /**
-     * Path to PhpPact Mock Service.
-     *
-     * @var string
+     * Path to Pact FFI C Header Code.
      */
-    private $mockService;
+    private string $code;
+
+    /**
+     * Path to Pact FFI Dynamic Library.
+     */
+    private string $library;
 
     /**
      * Path to the PhpPact Stub Service.
      *
      * @var string
      */
-    private $stubService;
+    private string $stubService;
 
     /**
-     * Path to the PhpPact Pact Message.
+     * Path to the Ruby Standalone Broker.
      *
      * @var string
      */
-    private $pactMessage;
+    private string $broker;
 
-    /**
-     * Path to the PhpPact Provider Verifier.
-     *
-     * @var string
-     */
-    private $providerVerifier;
-
-    /**
-     * @var string
-     */
-    private $broker;
-
-    public function __construct(string $mockService, string $stubService, string $providerVerifier, string $pactMessage, string $broker)
+    public function __construct(string $code, string $library, string $stubService, string $broker)
     {
-        $this->mockService      = $mockService;
-        $this->stubService      = $stubService;
-        $this->providerVerifier = $providerVerifier;
-        $this->pactMessage      = $pactMessage;
-        $this->broker           = $broker;
+        $this->code              = $code;
+        $this->library           = $library;
+        $this->stubService       = $stubService;
+        $this->broker            = $broker;
     }
 
     /**
      * @return string
      */
-    public function getMockService(): string
+    public function getCode(): string
     {
-        return $this->mockService;
+        return $this->code;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLibrary(): string
+    {
+        return $this->library;
     }
 
     /**
@@ -69,36 +66,8 @@ class Scripts
     /**
      * @return string
      */
-    public function getProviderVerifier(): string
-    {
-        return $this->providerVerifier;
-    }
-
-    /**
-     * @param string $providerVerifier
-     *
-     * @return Scripts
-     */
-    public function setProviderVerifier(string $providerVerifier): self
-    {
-        $this->providerVerifier = $providerVerifier;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getBroker(): string
     {
         return $this->broker;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPactMessage(): string
-    {
-        return $this->pactMessage;
     }
 }
