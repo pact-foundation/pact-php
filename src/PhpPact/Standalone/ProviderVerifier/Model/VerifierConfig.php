@@ -110,7 +110,7 @@ class VerifierConfig implements VerifierConfigInterface
      */
     public function getProviderName(): string
     {
-        return $this->providerName;
+        return (string) $this->providerName;
     }
 
     /**

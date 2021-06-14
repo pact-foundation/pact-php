@@ -65,6 +65,10 @@ class Verifier
     {
         $parameters = [];
 
+        if (!empty($this->config->getProviderName())) {
+            $parameters[] = "--provider={$this->config->getProviderName()}";
+        }
+
         if ($this->config->getProviderBaseUrl() !== null) {
             $parameters[] = "--provider-base-url={$this->config->getProviderBaseUrl()}";
         }

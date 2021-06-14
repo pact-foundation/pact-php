@@ -70,6 +70,7 @@ class VerifierTest extends TestCase
         $this->assertContains('--include-wip-pacts-since=2020-01-30', $arguments);
         $this->assertContains('--consumer-version-selector=\'{"tag":"foo","latest":true}\'', $arguments);
         $this->assertContains('--consumer-version-selector=\'{"tag":"bar","latest":true}\'', $arguments);
+        $this->assertContains('--provider=someProvider', $arguments);
     }
 
     public function testGetArgumentsEmptyConfig()
