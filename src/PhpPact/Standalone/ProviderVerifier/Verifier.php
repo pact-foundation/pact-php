@@ -229,6 +229,17 @@ class Verifier
     }
 
     /**
+     * Verify all PACTs that match the VerifierConfig
+     *
+     * @throws FileDownloadFailureException
+     * @throws NoDownloaderFoundException
+     */
+    public function verifyFromConfig()
+    {
+        $this->verifyAction($this->getArguments());
+    }
+
+    /**
      * Wrapper to add a custom installer.
      *
      * @param InstallerInterface $installer
