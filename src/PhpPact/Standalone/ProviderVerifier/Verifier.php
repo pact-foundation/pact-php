@@ -4,6 +4,7 @@ namespace PhpPact\Standalone\ProviderVerifier;
 
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use InvalidArgumentException;
 use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
 use PhpPact\Http\GuzzleClient;
@@ -11,6 +12,7 @@ use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
 use PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\ConsumerVersionSelector;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 
 /**
@@ -74,6 +76,16 @@ class Verifier
         if (\count($this->config->getConsumerVersionTag()) > 0) {
             foreach ($this->config->getConsumerVersionTag() as $tag) {
                 $parameters[] = "--consumer-version-tag={$tag}";
+            }
+        }
+
+        if (\count($this->config->getConsumerVersionSelectors()) > 0) {
+            foreach ($this->config->getConsumerVersionSelectors() as $selector) {
+                if (!$selector->isValid()) {
+                    throw new InvalidArgumentException('You specified an invalid consumer version selector');
+                }
+                $json = json_encode($selector);
+                $parameters[] = "--consumer-version-selector={$json}";
             }
         }
 

@@ -3,12 +3,14 @@
 namespace PhpPact\Standalone\ProviderVerifier;
 
 use GuzzleHttp\Psr7\Uri;
+use InvalidArgumentException;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Model\Scripts;
+use PhpPact\Standalone\ProviderVerifier\Model\ConsumerVersionSelector;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -42,7 +44,9 @@ class VerifierTest extends TestCase
                 function (RequestInterface $r) {
                     return $r->withHeader('MY_SPECIAL_HEADER', 'my special value');
                 }
-            );
+            )
+            ->addConsumerVersionSelector(new ConsumerVersionSelector('', 'foo', '', true, ''))
+            ->addConsumerVersionSelector(new ConsumerVersionSelector('', 'bar', '', true, ''));
 
         /** @var BrokerHttpClientInterface $brokerHttpService */
         $server    = new Verifier($config);
@@ -64,11 +68,24 @@ class VerifierTest extends TestCase
         $this->assertSame(['process_timeout' => 30, 'process_idle_timeout' => 5], $server->getTimeoutValues());
         $this->assertContains('--enable-pending', $arguments);
         $this->assertContains('--include-wip-pacts-since=2020-01-30', $arguments);
+        $this->assertContains('--consumer-version-selector={"tag":"foo","latest":true}', $arguments);
+        $this->assertContains('--consumer-version-selector={"tag":"bar","latest":true}', $arguments);
     }
 
     public function testGetArgumentsEmptyConfig()
     {
         $this->assertEmpty((new Verifier(new VerifierConfig()))->getArguments());
+    }
+
+    public function testGetArgumentsInvalidConsumerVersionSelectors()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $config = new VerifierConfig();
+        $config->addConsumerVersionSelector(new ConsumerVersionSelector('foo', '', '', false, false));
+
+        $verifier = new Verifier($config);
+        $verifier->getArguments();
     }
 
     /**

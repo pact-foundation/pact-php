@@ -63,6 +63,9 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var array */
     private $consumerVersionTag = [];
 
+    /** @var ConsumerVersionSelector[] */
+    private $consumerVersionSelectors = [];
+
     /** @var null|callable */
     private $requestFilter;
 
@@ -190,6 +193,25 @@ class VerifierConfig implements VerifierConfigInterface
     public function setConsumerVersionTag(string $consumerVersionTag): VerifierConfigInterface
     {
         return $this->addConsumerVersionTag($consumerVersionTag);
+    }
+
+    public function getConsumerVersionSelectors(): array
+    {
+        return $this->consumerVersionSelectors;
+    }
+
+    public function setConsumerVersionSelectors(array $selectors): self
+    {
+        $this->consumerVersionSelectors = $selectors;
+
+        return $this;
+    }
+
+    public function addConsumerVersionSelector(ConsumerVersionSelector $selector): self
+    {
+        $this->consumerVersionSelectors[] = $selector;
+
+        return $this;
     }
 
     /**

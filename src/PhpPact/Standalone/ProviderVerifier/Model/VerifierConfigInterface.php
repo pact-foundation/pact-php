@@ -90,6 +90,25 @@ interface VerifierConfigInterface
     public function addProviderVersionTag(string $providerVersionTag): self;
 
     /**
+     * @return ConsumerVersionSelector[]
+     */
+    public function getConsumerVersionSelectors(): array;
+
+    /**
+     * @param ConsumerVersionSelector[] $selectors
+     *
+     * @return $this
+     */
+    public function setConsumerVersionSelectors(array $selectors): self;
+
+    /**
+     * @param ConsumerVersionSelector $selector
+     *
+     * @return $this
+     */
+    public function addConsumerVersionSelector(ConsumerVersionSelector $selector): self;
+
+    /**
      * @return bool are results going to be published
      */
     public function isPublishResults(): bool;
