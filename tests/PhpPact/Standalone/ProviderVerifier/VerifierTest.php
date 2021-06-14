@@ -68,8 +68,8 @@ class VerifierTest extends TestCase
         $this->assertSame(['process_timeout' => 30, 'process_idle_timeout' => 5], $server->getTimeoutValues());
         $this->assertContains('--enable-pending', $arguments);
         $this->assertContains('--include-wip-pacts-since=2020-01-30', $arguments);
-        $this->assertContains('--consumer-version-selector={"tag":"foo","latest":true}', $arguments);
-        $this->assertContains('--consumer-version-selector={"tag":"bar","latest":true}', $arguments);
+        $this->assertContains('--consumer-version-selector=\'{"tag":"foo","latest":true}\'', $arguments);
+        $this->assertContains('--consumer-version-selector=\'{"tag":"bar","latest":true}\'', $arguments);
     }
 
     public function testGetArgumentsEmptyConfig()

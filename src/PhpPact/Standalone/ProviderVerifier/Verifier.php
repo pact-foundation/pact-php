@@ -84,7 +84,7 @@ class Verifier
                 if (!$selector->isValid()) {
                     throw new InvalidArgumentException('You specified an invalid consumer version selector');
                 }
-                $json = json_encode($selector);
+                $json = escapeshellarg(json_encode($selector));
                 $parameters[] = "--consumer-version-selector={$json}";
             }
         }
