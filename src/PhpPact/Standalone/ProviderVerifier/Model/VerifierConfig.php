@@ -200,14 +200,14 @@ class VerifierConfig implements VerifierConfigInterface
         return $this->consumerVersionSelectors;
     }
 
-    public function setConsumerVersionSelectors(array $selectors): self
+    public function setConsumerVersionSelectors(array $selectors): VerifierConfigInterface
     {
         $this->consumerVersionSelectors = $selectors;
 
         return $this;
     }
 
-    public function addConsumerVersionSelector(ConsumerVersionSelector $selector): self
+    public function addConsumerVersionSelector(ConsumerVersionSelector $selector): VerifierConfigInterface
     {
         $this->consumerVersionSelectors[] = $selector;
 
