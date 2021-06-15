@@ -45,8 +45,8 @@ class VerifierTest extends TestCase
                     return $r->withHeader('MY_SPECIAL_HEADER', 'my special value');
                 }
             )
-            ->addConsumerVersionSelector(new ConsumerVersionSelector('', 'foo', '', true, ''))
-            ->addConsumerVersionSelector(new ConsumerVersionSelector('', 'bar', '', true, ''));
+            ->addConsumerVersionSelector('{"tag":"foo","latest":true}')
+            ->addConsumerVersionSelector('{"tag":"bar","latest":true}');
 
         /** @var BrokerHttpClientInterface $brokerHttpService */
         $server    = new Verifier($config);
@@ -76,17 +76,6 @@ class VerifierTest extends TestCase
     public function testGetArgumentsEmptyConfig()
     {
         $this->assertEmpty((new Verifier(new VerifierConfig()))->getArguments());
-    }
-
-    public function testGetArgumentsInvalidConsumerVersionSelectors()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $config = new VerifierConfig();
-        $config->addConsumerVersionSelector(new ConsumerVersionSelector('foo', '', '', false, false));
-
-        $verifier = new Verifier($config);
-        $verifier->getArguments();
     }
 
     /**

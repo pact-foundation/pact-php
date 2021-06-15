@@ -85,11 +85,8 @@ class Verifier
 
         if (\count($this->config->getConsumerVersionSelectors()) > 0) {
             foreach ($this->config->getConsumerVersionSelectors() as $selector) {
-                if (!$selector->isValid()) {
-                    throw new InvalidArgumentException('You specified an invalid consumer version selector');
-                }
-                $json = escapeshellarg(json_encode($selector));
-                $parameters[] = "--consumer-version-selector={$json}";
+                $selector = escapeshellarg($selector);
+                $parameters[] = "--consumer-version-selector={$selector}";
             }
         }
 
