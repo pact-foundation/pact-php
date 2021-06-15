@@ -63,7 +63,7 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var array */
     private $consumerVersionTag = [];
 
-    /** @var ConsumerVersionSelector[] */
+    /** @var string[] */
     private $consumerVersionSelectors = [];
 
     /** @var null|callable */

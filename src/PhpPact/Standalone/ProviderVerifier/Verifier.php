@@ -4,7 +4,6 @@ namespace PhpPact\Standalone\ProviderVerifier;
 
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
-use InvalidArgumentException;
 use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
 use PhpPact\Http\GuzzleClient;
@@ -12,7 +11,6 @@ use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
 use PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
-use PhpPact\Standalone\ProviderVerifier\Model\ConsumerVersionSelector;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 
 /**
