@@ -10,7 +10,7 @@ use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Model\Scripts;
-use PhpPact\Standalone\ProviderVerifier\Model\ConsumerVersionSelector;
+use PhpPact\Standalone\ProviderVerifier\Model\ConsumerVersionSelectors;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -19,6 +19,10 @@ class VerifierTest extends TestCase
 {
     public function testGetArguments()
     {
+        $consumerVersionSelectors = (new ConsumerVersionSelectors())
+            ->addSelector('{"tag":"foo","latest":true}')
+            ->addSelector('{"tag":"bar","latest":true}');
+
         $config = new VerifierConfig();
         $config
             ->setProviderName('someProvider')
@@ -45,8 +49,7 @@ class VerifierTest extends TestCase
                     return $r->withHeader('MY_SPECIAL_HEADER', 'my special value');
                 }
             )
-            ->addConsumerVersionSelector('{"tag":"foo","latest":true}')
-            ->addConsumerVersionSelector('{"tag":"bar","latest":true}');
+            ->setConsumerVersionSelectors($consumerVersionSelectors);
 
         /** @var BrokerHttpClientInterface $brokerHttpService */
         $server    = new Verifier($config);
