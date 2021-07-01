@@ -42,9 +42,9 @@
         "mockery/mockery": "^1.4.2",
         "slim/slim": "^4.6",
         "slim/psr7": "^1.2.0",
-        "php-amqplib/php-amqplib": "^2.12",
         "tm/tooly-composer-script": "^1.2",
-        "friendsofphp/php-cs-fixer": "^2.19"
+        "friendsofphp/php-cs-fixer": "^2.19",
+        "php-amqplib/php-amqplib": "^3.0"
     },
     "autoload": {
         "psr-4": {
