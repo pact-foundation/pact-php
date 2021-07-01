@@ -43,7 +43,8 @@
         "slim/slim": "^4.6",
         "slim/psr7": "^1.2.0",
         "php-amqplib/php-amqplib": "^2.12",
-        "tm/tooly-composer-script": "^1.2"
+        "tm/tooly-composer-script": "^1.2",
+        "friendsofphp/php-cs-fixer": "^2.19"
     },
     "autoload": {
         "psr-4": {
@@ -76,15 +77,8 @@
             "\\PhpPact\\Standalone\\Installer\\InstallManager::uninstall"
         ],
         "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
-        "lint": "php-cs-fixer.phar fix --config .php_cs --dry-run",
-        "fix": "php-cs-fixer.phar fix --config .php_cs",
+        "lint": "php-cs-fixer fix --config .php-cs-fixer.php --dry-run",
+        "fix": "php-cs-fixer fix --config .php-cs-fixer.php",
         "test": "phpunit --debug -c example/phpunit.all.xml"
-    },
-    "extra": {
-        "tools": {
-            "php-cs-fixer": {
-                "url": "http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar"
-            }
-        }
     }
 }
