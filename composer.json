@@ -44,7 +44,8 @@
         "slim/psr7": "^1.2.0",
         "tm/tooly-composer-script": "^1.2",
         "friendsofphp/php-cs-fixer": "^2.19",
-        "php-amqplib/php-amqplib": "^3.0"
+        "php-amqplib/php-amqplib": "^3.0",
+        "phpstan/phpstan": "^0.12.90"
     },
     "autoload": {
         "psr-4": {
@@ -77,6 +78,7 @@
             "\\PhpPact\\Standalone\\Installer\\InstallManager::uninstall"
         ],
         "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
+        "static-code-analysis": "phpstan analyse src/ --level=5",
         "lint": "php-cs-fixer fix --config .php-cs-fixer.php --dry-run",
         "fix": "php-cs-fixer fix --config .php-cs-fixer.php",
         "test": "phpunit --debug -c example/phpunit.all.xml"
