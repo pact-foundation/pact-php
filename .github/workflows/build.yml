@@ -26,9 +26,7 @@ jobs:
           dependency-versions: 'locked'
 
       - name: Code Style Analysis
-        uses: docker://oskarstark/php-cs-fixer-ga:2.19.0
-        with:
-          args: --config=.php_cs --diff --dry-run
+        run: composer run lint
 
       - name: Static Code Analysis
         uses: docker://oskarstark/phpstan-ga
