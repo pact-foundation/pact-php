@@ -63,8 +63,16 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var array */
     private $consumerVersionTag = [];
 
+    /** @var ConsumerVersionSelectors */
+    private $consumerVersionSelectors;
+
     /** @var null|callable */
     private $requestFilter;
+
+    public function __construct()
+    {
+        $this->consumerVersionSelectors = new ConsumerVersionSelectors();
+    }
 
     /**
      * {@inheritdoc}
@@ -107,7 +115,7 @@ class VerifierConfig implements VerifierConfigInterface
      */
     public function getProviderName(): string
     {
-        return $this->providerName;
+        return (string) $this->providerName;
     }
 
     /**
@@ -190,6 +198,18 @@ class VerifierConfig implements VerifierConfigInterface
     public function setConsumerVersionTag(string $consumerVersionTag): VerifierConfigInterface
     {
         return $this->addConsumerVersionTag($consumerVersionTag);
+    }
+
+    public function getConsumerVersionSelectors(): ConsumerVersionSelectors
+    {
+        return $this->consumerVersionSelectors;
+    }
+
+    public function setConsumerVersionSelectors(ConsumerVersionSelectors $selectors): VerifierConfigInterface
+    {
+        $this->consumerVersionSelectors = $selectors;
+
+        return $this;
     }
 
     /**
