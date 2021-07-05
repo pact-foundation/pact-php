@@ -10,7 +10,7 @@ PHP version of [Pact](https://pact.io). Enables consumer driven contract testing
 
 Table of contents
 =================
- 
+
 * [Versions](#versions)
 * [Specifications](#specifications)
 * [Installation](#installation)
@@ -18,7 +18,7 @@ Table of contents
     * [Start and Stop the Mock Server](#start-and-stop-the-mock-server)
     * [Create Consumer Unit Test](#create-consumer-unit-test)
     * [Create Mock Request](#create-mock-request)
-    * [Create Mock Response](#create-mock-response)  
+    * [Create Mock Response](#create-mock-response)
     * [Build the Interaction](#build-the-interaction)
     * [Make the Request](#make-the-request)
     * [Make Assertions](#make-assertions)
@@ -33,7 +33,6 @@ Table of contents
     * [Starting API Asynchronously](#starting-api-asynchronously)
     * [Set Up Provider State](#set-up-provider-state)
     * [Examples](#additional-examples)
-        
 
 ## Versions
 7.x updates internal dependencies and libraries, mostly to Guzzle 7.X.  This results in dropping support for PHP 7.2.
@@ -41,16 +40,16 @@ Table of contents
 
 5.X adds preliminary support for async messages and pact specification 3.X.  This does not yet support the full pact specification 3.X as the backend implementations are incomplete. However, pact-messages are supported.
 
-The 4.X tags are accompany changes in PHPUnit 7.X which requires a PHP 7.1 or higher.  Thus, 4.X drops support for PHP 7.0.  
+The 4.X tags are accompany changes in PHPUnit 7.X which requires a PHP 7.1 or higher.  Thus, 4.X drops support for PHP 7.0.
 
-The 3.X tags are a major breaking change to the 2.X versions.   To be similar to the rest of the Pact ecosystem, Pact-PHP migrated to leverage the Ruby backend.  This mirrors the .Net, JS, Python, and Go implementations. 
+The 3.X tags are a major breaking change to the 2.X versions.   To be similar to the rest of the Pact ecosystem, Pact-PHP migrated to leverage the Ruby backend.  This mirrors the .Net, JS, Python, and Go implementations.
 
-If you wish to stick with the 2.X implementation, you can continue to pull from the [latest 2.X.X tag](https://github.com/pact-foundation/pact-php/tree/2.2.1). 
+If you wish to stick with the 2.X implementation, you can continue to pull from the [latest 2.X.X tag](https://github.com/pact-foundation/pact-php/tree/2.2.1).
 
 ## Specifications
 
 The 3.X version is the version of Pact-PHP, not the pact specification version that it supports.   Pact-Php 3.X supports [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2).
-		
+
 ## Installation
 
 Install the latest version with:
@@ -59,7 +58,7 @@ Install the latest version with:
 $ composer require pact-foundation/pact-php --dev
 ```
 
-Composer hosts older versions under `mattersight/phppact`, which is abandoned. Please convert to the new package name.  
+Composer hosts older versions under `mattersight/phppact`, which is abandoned. Please convert to the new package name.
 
 ## Basic Consumer Usage
 
@@ -176,7 +175,7 @@ ipv6Address | Regex to match a ipv6 address. | Value (Defaults to ::ffff:192.0.2
 Now that we have the request and response, we need to build the interaction and ship it over to the mock server.
 
 ```php
-// Create a configuration that reflects the server that was started. You can 
+// Create a configuration that reflects the server that was started. You can
 // create a custom MockServerConfigInterface if needed. This configuration
 // is the same that is used via the PactTestListener and uses environment variables.
 $config  = new MockServerEnvConfig();
@@ -334,12 +333,12 @@ Here are some options:
 No matter which direction you go, you will have to modify something outside of the PHP process because each request to your server will be stateless and independent.
 
 ### Additional Examples
-There is a separate repository with an end to end example for both the 2.X and 3.X implementations.   
+There is a separate repository with an end to end example for both the 2.X and 3.X implementations.
 - [pact-php-example](https://github.com/mattermack/pact-php-example) for 3.X examples
 - [2.2.1 tag](https://github.com/mattermack/pact-php-example/tree/2.2.1) for 2.X examples
 
 ## Message support
-This feature is preliminary as the Pact community as a whole is flushing this out.   
+This feature is preliminary as the Pact community as a whole is flushing this out.
 The goal is not to test the transmission of an object over a bus but instead vet the contents of the message.
 While examples included focus on a Rabbit MQ, the exact message queue is irrelevant. Initial comparisons require a certain
 object type to be created by the Publisher/Producer and the Consumer of the message.  This includes a metadata set where you
@@ -359,7 +358,7 @@ The examples provided are pretty basic.   See examples\tests\MessageConsumer.
 1. Set the callback you want to run when a message is provided
     1. The callback must accept a JSON string as a parameter
 1. Run Verify.  If nothing blows up, #winning.
- 
+
 ```php
 $builder    = new MessageBuilder(self::$config);
 
@@ -387,7 +386,7 @@ $builder->verify();
 This may evolve as we work through this implementation.   The provider relies heavily on callbacks.
 Some of the complexity lies in a consumer and provider having many messages and states between the each other in a single pact.
 
-For each message, one needs to provide a single provider state.  The name of this provider state must be the key to run 
+For each message, one needs to provide a single provider state.  The name of this provider state must be the key to run
 a particular message callback on the provider side.  See example\tests\MessageProvider
 
 1. Create your callbacks and states wrapped in a callable object
@@ -399,7 +398,7 @@ a particular message callback on the provider side.  See example\tests\MessagePr
 ```php
 
         $callbacks = array();
-        
+
         // a hello message is a provider state / given() on the consumer side
         $callbacks["a hello message"] = function() {
             $content = new \stdClass();
@@ -414,7 +413,7 @@ a particular message callback on the provider side.  See example\tests\MessagePr
 
             return $provider->Build();
         };
-        
+
         $verifier = (new MessageVerifier($config))
             ->setCallbacks($callbacks)
             ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
