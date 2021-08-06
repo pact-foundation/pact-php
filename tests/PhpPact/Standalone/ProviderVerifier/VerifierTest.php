@@ -3,7 +3,6 @@
 namespace PhpPact\Standalone\ProviderVerifier;
 
 use GuzzleHttp\Psr7\Uri;
-use InvalidArgumentException;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use PhpPact\Broker\Service\BrokerHttpClient;

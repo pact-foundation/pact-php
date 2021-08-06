@@ -10,7 +10,7 @@ class ConsumerVersionSelectors implements Iterator, Countable
     /** @var int */
     private $position = 0;
 
-    /** @var string[]  */
+    /** @var string[] */
     private $selectors = [];
 
     /**
@@ -55,6 +55,6 @@ class ConsumerVersionSelectors implements Iterator, Countable
 
     public function count()
     {
-        return count($this->selectors);
+        return \count($this->selectors);
     }
 }

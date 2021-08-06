@@ -94,8 +94,8 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @param string         $header
-     * @param array | string $value
+     * @param string       $header
+     * @param array|string $value
      *
      * @return ConsumerRequest
      */

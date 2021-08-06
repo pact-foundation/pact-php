@@ -83,7 +83,7 @@ class Verifier
 
         if (\count($this->config->getConsumerVersionSelectors()) > 0) {
             foreach ($this->config->getConsumerVersionSelectors() as $selector) {
-                $selector = escapeshellarg($selector);
+                $selector     = \escapeshellarg($selector);
                 $parameters[] = "--consumer-version-selector={$selector}";
             }
         }
