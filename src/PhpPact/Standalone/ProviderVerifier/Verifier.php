@@ -63,6 +63,10 @@ class Verifier
     {
         $parameters = [];
 
+        if (!empty($this->config->getProviderName())) {
+            $parameters[] = "--provider={$this->config->getProviderName()}";
+        }
+
         if ($this->config->getProviderBaseUrl() !== null) {
             $parameters[] = "--provider-base-url={$this->config->getProviderBaseUrl()}";
         }
@@ -74,6 +78,13 @@ class Verifier
         if (\count($this->config->getConsumerVersionTag()) > 0) {
             foreach ($this->config->getConsumerVersionTag() as $tag) {
                 $parameters[] = "--consumer-version-tag={$tag}";
+            }
+        }
+
+        if (\count($this->config->getConsumerVersionSelectors()) > 0) {
+            foreach ($this->config->getConsumerVersionSelectors() as $selector) {
+                $selector     = \escapeshellarg($selector);
+                $parameters[] = "--consumer-version-selector={$selector}";
             }
         }
 
@@ -210,6 +221,17 @@ class Verifier
         $arguments = \array_merge($arguments, $this->getArguments());
 
         $this->verifyAction($arguments);
+    }
+
+    /**
+     * Verify all PACTs that match the VerifierConfig
+     *
+     * @throws FileDownloadFailureException
+     * @throws NoDownloaderFoundException
+     */
+    public function verifyFromConfig()
+    {
+        $this->verifyAction($this->getArguments());
     }
 
     /**
