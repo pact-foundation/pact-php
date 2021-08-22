@@ -9,6 +9,7 @@ use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
 use PhpPact\Standalone\Installer\InstallManager;
 use PhpPact\Standalone\Installer\Model\Scripts;
+use PhpPact\Standalone\ProviderVerifier\Model\ConsumerVersionSelectors;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -17,6 +18,10 @@ class VerifierTest extends TestCase
 {
     public function testGetArguments()
     {
+        $consumerVersionSelectors = (new ConsumerVersionSelectors())
+            ->addSelector('{"tag":"foo","latest":true}')
+            ->addSelector('{"tag":"bar","latest":true}');
+
         $config = new VerifierConfig();
         $config
             ->setProviderName('someProvider')
@@ -42,7 +47,8 @@ class VerifierTest extends TestCase
                 function (RequestInterface $r) {
                     return $r->withHeader('MY_SPECIAL_HEADER', 'my special value');
                 }
-            );
+            )
+            ->setConsumerVersionSelectors($consumerVersionSelectors);
 
         /** @var BrokerHttpClientInterface $brokerHttpService */
         $server    = new Verifier($config);
@@ -64,6 +70,21 @@ class VerifierTest extends TestCase
         $this->assertSame(['process_timeout' => 30, 'process_idle_timeout' => 5], $server->getTimeoutValues());
         $this->assertContains('--enable-pending', $arguments);
         $this->assertContains('--include-wip-pacts-since=2020-01-30', $arguments);
+        $this->assertContains('--consumer-version-selector=\'{"tag":"foo","latest":true}\'', $this->stripSpaces($arguments));
+        $this->assertContains('--consumer-version-selector=\'{"tag":"bar","latest":true}\'', $this->stripSpaces($arguments));
+        $this->assertContains('--provider=someProvider', $arguments);
+    }
+
+    /**
+     * Strip spaces for Windows CMD
+     */
+    private function stripSpaces($arr)
+    {
+        $newArr = [];
+        foreach ($arr as $str) {
+            $newArr[] = str_ireplace(' ', '', $str);
+        }
+        return $newArr;
     }
 
     public function testGetArgumentsEmptyConfig()
