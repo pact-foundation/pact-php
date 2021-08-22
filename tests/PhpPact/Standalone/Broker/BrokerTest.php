@@ -9,25 +9,6 @@ class BrokerTest extends TestCase
 {
     /**
      * @test
-     *
-     * @throws \Exception
-     */
-    public function publish(): void
-    {
-        $this->expectNotToPerformAssertions();
-        (new Broker(
-            (new BrokerConfig())
-                ->setBrokerUri(new Uri('https://test.pact.dius.com.au'))
-                ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
-                ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1')
-                ->setPactLocations(__DIR__ . '/../../../../example/pacts/')
-                ->setConsumerVersion('1.0.0')
-                ->setTag('latest')
-        ))->publish();
-    }
-
-    /**
-     * @test
      */
     public function getArguments(): void
     {

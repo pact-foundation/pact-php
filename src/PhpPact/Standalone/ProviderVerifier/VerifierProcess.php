@@ -35,7 +35,7 @@ class VerifierProcess
     public function __construct(InstallManager $installManager, ProcessRunnerFactory $processRunnerFactory = null)
     {
         $this->installManager       = $installManager;
-        $this->processRunnerFactory = $processRunnerFactory?: new ProcessRunnerFactory();
+        $this->processRunnerFactory = $processRunnerFactory ?: new ProcessRunnerFactory();
     }
 
     /**

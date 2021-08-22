@@ -44,8 +44,8 @@ class Verifier
         BrokerHttpClient $brokerHttpClient = null
     ) {
         $this->config             = $config;
-        $this->installManager     = $installManager?: new InstallManager();
-        $this->verifierProcess    = $verifierProcess?: new VerifierProcess($this->installManager);
+        $this->installManager     = $installManager ?: new InstallManager();
+        $this->verifierProcess    = $verifierProcess ?: new VerifierProcess($this->installManager);
         $this->processTimeout     = $config->getProcessTimeout();
         $this->processIdleTimeout = $config->getProcessIdleTimeout();
 
