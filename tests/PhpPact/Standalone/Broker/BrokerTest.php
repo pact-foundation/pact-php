@@ -7,8 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class BrokerTest extends TestCase
 {
-    
-
     /**
      * @test
      */
