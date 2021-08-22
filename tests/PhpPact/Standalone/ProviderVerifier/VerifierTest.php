@@ -70,9 +70,21 @@ class VerifierTest extends TestCase
         $this->assertSame(['process_timeout' => 30, 'process_idle_timeout' => 5], $server->getTimeoutValues());
         $this->assertContains('--enable-pending', $arguments);
         $this->assertContains('--include-wip-pacts-since=2020-01-30', $arguments);
-        $this->assertContains('--consumer-version-selector=\'{"tag":"foo","latest":true}\'', $arguments);
-        $this->assertContains('--consumer-version-selector=\'{"tag":"bar","latest":true}\'', $arguments);
+        $this->assertContains('--consumer-version-selector=\'{"tag":"foo","latest":true}\'', $this->stripSpaces($arguments));
+        $this->assertContains('--consumer-version-selector=\'{"tag":"bar","latest":true}\'', $this->stripSpaces($arguments));
         $this->assertContains('--provider=someProvider', $arguments);
+    }
+
+    /**
+     * Strip spaces for Windows CMD
+     */
+    private function stripSpaces($arr)
+    {
+        $newArr = [];
+        foreach ($arr as $str) {
+            $newArr[] = str_ireplace(' ', '', $str);
+        }
+        return $newArr;
     }
 
     public function testGetArgumentsEmptyConfig()
