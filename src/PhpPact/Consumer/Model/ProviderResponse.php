@@ -64,8 +64,8 @@ class ProviderResponse implements \JsonSerializable
     }
 
     /**
-     * @param string         $header
-     * @param array | string $value
+     * @param string       $header
+     * @param array|string $value
      *
      * @return ProviderResponse
      */
