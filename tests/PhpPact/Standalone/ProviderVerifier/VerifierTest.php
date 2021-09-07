@@ -150,10 +150,10 @@ class VerifierTest extends TestCase
         $version      = '11111';
 
         return [
-            [$consumerName, $providerName, null, $version, "pacts/provider/$providerName/consumer/$consumerName/version/$version/"],
-            [$consumerName, $providerName, $tag, null, "pacts/provider/$providerName/consumer/$consumerName/latest/$tag/"],
-            [$consumerName, $providerName, $tag, $version, "pacts/provider/$providerName/consumer/$consumerName/latest/$tag/"],
-            [$consumerName, $providerName, null, null, "pacts/provider/$providerName/consumer/$consumerName/latest/"],
+            [$consumerName, $providerName, null, $version, "/pacts/provider/$providerName/consumer/$consumerName/version/$version/"],
+            [$consumerName, $providerName, $tag, null, "/pacts/provider/$providerName/consumer/$consumerName/latest/$tag/"],
+            [$consumerName, $providerName, $tag, $version, "/pacts/provider/$providerName/consumer/$consumerName/latest/$tag/"],
+            [$consumerName, $providerName, null, null, "/pacts/provider/$providerName/consumer/$consumerName/latest/"],
         ];
     }
 
