@@ -24,7 +24,7 @@ class VerifierTest extends TestCase
 
         $config = new VerifierConfig();
         $config
-            ->setProviderName('someProvider')
+            ->setProviderName('some provider with whitespace')
             ->setProviderVersion('1.0.0')
             ->addProviderVersionTag('prod')
             ->addProviderVersionTag('dev')
@@ -72,7 +72,7 @@ class VerifierTest extends TestCase
         $this->assertContains('--include-wip-pacts-since=2020-01-30', $arguments);
         $this->assertContains('--consumer-version-selector=\'{"tag":"foo","latest":true}\'', $this->stripSpaces($arguments));
         $this->assertContains('--consumer-version-selector=\'{"tag":"bar","latest":true}\'', $this->stripSpaces($arguments));
-        $this->assertContains('--provider=someProvider', $arguments);
+        $this->assertContains('--provider=\'some provider with whitespace\'', $arguments);
     }
 
     /**
