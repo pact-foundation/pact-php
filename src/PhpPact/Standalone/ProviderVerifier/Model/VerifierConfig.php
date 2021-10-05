@@ -45,6 +45,9 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var bool */
     private $verbose = false;
 
+    /** @var null|string */
+    private $logDirectory;
+
     /** @var string */
     private $format;
 
@@ -344,6 +347,24 @@ class VerifierConfig implements VerifierConfigInterface
     public function setVerbose(bool $verbose): VerifierConfigInterface
     {
         $this->verbose = $verbose;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLogDirectory()
+    {
+        return $this->logDirectory;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogDirectory(string $log): VerifierConfigInterface
+    {
+        $this->logDirectory = $log;
 
         return $this;
     }

@@ -123,6 +123,10 @@ class Verifier
             $parameters[] = '--verbose';
         }
 
+        if ($this->config->getLogDirectory() !== null) {
+            $parameters[] = "--log={$this->config->getLogDirectory()}";
+        }
+
         if ($this->config->getFormat() !== null) {
             $parameters[] = "--format={$this->config->getFormat()}";
         }

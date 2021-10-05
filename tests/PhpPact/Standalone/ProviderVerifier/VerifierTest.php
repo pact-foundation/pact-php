@@ -38,6 +38,7 @@ class VerifierTest extends TestCase
             ->addCustomProviderHeader('key1', 'value1')
             ->addCustomProviderHeader('key2', 'value2')
             ->setVerbose(true)
+            ->setLogDirectory('my/log/directory')
             ->setFormat('someformat')
             ->setProcessTimeout(30)
             ->setProcessIdleTimeout(5)
@@ -63,6 +64,7 @@ class VerifierTest extends TestCase
         $this->assertContains('--custom-provider-header="key1: value1"', $arguments);
         $this->assertContains('--custom-provider-header="key2: value2"', $arguments);
         $this->assertContains('--verbose', $arguments);
+        $this->assertContains('--log=my/log/directory', $arguments);
         $this->assertContains('--format=someformat', $arguments);
         $this->assertContains('--provider-version-tag=prod', $arguments);
         $this->assertContains('--provider-version-tag=dev', $arguments);
