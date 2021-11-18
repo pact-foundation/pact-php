@@ -194,6 +194,18 @@ interface VerifierConfigInterface
     public function setVerbose(bool $verbose): self;
 
     /**
+     * @return null|string set the directory for the pact.log file
+     */
+    public function getLogDirectory();
+
+    /**
+     * @param string $log set the directory for the pact.log file
+     *
+     * @return VerifierConfigInterface
+     */
+    public function setLogDirectory(string $log): self;
+
+    /**
      * @return null|string RSpec formatter. Defaults to custom Pact formatter. json and RspecJunitFormatter may also be used
      */
     public function getFormat();
