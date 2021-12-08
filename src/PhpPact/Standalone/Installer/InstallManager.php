@@ -7,6 +7,7 @@ use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\Installer\Service\InstallerLinux;
 use PhpPact\Standalone\Installer\Service\InstallerMac;
+use PhpPact\Standalone\Installer\Service\InstallerPosixPreinstalled;
 use PhpPact\Standalone\Installer\Service\InstallerWindows;
 
 /**
@@ -30,7 +31,8 @@ class InstallManager
         $this
             ->registerInstaller(new InstallerWindows())
             ->registerInstaller(new InstallerMac())
-            ->registerInstaller(new InstallerLinux());
+            ->registerInstaller(new InstallerLinux())
+            ->registerInstaller(new InstallerPosixPreinstalled());
     }
 
     /**
