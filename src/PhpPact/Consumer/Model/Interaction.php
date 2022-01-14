@@ -111,6 +111,7 @@ class Interaction implements \JsonSerializable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         if ($this->getProviderState()) {

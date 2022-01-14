@@ -28,31 +28,37 @@ class ConsumerVersionSelectors implements Iterator, Countable
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->selectors[$this->position];
     }
 
+    #[\ReturnTypeWillChange]
     public function next()
     {
         ++$this->position;
     }
 
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->position;
     }
 
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return isset($this->selectors[$this->position]);
     }
 
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->position = 0;
     }
 
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return \count($this->selectors);
