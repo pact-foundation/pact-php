@@ -99,6 +99,7 @@ class ProviderResponse implements \JsonSerializable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $results = [
