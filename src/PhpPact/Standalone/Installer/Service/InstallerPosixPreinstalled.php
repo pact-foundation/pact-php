@@ -32,6 +32,6 @@ class InstallerPosixPreinstalled implements InstallerInterface
 
     private function getBinaryPath(string $binary): string
     {
-        return trim(shell_exec('command -v ' . escapeshellarg($binary)));
+        return trim((string) shell_exec('command -v ' . escapeshellarg($binary)));
     }
 }
