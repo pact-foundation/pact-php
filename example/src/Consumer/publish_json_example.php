@@ -13,4 +13,4 @@ $json = \json_encode([
     'provider' => 'someProvider'
 ]);
 
-$httpService->publishJson($json, '1.0.0');
+$httpService->publishJson('1.0.0', $json);

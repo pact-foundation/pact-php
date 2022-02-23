@@ -123,7 +123,7 @@ class PactTestListener implements TestListener
 
                 $brokerHttpService = new BrokerHttpClient($client, new Uri($pactBrokerUri), $headers);
                 $brokerHttpService->tag($this->mockServerConfig->getConsumer(), $consumerVersion, $tag);
-                $brokerHttpService->publishJson($json, $consumerVersion);
+                $brokerHttpService->publishJson($consumerVersion, $json);
                 print 'Pact file has been uploaded to the Broker successfully.';
             }
         }

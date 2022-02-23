@@ -37,7 +37,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
     /**
      * {@inheritdoc}
      */
-    public function publishJson(string $json, string $version)
+    public function publishJson(string $version, string $json)
     {
         $array    = \json_decode($json, true);
         $consumer = $array['consumer']['name'];
