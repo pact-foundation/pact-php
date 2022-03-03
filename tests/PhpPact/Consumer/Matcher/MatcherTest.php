@@ -141,69 +141,119 @@ class MatcherTest extends TestCase
     }
 
     /**
+     * @dataProvider dataProviderForTimeTest
+     *
      * @throws Exception
      */
-    public function testTime()
+    public function testTime($time)
     {
         $expected = [
             'data' => [
-                'generate' => 'T22:44:30.652Z',
+                'generate' => $time,
                 'matcher'  => [
                     'json_class' => 'Regexp',
                     'o'          => 0,
-                    's'          => '^(T\\d\\d:\\d\\d(:\\d\\d)?(\\.\\d+)?(([+-]\\d\\d:\\d\\d)|Z)?)?$',
+                    's'          => '^(T\\d\\d:\\d\\d(:\\d\\d)?(\\.\\d+)?([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?)$',
                 ],
             ],
             'json_class' => 'Pact::Term',
         ];
 
-        $actual = $this->matcher->timeISO8601('T22:44:30.652Z');
+        $actual = $this->matcher->timeISO8601($time);
 
         $this->assertEquals($expected, $actual);
     }
 
+    public function dataProviderForTimeTest()
+    {
+        return [
+            ['T22:44:30.652Z'],
+            ['T22:44:30Z'],
+            ['T22:44Z'],
+            ['T22:44:30+01:00'],
+            ['T22:44:30+0100'],
+            ['T22:44:30+01'],
+            ['T22:44:30'],
+            ['T22:44:30-12:00'],
+            ['T22:44:30+0545'],
+            ['T22:44:30+14'],
+        ];
+    }
+
     /**
+     * @dataProvider dataProviderForDateTimeTest
+     *
      * @throws Exception
      */
-    public function testDateTime()
+    public function testDateTime($dateTime)
     {
         $expected = [
             'data' => [
-                'generate' => '2015-08-06T16:53:10+01:00',
+                'generate' => $dateTime,
                 'matcher'  => [
                     'json_class' => 'Regexp',
                     'o'          => 0,
-                    's'          => '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)$',
+                    's'          => '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?$',
                 ],
             ],
             'json_class' => 'Pact::Term',
         ];
 
-        $actual = $this->matcher->dateTimeISO8601('2015-08-06T16:53:10+01:00');
+        $actual = $this->matcher->dateTimeISO8601($dateTime);
 
         $this->assertEquals($expected, $actual);
     }
 
+    public function dataProviderForDateTimeTest()
+    {
+        return [
+            ['2015-08-06T16:53:10+01:00'],
+            ['2015-08-06T16:53:10+0100'],
+            ['2015-08-06T16:53:10+01'],
+            ['2015-08-06T16:53:10Z'],
+            ['2015-08-06T16:53:10'],
+            ['2015-08-06T16:53:10-12:00'],
+            ['2015-08-06T16:53:10+0545'],
+            ['2015-08-06T16:53:10+14'],
+        ];
+    }
+
     /**
+     * @dataProvider dataProviderForDateTimeWithMillisTest
+     *
      * @throws Exception
      */
-    public function testDateTimeWithMillis()
+    public function testDateTimeWithMillis($dateTime)
     {
         $expected = [
             'data' => [
-                'generate' => '2015-08-06T16:53:10.123+01:00',
+                'generate' => $dateTime,
                 'matcher'  => [
                     'json_class' => 'Regexp',
                     'o'          => 0,
-                    's'          => '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d{3}([+-][0-2]\\d:[0-5]\\d|Z)$',
+                    's'          => '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d{3}([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?$',
                 ],
             ],
             'json_class' => 'Pact::Term',
         ];
 
-        $actual = $this->matcher->dateTimeWithMillisISO8601('2015-08-06T16:53:10.123+01:00');
+        $actual = $this->matcher->dateTimeWithMillisISO8601($dateTime);
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function dataProviderForDateTimeWithMillisTest()
+    {
+        return [
+            ['2015-08-06T16:53:10.123+01:00'],
+            ['2015-08-06T16:53:10.123+0100'],
+            ['2015-08-06T16:53:10.123+01'],
+            ['2015-08-06T16:53:10.123Z'],
+            ['2015-08-06T16:53:10.123'],
+            ['2015-08-06T16:53:10.123-12:00'],
+            ['2015-08-06T16:53:10.123+0545'],
+            ['2015-08-06T16:53:10.123+14'],
+        ];
     }
 
     /**
