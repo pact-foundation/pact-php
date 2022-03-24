@@ -24,20 +24,20 @@ class PactTestListener implements TestListener
     use TestListenerDefaultImplementation;
 
     /** @var MockServer */
-    private $server;
+    protected $server;
 
     /**
      * Name of the test suite configured in your phpunit config.
      *
      * @var string[]
      */
-    private $testSuiteNames;
+    protected $testSuiteNames;
 
     /** @var MockServerEnvConfig */
-    private $mockServerConfig;
+    protected $mockServerConfig;
 
     /** @var bool */
-    private $failed;
+    protected $failed;
 
     /**
      * PactTestListener constructor.
