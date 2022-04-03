@@ -98,8 +98,6 @@ class PactTestListener implements TestListener
                 print 'PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.';
             } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_VERSION'))) {
                 print 'PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.';
-            } elseif (!($tag = \getenv('PACT_CONSUMER_TAG'))) {
-                print 'PACT_CONSUMER_TAG environment variable was not set. Skipping PACT file upload.';
             } else {
                 $clientConfig = [];
                 if (($user = \getenv('PACT_BROKER_HTTP_AUTH_USER')) &&
@@ -119,11 +117,27 @@ class PactTestListener implements TestListener
                     $headers['Authorization'] = 'Bearer ' . $bearerToken;
                 }
 
+                $consumerBranch = \getenv('PACT_CONSUMER_BRANCH') ?: null;
+                $consumerTag = \getenv('PACT_CONSUMER_TAG') ?: null;
+
+                if ($consumerBranch === null && $consumerTag === null) {
+                    print 'PACT_CONSUMER_TAG or PACT_CONSUMER_BRANCH environment variables are not set. Skipping PACT file upload.';
+                }
+
+                $ciBuildUrl = \getenv('CI_BUILD_URL') ?: null;
+
                 $client = new GuzzleClient($clientConfig);
 
                 $brokerHttpService = new BrokerHttpClient($client, new Uri($pactBrokerUri), $headers);
-                $brokerHttpService->tag($this->mockServerConfig->getConsumer(), $consumerVersion, $tag);
-                $brokerHttpService->publishJson($consumerVersion, $json);
+                $brokerHttpService->contractsPublish(
+                    $this->mockServerConfig->getConsumer(),
+                    $consumerVersion,
+                    $consumerBranch,
+                    [$json],
+                    $consumerTag !== null ? [$consumerTag] : [],
+                    $ciBuildUrl
+                );
+
                 print 'Pact file has been uploaded to the Broker successfully.';
             }
         }

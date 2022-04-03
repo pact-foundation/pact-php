@@ -116,42 +116,41 @@ class BrokerHttpClient implements BrokerHttpClientInterface
      */
     public function contractsPublish(
         string  $consumer,
-        string  $provider,
         string  $consumerVersion,
-        string  $consumerBranch,
-        string  $contract,
+        ?string $consumerBranch,
+        array   $contracts,
         array   $consumerTags = [],
         ?string $buildUrl = null
     ): array {
         $uri = $this->baseUri->withPath("/contracts/publish");
-        $pact = json_decode($contract, true);
 
-        if ($provider !== $pact['provider']['name']) {
-            throw new ParticipantMismatchException("Given provider does not match contract's provider");
-        }
+        $data = array_map(function($contract) use ($consumer) {
+            $pact = json_decode($contract, true);
 
-        if ($consumer !== $pact['consumer']['name']) {
-            throw new ParticipantMismatchException("Given consumer does not match contract's consumer");
+            return [
+                "consumerName" => $consumer,
+                "providerName" => $pact['provider']['name'],
+                "specification" => "pact",
+                "contentType" => "application/json",
+                "content" => base64_encode($contract),
+            ];
+        }, $contracts);
+
+        $body = [
+            'pacticipantName' => $consumer,
+            'pacticipantVersionNumber' => $consumerVersion,
+            'branch' => $consumerBranch,
+            'buildUrl' => $buildUrl,
+            'contracts' => $data,
+        ];
+
+        if (count($consumerTags) > 0) {
+            $body['tags'] = $consumerTags;
         }
 
         $response = $this->httpClient->post($uri, [
             'headers' => $this->headers,
-            'body' => \json_encode([
-                'pacticipantName' => $consumer,
-                'pacticipantVersionNumber' => $consumerVersion,
-                'branch' => $consumerBranch,
-                'tags' => $consumerTags,
-                'buildUrl' => $buildUrl,
-                'contracts' => [
-                    [
-                        "consumerName" => $consumer,
-                        "providerName" => $provider,
-                        "specification" => "pact",
-                        "contentType" => "application/json",
-                        "content" => base64_encode($contract),
-                    ]
-                ],
-            ])
+            'body' => \json_encode($body)
         ]);
 
         $json = \json_decode($response->getBody()->getContents(), true);

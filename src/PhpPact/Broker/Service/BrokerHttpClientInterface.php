@@ -63,10 +63,9 @@ interface BrokerHttpClientInterface
      * Publish contract
      *
      * @param string $consumer The consumer app name
-     * @param string $provider The provider app name
      * @param string $consumerVersion The version number of the application. Required. It is recommended that this should be or include the git SHA. See http://docs.pact.io/versioning.
-     * @param string $consumerBranch The git branch name.
-     * @param string $contract The content of the contract
+     * @param string|null $consumerBranch The git branch name.
+     * @param array $contracts The content of the contracts
      * @param array $consumerTags The consumer version tags. Use of the branch parameter is preferred now.
      * @param string|null $buildUrl The CI/CD build URL
      *
@@ -74,10 +73,9 @@ interface BrokerHttpClientInterface
      */
     public function contractsPublish(
         string  $consumer,
-        string  $provider,
         string  $consumerVersion,
-        string  $consumerBranch,
-        string  $contract,
+        ?string  $consumerBranch,
+        array   $contracts,
         array   $consumerTags = [],
         ?string $buildUrl = null
     ): array;
