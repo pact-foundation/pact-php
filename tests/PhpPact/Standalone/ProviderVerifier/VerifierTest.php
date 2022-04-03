@@ -26,6 +26,7 @@ class VerifierTest extends TestCase
         $config
             ->setProviderName('some provider with whitespace')
             ->setProviderVersion('1.0.0')
+            ->setProviderBranch('main')
             ->addProviderVersionTag('prod')
             ->addProviderVersionTag('dev')
             ->addConsumerVersionTag('dev')
@@ -68,6 +69,7 @@ class VerifierTest extends TestCase
         $this->assertContains('--format=someformat', $arguments);
         $this->assertContains('--provider-version-tag=prod', $arguments);
         $this->assertContains('--provider-version-tag=dev', $arguments);
+        $this->assertContains('--provider-version-branch=main', $arguments);
         $this->assertContains('--consumer-version-tag=dev', $arguments);
         $this->assertSame(['process_timeout' => 30, 'process_idle_timeout' => 5], $server->getTimeoutValues());
         $this->assertContains('--enable-pending', $arguments);

@@ -75,6 +75,10 @@ class Verifier
             $parameters[] = "--provider-app-version={$this->config->getProviderVersion()}";
         }
 
+        if ($this->config->getProviderBranch() !== null) {
+            $parameters[] = "--provider-version-branch={$this->config->getProviderBranch()}";
+        }
+
         if (\count($this->config->getConsumerVersionTag()) > 0) {
             foreach ($this->config->getConsumerVersionTag() as $tag) {
                 $parameters[] = "--consumer-version-tag={$tag}";
