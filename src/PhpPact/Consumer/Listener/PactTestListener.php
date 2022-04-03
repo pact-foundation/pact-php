@@ -99,46 +99,46 @@ class PactTestListener implements TestListener
             } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_VERSION'))) {
                 print 'PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.';
             } else {
-                $clientConfig = [];
-                if (($user = \getenv('PACT_BROKER_HTTP_AUTH_USER')) &&
-                    ($pass = \getenv('PACT_BROKER_HTTP_AUTH_PASS'))
-                ) {
-                    $clientConfig = [
-                        'auth' => [$user, $pass],
-                    ];
-                }
-
-                if (($sslVerify = \getenv('PACT_BROKER_SSL_VERIFY'))) {
-                    $clientConfig['verify'] = $sslVerify !== 'no';
-                }
-
-                $headers = [];
-                if ($bearerToken = \getenv('PACT_BROKER_BEARER_TOKEN')) {
-                    $headers['Authorization'] = 'Bearer ' . $bearerToken;
-                }
-
                 $consumerBranch = \getenv('PACT_CONSUMER_BRANCH') ?: null;
                 $consumerTag = \getenv('PACT_CONSUMER_TAG') ?: null;
 
                 if ($consumerBranch === null && $consumerTag === null) {
                     print 'PACT_CONSUMER_TAG or PACT_CONSUMER_BRANCH environment variables are not set. Skipping PACT file upload.';
+                } else {
+                    $clientConfig = [];
+                    if (($user = \getenv('PACT_BROKER_HTTP_AUTH_USER')) &&
+                        ($pass = \getenv('PACT_BROKER_HTTP_AUTH_PASS'))
+                    ) {
+                        $clientConfig = [
+                            'auth' => [$user, $pass],
+                        ];
+                    }
+
+                    if (($sslVerify = \getenv('PACT_BROKER_SSL_VERIFY'))) {
+                        $clientConfig['verify'] = $sslVerify !== 'no';
+                    }
+
+                    $headers = [];
+                    if ($bearerToken = \getenv('PACT_BROKER_BEARER_TOKEN')) {
+                        $headers['Authorization'] = 'Bearer ' . $bearerToken;
+                    }
+
+                    $ciBuildUrl = \getenv('CI_BUILD_URL') ?: null;
+
+                    $client = new GuzzleClient($clientConfig);
+
+                    $brokerHttpService = new BrokerHttpClient($client, new Uri($pactBrokerUri), $headers);
+                    $brokerHttpService->contractsPublish(
+                        $this->mockServerConfig->getConsumer(),
+                        $consumerVersion,
+                        $consumerBranch,
+                        [$json],
+                        $consumerTag !== null ? [$consumerTag] : [],
+                        $ciBuildUrl
+                    );
+
+                    print 'Pact file has been uploaded to the Broker successfully.';
                 }
-
-                $ciBuildUrl = \getenv('CI_BUILD_URL') ?: null;
-
-                $client = new GuzzleClient($clientConfig);
-
-                $brokerHttpService = new BrokerHttpClient($client, new Uri($pactBrokerUri), $headers);
-                $brokerHttpService->contractsPublish(
-                    $this->mockServerConfig->getConsumer(),
-                    $consumerVersion,
-                    $consumerBranch,
-                    [$json],
-                    $consumerTag !== null ? [$consumerTag] : [],
-                    $ciBuildUrl
-                );
-
-                print 'Pact file has been uploaded to the Broker successfully.';
             }
         }
     }
