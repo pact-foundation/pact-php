@@ -58,4 +58,27 @@ interface BrokerHttpClientInterface
      * @return array
      */
     public function getAllConsumerUrlsForTag(string $provider, string $tag): array;
+
+    /**
+     * Publish contracts
+     *
+     * @param string $consumer
+     * @param string $provider
+     * @param string $consumerVersion
+     * @param string $consumerBranch
+     * @param string $contract
+     * @param array $consumerTags
+     * @param string|null $buildUrl
+     *
+     * @return array List of notices returned from broker
+     */
+    public function contractsPublish(
+        string  $consumer,
+        string  $provider,
+        string  $consumerVersion,
+        string  $consumerBranch,
+        string  $contract,
+        array   $consumerTags = [],
+        ?string $buildUrl = null
+    ): array;
 }

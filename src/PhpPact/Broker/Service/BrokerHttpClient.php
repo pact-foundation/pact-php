@@ -2,6 +2,7 @@
 
 namespace PhpPact\Broker\Service;
 
+use PhpPact\Exception\ParticipantMismatchException;
 use PhpPact\Http\ClientInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -108,5 +109,53 @@ class BrokerHttpClient implements BrokerHttpClientInterface
         }
 
         return $urls;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function contractsPublish(
+        string  $consumer,
+        string  $provider,
+        string  $consumerVersion,
+        string  $consumerBranch,
+        string  $contract,
+        array   $consumerTags = [],
+        ?string $buildUrl = null
+    ): array {
+        $uri = $this->baseUri->withPath("/contracts/publish");
+        $pact = json_decode($contract, true);
+
+        if ($provider !== $pact['provider']['name']) {
+            throw new ParticipantMismatchException("Given provider does not match contract's provider");
+        }
+
+        if ($consumer !== $pact['consumer']['name']) {
+            throw new ParticipantMismatchException("Given consumer does not match contract's consumer");
+        }
+
+        $response = $this->httpClient->post($uri, [
+            'headers' => $this->headers,
+            'body' => \json_encode([
+                'pacticipantName' => $consumer,
+                'pacticipantVersionNumber' => $consumerVersion,
+                'branch' => $consumerBranch,
+                'tags' => $consumerTags,
+                'buildUrl' => $buildUrl,
+                'contracts' => [
+                    [
+                        "consumerName" => $consumer,
+                        "providerName" => $provider,
+                        "specification" => "pact",
+                        "contentType" => "application/json",
+                        "content" => base64_encode($contract),
+                    ]
+                ],
+            ])
+        ]);
+
+        $json = \json_decode($response->getBody()->getContents(), true);
+
+        return $json['notices'];
     }
 }
