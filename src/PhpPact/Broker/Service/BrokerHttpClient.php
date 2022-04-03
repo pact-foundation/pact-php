@@ -2,7 +2,6 @@
 
 namespace PhpPact\Broker\Service;
 
-use PhpPact\Exception\ParticipantMismatchException;
 use PhpPact\Http\ClientInterface;
 use Psr\Http\Message\UriInterface;
 
