@@ -12,7 +12,7 @@ use ZipArchive;
  */
 class InstallerWindows implements InstallerInterface
 {
-    public const VERSION = '1.88.24';
+    public const VERSION = '1.88.83';
 
     /**
      * {@inheritdoc}
