@@ -238,6 +238,7 @@ $config = new VerifierConfig();
 $config
     ->setProviderName('someProvider') // Providers name to fetch.
     ->setProviderVersion('1.0.0') // Providers version.
+    ->setProviderBranch('main') // Providers git branch name.
     ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
     ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
     ->setPublishResults(true) // Flag the verifier service to publish the results to the Pact Broker.
@@ -269,6 +270,7 @@ public function testPactVerifyAll()
     $config
         ->setProviderName('someProvider') // Providers name to fetch.
         ->setProviderVersion('1.0.0') // Providers version.
+        ->setProviderBranch('main') // Providers git branch name.
         ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
         ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
         ->setPublishResults(true) // Flag the verifier service to publish the results to the Pact Broker.
@@ -295,6 +297,7 @@ public function testPactVerifyAll()
     $config
         ->setProviderName('someProvider') // Providers name to fetch.
         ->setProviderVersion('1.0.0') // Providers version.
+        ->setProviderBranch('main') // Providers git branch name.
         ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
         ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
         ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
