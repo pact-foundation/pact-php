@@ -59,7 +59,7 @@ interface VerifierConfigInterface
     public function setProviderVersion(string $providerAppVersion): self;
 
     /**
-     * @param string $providerBranch provider branch name
+     * @param string $providerBranch providers branch name
      *
      * @return VerifierConfigInterface
      */
@@ -71,7 +71,7 @@ interface VerifierConfigInterface
     public function getProviderVersionTag();
 
     /**
-     * @return null|string provider branch name
+     * @return null|string providers branch name
      */
     public function getProviderBranch(): ?string;
 
