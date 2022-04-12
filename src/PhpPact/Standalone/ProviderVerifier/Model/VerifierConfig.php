@@ -21,6 +21,9 @@ class VerifierConfig implements VerifierConfigInterface
     /** @var string */
     private $providerVersion;
 
+    /** @var null|string */
+    private $providerBranch;
+
     /** @var array */
     private $providerVersionTag = [];
 
@@ -473,5 +476,23 @@ class VerifierConfig implements VerifierConfigInterface
         $this->requestFilter = $requestFilter;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setProviderBranch(string $providerBranch): VerifierConfigInterface
+    {
+        $this->providerBranch = $providerBranch;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getProviderBranch(): ?string
+    {
+        return $this->providerBranch;
     }
 }
