@@ -224,15 +224,24 @@ class Broker
 
     public function publish(): void
     {
+        $options = [
+            'publish',
+            $this->config->getPactLocations(),
+            '--consumer-app-version=' . $this->config->getConsumerVersion(),
+        ];
+
+        if (null !== $this->config->getBranch()) {
+            $options[] = '--branch=' . $this->config->getBranch();
+        }
+
+        if (null !== $this->config->getTag()) {
+            $options[] = '--tag=' . $this->config->getTag();
+        }
+
         $runner = new ProcessRunner(
             $this->command,
             \array_merge(
-                [
-                    'publish',
-                    $this->config->getPactLocations(),
-                    '--consumer-app-version=' . $this->config->getConsumerVersion(),
-                    '--tag=' . $this->config->getTag(),
-                ],
+                $options,
                 $this->getArguments()
             )
         );
