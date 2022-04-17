@@ -43,7 +43,9 @@ class BrokerConfig
     /** @var null|string */
     private $version;
     /** @var null|string */
-    private $tag;
+    private $branch = null;
+    /** @var null|string */
+    private $tag = null;
     /** @var null|string */
     private $name;
     /** @var null|string */
@@ -111,6 +113,26 @@ class BrokerConfig
     public function setVersion(?string $version): self
     {
         $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getBranch(): ?string
+    {
+        return $this->branch;
+    }
+
+    /**
+     * @param null|string $branch
+     *
+     * @return BrokerConfig
+     */
+    public function setBranch(?string $branch): self
+    {
+        $this->branch = $branch;
 
         return $this;
     }
