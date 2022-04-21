@@ -36,6 +36,7 @@ class VerifierTest extends TestCase
             ->setBrokerToken('someToken')
             ->setBrokerUsername('someusername')
             ->setBrokerPassword('somepassword')
+            ->setBrokerUri(new Uri('https://example.broker/'))
             ->addCustomProviderHeader('key1', 'value1')
             ->addCustomProviderHeader('key2', 'value2')
             ->setVerbose(true)
@@ -77,6 +78,7 @@ class VerifierTest extends TestCase
         $this->assertContains('--consumer-version-selector=\'{"tag":"foo","latest":true}\'', $this->stripSpaces($arguments));
         $this->assertContains('--consumer-version-selector=\'{"tag":"bar","latest":true}\'', $this->stripSpaces($arguments));
         $this->assertContains('--provider=\'some provider with whitespace\'', $arguments);
+        $this->assertContains('--pact-broker-base-url=https://example.broker/', $arguments);
     }
 
     /**
