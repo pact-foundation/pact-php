@@ -121,7 +121,7 @@ class VerifierTest extends TestCase
             ->with($path)
             ->willReturn($uriMock);
 
-        $uriMock->expects($this->once())
+        $uriMock->expects($this->any())
             ->method('__toString')
             ->willReturn($expectedUrltoBroker);
 

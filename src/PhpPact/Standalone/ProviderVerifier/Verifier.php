@@ -144,7 +144,7 @@ class Verifier
         }
 
         if ($this->config->getBrokerUri() !== null) {
-            $parameters[] = "--pact-broker-base-url={$this->config->getBrokerUri()}";
+            $parameters[] = "--pact-broker-base-url={$this->config->getBrokerUri()->__toString()}";
         }
 
         return $parameters;
