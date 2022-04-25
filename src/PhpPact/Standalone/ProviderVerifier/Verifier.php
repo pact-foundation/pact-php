@@ -143,6 +143,10 @@ class Verifier
             $parameters[] = "--include-wip-pacts-since={$this->config->getIncludeWipPactSince()}";
         }
 
+        if ($this->config->getBrokerUri() !== null) {
+            $parameters[] = "--pact-broker-base-url={$this->config->getBrokerUri()->__toString()}";
+        }
+
         return $parameters;
     }
 
