@@ -446,3 +446,5 @@ $service = new StubServerHttpService(new GuzzleClient(), $config);
 
 echo $service->getJson(); // output: {"results":[{"name":"Games"}]}
 ```
+
+This is to test and get a build to run :wink:
