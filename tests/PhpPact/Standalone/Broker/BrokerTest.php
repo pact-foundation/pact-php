@@ -47,13 +47,16 @@ class BrokerTest extends TestCase
      */
     public function describeVersion(): void
     {
-        $this->assertArrayHasKey('number', (new Broker(
-            (new BrokerConfig())
-                ->setPacticipant(\rawurlencode('Animal Profile Service'))
-                ->setBrokerUri(new Uri('https://test.pact.dius.com.au'))
-                ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
-                ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1')
-        ))->describeVersion());
+        $config = new BrokerConfig();
+        $config->setPacticipant(\rawurlencode('Animal Profile Service'))
+            ->setBrokerUri(new Uri('https://test.pactflow.io'))
+            ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
+            ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1');
+        $broker = new Broker($config);
+
+        $result = $broker->describeVersion();
+
+        $this->assertArrayHasKey('number', $result);
     }
 
     /**
@@ -63,11 +66,14 @@ class BrokerTest extends TestCase
      */
     public function listLatestPactVersions(): void
     {
-        $this->assertArrayHasKey('pacts', (new Broker(
-            (new BrokerConfig())
-                ->setBrokerUri(new Uri('https://test.pact.dius.com.au'))
-                ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
-                ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1')
-        ))->listLatestPactVersions());
+        $config = new BrokerConfig();
+        $config->setPacticipant(\rawurlencode('Animal Profile Service'))
+            ->setBrokerUri(new Uri('https://test.pactflow.io'))
+            ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
+            ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1');
+        $broker = new Broker($config);
+
+        $result = $broker->listLatestPactVersions();
+        $this->assertArrayHasKey('pacts', $result);
     }
 }
