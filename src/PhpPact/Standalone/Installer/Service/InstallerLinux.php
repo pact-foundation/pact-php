@@ -7,7 +7,7 @@ use PhpPact\Standalone\Installer\Model\Scripts;
 
 class InstallerLinux implements InstallerInterface
 {
-    public const VERSION = '1.88.83';
+    public const VERSION = '1.88.89';
 
     /**
      * {@inheritdoc}
