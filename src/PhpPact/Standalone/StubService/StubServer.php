@@ -91,7 +91,7 @@ class StubServer
         }
 
         foreach ($this->config->getFiles() as $file) {
-            $results[] = "--file={$file}";
+            $results[] = "$file";
         }
 
         if ($this->config->getLogLevel() !== null) {
