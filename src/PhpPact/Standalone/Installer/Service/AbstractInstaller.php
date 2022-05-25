@@ -12,8 +12,7 @@ use ZipArchive;
 abstract class AbstractInstaller implements InstallerInterface
 {
     public const PACT_RUBY_STANDALONE_VERSION = '1.88.83';
-    public const PACT_FFI_VERSION             = '0.2.6';
-    public const PACT_STUB_SERVER_VERSION     = '0.4.4';
+    public const PACT_FFI_VERSION             = '0.3.1';
 
     public const FILES = [
         [

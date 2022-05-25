@@ -18,15 +18,6 @@ class InstallerLinux extends AbstractInstaller
             'extract'       => true,
         ],
         [
-            'repo'          => 'pact-stub-server',
-            'filename'      => 'pact-stub-server-linux-x86_64.gz',
-            'version'       => self::PACT_STUB_SERVER_VERSION,
-            'versionPrefix' => 'v',
-            'extract'       => true,
-            'extractTo'     => 'pact-stub-server',
-            'executable'    => true,
-        ],
-        [
             'repo'          => 'pact-reference',
             'filename'      => 'libpact_ffi-linux-x86_64.so.gz',
             'version'       => self::PACT_FFI_VERSION,
@@ -56,7 +47,7 @@ class InstallerLinux extends AbstractInstaller
         return new Scripts(
             $destinationDir . 'pact.h',
             $destinationDir . 'libpact_ffi.so',
-            $destinationDir . 'pact-stub-server',
+            $binDir . 'pact-stub-service',
             $binDir . 'pact-broker'
         );
     }
