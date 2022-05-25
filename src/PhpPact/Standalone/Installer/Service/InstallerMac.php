@@ -18,15 +18,6 @@ class InstallerMac extends AbstractInstaller
             'extract'       => true,
         ],
         [
-            'repo'          => 'pact-stub-server',
-            'filename'      => 'pact-stub-server-osx-x86_64.gz',
-            'version'       => self::PACT_STUB_SERVER_VERSION,
-            'versionPrefix' => 'v',
-            'extract'       => true,
-            'extractTo'     => 'pact-stub-server',
-            'executable'    => true,
-        ],
-        [
             'repo'          => 'pact-reference',
             'filename'      => 'libpact_ffi-osx-x86_64.dylib.gz',
             'version'       => self::PACT_FFI_VERSION,
@@ -56,7 +47,7 @@ class InstallerMac extends AbstractInstaller
         return new Scripts(
             $destinationDir . 'pact.h',
             $destinationDir . 'libpact_ffi.dylib',
-            $destinationDir . 'pact-stub-server',
+            $binDir . 'pact-stub-service',
             $binDir . 'pact-broker'
         );
     }

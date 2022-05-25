@@ -18,15 +18,6 @@ class InstallerWindows extends AbstractInstaller
             'extract'       => true,
         ],
         [
-            'repo'          => 'pact-stub-server',
-            'filename'      => 'pact-stub-server-windows-x86_64.exe.gz',
-            'version'       => self::PACT_STUB_SERVER_VERSION,
-            'versionPrefix' => 'v',
-            'extract'       => true,
-            'extractTo'     => 'pact-stub-service.bat',
-            'executable'    => true,
-        ],
-        [
             'repo'          => 'pact-reference',
             'filename'      => 'pact_ffi-windows-x86_64.dll.gz',
             'version'       => self::PACT_FFI_VERSION,
