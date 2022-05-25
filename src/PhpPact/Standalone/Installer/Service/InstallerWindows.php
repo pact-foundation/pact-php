@@ -23,7 +23,7 @@ class InstallerWindows extends AbstractInstaller
             'version'       => self::PACT_STUB_SERVER_VERSION,
             'versionPrefix' => 'v',
             'extract'       => true,
-            'extractTo'     => 'pact-stub-server.exe',
+            'extractTo'     => 'pact-stub-service.bat',
             'executable'    => true,
         ],
         [
@@ -56,7 +56,7 @@ class InstallerWindows extends AbstractInstaller
         return new Scripts(
             $destinationDir . 'pact.h',
             $destinationDir . 'pact_ffi.dll',
-            $destinationDir . 'pact-stub-server.exe',
+            $binDir . 'pact-stub-service.bat',
             $binDir . 'pact-broker.bat'
         );
     }
