@@ -2,13 +2,13 @@ name: pact-php
 
 on:
   push:
-  pull_request_target:
   pull_request:
 
 jobs:
   php-cs:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         php: [ '7.3', '7.4', '8.0' ]
 
@@ -36,7 +36,7 @@ jobs:
     needs:
       - php-cs
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         operating-system: [ ubuntu-latest, macos-latest, windows-latest ]
         php: [ '7.3', '7.4', '8.0' ]
