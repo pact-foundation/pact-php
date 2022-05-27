@@ -1,8 +1,6 @@
 name: pact-php
 
-on:
-  push:
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   php-cs:
@@ -13,6 +11,11 @@ jobs:
         php: [ '7.3', '7.4', '8.0' ]
 
     steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
       - uses: actions/checkout@v2
         name: Checkout repository
 
@@ -45,6 +48,10 @@ jobs:
     name: PHP ${{ matrix.php }} on ${{ matrix.operating-system }} with ${{ matrix.dependencies }} dependencies
 
     steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
       - uses: actions/checkout@v2
         name: Checkout repository
 
