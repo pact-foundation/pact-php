@@ -1,6 +1,11 @@
 name: pact-php
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  # Once on the first of the month at 06:00 UTC
+  schedule:
+    - cron: 0 6 1 * *
 
 jobs:
   php-cs:
