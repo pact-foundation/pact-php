@@ -176,6 +176,9 @@ class Verifier
 
         $uri = $this->config->getBrokerUri()->withPath($path);
 
+        $filter = ['consumer' => $consumerName, 'latest' => true];
+        $this->config->getConsumerVersionSelectors()->addSelector(json_encode($filter));
+
         $arguments = \array_merge([$uri->__toString()], $this->getArguments());
 
         $this->verifyAction($arguments);
