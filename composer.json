@@ -34,7 +34,7 @@
         "amphp/sync": "^1.4.0",
         "amphp/cache": "v1.4.0",
         "amphp/windows-registry": "v0.3.3",
-        "guzzlehttp/guzzle": "^6.5|^7.2.0",
+        "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
         "phpunit/phpunit": ">=8.2.3"
     },
     "require-dev": {
