@@ -43,7 +43,7 @@ class ConsumerRequestTest extends TestCase
 
         $this->assertEquals('PATCH', $data['method']);
         $this->assertEquals('application/json', $data['headers']['Content-Type']);
-        $this->assertIsArray( $data['path']);
+        $this->assertIsArray($data['path']);
         $this->assertArrayHasKey('data', $data['path']);
         $this->assertArrayHasKey('json_class', $data['path']);
         $this->assertEquals('finished', $data['body']['status']);
