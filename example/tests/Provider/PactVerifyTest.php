@@ -53,7 +53,7 @@ class PactVerifyTest extends TestCase
             ->setProviderVersion('1.0.0') // Providers version.
             ->setProviderBranch('main') // Providers git branch
             ->setProviderBaseUrl(new Uri('http://localhost:7202')) // URL of the Provider.
-            ; // Flag the verifier service to publish the results to the Pact Broker.
+        ; // Flag the verifier service to publish the results to the Pact Broker.
 
         // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
         $verifier = new Verifier($config);
