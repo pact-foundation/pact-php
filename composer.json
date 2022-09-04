@@ -44,7 +44,7 @@
         "slim/psr7": "^1.2.0",
         "friendsofphp/php-cs-fixer": "^3.0",
         "php-amqplib/php-amqplib": "^3.0",
-        "phpstan/phpstan": "^0.12.90"
+        "phpstan/phpstan": "^1.8.4"
     },
     "autoload": {
         "psr-4": {

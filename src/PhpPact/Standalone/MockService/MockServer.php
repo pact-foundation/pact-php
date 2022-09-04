@@ -159,6 +159,7 @@ class MockServer
                 $status = $service->healthCheck();
 
                 return $status;
+                // @phpstan-ignore-next-line
             } catch (ConnectException $e) {
                 \sleep($retrySec);
             }
