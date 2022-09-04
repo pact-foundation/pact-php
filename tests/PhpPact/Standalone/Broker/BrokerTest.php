@@ -48,7 +48,7 @@ class BrokerTest extends TestCase
     public function describeVersion(): void
     {
         $config = new BrokerConfig();
-        $config->setPacticipant(\rawurlencode('Animal Profile Service'))
+        $config->setPacticipant(\rawurlencode('Animal Profile Service V3'))
             ->setBrokerUri(new Uri('https://test.pactflow.io'))
             ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
             ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1');
@@ -67,7 +67,7 @@ class BrokerTest extends TestCase
     public function listLatestPactVersions(): void
     {
         $config = new BrokerConfig();
-        $config->setPacticipant(\rawurlencode('Animal Profile Service'))
+        $config->setPacticipant(\rawurlencode('Animal Profile Service V3'))
             ->setBrokerUri(new Uri('https://test.pactflow.io'))
             ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
             ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1');
