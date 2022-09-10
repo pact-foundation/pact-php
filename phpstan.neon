@@ -1,6 +1,7 @@
 parameters:
-	excludePaths:
-		- src/PhpPact/Consumer/InteractionBuilder.php
-		- src/PhpPact/Consumer/MessageBuilder.php
-		- src/PhpPact/Consumer/AbstractBuilder.php
-		- src/PhpPact/Standalone/ProviderVerifier/Verifier.php
+    level: 5
+    paths:
+       - %rootDir%/../../../src
+    ignoreErrors:
+        - '/Call to an undefined method FFI::.*/'
+        - '/Access to an undefined property FFI::\$InteractionPart.*/'
