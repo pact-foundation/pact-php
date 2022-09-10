@@ -128,9 +128,9 @@ class InteractionBuilderTest extends TestCase
             ->setPath('/something')
             ->setMethod('GET')
             ->addHeader('Content-Type', 'application/json')
-            ->addQueryParameter('test', 1)
-            ->addQueryParameter('another[]', 2)
-            ->addQueryParameter('another[]', 33);
+            ->addQueryParameter('test', '1')
+            ->addQueryParameter('another[]', '2')
+            ->addQueryParameter('another[]', '33');
 
         $response = new ProviderResponse();
         $response

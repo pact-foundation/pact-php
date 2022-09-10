@@ -39,6 +39,8 @@
         "friendsofphp/php-cs-fixer": "^3.0",
         "php-amqplib/php-amqplib": "^3.0",
         "phpstan/phpstan": "^1.8.5",
+        "phpstan/extension-installer": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.1.1",
         "symfony/process": "^5.0.9|^6.1"
     },
     "autoload": {
@@ -72,5 +74,10 @@
         "lint": "php-cs-fixer fix --config .php-cs-fixer.php --dry-run",
         "fix": "php-cs-fixer fix --config .php-cs-fixer.php",
         "test": "phpunit --debug -c example/phpunit.all.xml"
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
     }
 }

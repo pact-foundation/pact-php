@@ -23,6 +23,7 @@ class StubServerTest extends TestCase
             $pid        = $stubServer->start();
             $this->assertTrue(\is_int($pid));
         } finally {
+            // @phpstan-ignore-next-line
             $result = $stubServer->stop();
             $this->assertTrue($result);
         }

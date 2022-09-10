@@ -2,6 +2,7 @@ parameters:
     level: 5
     paths:
        - %rootDir%/../../../src
+       - %rootDir%/../../../tests
     ignoreErrors:
         - '/Call to an undefined method FFI::.*/'
         - '/Access to an undefined property FFI::\$InteractionPart.*/'
