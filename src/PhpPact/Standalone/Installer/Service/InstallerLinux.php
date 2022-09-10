@@ -9,24 +9,33 @@ use PhpPact\Standalone\Installer\Model\Scripts;
  */
 class InstallerLinux extends AbstractInstaller
 {
-    public const FILES = [
-        [
-            'repo'          => 'pact-ruby-standalone',
-            'filename'      => 'pact-' . self::PACT_RUBY_STANDALONE_VERSION . '-linux-x86_64.tar.gz',
-            'version'       => self::PACT_RUBY_STANDALONE_VERSION,
-            'versionPrefix' => 'v',
-            'extract'       => true,
-        ],
-        [
-            'repo'          => 'pact-reference',
-            'filename'      => 'libpact_ffi-linux-x86_64.so.gz',
-            'version'       => self::PACT_FFI_VERSION,
-            'versionPrefix' => 'libpact_ffi-v',
-            'extract'       => true,
-            'extractTo'     => 'libpact_ffi.so',
-        ],
-        ...parent::FILES,
-    ];
+    protected function getFiles(): array
+    {
+        return [
+            [
+                'repo'          => 'pact-reference',
+                'filename'      => 'pact.h',
+                'version'       => self::PACT_FFI_VERSION,
+                'versionPrefix' => 'libpact_ffi-v',
+                'extract'       => false,
+            ],
+            [
+                'repo'          => 'pact-reference',
+                'filename'      => 'libpact_ffi-linux-' . php_uname('m') . '.so.gz',
+                'version'       => self::PACT_FFI_VERSION,
+                'versionPrefix' => 'libpact_ffi-v',
+                'extract'       => true,
+                'extractTo'     => 'libpact_ffi.so',
+            ],
+            [
+                'repo'          => 'pact-ruby-standalone',
+                'filename'      => 'pact-' . self::PACT_RUBY_STANDALONE_VERSION . '-linux-x86_64.tar.gz',
+                'version'       => self::PACT_RUBY_STANDALONE_VERSION,
+                'versionPrefix' => 'v',
+                'extract'       => true,
+            ],
+        ];
+    }
 
     /**
      * {@inheritdoc}

@@ -14,16 +14,6 @@ abstract class AbstractInstaller implements InstallerInterface
     public const PACT_RUBY_STANDALONE_VERSION = '1.88.90';
     public const PACT_FFI_VERSION             = '0.3.11';
 
-    public const FILES = [
-        [
-            'repo'          => 'pact-reference',
-            'filename'      => 'pact.h',
-            'version'       => self::PACT_FFI_VERSION,
-            'versionPrefix' => 'libpact_ffi-v',
-            'extract'       => false,
-        ],
-    ];
-
     /**
      * {@inheritdoc}
      */
@@ -32,7 +22,7 @@ abstract class AbstractInstaller implements InstallerInterface
         if (\file_exists(($destinationDir)) === false) {
             \mkdir($destinationDir);
 
-            foreach (static::FILES as $file) {
+            foreach ($this->getFiles() as $file) {
                 $uri = \sprintf(
                     'https://github.com/pact-foundation/%s/releases/download/%s%s/%s',
                     $file['repo'],
@@ -53,6 +43,8 @@ abstract class AbstractInstaller implements InstallerInterface
 
         return $this->getScripts($destinationDir);
     }
+
+    abstract protected function getFiles(): array;
 
     /**
      * @param string $destinationDir

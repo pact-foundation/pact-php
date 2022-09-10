@@ -9,24 +9,33 @@ use PhpPact\Standalone\Installer\Model\Scripts;
  */
 class InstallerWindows extends AbstractInstaller
 {
-    public const FILES = [
-        [
-            'repo'          => 'pact-ruby-standalone',
-            'filename'      => 'pact-' . self::PACT_RUBY_STANDALONE_VERSION . '-win32.zip',
-            'version'       => self::PACT_RUBY_STANDALONE_VERSION,
-            'versionPrefix' => 'v',
-            'extract'       => true,
-        ],
-        [
-            'repo'          => 'pact-reference',
-            'filename'      => 'pact_ffi-windows-x86_64.dll.gz',
-            'version'       => self::PACT_FFI_VERSION,
-            'versionPrefix' => 'libpact_ffi-v',
-            'extract'       => true,
-            'extractTo'     => 'pact_ffi.dll',
-        ],
-        ...parent::FILES,
-    ];
+    protected function getFiles(): array
+    {
+        return [
+            [
+                'repo' => 'pact-reference',
+                'filename' => 'pact.h',
+                'version' => self::PACT_FFI_VERSION,
+                'versionPrefix' => 'libpact_ffi-v',
+                'extract' => false,
+            ],
+            [
+                'repo' => 'pact-reference',
+                'filename' => 'pact_ffi-windows-x86_64.dll.gz',
+                'version' => self::PACT_FFI_VERSION,
+                'versionPrefix' => 'libpact_ffi-v',
+                'extract' => true,
+                'extractTo' => 'pact_ffi.dll',
+            ],
+            [
+                'repo' => 'pact-ruby-standalone',
+                'filename' => 'pact-' . self::PACT_RUBY_STANDALONE_VERSION . '-win32.zip',
+                'version' => self::PACT_RUBY_STANDALONE_VERSION,
+                'versionPrefix' => 'v',
+                'extract' => true,
+            ],
+        ];
+    }
 
     /**
      * {@inheritdoc}
