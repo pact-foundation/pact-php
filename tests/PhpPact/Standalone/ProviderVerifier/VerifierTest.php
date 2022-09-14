@@ -65,8 +65,8 @@ class VerifierTest extends TestCase
         $this->assertContains('--broker-password=somepassword', $arguments);
         $this->assertContains('--custom-provider-header="key1: value1"', $arguments);
         $this->assertContains('--custom-provider-header="key2: value2"', $arguments);
-        $this->assertContains('--verbose', $arguments);
-        $this->assertContains('--log=my/log/directory', $arguments);
+        $this->assertContains('--verbose=VERBOSE', $arguments);
+        $this->assertContains('--log-dir=my/log/directory', $arguments);
         $this->assertContains('--format=someformat', $arguments);
         $this->assertContains('--provider-version-tag=prod', $arguments);
         $this->assertContains('--provider-version-tag=dev', $arguments);
