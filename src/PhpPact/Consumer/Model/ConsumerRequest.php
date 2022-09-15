@@ -14,7 +14,7 @@ class ConsumerRequest implements \JsonSerializable
     private $method;
 
     /**
-     * @var string
+     * @var array|string
      */
     private $path;
 
@@ -54,7 +54,7 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @return string
+     * @return array|string
      */
     public function getPath()
     {
@@ -62,11 +62,11 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @param string $path
+     * @param array|string $path
      *
      * @return ConsumerRequest
      */
-    public function setPath(string $path): self
+    public function setPath($path): self
     {
         $this->path = $path;
 
