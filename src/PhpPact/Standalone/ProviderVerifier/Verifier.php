@@ -124,11 +124,11 @@ class Verifier
         }
 
         if ($this->config->isVerbose() === true) {
-            $parameters[] = '--verbose';
+            $parameters[] = '--verbose=VERBOSE';
         }
 
         if ($this->config->getLogDirectory() !== null) {
-            $parameters[] = "--log={$this->config->getLogDirectory()}";
+            $parameters[] = "--log-dir={$this->config->getLogDirectory()}";
         }
 
         if ($this->config->getFormat() !== null) {

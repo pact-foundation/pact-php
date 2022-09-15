@@ -35,6 +35,8 @@ Table of contents
     * [Examples](#additional-examples)
 
 ## Versions
+8.X updates internal dependencies and libraries.   This results in dropping PHP 7.3
+
 7.x updates internal dependencies and libraries, mostly to Guzzle 7.X.  This results in dropping support for PHP 7.2.
 6.x updates internal dependencies, mostly surrounding the Amp library.  This results in dropping support for PHP 7.1.
 
