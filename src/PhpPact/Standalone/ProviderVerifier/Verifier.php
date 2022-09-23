@@ -296,6 +296,9 @@ class Verifier
                 $stack->push(Middleware::mapRequest($reqFilter), 'requestFilter');
                 $config['handler'] = $stack;
             }
+            if (($sslVerify = \getenv('PACT_BROKER_SSL_VERIFY'))) {
+                $client['verify'] = $sslVerify !== 'no';
+            }
             $client = new GuzzleClient($config);
 
             $this->brokerHttpClient = new BrokerHttpClient($client, $this->config->getBrokerUri());
