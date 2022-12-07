@@ -16,6 +16,7 @@ use Amp\Process\Process;
 use Amp\Socket;
 use GuzzleHttp\Psr7\Uri;
 use Monolog\Logger;
+use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
 
@@ -150,8 +151,7 @@ class MessageVerifier extends Verifier
         $callbacks = $this->callbacks;
         $uri       = $this->config->getProviderBaseUrl();
 
-        $scripts   = $this->installManager->install();
-        $arguments = \array_merge([$scripts->getProviderVerifier()], $arguments);
+        $arguments = \array_merge([Scripts::getProviderVerifier()], $arguments);
 
         /**
          * @throws \Amp\Socket\SocketException

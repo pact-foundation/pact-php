@@ -6,16 +6,10 @@ use Amp\ByteStream\ResourceOutputStream;
 use Amp\Log\ConsoleFormatter;
 use Amp\Log\StreamHandler;
 use Monolog\Logger;
-use PhpPact\Standalone\Installer\InstallManager;
 use Psr\Log\LoggerInterface;
 
 class VerifierProcess
 {
-    /**
-     * @var InstallManager
-     */
-    private $installManager;
-
     /**
      * @var LoggerInterface
      */
@@ -29,12 +23,10 @@ class VerifierProcess
     /**
      * VerifierProcess constructor.
      *
-     * @param InstallManager       $installManager
      * @param ProcessRunnerFactory $processRunnerFactory
      */
-    public function __construct(InstallManager $installManager, ProcessRunnerFactory $processRunnerFactory = null)
+    public function __construct(ProcessRunnerFactory $processRunnerFactory = null)
     {
-        $this->installManager       = $installManager;
         $this->processRunnerFactory = $processRunnerFactory ?: new ProcessRunnerFactory();
     }
 
@@ -56,17 +48,11 @@ class VerifierProcess
      * @param array $arguments
      * @param int   $processTimeout
      * @param int   $processIdleTimeout
-     *
-     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
-     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
      */
     public function run(array $arguments, $processTimeout, $processIdleTimeout)
     {
-        $scripts = $this->installManager->install();
-
         $logger        = $this->getLogger();
         $processRunner = $this->processRunnerFactory->createRunner(
-            $scripts->getProviderVerifier(),
             $arguments,
             $logger
         );

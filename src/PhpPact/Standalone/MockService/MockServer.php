@@ -6,8 +6,7 @@ use Exception;
 use GuzzleHttp\Exception\ConnectException;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Exception\HealthCheckFailedException;
-use PhpPact\Standalone\Installer\InstallManager;
-use PhpPact\Standalone\Installer\Service\InstallerInterface;
+use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 use PhpPact\Standalone\Runner\ProcessRunner;
 
@@ -19,9 +18,6 @@ class MockServer
 {
     /** @var MockServerConfig */
     private $config;
-
-    /** @var InstallManager */
-    private $installManager;
 
     /** @var MockServerHttpService */
     private $httpService;
@@ -38,7 +34,6 @@ class MockServer
     public function __construct(MockServerConfig $config, MockServerHttpService $httpService = null)
     {
         $this->config         = $config;
-        $this->installManager = new InstallManager();
 
         if (!$httpService) {
             $this->httpService = new MockServerHttpService(new GuzzleClient(), $this->config);
@@ -56,9 +51,7 @@ class MockServer
      */
     public function start(): int
     {
-        $scripts = $this->installManager->install();
-
-        $this->processRunner = new ProcessRunner($scripts->getMockService(), $this->getArguments());
+        $this->processRunner = new ProcessRunner(Scripts::getMockService(), $this->getArguments());
 
         $processId =  $this->processRunner->run();
 
@@ -79,20 +72,6 @@ class MockServer
     public function stop(): bool
     {
         return $this->processRunner->stop();
-    }
-
-    /**
-     * Wrapper to add a custom installer.
-     *
-     * @param InstallerInterface $installer
-     *
-     * @return self
-     */
-    public function registerInstaller(InstallerInterface $installer): self
-    {
-        $this->installManager->registerInstaller($installer);
-
-        return $this;
     }
 
     /**

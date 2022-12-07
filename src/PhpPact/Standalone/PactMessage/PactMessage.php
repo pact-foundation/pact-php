@@ -3,36 +3,23 @@
 namespace PhpPact\Standalone\PactMessage;
 
 use PhpPact\Consumer\Model\Message;
-use PhpPact\Standalone\Installer\InstallManager;
+use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\Runner\ProcessRunner;
 
 class PactMessage
 {
-    /** @var InstallManager */
-    private $installManager;
-
-    public function __construct()
-    {
-        $this->installManager = new InstallManager();
-    }
-
     /**
      * Build an example from the data structure back into its generated form
      * i.e. strip out all of the matchers etc
      *
      * @param Message $pact
      *
-     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
-     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
-     *
      * @return string
      */
     public function reify(Message $pact): string
     {
-        $scripts = $this->installManager->install();
-
         $json    = \json_encode($pact);
-        $process = new ProcessRunner($scripts->getPactMessage(), ['reify', "'" . $json . "'"]);
+        $process = new ProcessRunner(Scripts::getPactMessage(), ['reify', "'" . $json . "'"]);
 
         $process->runBlocking();
 
@@ -50,15 +37,10 @@ class PactMessage
      * @param string $provider
      * @param string $pactDir
      *
-     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
-     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
-     *
      * @return bool
      */
     public function update(string $pactJson, string $consumer, string $provider, string $pactDir): bool
     {
-        $scripts = $this->installManager->install();
-
         $arguments   = [];
         $arguments[] = 'update';
         $arguments[] = "--consumer={$consumer}";
@@ -66,7 +48,7 @@ class PactMessage
         $arguments[] = "--pact-dir={$pactDir}";
         $arguments[] = "'" . $pactJson . "'";
 
-        $process = new ProcessRunner($scripts->getPactMessage(), $arguments);
+        $process = new ProcessRunner(Scripts::getPactMessage(), $arguments);
         $process->runBlocking();
 
         \sleep(1);

@@ -2,8 +2,6 @@
 
 namespace PhpPactTest\Standalone\ProviderVerifier;
 
-use PhpPact\Standalone\Installer\InstallManager;
-use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\ProviderVerifier\ProcessRunnerFactory;
 use PhpPact\Standalone\ProviderVerifier\VerifierProcess;
 use PhpPact\Standalone\Runner\ProcessRunner;
@@ -14,58 +12,36 @@ class VerifierProcessTest extends TestCase
 {
     public function testRun()
     {
-        $verifier  = 'foo';
         $arguments = ['foo' => 'bar'];
-
-        $scripts = $this->createMock(Scripts::class);
-        $scripts->expects($this->once())
-            ->method('getProviderVerifier')
-            ->will($this->returnValue($verifier));
 
         $logger = $this->createMock(LoggerInterface::class);
 
         $processRunner = $this->createMock(ProcessRunner::class);
 
-        $installManager = $this->createMock(InstallManager::class);
-        $installManager->expects($this->once())
-            ->method('install')
-            ->will($this->returnValue($scripts));
-
         $processRunnerFactory = $this->createMock(ProcessRunnerFactory::class);
         $processRunnerFactory->expects($this->once())
             ->method('createRunner')
-            ->with($this->equalTo($verifier), $this->equalTo($arguments), $this->equalTo($logger))
+            ->with($this->equalTo($arguments), $this->equalTo($logger))
             ->will($this->returnValue($processRunner));
 
-        $process = new VerifierProcess($installManager, $processRunnerFactory);
+        $process = new VerifierProcess($processRunnerFactory);
         $process->setLogger($logger);
         $process->run($arguments, 42, 23);
     }
 
     public function testRunWithDefaultLogger()
     {
-        $verifier  = 'foo';
         $arguments = ['foo' => 'bar'];
 
-        $scripts = $this->createMock(Scripts::class);
-        $scripts->expects($this->once())
-            ->method('getProviderVerifier')
-            ->will($this->returnValue($verifier));
-
         $processRunner = $this->createMock(ProcessRunner::class);
-
-        $installManager = $this->createMock(InstallManager::class);
-        $installManager->expects($this->once())
-            ->method('install')
-            ->will($this->returnValue($scripts));
 
         $processRunnerFactory = $this->createMock(ProcessRunnerFactory::class);
         $processRunnerFactory->expects($this->once())
             ->method('createRunner')
-            ->with($this->equalTo($verifier), $this->equalTo($arguments))
+            ->with($this->equalTo($arguments))
             ->will($this->returnValue($processRunner));
 
-        $process = new VerifierProcess($installManager, $processRunnerFactory);
+        $process = new VerifierProcess($processRunnerFactory);
         $process->run($arguments, 42, 23);
     }
 
@@ -74,15 +50,9 @@ class VerifierProcessTest extends TestCase
         $this->expectExceptionMessage('foo');
         $this->expectException(\RuntimeException::class);
 
-        $verifier  = 'foo';
         $arguments = ['foo' => 'bar'];
 
         $expectedException = new \RuntimeException('foo');
-
-        $scripts = $this->createMock(Scripts::class);
-        $scripts->expects($this->once())
-            ->method('getProviderVerifier')
-            ->will($this->returnValue($verifier));
 
         $processRunner = $this->createMock(ProcessRunner::class);
         $processRunner->expects($this->once())
@@ -95,18 +65,13 @@ class VerifierProcessTest extends TestCase
                 )
             );
 
-        $installManager = $this->createMock(InstallManager::class);
-        $installManager->expects($this->once())
-            ->method('install')
-            ->will($this->returnValue($scripts));
-
         $processRunnerFactory = $this->createMock(ProcessRunnerFactory::class);
         $processRunnerFactory->expects($this->once())
             ->method('createRunner')
-            ->with($this->equalTo($verifier), $this->equalTo($arguments))
+            ->with($this->equalTo($arguments))
             ->will($this->returnValue($processRunner));
 
-        $process = new VerifierProcess($installManager, $processRunnerFactory);
+        $process = new VerifierProcess($processRunnerFactory);
         $process->run($arguments, 42, 23);
     }
 }
