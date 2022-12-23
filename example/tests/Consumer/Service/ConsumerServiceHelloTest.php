@@ -33,7 +33,7 @@ class ConsumerServiceHelloTest extends TestCase
             ->setStatus(200)
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
-                'message' => $matcher->term('Hello, Bob', '(Hello, )[A-Za-z]')
+                'message' => $matcher->term('Hello, Bob', '(Hello, )[A-Za-z]+')
             ]);
 
         // Create a configuration that reflects the server that was started. You can create a custom MockServerConfigInterface if needed.
@@ -42,12 +42,13 @@ class ConsumerServiceHelloTest extends TestCase
         $builder
             ->uponReceiving('A get request to /hello/{name}')
             ->with($request)
-            ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
+            ->willRespondWith($response); // This has to be last. This is what makes a FFI call to the Mock Server to set the interaction.
+        $builder->createMockServer();
 
         $service = new HttpClientService($config->getBaseUri()); // Pass in the URL to the Mock Server.
         $result  = $service->getHelloString('Bob'); // Make the real API request against the Mock Server.
 
-        $builder->verify(); // This will verify that the interactions took place.
+        $this->assertTrue($builder->verify()); // This will verify that the interactions took place.
 
         $this->assertEquals('Hello, Bob', $result); // Make your assertions.
     }

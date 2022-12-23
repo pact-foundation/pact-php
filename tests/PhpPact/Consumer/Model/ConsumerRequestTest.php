@@ -18,12 +18,10 @@ class ConsumerRequestTest extends TestCase
                 'currentCity' => 'Austin',
             ]);
 
-        $data = \json_decode(\json_encode($model->jsonSerialize()), true);
-
-        $this->assertEquals('PUT', $data['method']);
-        $this->assertEquals('application/json', $data['headers']['Content-Type']);
-        $this->assertEquals('/somepath', $data['path']);
-        $this->assertEquals('Austin', $data['body']['currentCity']);
+        $this->assertEquals('PUT', $model->getMethod());
+        $this->assertEquals(['Content-Type' => 'application/json'], $model->getHeaders());
+        $this->assertEquals('/somepath', $model->getPath());
+        $this->assertEquals('{"currentCity":"Austin"}', $model->getBody());
     }
 
     public function testSerializingWhenPathUsingMatcher()
@@ -39,13 +37,9 @@ class ConsumerRequestTest extends TestCase
                 'status' => 'finished',
             ]);
 
-        $data = \json_decode(\json_encode($model->jsonSerialize()), true);
-
-        $this->assertEquals('PATCH', $data['method']);
-        $this->assertEquals('application/json', $data['headers']['Content-Type']);
-        $this->assertIsArray($data['path']);
-        $this->assertArrayHasKey('data', $data['path']);
-        $this->assertArrayHasKey('json_class', $data['path']);
-        $this->assertEquals('finished', $data['body']['status']);
+        $this->assertEquals('PATCH', $model->getMethod());
+        $this->assertEquals(['Content-Type' => 'application/json'], $model->getHeaders());
+        $this->assertEquals('{"value":"\/somepath\/474d610b-c6e3-45bd-9f70-529e7ad21df0\/status","regex":"\\\\\\/somepath\\\\\\/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}\\\\\\/status","pact:matcher:type":"regex"}', $model->getPath());
+        $this->assertEquals('{"status":"finished"}', $model->getBody());
     }
 }

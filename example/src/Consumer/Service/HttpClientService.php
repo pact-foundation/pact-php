@@ -12,10 +12,10 @@ use GuzzleHttp\Psr7\Uri;
 class HttpClientService
 {
     /** @var Client */
-    private $httpClient;
+    private Client $httpClient;
 
     /** @var string */
-    private $baseUri;
+    private string $baseUri;
 
     public function __construct(string $baseUri)
     {

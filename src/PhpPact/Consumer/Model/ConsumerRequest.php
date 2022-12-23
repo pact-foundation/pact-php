@@ -11,27 +11,27 @@ class ConsumerRequest implements \JsonSerializable
     /**
      * @var string
      */
-    private $method;
-
-    /**
-     * @var array|string
-     */
-    private $path;
-
-    /**
-     * @var string[]
-     */
-    private $headers;
-
-    /**
-     * @var mixed
-     */
-    private $body;
+    private string $method;
 
     /**
      * @var string
      */
-    private $query;
+    private string $path;
+
+    /**
+     * @var string[]
+     */
+    private array $headers = [];
+
+    /**
+     * @var null|string
+     */
+    private ?string $body  = null;
+
+    /**
+     * @var array
+     */
+    private array $query = [];
 
     /**
      * @return string
@@ -54,9 +54,9 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @return array|string
+     * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -66,17 +66,17 @@ class ConsumerRequest implements \JsonSerializable
      *
      * @return ConsumerRequest
      */
-    public function setPath($path): self
+    public function setPath(array|string $path): self
     {
-        $this->path = $path;
+        $this->path = is_array($path) ? json_encode($path) : $path;
 
         return $this;
     }
 
     /**
-     * @return string[]
+     * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -99,17 +99,17 @@ class ConsumerRequest implements \JsonSerializable
      *
      * @return ConsumerRequest
      */
-    public function addHeader(string $header, $value): self
+    public function addHeader(string $header, array|string $value): self
     {
-        $this->headers[$header] = $value;
+        $this->headers[$header] = is_array($value) ? json_encode($value) : $value;
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return null|string
      */
-    public function getBody()
+    public function getBody(): ?string
     {
         return $this->body;
     }
@@ -119,27 +119,34 @@ class ConsumerRequest implements \JsonSerializable
      *
      * @return ConsumerRequest
      */
-    public function setBody($body)
+    public function setBody(mixed $body): self
     {
-        $this->body = $body;
+        if (\is_string($body)) {
+            $this->body = $body;
+        } elseif (!\is_null($body)) {
+            $this->body = \json_encode($body);
+            $this->addHeader('Content-Type', 'application/json');
+        } else {
+            $this->body = null;
+        }
 
         return $this;
     }
 
     /**
-     * @return null|string
+     * @return array
      */
-    public function getQuery()
+    public function getQuery(): array
     {
         return $this->query;
     }
 
     /**
-     * @param string $query
+     * @param array $query
      *
      * @return ConsumerRequest
      */
-    public function setQuery(string $query): self
+    public function setQuery(array $query): self
     {
         $this->query = $query;
 
@@ -148,17 +155,13 @@ class ConsumerRequest implements \JsonSerializable
 
     /**
      * @param string $key
-     * @param string $value
+     * @param array|string $value
      *
      * @return ConsumerRequest
      */
-    public function addQueryParameter(string $key, string $value): self
+    public function addQueryParameter(string $key, array|string $value): self
     {
-        if ($this->query === null) {
-            $this->query = "{$key}={$value}";
-        } else {
-            $this->query = "{$this->query}&{$key}={$value}";
-        }
+        $this->query[$key] = is_array($value) ? json_encode($value) : $value;
 
         return $this;
     }
@@ -166,8 +169,7 @@ class ConsumerRequest implements \JsonSerializable
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $results = [];
 

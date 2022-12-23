@@ -5,39 +5,12 @@ namespace PhpPact\Consumer;
 use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Exception\MissingEnvVariableException;
-use PhpPact\Standalone\MockService\MockServer;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
-use PhpPact\Standalone\MockService\Service\MockServerHttpService;
-use PhpPact\Standalone\MockService\Service\MockServerHttpServiceInterface;
 use PHPUnit\Framework\TestCase;
 
 class InteractionBuilderTest extends TestCase
 {
-    /** @var MockServerHttpServiceInterface */
-    private $service;
-
-    /** @var MockServer */
-    private $mockServer;
-
-    /**
-     * @throws MissingEnvVariableException
-     * @throws \Exception
-     */
-    protected function setUp(): void
-    {
-        $config           = new MockServerEnvConfig();
-        $this->mockServer = new MockServer($config);
-        $this->mockServer->start();
-        $this->service = new MockServerHttpService(new GuzzleClient(), $config);
-    }
-
-    protected function tearDown(): void
-    {
-        $this->mockServer->stop();
-    }
-
     /**
      * @throws MissingEnvVariableException
      * @throws \Exception

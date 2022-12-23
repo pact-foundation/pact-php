@@ -71,7 +71,7 @@
     },
     "scripts": {
         "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
-        "static-code-analysis": "phpstan analyse src/ --level=5",
+        "static-code-analysis": "phpstan analyse src/ --level=5 -c phpstan.neon",
         "lint": "php-cs-fixer fix --config .php-cs-fixer.php --dry-run",
         "fix": "php-cs-fixer fix --config .php-cs-fixer.php",
         "test": "phpunit --debug -c example/phpunit.all.xml"
@@ -87,6 +87,22 @@
                 },
                 "url": "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v{$version}/pact-{$version}-{$os}{$architecture}.{$extension}",
                 "path": "bin/pact-ruby-standalone"
+            },
+            "pact-ffi-headers": {
+                "version": "0.3.19",
+                "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/pact.h",
+                "path": "bin/pact-ffi-headers/pact.h"
+            },
+            "pact-ffi-lib": {
+                "version": "0.3.19",
+                "variables": {
+                    "{$prefix}": "PHP_OS_FAMILY === 'Windows' ? 'pact_ffi' : 'libpact_ffi'",
+                    "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
+                    "{$architecture}": "in_array(php_uname('m'), ['arm64', 'aarch64']) ? (PHP_OS === 'Darwin' ? 'aarch64-apple-darwin' : 'aarch64') : 'x86_64'",
+                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'dll' : (PHP_OS === 'Darwin' ? 'dylib' : 'so')"
+                },
+                "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/{$prefix}-{$os}-{$architecture}.{$extension}.gz",
+                "path": "bin/pact-ffi-lib/pact.{$extension}"
             }
         }
     },

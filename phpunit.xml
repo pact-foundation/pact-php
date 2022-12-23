@@ -26,6 +26,5 @@
     <env name="PACT_BROKER_URI" value="http://localhost"/>
     <env name="PACT_LOGLEVEL" value="DEBUG"/>
     <!-- <env name="PACT_BROKER_BEARER_TOKEN" value="someToken"/> -->
-    <env name="PACT_CORS" value="true"/>
   </php>
 </phpunit>

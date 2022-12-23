@@ -9,24 +9,49 @@ namespace PhpPact\Consumer\Model;
 class Interaction implements \JsonSerializable
 {
     /**
+     * @var int
+     */
+    private int $id;
+
+    /**
      * @var string
      */
-    private $description;
+    private string $description;
 
     /**
      * @var null|string
      */
-    private $providerState;
+    private ?string $providerState = null;
 
     /**
      * @var ConsumerRequest
      */
-    private $request;
+    private ConsumerRequest $request;
 
     /**
      * @var ProviderResponse
      */
-    private $response;
+    private ProviderResponse $response;
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Interaction
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
      * @return string
@@ -111,8 +136,7 @@ class Interaction implements \JsonSerializable
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         if ($this->getProviderState()) {
             return [

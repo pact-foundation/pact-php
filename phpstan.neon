@@ -1,0 +1,3 @@
+parameters:
+    excludePaths:
+        - src/PhpPact/Consumer/Model/Pact.php

@@ -8,6 +8,9 @@ namespace PhpPact\Standalone;
  */
 interface PactConfigInterface
 {
+    public const MODE_OVERWRITE = 'overwrite';
+    public const MODE_MERGE = 'merge';
+
     /**
      * @return string
      */
@@ -16,7 +19,7 @@ interface PactConfigInterface
     /**
      * @param string $consumer consumers name
      *
-     * @return PactConfigInterface
+     * @return $this
      */
     public function setConsumer(string $consumer): self;
 
@@ -28,50 +31,50 @@ interface PactConfigInterface
     /**
      * @param string $provider providers name
      *
-     * @return PactConfigInterface
+     * @return $this
      */
     public function setProvider(string $provider): self;
 
     /**
      * @return string url to place the pact files when written to disk
      */
-    public function getPactDir();
+    public function getPactDir(): string;
 
     /**
      * @param null|string $pactDir url to place the pact files when written to disk
      *
-     * @return PactConfigInterface
+     * @return $this
      */
-    public function setPactDir($pactDir): self;
+    public function setPactDir(?string $pactDir): self;
 
     /**
      * @return string pact version
      */
-    public function getPactSpecificationVersion();
+    public function getPactSpecificationVersion(): string;
 
     /**
      * @param string $pactSpecificationVersion pact semver version
      *
-     * @return PactConfigInterface
+     * @return $this
      */
-    public function setPactSpecificationVersion($pactSpecificationVersion): self;
+    public function setPactSpecificationVersion(string $pactSpecificationVersion): self;
 
     /**
-     * @return string directory for log output
+     * @return null|string directory for log output
      */
-    public function getLog();
+    public function getLog(): ?string;
 
     /**
      * @param string $log directory for log output
      *
-     * @return PactConfigInterface
+     * @return $this
      */
     public function setLog(string $log): self;
 
     /**
      * @return null|string
      */
-    public function getLogLevel();
+    public function getLogLevel(): ?string;
 
     /**
      * @param string $logLevel
@@ -79,4 +82,16 @@ interface PactConfigInterface
      * @return $this
      */
     public function setLogLevel(string $logLevel): self;
+
+    /**
+     * @return string 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
+     */
+    public function getPactFileWriteMode(): string;
+
+    /**
+     * @param string $pactFileWriteMode 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
+     *
+     * @return $this
+     */
+    public function setPactFileWriteMode(string $pactFileWriteMode): self;
 }

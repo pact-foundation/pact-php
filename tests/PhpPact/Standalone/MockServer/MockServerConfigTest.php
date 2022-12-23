@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Consumer;
+namespace PhpPact\Standalone\MockServer;
 
 use PhpPact\Standalone\MockService\MockServerConfig;
 use PHPUnit\Framework\TestCase;
@@ -16,8 +16,7 @@ class MockServerConfigTest extends TestCase
         $pactDir                  = 'test-pact-dir/';
         $pactFileWriteMode        = 'merge';
         $log                      = 'test-log-dir/';
-        $cors                     = true;
-        $pactSpecificationVersion = 2.0;
+        $pactSpecificationVersion = '2.0.0';
 
         $subject = (new MockServerConfig())
             ->setHost($host)
@@ -27,8 +26,7 @@ class MockServerConfigTest extends TestCase
             ->setPactDir($pactDir)
             ->setPactFileWriteMode($pactFileWriteMode)
             ->setLog($log)
-            ->setPactSpecificationVersion($pactSpecificationVersion)
-            ->setCors($cors);
+            ->setPactSpecificationVersion($pactSpecificationVersion);
 
         static::assertSame($host, $subject->getHost());
         static::assertSame($port, $subject->getPort());
@@ -38,6 +36,5 @@ class MockServerConfigTest extends TestCase
         static::assertSame($pactFileWriteMode, $subject->getPactFileWriteMode());
         static::assertSame($log, $subject->getLog());
         static::assertSame($pactSpecificationVersion, $subject->getPactSpecificationVersion());
-        static::assertSame($cors, $subject->hasCors());
     }
 }

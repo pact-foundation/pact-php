@@ -11,17 +11,17 @@ class ProviderResponse implements \JsonSerializable
     /**
      * @var int
      */
-    private $status;
+    private int $status;
 
     /**
-     * @var null|string[]
+     * @var string[]
      */
-    private $headers;
+    private array $headers = [];
 
     /**
-     * @var null|array
+     * @var null|string
      */
-    private $body;
+    private ?string $body  = null;
 
     /**
      * @return int
@@ -44,9 +44,9 @@ class ProviderResponse implements \JsonSerializable
     }
 
     /**
-     * @return null|string[]
+     * @return string[]
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
@@ -69,29 +69,36 @@ class ProviderResponse implements \JsonSerializable
      *
      * @return ProviderResponse
      */
-    public function addHeader(string $header, $value): self
+    public function addHeader(string $header, array|string $value): self
     {
-        $this->headers[$header] = $value;
+        $this->headers[$header] = is_array($value) ? json_encode($value) : $value;
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return null|string
      */
-    public function getBody()
+    public function getBody(): ?string
     {
         return $this->body;
     }
 
     /**
-     * @param iterable $body
+     * @param mixed $body
      *
      * @return ProviderResponse
      */
-    public function setBody($body): self
+    public function setBody(mixed $body): self
     {
-        $this->body = $body;
+        if (\is_string($body)) {
+            $this->body = $body;
+        } elseif (!\is_null($body)) {
+            $this->body = \json_encode($body);
+            $this->addHeader('Content-Type', 'application/json');
+        } else {
+            $this->body = null;
+        }
 
         return $this;
     }
@@ -99,8 +106,7 @@ class ProviderResponse implements \JsonSerializable
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $results = [
             'status' => $this->getStatus(),

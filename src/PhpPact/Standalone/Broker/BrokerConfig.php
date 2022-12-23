@@ -7,55 +7,55 @@ use Psr\Http\Message\UriInterface;
 class BrokerConfig
 {
     /** @var null|UriInterface */
-    private $brokerUri;
+    private ?UriInterface $brokerUri = null;
 
     /** @var null|string */
-    private $brokerToken;
+    private ?string $brokerToken     = null;
 
     /** @var null|string */
-    private $brokerUsername;
+    private ?string $brokerUsername  = null;
 
     /** @var null|string */
-    private $brokerPassword;
+    private ?string $brokerPassword  = null;
 
     /** @var bool */
-    private $verbose = false;
+    private bool $verbose            = false;
 
     /** @var null|string */
-    private $pacticipant;
+    private ?string $pacticipant     = null;
 
     /** @var null|string */
-    private $request;
+    private ?string $request         = null;
     /** @var null|string */
-    private $header;
+    private ?string $header          = null;
     /** @var null|string */
-    private $data;
+    private ?string $data            = null;
     /** @var null|string */
-    private $user;
+    private ?string $user            = null;
     /** @var null|string */
-    private $consumer;
+    private ?string $consumer        = null;
     /** @var null|string */
-    private $provider;
+    private ?string $provider        = null;
     /** @var null|string */
-    private $description;
+    private ?string $description     = null;
     /** @var null|string */
-    private $uuid;
+    private ?string $uuid            = null;
     /** @var null|string */
-    private $version;
+    private ?string $version         = null;
     /** @var null|string */
-    private $branch = null;
+    private ?string $branch          = null;
     /** @var null|string */
-    private $tag = null;
+    private ?string $tag             = null;
     /** @var null|string */
-    private $name;
+    private ?string $name            = null;
     /** @var null|string */
-    private $repositoryUrl;
+    private ?string $repositoryUrl   = null;
     /** @var null|string */
-    private $url;
+    private ?string $url             = null;
     /** @var null|string */
-    private $consumerVersion;
+    private ?string $consumerVersion = null;
     /** @var null|string */
-    private $pactLocations;
+    private ?string $pactLocations   = null;
 
     /**
      * @return null|string
@@ -68,7 +68,7 @@ class BrokerConfig
     /**
      * @param null|string $repositoryUrl
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setRepositoryUrl(?string $repositoryUrl): self
     {
@@ -88,7 +88,7 @@ class BrokerConfig
     /**
      * @param null|string $url
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setUrl(?string $url): self
     {
@@ -108,7 +108,7 @@ class BrokerConfig
     /**
      * @param null|string $version
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setVersion(?string $version): self
     {
@@ -128,7 +128,7 @@ class BrokerConfig
     /**
      * @param null|string $branch
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setBranch(?string $branch): self
     {
@@ -148,7 +148,7 @@ class BrokerConfig
     /**
      * @param null|string $tag
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setTag(?string $tag): self
     {
@@ -168,7 +168,7 @@ class BrokerConfig
     /**
      * @param null|string $name
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setName(?string $name): self
     {
@@ -188,7 +188,7 @@ class BrokerConfig
     /**
      * @param null|string $request
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setRequest(?string $request): self
     {
@@ -208,7 +208,7 @@ class BrokerConfig
     /**
      * @param null|string $header
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setHeader(?string $header): self
     {
@@ -228,7 +228,7 @@ class BrokerConfig
     /**
      * @param null|string $data
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setData(?string $data): self
     {
@@ -248,7 +248,7 @@ class BrokerConfig
     /**
      * @param null|string $user
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setUser(?string $user): self
     {
@@ -268,7 +268,7 @@ class BrokerConfig
     /**
      * @param null|string $consumer
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setConsumer(?string $consumer): self
     {
@@ -288,7 +288,7 @@ class BrokerConfig
     /**
      * @param null|string $provider
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setProvider(?string $provider): self
     {
@@ -308,7 +308,7 @@ class BrokerConfig
     /**
      * @param null|string $description
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setDescription(?string $description): self
     {
@@ -328,7 +328,7 @@ class BrokerConfig
     /**
      * @param null|string $uuid
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setUuid(?string $uuid): self
     {
@@ -337,9 +337,24 @@ class BrokerConfig
         return $this;
     }
 
-    public function isVerbose()
+    /**
+     * @return bool
+     */
+    public function isVerbose(): bool
     {
         return $this->verbose;
+    }
+
+    /**
+     * @param bool $verbose
+     *
+     * @return $this
+     */
+    public function setVerbose(bool $verbose): self
+    {
+        $this->verbose = $verbose;
+
+        return $this;
     }
 
     /**
@@ -352,6 +367,8 @@ class BrokerConfig
 
     /**
      * @param null|UriInterface $brokerUri
+     *
+     * @return $this
      */
     public function setBrokerUri(?UriInterface $brokerUri): self
     {
@@ -370,6 +387,8 @@ class BrokerConfig
 
     /**
      * @param null|string $brokerToken
+     *
+     * @return $this
      */
     public function setBrokerToken(?string $brokerToken): self
     {
@@ -388,6 +407,8 @@ class BrokerConfig
 
     /**
      * @param null|string $brokerUsername
+     *
+     * @return $this
      */
     public function setBrokerUsername(?string $brokerUsername): self
     {
@@ -406,6 +427,8 @@ class BrokerConfig
 
     /**
      * @param null|string $brokerPassword
+     *
+     * @return $this
      */
     public function setBrokerPassword(?string $brokerPassword): self
     {
@@ -414,13 +437,18 @@ class BrokerConfig
         return $this;
     }
 
-    public function getPacticipant()
+    /**
+     * @return null|string
+     */
+    public function getPacticipant(): ?string
     {
         return $this->pacticipant;
     }
 
     /**
      * @param null|string $pacticipant
+     *
+     * @return $this
      */
     public function setPacticipant(?string $pacticipant): self
     {
@@ -440,7 +468,7 @@ class BrokerConfig
     /**
      * @param null|string $consumerVersion
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setConsumerVersion(?string $consumerVersion): self
     {
@@ -460,7 +488,7 @@ class BrokerConfig
     /**
      * @param string $locations
      *
-     * @return BrokerConfig
+     * @return $this
      */
     public function setPactLocations(string $locations): self
     {

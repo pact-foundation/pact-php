@@ -2,13 +2,14 @@
 
 namespace PhpPact\Standalone\MockService;
 
+use PhpPact\Standalone\PactConfigInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
  * Mock Server configuration interface to allow for simple overrides that are reusable.
  * Interface MockServerConfigInterface.
  */
-interface MockServerConfigInterface
+interface MockServerConfigInterface extends PactConfigInterface
 {
     /**
      * @return string the host of the mock service
@@ -50,52 +51,4 @@ interface MockServerConfigInterface
      * @return UriInterface
      */
     public function getBaseUri(): UriInterface;
-
-    /**
-     * @return string 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
-     */
-    public function getPactFileWriteMode(): string;
-
-    /**
-     * @param string $pactFileWriteMode 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setPactFileWriteMode(string $pactFileWriteMode): self;
-
-    /**
-     * @return bool
-     */
-    public function hasCors(): bool;
-
-    /**
-     * @param bool|string $flag
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setCors($flag): self;
-
-    /**
-     * @param int $timeout
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setHealthCheckTimeout($timeout): self;
-
-    /**
-     * @return int
-     */
-    public function getHealthCheckTimeout(): int;
-
-    /**
-     * @param int $seconds
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setHealthCheckRetrySec($seconds): self;
-
-    /**
-     * @return int
-     */
-    public function getHealthCheckRetrySec(): int;
 }

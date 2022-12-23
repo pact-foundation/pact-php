@@ -11,31 +11,39 @@ PHP version of [Pact](https://pact.io). Enables consumer driven contract testing
 Table of contents
 =================
 
-* [Versions](#versions)
-* [Specifications](#specifications)
-* [Installation](#installation)
-* [Basic Consumer Usage](#basic-consumer-usage)
-    * [Start and Stop the Mock Server](#start-and-stop-the-mock-server)
-    * [Create Consumer Unit Test](#create-consumer-unit-test)
-    * [Create Mock Request](#create-mock-request)
-    * [Create Mock Response](#create-mock-response)
-    * [Build the Interaction](#build-the-interaction)
-    * [Make the Request](#make-the-request)
-    * [Make Assertions](#make-assertions)
-* [Basic Provider Usage](#basic-provider-usage)
-    * [Create Unit Tests](#create-unit-test)
-    * [Start API](#start-api)
-    * [Provider Verification](#provider-verification)
-        * [Verify From Pact Broker](#verify-from-pact-broker)
-        * [Verify All from Pact Broker](#verify-all-from-pact-broker)
-        * [Verify Files by Path](#verify-files-by-path)
-* [Tips](#tips)
-    * [Starting API Asynchronously](#starting-api-asynchronously)
-    * [Set Up Provider State](#set-up-provider-state)
-    * [Examples](#additional-examples)
+- [Pact PHP](#pact-php)
+- [Table of contents](#table-of-contents)
+  - [Versions](#versions)
+  - [Specifications](#specifications)
+  - [Installation](#installation)
+  - [Basic Consumer Usage](#basic-consumer-usage)
+    - [Publish Contracts To Pact Broker](#publish-contracts-to-pact-broker)
+    - [Create Consumer Unit Test](#create-consumer-unit-test)
+    - [Create Mock Request](#create-mock-request)
+    - [Create Mock Response](#create-mock-response)
+    - [Build the Interaction](#build-the-interaction)
+    - [Start the Mock Server](#start-the-mock-server)
+    - [Make the Request](#make-the-request)
+    - [Verify Interactions](#verify-interactions)
+    - [Make Assertions](#make-assertions)
+  - [Basic Provider Usage](#basic-provider-usage)
+        - [Create Unit Test](#create-unit-test)
+        - [Start API](#start-api)
+    - [Provider Verification](#provider-verification)
+        - [Verify From Pact Broker](#verify-from-pact-broker)
+        - [Verify All from Pact Broker](#verify-all-from-pact-broker)
+        - [Verify Files by Path](#verify-files-by-path)
+  - [Tips](#tips)
+    - [Starting API Asynchronously](#starting-api-asynchronously)
+    - [Set Up Provider State](#set-up-provider-state)
+    - [Additional Examples](#additional-examples)
+  - [Message support](#message-support)
+    - [Consumer Side Message Processing](#consumer-side-message-processing)
+    - [Provider Side Message Validation](#provider-side-message-validation)
+  - [Usage for the optional `pact-stub-service`](#usage-for-the-optional-pact-stub-service)
 
 ## Versions
-9.X updates internal dependencies and libraries.   This results in dropping PHP 7.4
+9.X adds support for pact specification 3.X & 4.X via Pact FFI.   This results in dropping PHP 7.4
 
 8.X updates internal dependencies and libraries.   This results in dropping PHP 7.3
 
@@ -52,7 +60,13 @@ If you wish to stick with the 2.X implementation, you can continue to pull from 
 
 ## Specifications
 
-The 3.X version is the version of Pact-PHP, not the pact specification version that it supports.   Pact-Php 3.X supports [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2).
+The 3.X version is the version of Pact-PHP, not the pact specification version that it supports.
+
+Pact-Php 3.X -> 8.X supports [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2).
+Pact-Php 9.X supports:
+    * [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2)
+    * [Pact-Specification 3.X](https://github.com/pact-foundation/pact-specification/tree/version-3).
+    * [Pact-Specification 4.X](https://github.com/pact-foundation/pact-specification/tree/version-4).
 
 ## Installation
 
@@ -68,38 +82,11 @@ Composer hosts older versions under `mattersight/phppact`, which is abandoned. P
 
 All of the following code will be used exclusively for the Consumer.
 
-### Start and Stop the Mock Server
+### Publish Contracts To Pact Broker
 
-This library contains a wrapper for the [Ruby Standalone Mock Service](https://github.com/pact-foundation/pact-mock_service).
+When all tests in test suite are passed, you may want to publish generated contract files to pact broker automatically.
 
 The easiest way to configure this is to use a [PHPUnit Listener](https://phpunit.de/manual/current/en/appendixes.configuration.html#appendixes.configuration.test-listeners). A default listener is included in this project, see [PactTestListener.php](/src/PhpPact/Consumer/Listener/PactTestListener.php). This utilizes environmental variables for configurations. These env variables can either be added to the system or to the phpunit.xml configuration file. Here is an example [phpunit.xml](/example/phpunit.consumer.xml) file configured to use the default. Keep in mind that both the test suite and the arguments array must be the same value.
-
-Alternatively, you can start and stop as in whatever means you would like by following this example:
-
-```php
-<?php
-    use PhpPact\Standalone\MockService\MockServer;
-    use PhpPact\Standalone\MockService\MockServerConfig;
-
-    // Create your basic configuration. The host and port will need to match
-    // whatever your Http Service will be using to access the providers data.
-    $config = new MockServerConfig();
-    $config->setHost('localhost');
-    $config->setPort(7200);
-    $config->setConsumer('someConsumer');
-    $config->setProvider('someProvider');
-    $config->setCors(true);
-
-    // Instantiate the mock server object with the config. This can be any
-    // instance of MockServerConfigInterface.
-    $server = new MockServer($config);
-
-    // Create the process.
-    $server->start();
-
-    // Stop the process.
-    $server->stop();
-```
 
 ### Create Consumer Unit Test
 
@@ -191,6 +178,14 @@ $builder
     ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
 ```
 
+### Start the Mock Server
+
+Mock server need to be started manually
+
+```php
+$builder->createMockServer();
+```
+
 ### Make the Request
 
 ```php
@@ -204,7 +199,7 @@ Verify that all interactions took place that were registered.
 This typically should be in each test, that way the test that failed to verify is marked correctly.
 
 ```php
-$builder->verify();
+$this->assertTrue($builder->verify());
 ```
 
 ### Make Assertions

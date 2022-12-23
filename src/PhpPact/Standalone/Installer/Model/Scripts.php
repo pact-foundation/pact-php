@@ -18,9 +18,19 @@ class Scripts
     /**
      * @return string
      */
-    public static function getMockService(): string
+    public static function getCode(): string
     {
-        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-mock-service' . self::getSuffix();
+        return self::$destinationDir . '/bin/pact-ffi-headers/pact.h';
+    }
+
+    /**
+     * @return string
+     */
+    public static function getLibrary(): string
+    {
+        $extension = PHP_OS_FAMILY === 'Windows' ? 'dll' : (PHP_OS === 'Darwin' ? 'dylib' : 'so');
+
+        return self::$destinationDir . "/bin/pact-ffi-lib/pact.{$extension}";
     }
 
     /**

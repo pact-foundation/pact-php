@@ -12,11 +12,11 @@ use PhpPact\Standalone\Runner\ProcessRunner;
 class Broker
 {
     /** @var Logger */
-    private $logger;
+    private Logger $logger;
     /** @var BrokerConfig */
-    private $config;
+    private BrokerConfig $config;
     /** @var string */
-    private $command;
+    private string $command;
 
     public function __construct(BrokerConfig $config)
     {

@@ -4,10 +4,9 @@ namespace PhpPact\Consumer;
 
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
+use PhpPact\Consumer\Model\Pact;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
-use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 
 /**
  * Build an interaction and send it to the Ruby Standalone Mock Service
@@ -15,13 +14,11 @@ use PhpPact\Standalone\MockService\Service\MockServerHttpService;
  */
 class InteractionBuilder implements BuilderInterface
 {
-    /** @var MockServerHttpService */
-    protected $mockServerHttpService;
-
-    /** @var MockServerConfigInterface */
-    protected $config;
     /** @var Interaction */
-    private $interaction;
+    protected Interaction $interaction;
+
+    /** @var Pact */
+    protected Pact $pact;
 
     /**
      * InteractionBuilder constructor.
@@ -30,9 +27,8 @@ class InteractionBuilder implements BuilderInterface
      */
     public function __construct(MockServerConfigInterface $config)
     {
-        $this->config                = $config;
-        $this->mockServerHttpService = new MockServerHttpService(new GuzzleClient(), $config);
         $this->interaction           = new Interaction();
+        $this->pact                  = new Pact($config);
     }
 
     /**
@@ -72,8 +68,6 @@ class InteractionBuilder implements BuilderInterface
     }
 
     /**
-     * Make the http request to the Mock Service to register the interaction.
-     *
      * @param ProviderResponse $response mock of response received
      *
      * @return bool returns true on success
@@ -82,7 +76,7 @@ class InteractionBuilder implements BuilderInterface
     {
         $this->interaction->setResponse($response);
 
-        return $this->mockServerHttpService->registerInteraction($this->interaction);
+        return $this->pact->registerInteraction($this->interaction);
     }
 
     /**
@@ -90,21 +84,15 @@ class InteractionBuilder implements BuilderInterface
      */
     public function verify(): bool
     {
-        return $this->mockServerHttpService->verifyInteractions();
+        return $this->pact->verifyInteractions();
     }
 
     /**
-     * Writes the file to disk and deletes interactions from mock server.
+     * Create mock server before verifying.
      */
-    public function finalize(): bool
+    public function createMockServer(): void
     {
-        // Write the pact file to disk.
-        $this->mockServerHttpService->getPactJson();
-
-        // Delete the interactions.
-        $this->mockServerHttpService->deleteAllInteractions();
-
-        return true;
+        $this->pact->createMockServer();
     }
 
     /**
@@ -112,9 +100,6 @@ class InteractionBuilder implements BuilderInterface
      */
     public function writePact(): bool
     {
-        // Write the pact file to disk.
-        $this->mockServerHttpService->getPactJson();
-
         return true;
     }
 }
