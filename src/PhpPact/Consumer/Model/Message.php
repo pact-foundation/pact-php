@@ -14,7 +14,7 @@ class Message
     /**
      * @var array<string, string>
      */
-    private array $metadata;
+    private array $metadata = [];
 
     private mixed $contents;
 
@@ -43,9 +43,17 @@ class Message
      */
     public function setMetadata(array $metadata): self
     {
-        $this->metadata = $metadata;
+        $this->metadata = [];
+        foreach ($metadata as $key => $value) {
+            $this->setMetadataValue($key, $value);
+        }
 
         return $this;
+    }
+
+    private function setMetadataValue(string $key, string $value): void
+    {
+        $this->metadata[$key] = $value;
     }
 
     public function getContents(): mixed
