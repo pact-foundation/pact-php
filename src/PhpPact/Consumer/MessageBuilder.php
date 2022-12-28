@@ -7,31 +7,27 @@ use PhpPact\Standalone\PactConfigInterface;
 use PhpPact\Standalone\PactMessage\PactMessage;
 
 /**
- * Build a message and send it to the Ruby Standalone Mock Service
+ * Build a message and send it to the Rust FFI Mock Service
  * Class MessageBuilder.
  */
 class MessageBuilder implements BuilderInterface
 {
     /** @var PactMessage */
-    protected $pactMessage;
-
-    /** @var PactConfigInterface */
-    protected $config;
+    protected PactMessage $pactMessage;
 
     /** @var array callable */
-    protected $callback;
+    protected array $callback;
 
     /** @var Message */
-    private $message;
+    private Message $message;
 
     /**
      * @param PactConfigInterface $config
      */
     public function __construct(PactConfigInterface $config)
     {
-        $this->config      = $config;
         $this->message     = new Message();
-        $this->pactMessage = new PactMessage();
+        $this->pactMessage = new PactMessage($config);
     }
 
     /**
@@ -129,20 +125,18 @@ class MessageBuilder implements BuilderInterface
     {
         $this->setCallback($callback, $description);
 
-        return $this->verify($description);
+        return $this->verify();
     }
 
     /**
      * Verify the use of the pact by calling the callback
      * It also calls finalize to write the pact
      *
-     * @param false|string $description description of the pact and thus callback
-     *
      * @throws \Exception if callback is not set
      *
      * @return bool
      */
-    public function verify($description = false): bool
+    public function verify(): bool
     {
         if (\count($this->callback) < 1) {
             throw new \Exception('Callbacks need to exist to run verify.');
@@ -170,9 +164,6 @@ class MessageBuilder implements BuilderInterface
      */
     public function writePact(): bool
     {
-        // you do not want to save the reified json
-        $pactJson = \json_encode($this->message);
-
-        return $this->pactMessage->update($pactJson, $this->config->getConsumer(), $this->config->getProvider(), $this->config->getPactDir());
+        return $this->pactMessage->update();
     }
 }

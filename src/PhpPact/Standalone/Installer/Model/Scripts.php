@@ -59,14 +59,6 @@ class Scripts
         return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-broker' . self::getSuffix();
     }
 
-    /**
-     * @return string
-     */
-    public static function getPactMessage(): string
-    {
-        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-message' . self::getSuffix();
-    }
-
     private static function getSuffix(): string
     {
         return (PHP_OS_FAMILY === 'Windows' ? '.bat' : '');

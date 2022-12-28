@@ -2,3 +2,4 @@ parameters:
     excludePaths:
         - src/PhpPact/Consumer/Model/AbstractPact.php
         - src/PhpPact/Consumer/Model/Pact.php
+        - src/PhpPact/Standalone/PactMessage/PactMessage.php

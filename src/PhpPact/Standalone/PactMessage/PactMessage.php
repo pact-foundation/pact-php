@@ -2,57 +2,85 @@
 
 namespace PhpPact\Standalone\PactMessage;
 
+use PhpPact\Consumer\Model\AbstractPact;
 use PhpPact\Consumer\Model\Message;
-use PhpPact\Standalone\Installer\Model\Scripts;
-use PhpPact\Standalone\Runner\ProcessRunner;
 
-class PactMessage
+class PactMessage extends AbstractPact
 {
     /**
-     * Build an example from the data structure back into its generated form
-     * i.e. strip out all of the matchers etc
-     *
-     * @param Message $pact
+     * @param Message $message
      *
      * @return string
      */
-    public function reify(Message $pact): string
+    public function reify(Message $message): string
     {
-        $json    = \json_encode($pact);
-        $process = new ProcessRunner(Scripts::getPactMessage(), ['reify', "'" . $json . "'"]);
+        $message->setId($this->newInteraction($message->getDescription()));
+        $this
+            ->given($message)
+            ->expectsToReceive($message)
+            ->withMetadata($message)
+            ->withContent($message);
 
-        $process->runBlocking();
-
-        $output = $process->getOutput();
-        \preg_replace("/\r|\n/", '', $output);
-
-        return $output;
+        return $this->ffi->pactffi_message_reify($message->getId());
     }
 
     /**
-     * Update a pact with the given message, or create the pact if it does not exist. The MESSAGE_JSON may be in the legacy Ruby JSON format or the v2+ format.
-     *
-     * @param string $pactJson
-     * @param string $consumer
-     * @param string $provider
-     * @param string $pactDir
+     * Update a pact with the given message, or create the pact if it does not exist.
      *
      * @return bool
      */
-    public function update(string $pactJson, string $consumer, string $provider, string $pactDir): bool
+    public function update(): bool
     {
-        $arguments   = [];
-        $arguments[] = 'update';
-        $arguments[] = "--consumer={$consumer}";
-        $arguments[] = "--provider={$provider}";
-        $arguments[] = "--pact-dir={$pactDir}";
-        $arguments[] = "'" . $pactJson . "'";
-
-        $process = new ProcessRunner(Scripts::getPactMessage(), $arguments);
-        $process->runBlocking();
-
-        \sleep(1);
+        $this->writePact();
+        $this->cleanUp();
 
         return true;
+    }
+
+    private function given(Message $message): self
+    {
+        foreach ($message->getProviderStates() as $providerState) {
+            foreach ($providerState->params as $key => $value) {
+                $this->ffi->pactffi_message_given_with_param($message->getId(), $providerState->name, (string) $key, $value);
+            }
+        }
+
+        return $this;
+    }
+
+    private function expectsToReceive(Message $message): self
+    {
+        $this->ffi->pactffi_message_expects_to_receive($message->getId(), $message->getDescription());
+
+        return $this;
+    }
+
+    private function withMetadata(Message $message): self
+    {
+        foreach ($message->getMetadata() as $key => $value) {
+            $this->ffi->pactffi_message_with_metadata($message->getId(), (string) $key, (string) $value);
+        }
+
+        return $this;
+    }
+
+    private function withContent(Message $message): self
+    {
+        if (\is_string($message->getContents())) {
+            $contents    = $message->getContents();
+            $contentType = 'text/plain';
+        } else {
+            $contents    = \json_encode($message->getContents());
+            $contentType = 'application/json';
+        }
+
+        $this->withBody($message->getId(), $this->ffi->InteractionPart_Request, $contentType, $contents);
+
+        return $this;
+    }
+
+    protected function newInteraction(?string $description): int
+    {
+        return $this->ffi->pactffi_new_message_interaction($this->id, $description);
     }
 }

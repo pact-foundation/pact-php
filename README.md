@@ -372,7 +372,7 @@ $consumerMessage = new ExampleMessageConsumer();
 $callback        = [$consumerMessage, 'ProcessSong'];
 $builder->setCallback($callback);
 
-$builder->verify();
+$this->assertTrue($builder->verify());
 ```
 
 
