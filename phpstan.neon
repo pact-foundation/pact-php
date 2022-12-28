@@ -2,3 +2,5 @@ parameters:
     excludePaths:
         - src/PhpPact/Consumer/Driver/AbstractDriver.php
         - src/PhpPact/Consumer/Driver/InteractionDriver.php
+        - src/PhpPact/Consumer/Driver/AbstractMessageDriver.php
+        - src/PhpPact/Consumer/Driver/MessageDriver.php

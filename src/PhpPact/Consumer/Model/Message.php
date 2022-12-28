@@ -4,7 +4,7 @@ namespace PhpPact\Consumer\Model;
 
 /**
  * Request/Response Pair to be posted to the Ruby Standalone Mock Server for PACT tests.
- * Class Interaction.
+ * Class Message.
  */
 class Message
 {
@@ -13,17 +13,17 @@ class Message
     /**
      * @var string
      */
-    private $description;
+    private string $description;
 
     /**
      * @var array
      */
-    private array $metadata;
+    private array $metadata = [];
 
     /**
      * @var mixed
      */
-    private $contents;
+    private mixed $contents;
 
     /**
      * @return string
@@ -36,7 +36,7 @@ class Message
     /**
      * @param string $description
      *
-     * @return Message
+     * @return $this
      */
     public function setDescription(string $description): self
     {
@@ -56,19 +56,27 @@ class Message
     /**
      * @param array $metadata
      *
-     * @return Message
+     * @return $this
      */
     public function setMetadata(array $metadata): self
     {
-        $this->metadata = $metadata;
+        $this->metadata = [];
+        foreach ($metadata as $key => $value) {
+            $this->setMetadataValue($key, $value);
+        }
 
         return $this;
+    }
+
+    private function setMetadataValue(string $key, string $value): void
+    {
+        $this->metadata[$key] = $value;
     }
 
     /**
      * @return mixed
      */
-    public function getContents()
+    public function getContents(): mixed
     {
         return $this->contents;
     }
@@ -76,9 +84,9 @@ class Message
     /**
      * @param mixed $contents
      *
-     * @return Message
+     * @return $this
      */
-    public function setContents($contents)
+    public function setContents(mixed $contents): self
     {
         $this->contents = $contents;
 

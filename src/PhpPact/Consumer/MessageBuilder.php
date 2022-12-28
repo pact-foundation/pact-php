@@ -2,36 +2,33 @@
 
 namespace PhpPact\Consumer;
 
+use PhpPact\Consumer\Driver\MessageDriver;
+use PhpPact\Consumer\Driver\MessageDriverInterface;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Config\PactConfigInterface;
-use PhpPact\Standalone\PactMessage\PactMessage;
 
 /**
- * Build a message and send it to the Ruby Standalone Mock Service
+ * Build a message and send it to the Rust FFI Mock Service
  * Class MessageBuilder.
  */
 class MessageBuilder implements BuilderInterface
 {
-    /** @var PactMessage */
-    protected $pactMessage;
-
-    /** @var PactConfigInterface */
-    protected $config;
+    /** @var MessageDriverInterface */
+    protected MessageDriverInterface $driver;
 
     /** @var array callable */
-    protected $callback;
+    protected array $callback;
 
     /** @var Message */
-    private $message;
+    protected Message $message;
 
     /**
      * @param PactConfigInterface $config
      */
     public function __construct(PactConfigInterface $config)
     {
-        $this->config      = $config;
         $this->message     = new Message();
-        $this->pactMessage = new PactMessage();
+        $this->driver      = new MessageDriver($config);
     }
 
     /**
@@ -80,11 +77,11 @@ class MessageBuilder implements BuilderInterface
     }
 
     /**
-     * @param mixed $metadata what is the additional metadata of the message
+     * @param array $metadata what is the additional metadata of the message
      *
      * @return MessageBuilder
      */
-    public function withMetadata($metadata): self
+    public function withMetadata(array $metadata): self
     {
         $this->message->setMetadata($metadata);
 
@@ -98,7 +95,7 @@ class MessageBuilder implements BuilderInterface
      *
      * @return self
      */
-    public function withContent($contents): self
+    public function withContent(mixed $contents): self
     {
         $this->message->setContents($contents);
 
@@ -112,7 +109,7 @@ class MessageBuilder implements BuilderInterface
      */
     public function reify(): string
     {
-        return $this->pactMessage->reify($this->message);
+        return $this->driver->reify($this->message);
     }
 
     /**
@@ -129,20 +126,18 @@ class MessageBuilder implements BuilderInterface
     {
         $this->setCallback($callback, $description);
 
-        return $this->verify($description);
+        return $this->verify();
     }
 
     /**
      * Verify the use of the pact by calling the callback
      * It also calls finalize to write the pact
      *
-     * @param false|string $description description of the pact and thus callback
-     *
      * @throws \Exception if callback is not set
      *
      * @return bool
      */
-    public function verify($description = false): bool
+    public function verify(): bool
     {
         if (\count($this->callback) < 1) {
             throw new \Exception('Callbacks need to exist to run verify.');
@@ -170,9 +165,6 @@ class MessageBuilder implements BuilderInterface
      */
     public function writePact(): bool
     {
-        // you do not want to save the reified json
-        $pactJson = \json_encode($this->message);
-
-        return $this->pactMessage->update($pactJson, $this->config->getConsumer(), $this->config->getProvider(), $this->config->getPactDir());
+        return $this->driver->update();
     }
 }
