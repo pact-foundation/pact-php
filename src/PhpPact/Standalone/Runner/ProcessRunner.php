@@ -18,21 +18,21 @@ use Psr\Log\LoggerInterface;
 class ProcessRunner
 {
     /** @var Process */
-    private $process;
+    private Process $process;
 
     /** @var string command output */
-    private $output;
+    private ?string $output = null;
 
     /** @var int command exit code */
-    private $exitCode;
+    private int $exitCode;
 
     /** @var string */
-    private $stderr;
+    private ?string $stderr = null;
 
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    private ?LoggerInterface $logger = null;
 
     /**
      * @param string $command
@@ -178,7 +178,7 @@ class ProcessRunner
      *
      * @return int Process Id
      */
-    public function run($blocking = false): int
+    public function run(bool $blocking = false): int
     {
         return $blocking
             ? $this->runBlocking()
