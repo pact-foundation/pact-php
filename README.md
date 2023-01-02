@@ -30,7 +30,7 @@ Table of contents
         - [Start API](#start-api)
     - [Provider Verification](#provider-verification)
         - [Verify From Pact Broker](#verify-from-pact-broker)
-        - [Verify All from Pact Broker](#verify-all-from-pact-broker)
+        - [Verify Files in Directory](#verify-files-in-directory)
         - [Verify Files by Path](#verify-files-by-path)
   - [Tips](#tips)
     - [Starting API Asynchronously](#starting-api-asynchronously)
@@ -191,7 +191,7 @@ Verify that all interactions took place that were registered.
 This typically should be in each test, that way the test that failed to verify is marked correctly.
 
 ```php
-$verifyResult = $builder->verify();
+$verifyResult = $verifier->verify();
 $this->assertTrue($verifyResult);
 ```
 
@@ -230,51 +230,62 @@ $config = new VerifierConfig();
 $config
     ->setProviderName('someProvider') // Providers name to fetch.
     ->setProviderVersion('1.0.0') // Providers version.
-    ->setProviderBranch('main') // Providers git branch name.
-    ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
-    ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
-    ->setPublishResults(true) // Flag the verifier service to publish the results to the Pact Broker.
-    ->setProcessTimeout(60)      // Set process timeout (optional) - default 60
-    ->setProcessIdleTimeout(10) // Set process idle timeout (optional) - default 10
-    ->setEnablePending(true) // Flag to enable pending pacts feature (check pact docs for further info)
-    ->setIncludeWipPactSince('2020-01-30') //Start date of WIP Pacts (check pact docs for further info)
-    ->setRequestFilter(
-        function (RequestInterface $r) {
-            return $r->withHeader('MY_SPECIAL_HEADER', 'my special value');
-        }
-    );
-// Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
-$verifier = new Verifier($config);
-$verifier->verify('someConsumer', 'master'); // The tag is option. If no tag is set it will just grab the latest.
+    ->setProviderTags('prod' ,'dev')
+    ->setProviderBranch('main')
+    ->setScheme('http')
+    ->setHost('localhost')
+    ->setPort(58000)
+    ->setBasePath('/')
+    ->setStateChangeUrl(new Uri('http://localhost:58000/change-state'))
+    ->setBuildUrl(new Uri('http://build.domain.com'))
+    ->setFilterConsumerNames('someConsumer', 'otherConsumer')
+    ->setFilterDescription('Send POST to create')
+    ->setFilterNoState(true)
+    ->setFilterState('state')
+    ->setPublishResults(true)
+    ->setDisableSslVerification(true)
+    ->setStateChangeAsBody(false)
+    ->setStateChangeTeardown(true)
+    ->setRequestTimeout(500);
 
-// This will not be reached if the PACT verifier throws an error, otherwise it was successful.
-$this->assertTrue(true, 'Pact Verification has failed.');
+$verifier = new Verifier($config);
+
+$selectors = (new ConsumerVersionSelectors())
+    ->addSelector('{"tag":"foo","latest":true}')
+    ->addSelector('{"tag":"bar","latest":true}');
+
+$broker = new Broker();
+$broker
+    ->setUrl(new Uri('http://localhost'))
+    ->setUsername('user')
+    ->setPassword('pass')
+    ->setToken('token')
+    ->setEnablePending(true)
+    ->setIncludeWipPactSince('2020-01-30')
+    ->setProviderTags(['prod'])
+    ->setProviderBranch('main')
+    ->setConsumerVersionSelectors($selectors)
+    ->setConsumerVersionTags(['dev']);
+
+$verifier->addBroker($broker);
+
+$verifyResult = $verifier->verify();
+
+$this->assertTrue($verifyResult);
 ```
 
-##### Verify All from Pact Broker
+##### Verify Files in Directory
 
-This will grab every Pact file associated with the given provider.
+This allows local Pact file testing.
 
 ```php
-public function testPactVerifyAll()
+public function testPactVerifyFilesInDirectory()
 {
-    $config = new VerifierConfig();
-    $config
-        ->setProviderName('someProvider') // Providers name to fetch.
-        ->setProviderVersion('1.0.0') // Providers version.
-        ->setProviderBranch('main') // Providers git branch name.
-        ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
-        ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
-        ->setPublishResults(true) // Flag the verifier service to publish the results to the Pact Broker.
-        ->setEnablePending(true) // Flag to enable pending pacts feature (check pact docs for further info)
-        ->setIncludeWipPactSince('2020-01-30') //Start date of WIP Pacts (check pact docs for further info)
+    $verifier->addDirectory('C:\SomePath');
 
-    // Verify that all consumers of 'someProvider' are valid.
-    $verifier = new Verifier($config);
-    $verifier->verifyAll();
+    $verifyResult = $verifier->verify();
 
-    // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
-    $this->assertTrue(true, 'Pact Verification has failed.');
+    $this->assertTrue($verifyResult);
 }
 ```
 
@@ -283,25 +294,13 @@ public function testPactVerifyAll()
 This allows local Pact file testing.
 
 ```php
-public function testPactVerifyAll()
+public function testPactVerifyFiles()
 {
-    $config = new VerifierConfig();
-    $config
-        ->setProviderName('someProvider') // Providers name to fetch.
-        ->setProviderVersion('1.0.0') // Providers version.
-        ->setProviderBranch('main') // Providers git branch name.
-        ->setProviderBaseUrl(new Uri('http://localhost:58000')) // URL of the Provider.
-        ->setBrokerUri(new Uri('http://localhost')) // URL of the Pact Broker to publish results.
-        ->setPublishResults(true); // Flag the verifier service to publish the results to the Pact Broker.
-        ->setEnablePending(true) // Flag to enable pending pacts feature (check pact docs for further info)
-        ->setIncludeWipPactSince('2020-01-30') //Start date of WIP Pacts (check pact docs for further info)
+    $verifier->addFile('C:\SomePath\consumer-provider.json');
 
-    // Verify that the files in the array are valid.
-    $verifier = new Verifier($config);
-    $verifier->verifyFiles(['C:\SomePath\consumer-provider.json']);
+    $verifyResult = $verifier->verify();
 
-    // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
-    $this->assertTrue(true, 'Pact Verification has failed.');
+    $this->assertTrue($verifyResult);
 }
 ```
 
@@ -333,7 +332,6 @@ There is a separate repository with an end to end example for both the 2.X and 3
 - [2.2.1 tag](https://github.com/mattermack/pact-php-example/tree/2.2.1) for 2.X examples
 
 ## Message support
-This feature is preliminary as the Pact community as a whole is flushing this out.
 The goal is not to test the transmission of an object over a bus but instead vet the contents of the message.
 While examples included focus on a Rabbit MQ, the exact message queue is irrelevant. Initial comparisons require a certain
 object type to be created by the Publisher/Producer and the Consumer of the message.  This includes a metadata set where you
@@ -380,42 +378,16 @@ $this->assertTrue($verifyResult);
 
 
 ### Provider Side Message Validation
-This may evolve as we work through this implementation.   The provider relies heavily on callbacks.
-Some of the complexity lies in a consumer and provider having many messages and states between the each other in a single pact.
+Handle these requests on your provider:
 
-For each message, one needs to provide a single provider state.  The name of this provider state must be the key to run
-a particular message callback on the provider side.  See example\tests\MessageProvider
+1. POST /pact-change-state
+   1. Set up your database to meet the expectations of the request
+   2. Reset the database to its original state.
+2. POST /pact-messages
+   1. Return message's content in body
+   2. Return message's metadata in header `PACT-MESSAGE-METADATA`
 
-1. Create your callbacks and states wrapped in a callable object
-    1. The array key is a provider state / given() on the consumer side
-    1. It is helpful to wrap the whole thing in a lambda if you need to customize paramaters to be passed in
-1. Choose your verification method
-1. If nothing explodes, #winning
-
-```php
-
-        $callbacks = array();
-
-        // a hello message is a provider state / given() on the consumer side
-        $callbacks["a hello message"] = function() {
-            $content = new \stdClass();
-            $content->text ="Hello Mary";
-
-            $metadata = array();
-            $metadata['queue'] = "myKey";
-
-            $provider = (new ExampleMessageProvider())
-                ->setContents($content)
-                ->setMetadata($metadata);
-
-            return $provider->Build();
-        };
-
-        $verifier = (new MessageVerifier($config))
-            ->setCallbacks($callbacks)
-            ->verifyFiles([__DIR__ . '/../../output/test_consumer-test_provider.json']);
-
-```
+[Click here](/example/src/Provider/public/index.php) to see the full sample file.
 
 ## Usage for the optional `pact-stub-service`
 

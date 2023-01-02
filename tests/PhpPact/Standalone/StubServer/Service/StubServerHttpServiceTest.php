@@ -40,7 +40,7 @@ class StubServerHttpServiceTest extends TestCase
             ->setEndpoint($endpoint);
 
         $this->stubServer = new StubServer($this->config);
-        $this->stubServer->start(10);
+        $this->stubServer->start();
         $this->service = new StubServerHttpService(new GuzzleClient(), $this->config);
     }
 

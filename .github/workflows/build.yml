@@ -27,6 +27,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          coverage: none
 
       - uses: ramsey/composer-install@v2
         with:
@@ -48,6 +49,7 @@ jobs:
         operating-system: [ ubuntu-latest, macos-latest, windows-latest ]
         php: [ '8.0', '8.1', '8.2' ]
         dependencies: [ 'lowest', 'locked' ]
+    timeout-minutes: 5
 
     name: PHP ${{ matrix.php }} on ${{ matrix.operating-system }} with ${{ matrix.dependencies }} dependencies
 
@@ -60,6 +62,7 @@ jobs:
         with:
           extensions: openssl, sockets, curl, zip, ffi
           php-version: ${{ matrix.php }}
+          coverage: none
 
       - name: Composer install
         uses: ramsey/composer-install@v2
