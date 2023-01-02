@@ -4,3 +4,4 @@ parameters:
         - src/PhpPact/Consumer/Driver/InteractionDriver.php
         - src/PhpPact/Consumer/Driver/AbstractMessageDriver.php
         - src/PhpPact/Consumer/Driver/MessageDriver.php
+        - src/PhpPact/Standalone/ProviderVerifier/Verifier.php

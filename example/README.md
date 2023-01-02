@@ -16,10 +16,6 @@ All examples could be run within tests.
 ## Consumer Tests for Message Processing
 
     vendor/bin/phpunit -c example/phpunit.message.consumer.xml
-
-## Provider Verification Tests for Message Processing
-
-    vendor/bin/phpunit -c example/phpunit.message.provider.xml
     
 ## All tests together 
 

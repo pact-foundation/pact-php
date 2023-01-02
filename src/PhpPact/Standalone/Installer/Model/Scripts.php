@@ -46,14 +46,6 @@ class Scripts
     /**
      * @return string
      */
-    public static function getProviderVerifier(): string
-    {
-        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-provider-verifier' . self::getSuffix();
-    }
-
-    /**
-     * @return string
-     */
     public static function getBroker(): string
     {
         return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-broker' . self::getSuffix();

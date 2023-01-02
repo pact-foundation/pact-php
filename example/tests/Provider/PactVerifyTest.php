@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class PactVerifyTest extends TestCase
 {
     /** @var ProcessRunner */
-    private $processRunner;
+    private ProcessRunner $processRunner;
 
     /**
      * Run the PHP build-in web server.
@@ -24,9 +24,10 @@ class PactVerifyTest extends TestCase
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
 
-        $this->processRunner = new ProcessRunner('php', ['-S', 'localhost:7202', '-t', $publicPath]);
+        $this->processRunner = new ProcessRunner('php', ['-S', 'localhost:7202', '-t', $publicPath, $publicPath . 'proxy.php']);
 
         $this->processRunner->run();
+        \sleep(1); // wait for server to start
     }
 
     /**
@@ -43,18 +44,22 @@ class PactVerifyTest extends TestCase
     public function testPactVerifyConsumer()
     {
         $config = new VerifierConfig();
-        $config
-            ->setProviderName('someProvider') // Providers name to fetch.
-            ->setProviderVersion('1.0.0') // Providers version.
-            ->setProviderBranch('main') // Providers git branch
-            ->setProviderBaseUrl(new Uri('http://localhost:7202')) // URL of the Provider.
-        ; // Flag the verifier service to publish the results to the Pact Broker.
+        $config->getProviderInfo()
+            ->setName('someProvider') // Providers name to fetch.
+            ->setHost('localhost')
+            ->setPort(7202);
+        $config->getProviderState()
+            ->setStateChangeUrl(new Uri('http://localhost:7202/change-state'))
+        ;
+        if ($level = \getenv('PACT_LOGLEVEL')) {
+            $config->setLogLevel($level);
+        }
 
         // Verify that the Consumer 'someConsumer' that is tagged with 'master' is valid.
         $verifier = new Verifier($config);
-        $verifier->verifyFiles([__DIR__ . '/../../pacts/someconsumer-someprovider.json']);
+        $verifier->addFile(__DIR__ . '/../../pacts/someconsumer-someprovider.json');
+        $verifier->addFile(__DIR__ . '/../../pacts/test_consumer-test_provider.json');
 
-        // This will not be reached if the PACT verifier throws an error, otherwise it was successful.
-        $this->assertTrue(true, 'Pact Verification has failed.');
+        $this->assertTrue($verifier->verify());
     }
 }
