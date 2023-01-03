@@ -2,7 +2,6 @@
 
 namespace PhpPact\Standalone\StubService\Service;
 
-use PhpPact\Exception\ConnectionException;
 use PhpPact\Http\ClientInterface;
 use PhpPact\Standalone\StubService\StubServerConfigInterface;
 
@@ -21,30 +20,6 @@ class StubServerHttpService implements StubServerHttpServiceInterface
     {
         $this->client = $client;
         $this->config = $config;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function healthCheck(): bool
-    {
-        $uri = $this->config->getBaseUri()->withPath('/');
-
-        $response = $this->client->get($uri, [
-            'headers' => [
-                'Content-Type'        => 'application/json',
-                'X-Pact-Mock-Service' => true,
-            ],
-        ]);
-
-        $body = $response->getBody()->getContents();
-
-        if ($response->getStatusCode() !== 200
-            || $body !== "Mock service running\n") {
-            throw new ConnectionException('Failed to receive a successful response from the Stub Server.');
-        }
-
-        return true;
     }
 
     /**

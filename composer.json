@@ -28,7 +28,7 @@
         "amphp/process": "^1.1.1",
         "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
         "phpunit/phpunit": ">=8.5.23 <10",
-        "tienvx/composer-downloads-plugin": "^1.1.0"
+        "tienvx/composer-downloads-plugin": "^1.2.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
@@ -77,10 +77,15 @@
                 "variables": {
                     "{$os}": "PHP_OS_FAMILY === 'Windows' ? 'win32' : (PHP_OS === 'Darwin' ? 'osx' : 'linux')",
                     "{$architecture}": "PHP_OS === 'Linux' ? '-x86_64' : ''",
-                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'zip' : 'tar.gz'"
+                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'zip' : 'tar.gz'",
+                    "{$keep}": "PHP_OS_FAMILY === 'Windows' ? 'pact-broker.bat' : 'pact-broker'"
                 },
                 "url": "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v{$version}/pact-{$version}-{$os}{$architecture}.{$extension}",
-                "path": "bin/pact-ruby-standalone"
+                "path": "bin/pact-ruby-standalone",
+                "ignore": [
+                    "bin/*",
+                    "!bin/{$keep}"
+                ]
             },
             "pact-ffi-headers": {
                 "version": "0.4.4",
@@ -97,6 +102,16 @@
                 },
                 "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/{$prefix}-{$os}-{$architecture}.{$extension}.gz",
                 "path": "bin/pact-ffi-lib/pact.{$extension}"
+            },
+            "pact-stub-server": {
+                "version": "0.5.3",
+                "variables": {
+                    "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
+                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? '.exe' : ''"
+                },
+                "url": "https://github.com/pact-foundation/pact-stub-server/releases/download/v{$version}/pact-stub-server-{$os}-x86_64{$extension}.gz",
+                "path": "bin/pact-stub-server/pact-stub-server{$extension}",
+                "executable": true
             }
         }
     },

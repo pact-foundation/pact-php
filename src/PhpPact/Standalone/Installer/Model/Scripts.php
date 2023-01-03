@@ -28,16 +28,11 @@ class Scripts
 
     public static function getStubService(): string
     {
-        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-stub-service' . self::getSuffix();
+        return self::$destinationDir . '/bin/pact-stub-server/pact-stub-server' . (PHP_OS_FAMILY === 'Windows' ? '.exe' : '');
     }
 
     public static function getBroker(): string
     {
-        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-broker' . self::getSuffix();
-    }
-
-    private static function getSuffix(): string
-    {
-        return (PHP_OS_FAMILY === 'Windows' ? '.bat' : '');
+        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-broker' . (PHP_OS_FAMILY === 'Windows' ? '.bat' : '');
     }
 }

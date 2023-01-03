@@ -394,14 +394,12 @@ Handle these requests on your provider:
 If you would like to test with fixtures, you can use the `pact-stub-service` like this:
 
 ```php
-$pactLocation             = __DIR__ . '/someconsumer-someprovider.json';
-$host                     = 'localhost';
-$port                     = 7201;
-$endpoint                 = 'test';
+$files    = [__DIR__ . '/someconsumer-someprovider.json'];
+$port     = 7201;
+$endpoint = 'test';
 
 $config = (new StubServerConfig())
-            ->setPactLocation($pactLocation)
-            ->setHost($host)
+            ->setFiles($files)
             ->setPort($port)
             ->setEndpoint($endpoint);
 

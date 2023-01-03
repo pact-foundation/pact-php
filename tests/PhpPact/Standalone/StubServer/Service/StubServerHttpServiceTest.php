@@ -14,13 +14,13 @@ use PHPUnit\Framework\TestCase;
 class StubServerHttpServiceTest extends TestCase
 {
     /** @var StubServerHttpServiceInterface */
-    private $service;
+    private StubServerHttpServiceInterface $service;
 
     /** @var StubServer */
-    private $stubServer;
+    private StubServer $stubServer;
 
     /** @var StubServerConfigInterface */
-    private $config;
+    private StubServerConfigInterface $config;
 
     /**
      * @throws MissingEnvVariableException
@@ -28,14 +28,12 @@ class StubServerHttpServiceTest extends TestCase
      */
     protected function setUp(): void
     {
-        $pactLocation = __DIR__ . '/../../../../_resources/someconsumer-someprovider.json';
-        $host         = 'localhost';
-        $port         = 7201;
-        $endpoint     = 'test';
+        $files    = [__DIR__ . '/../../../../_resources/someconsumer-someprovider.json'];
+        $port     = 7201;
+        $endpoint = 'test';
 
         $this->config = (new StubServerConfig())
-            ->setPactLocation($pactLocation)
-            ->setHost($host)
+            ->setFiles($files)
             ->setPort($port)
             ->setEndpoint($endpoint);
 
@@ -47,12 +45,6 @@ class StubServerHttpServiceTest extends TestCase
     protected function tearDown(): void
     {
         $this->stubServer->stop();
-    }
-
-    public function testHealthCheck()
-    {
-        $result = $this->service->healthCheck();
-        $this->assertTrue($result);
     }
 
     public function testGetJson()
