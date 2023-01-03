@@ -5,8 +5,8 @@ namespace Provider;
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
-use PhpPact\Standalone\Runner\ProcessRunner;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Process\Process;
 
 /**
  * This is an example on how you could use the included amphp/process wrapper to start your API to run PACT verification against a Provider.
@@ -14,8 +14,8 @@ use PHPUnit\Framework\TestCase;
  */
 class PactVerifyTest extends TestCase
 {
-    /** @var ProcessRunner */
-    private ProcessRunner $processRunner;
+    /** @var Process */
+    private Process $process;
 
     /**
      * Run the PHP build-in web server.
@@ -24,10 +24,12 @@ class PactVerifyTest extends TestCase
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
 
-        $this->processRunner = new ProcessRunner('php', ['-S', 'localhost:7202', '-t', $publicPath, $publicPath . 'proxy.php']);
+        $this->process = new Process(['php', '-S', 'localhost:7202', '-t', $publicPath, $publicPath . 'proxy.php']);
 
-        $this->processRunner->run();
-        \sleep(1); // wait for server to start
+        $this->process->start();
+        $this->process->waitUntil(function ($type, $output) {
+            return false !== \strpos($output, 'Development Server (http://localhost:7202) started');
+        });
     }
 
     /**
@@ -35,7 +37,7 @@ class PactVerifyTest extends TestCase
      */
     protected function tearDown(): void
     {
-        $this->processRunner->stop();
+        $this->process->stop();
     }
 
     /**

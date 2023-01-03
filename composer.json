@@ -19,12 +19,8 @@
     ],
     "require": {
         "php": "^8.0",
-        "ext-openssl": "*",
         "ext-json": "*",
-        "amphp/amp": "^2.5.1",
-        "amphp/byte-stream": "^1.8",
-        "amphp/log": "^1.1",
-        "amphp/process": "^1.1.1",
+        "symfony/process": "^4.4|^5.4|^6.0",
         "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
         "phpunit/phpunit": ">=8.5.23 <10",
         "tienvx/composer-downloads-plugin": "^1.2.0"

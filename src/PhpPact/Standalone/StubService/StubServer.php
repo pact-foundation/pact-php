@@ -2,10 +2,9 @@
 
 namespace PhpPact\Standalone\StubService;
 
-use Amp\Process\ProcessException;
 use Exception;
 use PhpPact\Standalone\Installer\Model\Scripts;
-use PhpPact\Standalone\Runner\ProcessRunner;
+use Symfony\Component\Process\Process;
 
 /**
  * Ruby Standalone Stub Server Wrapper
@@ -16,8 +15,8 @@ class StubServer
     /** @var StubServerConfigInterface */
     private StubServerConfigInterface $config;
 
-    /** @var ProcessRunner */
-    private ProcessRunner $processRunner;
+    /** @var Process */
+    private Process $process;
 
     public function __construct(StubServerConfigInterface $config)
     {
@@ -27,32 +26,32 @@ class StubServer
     /**
      * Start the Stub Server. Verify that it is running.
      *
-     * @param int $wait seconds to delay for the server to come up
-     *
      * @throws Exception
      *
-     * @return int process ID of the started Stub Server
+     * @return int|null process ID of the started Stub Server if running, null otherwise
      */
-    public function start(int $wait = 1): int
+    public function start(): ?int
     {
-        $this->processRunner = new ProcessRunner(Scripts::getStubService(), $this->getArguments());
+        $this->process = new Process([Scripts::getStubService(), ...$this->getArguments()]);
 
-        $processId =  $this->processRunner->run();
-        \sleep($wait); // wait for server to start
+        $this->process->start();
+        $this->process->waitUntil(function ($type, $output) {
+            return false !== \strpos($output, 'Server started on port');
+        });
 
-        return $processId;
+        return $this->process->getPid();
     }
 
     /**
      * Stop the Stub Server process.
      *
-     * @throws ProcessException
-     *
      * @return bool Was stopping successful?
      */
     public function stop(): bool
     {
-        return $this->processRunner->stop();
+        $this->process->stop();
+
+        return true;
     }
 
     /**

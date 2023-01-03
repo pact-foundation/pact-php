@@ -4,13 +4,13 @@ namespace PhpPactTest\Standalone\ProviderVerifier;
 
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
-use PhpPact\Standalone\Runner\ProcessRunner;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Process\Process;
 
 class VerifierTest extends TestCase
 {
-    /** @var ProcessRunner */
-    private ProcessRunner $processRunner;
+    /** @var Process */
+    private Process $process;
 
     /**
      * Run the PHP build-in web server.
@@ -19,10 +19,12 @@ class VerifierTest extends TestCase
     {
         $publicPath    =  __DIR__ . '/../../../_public/';
 
-        $this->processRunner = new ProcessRunner('php', ['-S', 'localhost:7202', '-t', $publicPath]);
+        $this->process = new Process(['php', '-S', 'localhost:7202', '-t', $publicPath]);
 
-        $this->processRunner->run();
-        \sleep(1); // wait for server to start
+        $this->process->start();
+        $this->process->waitUntil(function ($type, $output) {
+            return false !== \strpos($output, 'Development Server (http://localhost:7202) started');
+        });
     }
 
     /**
@@ -30,7 +32,7 @@ class VerifierTest extends TestCase
      */
     protected function tearDown(): void
     {
-        $this->processRunner->stop();
+        $this->process->stop();
     }
 
     public function testVerify(): void
