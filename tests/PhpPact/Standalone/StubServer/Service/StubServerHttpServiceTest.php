@@ -14,13 +14,13 @@ use PHPUnit\Framework\TestCase;
 class StubServerHttpServiceTest extends TestCase
 {
     /** @var StubServerHttpServiceInterface */
-    private $service;
+    private StubServerHttpServiceInterface $service;
 
     /** @var StubServer */
-    private $stubServer;
+    private StubServer $stubServer;
 
     /** @var StubServerConfigInterface */
-    private $config;
+    private StubServerConfigInterface $config;
 
     /**
      * @throws MissingEnvVariableException
@@ -29,18 +29,16 @@ class StubServerHttpServiceTest extends TestCase
     protected function setUp(): void
     {
         $pactLocation = __DIR__ . '/../../../../_resources/someconsumer-someprovider.json';
-        $host         = 'localhost';
         $port         = 7201;
         $endpoint     = 'test';
 
         $this->config = (new StubServerConfig())
-            ->setPactLocation($pactLocation)
-            ->setHost($host)
+            ->setFiles($pactLocation)
             ->setPort($port)
             ->setEndpoint($endpoint);
 
         $this->stubServer = new StubServer($this->config);
-        $this->stubServer->start(10);
+        $this->stubServer->start();
         $this->service = new StubServerHttpService(new GuzzleClient(), $this->config);
     }
 

@@ -15,15 +15,13 @@ class StubServerTest extends TestCase
     {
         try {
             $pactLocation = __DIR__ . '/../../../_resources/someconsumer-someprovider.json';
-            $host         = 'localhost';
             $port         = 7201;
             $endpoint     = 'test';
 
             $subject = (new StubServerConfig())
-                ->setPactLocation($pactLocation)
-                ->setHost($host)
+                ->setFiles($pactLocation)
                 ->setPort($port)
-            ->setEndpoint($endpoint);
+                ->setEndpoint($endpoint);
 
             $stubServer = new StubServer($subject);
             $pid        = $stubServer->start();
