@@ -385,13 +385,11 @@ If you would like to test with fixtures, you can use the `pact-stub-service` lik
 
 ```php
 $pactLocation             = __DIR__ . '/someconsumer-someprovider.json';
-$host                     = 'localhost';
 $port                     = 7201;
 $endpoint                 = 'test';
 
 $config = (new StubServerConfig())
-            ->setPactLocation($pactLocation)
-            ->setHost($host)
+            ->setFiles($pactLocation)
             ->setPort($port)
             ->setEndpoint($endpoint);
 

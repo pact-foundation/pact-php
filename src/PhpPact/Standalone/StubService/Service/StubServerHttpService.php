@@ -17,12 +17,12 @@ class StubServerHttpService implements StubServerHttpServiceInterface
     /**
      * @var ClientInterface
      */
-    private $client;
+    private ClientInterface $client;
 
     /**
      * @var StubServerConfigInterface
      */
-    private $config;
+    private StubServerConfigInterface $config;
 
     /**
      * StubServerHttpService constructor.
