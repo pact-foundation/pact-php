@@ -2,3 +2,9 @@ parameters:
     level: 7
     paths:
         - src
+    ignoreErrors:
+        -
+            messages:
+                - '#Method PhpPact\\Standalone\\Broker\\Broker::[a-zA-Z0-9\\_]+\(\) return type has no value type specified in iterable type array\.#'
+                - '#Method PhpPact\\Standalone\\Broker\\Broker::[a-zA-Z0-9\\_]+\(\) has parameter \$options with no value type specified in iterable type array\.#'
+            path: src/PhpPact/Standalone/Broker/Broker.php

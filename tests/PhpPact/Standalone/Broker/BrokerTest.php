@@ -21,9 +21,14 @@ class BrokerTest extends TestCase
             ->setBrokerPassword('somepassword')
         ))->getArguments();
 
-        $this->assertContains('--broker-token=someToken', $arguments);
-        $this->assertContains('--broker-username=someusername', $arguments);
-        $this->assertContains('--broker-password=somepassword', $arguments);
+        $this->assertSame([
+            '--broker-token',
+            'someToken',
+            '--broker-username',
+            'someusername',
+            '--broker-password',
+            'somepassword',
+        ], $arguments);
     }
 
     /**

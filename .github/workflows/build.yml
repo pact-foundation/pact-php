@@ -60,7 +60,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          extensions: openssl, sockets, curl, zip, ffi
+          extensions: sockets, curl, zip, ffi
           php-version: ${{ matrix.php }}
           coverage: none
 

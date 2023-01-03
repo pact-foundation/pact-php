@@ -2,8 +2,9 @@
 
 namespace PhpPact\Standalone\Broker;
 
+use Exception;
 use PhpPact\Standalone\Installer\Model\Scripts;
-use PhpPact\Standalone\Runner\ProcessRunner;
+use Symfony\Component\Process\Process;
 
 class Broker
 {
@@ -17,25 +18,13 @@ class Broker
         $this->command = Scripts::getBroker();
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function canIDeploy(): mixed
+    public function canIDeploy(): array
     {
-        $runner = new ProcessRunner(
-            $this->command,
-            \array_merge(
-                [
-                    'can-i-deploy',
-                    '--pacticipant=\'' . $this->config->getPacticipant().'\'',
-                    '--version=' . $this->config->getVersion()
-                ],
-                $this->getArguments()
-            )
-        );
-        $runner->runBlocking();
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return $this->runThenDecodeJson([
+            'can-i-deploy',
+            '--pacticipant', $this->config->getPacticipant(),
+            '--version', $this->config->getVersion(),
+        ]);
     }
 
     /**
@@ -46,161 +35,93 @@ class Broker
         $parameters = [];
 
         if ($this->config->getBrokerUri() !== null) {
-            $parameters[] = "--broker-base-url={$this->config->getBrokerUri()}";
+            $parameters[] = '--broker-base-url';
+            $parameters[] = $this->config->getBrokerUri();
         }
 
         if ($this->config->getBrokerToken() !== null) {
-            $parameters[] = "--broker-token={$this->config->getBrokerToken()}";
+            $parameters[] = '--broker-token';
+            $parameters[] = $this->config->getBrokerToken();
         }
 
         if ($this->config->getBrokerUsername() !== null) {
-            $parameters[] = "--broker-username={$this->config->getBrokerUsername()}";
+            $parameters[] = '--broker-username';
+            $parameters[] = $this->config->getBrokerUsername();
         }
 
         if ($this->config->getBrokerPassword() !== null) {
-            $parameters[] = "--broker-password={$this->config->getBrokerPassword()}";
+            $parameters[] = '--broker-password';
+            $parameters[] = $this->config->getBrokerPassword();
         }
 
         return $parameters;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function createOrUpdatePacticipant(): mixed
+    public function createOrUpdatePacticipant(): array
     {
-        $runner = new ProcessRunner(
-            $this->command,
-            \array_merge(
-                [
-                    'create-or-update-pacticipant',
-                    '--name=' . $this->config->getName(),
-                    '--repository-url=' . $this->config->getRepositoryUrl(),
-                ],
-                $this->getArguments()
-            )
-        );
-        $runner->runBlocking();
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return $this->runThenDecodeJson([
+            'create-or-update-pacticipant',
+            '--name', $this->config->getName(),
+            '--repository-url', $this->config->getRepositoryUrl(),
+        ]);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function createOrUpdateWebhook(): mixed
+    public function createOrUpdateWebhook(): array
     {
-        $runner = new ProcessRunner(
-            $this->command,
-            \array_merge(
-                [
-                    'create-or-update-webhook',
-                    $this->config->getUrl(),
-                    '--request=' . $this->config->getRequest(),
-                    '--header=' . $this->config->getHeader(),
-                    '--data=' . $this->config->getData(),
-                    '--user=' . $this->config->getUser(),
-                    '--consumer=' . $this->config->getConsumer(),
-                    '--provider=' . $this->config->getProvider(),
-                    '--description=' . $this->config->getDescription(),
-                    '--uuid=' . $this->config->getUuid(),
-                ],
-                $this->getArguments()
-            )
-        );
-        $runner->runBlocking();
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return $this->runThenDecodeJson([
+            'create-or-update-webhook',
+            $this->config->getUrl(),
+            '--request', $this->config->getRequest(),
+            '--header', $this->config->getHeader(),
+            '--data', $this->config->getData(),
+            '--user', $this->config->getUser(),
+            '--consumer', $this->config->getConsumer(),
+            '--provider', $this->config->getProvider(),
+            '--description', $this->config->getDescription(),
+            '--uuid', $this->config->getUuid(),
+        ]);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function createVersionTag(): mixed
+    public function createVersionTag(): array
     {
-        $runner = new ProcessRunner(
-            $this->command,
-            \array_merge(
-                [
-                    'create-version-tag',
-                    '--pacticipant=\'' . $this->config->getPacticipant().'\'',
-                    '--version=' . $this->config->getVersion(),
-                    '--tag=' . $this->config->getTag(),
-                ],
-                $this->getArguments()
-            )
-        );
-        $runner->runBlocking();
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return $this->runThenDecodeJson([
+            'create-version-tag',
+            '--pacticipant', $this->config->getPacticipant(),
+            '--version', $this->config->getVersion(),
+            '--tag', $this->config->getTag(),
+        ]);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function createWebhook(): mixed
+    public function createWebhook(): array
     {
-        $runner = new ProcessRunner(
-            $this->command,
-            \array_merge(
-                [
-                    'create-webhook',
-                    $this->config->getUrl(),
-                    '--request=' . $this->config->getRequest(),
-                    '--header=' . $this->config->getHeader(),
-                    '--data=' . $this->config->getData(),
-                    '--user=' . $this->config->getUser(),
-                    '--consumer=' . $this->config->getConsumer(),
-                    '--provider=' . $this->config->getProvider(),
-                    '--description=' . $this->config->getDescription(),
-                ],
-                $this->getArguments()
-            )
-        );
-        $runner->runBlocking();
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return $this->runThenDecodeJson([
+            'create-webhook',
+            $this->config->getUrl(),
+            '--request', $this->config->getRequest(),
+            '--header', $this->config->getHeader(),
+            '--data', $this->config->getData(),
+            '--user', $this->config->getUser(),
+            '--consumer', $this->config->getConsumer(),
+            '--provider', $this->config->getProvider(),
+            '--description', $this->config->getDescription(),
+        ]);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function describeVersion(): mixed
+    public function describeVersion(): array
     {
-        $runner = new ProcessRunner(
-            $this->command,
-            \array_merge(
-                [
-                    'describe-version',
-                    '--pacticipant=\'' . $this->config->getPacticipant().'\'',
-                    '--output=json',
-                ],
-                $this->getArguments()
-            )
-        );
-        $runner->runBlocking();
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return $this->runThenDecodeJson([
+            'describe-version',
+            '--pacticipant', $this->config->getPacticipant(),
+            '--output', 'json',
+        ]);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function listLatestPactVersions(): mixed
+    public function listLatestPactVersions(): array
     {
-        $runner = new ProcessRunner(
-            $this->command,
-            \array_merge(
-                [
-                    'list-latest-pact-versions',
-                    '--output=json',
-                ],
-                $this->getArguments()
-            )
-        );
-        $runner->runBlocking();
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return $this->runThenDecodeJson([
+            'list-latest-pact-versions',
+            '--output', 'json',
+        ]);
     }
 
     public function publish(): void
@@ -208,53 +129,53 @@ class Broker
         $options = [
             'publish',
             $this->config->getPactLocations(),
-            '--consumer-app-version=' . $this->config->getConsumerVersion(),
+            '--consumer-app-version', $this->config->getConsumerVersion(),
         ];
 
         if (null !== $this->config->getBranch()) {
-            $options[] = '--branch=' . $this->config->getBranch();
+            $options[] = '--branch';
+            $options[] = $this->config->getBranch();
         }
 
         if (null !== $this->config->getTag()) {
-            $options[] = '--tag=' . $this->config->getTag();
+            $options[] = '--tag';
+            $options[] = $this->config->getTag();
         }
 
-        $runner = new ProcessRunner(
-            $this->command,
-            \array_merge(
-                $options,
-                $this->getArguments()
-            )
-        );
-
-        $runner->runBlocking();
+        $this->run($options);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function testWebhook(): mixed
+    public function testWebhook(): array
     {
-        $runner = new ProcessRunner(
-            $this->command,
-            \array_merge(
-                [
-                    'test-webhook',
-                    '--uuid=' . $this->config->getUuid(),
-                ],
-                $this->getArguments()
-            )
-        );
-        $runner->runBlocking();
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return $this->runThenDecodeJson([
+            'test-webhook',
+            '--uuid', $this->config->getUuid(),
+        ]);
     }
 
     public function generateUuid(): string
     {
-        $runner = new ProcessRunner($this->command, ['generate-uuid']);
-        $runner->runBlocking();
+        return \rtrim($this->run(['generate-uuid']));
+    }
 
-        return \rtrim($runner->getOutput());
+    private function run(array $options): string
+    {
+        $process = new Process([
+            $this->command,
+            ...$options,
+            ...$this->getArguments(),
+        ]);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new Exception("PactPHP Process returned non-zero exit code: {$process->getExitCode()}", $process->getExitCode());
+        }
+
+        return $process->getOutput();
+    }
+
+    private function runThenDecodeJson(array $options): array
+    {
+        return \json_decode($this->run($options), true, 512, JSON_THROW_ON_ERROR);
     }
 }
