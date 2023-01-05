@@ -6,7 +6,7 @@ namespace PhpPact\Consumer\Model;
  * Request initiated by the consumer.
  * Class ConsumerRequest.
  */
-class ConsumerRequest implements \JsonSerializable
+class ConsumerRequest
 {
     /**
      * @var string
@@ -190,33 +190,5 @@ class ConsumerRequest implements \JsonSerializable
     private function addQueryParameterValue(string $key, string $value): void
     {
         $this->query[$key][] = $value;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function jsonSerialize(): array
-    {
-        $results = [];
-
-        $results['method'] = $this->getMethod();
-
-        if ($this->getHeaders() !== null) {
-            $results['headers'] = $this->getHeaders();
-        }
-
-        if ($this->getPath() !== null) {
-            $results['path'] = $this->getPath();
-        }
-
-        if ($this->getBody() !== null) {
-            $results['body'] = $this->getBody();
-        }
-
-        if ($this->getQuery() !== null) {
-            $results['query'] = $this->getQuery();
-        }
-
-        return $results;
     }
 }

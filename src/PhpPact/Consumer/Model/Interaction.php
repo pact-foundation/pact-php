@@ -6,7 +6,7 @@ namespace PhpPact\Consumer\Model;
  * Request/Response Pair to be posted to the Ruby Standalone Mock Server for PACT tests.
  * Class Interaction.
  */
-class Interaction implements \JsonSerializable
+class Interaction
 {
     use ProviderStates;
 
@@ -108,26 +108,5 @@ class Interaction implements \JsonSerializable
         $this->response = $response;
 
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function jsonSerialize(): array
-    {
-        if ($this->getProviderState()) {
-            return [
-                'description'   => $this->getDescription(),
-                'providerState' => $this->getProviderState(),
-                'request'       => $this->getRequest(),
-                'response'      => $this->getResponse(),
-            ];
-        }
-
-        return [
-                'description'   => $this->getDescription(),
-                'request'       => $this->getRequest(),
-                'response'      => $this->getResponse(),
-            ];
     }
 }

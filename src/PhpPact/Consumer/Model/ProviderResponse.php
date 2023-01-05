@@ -6,7 +6,7 @@ namespace PhpPact\Consumer\Model;
  * Response expectation that would be in response to a Consumer request from the Provider.
  * Class ProviderResponse.
  */
-class ProviderResponse implements \JsonSerializable
+class ProviderResponse
 {
     /**
      * @var int
@@ -114,25 +114,5 @@ class ProviderResponse implements \JsonSerializable
         }
 
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function jsonSerialize(): array
-    {
-        $results = [
-            'status' => $this->getStatus(),
-        ];
-
-        if ($this->getHeaders() !== null) {
-            $results['headers'] = $this->getHeaders();
-        }
-
-        if ($this->getBody() !== null) {
-            $results['body'] = $this->getBody();
-        }
-
-        return $results;
     }
 }
