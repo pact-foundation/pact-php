@@ -35,7 +35,8 @@
         "amphp/cache": "^1.4.0",
         "amphp/windows-registry": "v0.3.3",
         "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
-        "phpunit/phpunit": ">=8.5.23"
+        "phpunit/phpunit": ">=8.5.23",
+        "tienvx/composer-downloads-plugin": "^1.1.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
@@ -69,13 +70,29 @@
         }
     },
     "scripts": {
-        "post-update-cmd": [
-            "\\PhpPact\\Standalone\\Installer\\InstallManager::uninstall"
-        ],
         "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
         "static-code-analysis": "phpstan analyse src/ --level=5",
         "lint": "php-cs-fixer fix --config .php-cs-fixer.php --dry-run",
         "fix": "php-cs-fixer fix --config .php-cs-fixer.php",
         "test": "phpunit --debug -c example/phpunit.all.xml"
+    },
+    "extra": {
+        "downloads": {
+            "pact-ruby-standalone": {
+                "version": "1.91.0",
+                "variables": {
+                    "{$os}": "PHP_OS_FAMILY === 'Windows' ? 'win32' : (PHP_OS === 'Darwin' ? 'osx' : 'linux')",
+                    "{$architecture}": "PHP_OS === 'Linux' ? '-x86_64' : ''",
+                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'zip' : 'tar.gz'"
+                },
+                "url": "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v{$version}/pact-{$version}-{$os}{$architecture}.{$extension}",
+                "path": "bin/pact-ruby-standalone"
+            }
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "tienvx/composer-downloads-plugin": true
+        }
     }
 }

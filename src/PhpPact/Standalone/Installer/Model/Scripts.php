@@ -4,101 +4,59 @@ namespace PhpPact\Standalone\Installer\Model;
 
 /**
  * Represents locations of Ruby Standalone full path and scripts.
- * Class BinaryScripts.
+ * Class Scripts.
  */
 class Scripts
 {
     /**
-     * Path to PhpPact Mock Service.
+     * Destination directory for PACT folder.
      *
      * @var string
      */
-    private $mockService;
+    private static string $destinationDir = __DIR__ . '/../../../../..';
 
     /**
-     * Path to the PhpPact Stub Service.
-     *
-     * @var string
+     * @return string
      */
-    private $stubService;
-
-    /**
-     * Path to the PhpPact Pact Message.
-     *
-     * @var string
-     */
-    private $pactMessage;
-
-    /**
-     * Path to the PhpPact Provider Verifier.
-     *
-     * @var string
-     */
-    private $providerVerifier;
-
-    /**
-     * @var string
-     */
-    private $broker;
-
-    public function __construct(string $mockService, string $stubService, string $providerVerifier, string $pactMessage, string $broker)
+    public static function getMockService(): string
     {
-        $this->mockService      = $mockService;
-        $this->stubService      = $stubService;
-        $this->providerVerifier = $providerVerifier;
-        $this->pactMessage      = $pactMessage;
-        $this->broker           = $broker;
+        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-mock-service' . self::getSuffix();
     }
 
     /**
      * @return string
      */
-    public function getMockService(): string
+    public static function getStubService(): string
     {
-        return $this->mockService;
+        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-stub-service' . self::getSuffix();
     }
 
     /**
      * @return string
      */
-    public function getStubService(): string
+    public static function getProviderVerifier(): string
     {
-        return $this->stubService;
+        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-provider-verifier' . self::getSuffix();
     }
 
     /**
      * @return string
      */
-    public function getProviderVerifier(): string
+    public static function getBroker(): string
     {
-        return $this->providerVerifier;
-    }
-
-    /**
-     * @param string $providerVerifier
-     *
-     * @return Scripts
-     */
-    public function setProviderVerifier(string $providerVerifier): self
-    {
-        $this->providerVerifier = $providerVerifier;
-
-        return $this;
+        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-broker' . self::getSuffix();
     }
 
     /**
      * @return string
      */
-    public function getBroker(): string
+    public static function getPactMessage(): string
     {
-        return $this->broker;
+        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-message' . self::getSuffix();
     }
 
-    /**
-     * @return string
-     */
-    public function getPactMessage(): string
+    private static function getSuffix(): string
     {
-        return $this->pactMessage;
+        return (PHP_OS_FAMILY === 'Windows' ? '.bat' : '');
     }
 }

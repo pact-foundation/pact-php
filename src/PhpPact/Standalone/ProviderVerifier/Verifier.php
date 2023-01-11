@@ -7,10 +7,6 @@ use GuzzleHttp\Middleware;
 use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
 use PhpPact\Http\GuzzleClient;
-use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
-use PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException;
-use PhpPact\Standalone\Installer\InstallManager;
-use PhpPact\Standalone\Installer\Service\InstallerInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 
 /**
@@ -31,21 +27,16 @@ class Verifier
     /** @var null|BrokerHttpClientInterface */
     protected $brokerHttpClient;
 
-    /** @var InstallManager */
-    protected $installManager;
-
     /** @var null|VerifierProcess */
     protected $verifierProcess;
 
     public function __construct(
         VerifierConfigInterface $config,
-        InstallManager $installManager = null,
         VerifierProcess $verifierProcess = null,
         BrokerHttpClient $brokerHttpClient = null
     ) {
         $this->config             = $config;
-        $this->installManager     = $installManager ?: new InstallManager();
-        $this->verifierProcess    = $verifierProcess ?: new VerifierProcess($this->installManager);
+        $this->verifierProcess    = $verifierProcess ?: new VerifierProcess();
         $this->processTimeout     = $config->getProcessTimeout();
         $this->processIdleTimeout = $config->getProcessIdleTimeout();
 
@@ -157,9 +148,6 @@ class Verifier
      * @param null|string $tag             optional tag of the consumer such as a branch name
      * @param null|string $consumerVersion optional specific version of the consumer; this is overridden by tag
      *
-     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
-     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
-     *
      * @return Verifier
      */
     public function verify(string $consumerName, string $tag = null, string $consumerVersion = null): self
@@ -188,9 +176,6 @@ class Verifier
      *
      * @param array $files paths to pact json files
      *
-     * @throws FileDownloadFailureException
-     * @throws NoDownloaderFoundException
-     *
      * @return Verifier
      */
     public function verifyFiles(array $files): self
@@ -204,9 +189,6 @@ class Verifier
 
     /**
      * Verify all Pacts from the Pact Broker are valid for the Provider.
-     *
-     * @throws FileDownloadFailureException
-     * @throws NoDownloaderFoundException
      */
     public function verifyAll()
     {
@@ -221,9 +203,6 @@ class Verifier
      * Verify all PACTs for a given tag.
      *
      * @param string $tag
-     *
-     * @throws FileDownloadFailureException
-     * @throws NoDownloaderFoundException
      */
     public function verifyAllForTag(string $tag)
     {
@@ -236,27 +215,10 @@ class Verifier
 
     /**
      * Verify all PACTs that match the VerifierConfig
-     *
-     * @throws FileDownloadFailureException
-     * @throws NoDownloaderFoundException
      */
     public function verifyFromConfig()
     {
         $this->verifyAction($this->getArguments());
-    }
-
-    /**
-     * Wrapper to add a custom installer.
-     *
-     * @param InstallerInterface $installer
-     *
-     * @return self
-     */
-    public function registerInstaller(InstallerInterface $installer): self
-    {
-        $this->installManager->registerInstaller($installer);
-
-        return $this;
     }
 
     public function getTimeoutValues(): array
@@ -268,9 +230,6 @@ class Verifier
      * Trigger execution of the Pact Verifier Service.
      *
      * @param array $arguments
-     *
-     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
-     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
      */
     protected function verifyAction(array $arguments)
     {

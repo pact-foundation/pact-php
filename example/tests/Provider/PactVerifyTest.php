@@ -3,8 +3,6 @@
 namespace Provider;
 
 use GuzzleHttp\Psr7\Uri;
-use PhpPact\Standalone\Installer\Exception\FileDownloadFailureException;
-use PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
 use PhpPact\Standalone\Runner\ProcessRunner;
@@ -41,9 +39,6 @@ class PactVerifyTest extends TestCase
 
     /**
      * This test will run after the web server is started.
-     *
-     * @throws FileDownloadFailureException
-     * @throws NoDownloaderFoundException
      */
     public function testPactVerifyConsumer()
     {

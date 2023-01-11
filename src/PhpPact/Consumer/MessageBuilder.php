@@ -108,9 +108,6 @@ class MessageBuilder implements BuilderInterface
     /**
      * Run reify to create an example pact from the message (i.e. create messages from matchers)
      *
-     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
-     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
-     *
      * @return string
      */
     public function reify(): string
@@ -168,9 +165,6 @@ class MessageBuilder implements BuilderInterface
 
     /**
      * Write the Pact without deleting the interactions.
-     *
-     * @throws \PhpPact\Standalone\Installer\Exception\FileDownloadFailureException
-     * @throws \PhpPact\Standalone\Installer\Exception\NoDownloaderFoundException
      *
      * @return bool
      */
