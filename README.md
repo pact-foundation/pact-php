@@ -35,6 +35,8 @@ Table of contents
     * [Examples](#additional-examples)
 
 ## Versions
+9.X updates internal dependencies and libraries.   This results in dropping PHP 7.4
+
 8.X updates internal dependencies and libraries.   This results in dropping PHP 7.3
 
 7.x updates internal dependencies and libraries, mostly to Guzzle 7.X.  This results in dropping support for PHP 7.2.
