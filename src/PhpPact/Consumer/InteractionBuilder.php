@@ -94,12 +94,4 @@ class InteractionBuilder implements BuilderInterface
     {
         $this->pact->createMockServer();
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function writePact(): bool
-    {
-        return true;
-    }
 }
