@@ -5,6 +5,8 @@ namespace PhpPact\Standalone\Installer\Model;
 /**
  * Represents locations of Ruby Standalone full path and scripts.
  * Class Scripts.
+ *
+ * @internal
  */
 class Scripts
 {
