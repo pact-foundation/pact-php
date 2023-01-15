@@ -107,7 +107,7 @@ class Matcher
      *
      * @return array
      */
-    public function regex($value, string $pattern)
+    public function regex($value, string $pattern): array
     {
         return $this->term($value, $pattern);
     }
