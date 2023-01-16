@@ -88,20 +88,23 @@ class ConsumerRequest implements \JsonSerializable
      */
     public function setHeaders(array $headers): self
     {
-        $this->headers = $headers;
+        $this->headers = [];
+        foreach ($headers as $header => $value) {
+            $this->addHeader($header, $value);
+        }
 
         return $this;
     }
 
     /**
-     * @param string       $header
-     * @param array|string $value
+     * @param string $header
+     * @param string $value
      *
      * @return ConsumerRequest
      */
-    public function addHeader(string $header, array|string $value): self
+    public function addHeader(string $header, string $value): self
     {
-        $this->headers[$header] = is_array($value) ? json_encode($value) : $value;
+        $this->headers[$header] = $value;
 
         return $this;
     }
@@ -148,20 +151,23 @@ class ConsumerRequest implements \JsonSerializable
      */
     public function setQuery(array $query): self
     {
-        $this->query = $query;
+        $this->query = [];
+        foreach ($query as $key => $value) {
+            $this->addQueryParameter($key, $value);
+        }
 
         return $this;
     }
 
     /**
      * @param string $key
-     * @param array|string $value
+     * @param string $value
      *
      * @return ConsumerRequest
      */
-    public function addQueryParameter(string $key, array|string $value): self
+    public function addQueryParameter(string $key, string $value): self
     {
-        $this->query[$key] = is_array($value) ? json_encode($value) : $value;
+        $this->query[$key] = $value;
 
         return $this;
     }
