@@ -245,13 +245,18 @@ class Broker
                 $this->getArguments()
             )
         );
-        $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            $this->logger->error($runner->getStderr());
+        try {
+            $runner->runBlocking();
+
+            $this->logger->info('out > ' . $runner->getOutput());
+            $this->logger->error('err > ' . $runner->getStderr());
+        } catch (\Exception $e) {
+            $this->logger->info('out > ' . $runner->getOutput());
+            $this->logger->error('err > ' . $runner->getStderr());
+
+            throw $e;
         }
-
-        $this->logger->debug($runner->getOutput());
     }
 
     public function testWebhook()
