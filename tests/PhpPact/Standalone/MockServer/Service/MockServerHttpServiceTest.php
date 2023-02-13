@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Standalone\MockService\Service;
+namespace PhpPactTest\Standalone\MockServer\Service;
 
 use GuzzleHttp\Exception\ServerException;
 use PhpPact\Consumer\InteractionBuilder;
@@ -14,6 +14,8 @@ use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PhpPact\Standalone\MockService\MockServer;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
+use PhpPact\Standalone\MockService\Service\MockServerHttpService;
+use PhpPact\Standalone\MockService\Service\MockServerHttpServiceInterface;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 

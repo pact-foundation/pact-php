@@ -1,8 +1,8 @@
 <?php
 
-namespace PhpPact\Consumer;
+namespace PhpPactTest\Standalone\MockServer;
 
-use GuzzleHttp\Exception\ConnectException;
+use PhpPact\Exception\ConnectionException;
 use PhpPact\Standalone\Exception\HealthCheckFailedException;
 use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PhpPact\Standalone\MockService\MockServer;
@@ -43,7 +43,7 @@ class MockServerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $connectionException = $this->getMockBuilder(ConnectException::class)
+        $connectionException = $this->getMockBuilder(ConnectionException::class)
             ->disableOriginalConstructor()
             ->getMock();
 
