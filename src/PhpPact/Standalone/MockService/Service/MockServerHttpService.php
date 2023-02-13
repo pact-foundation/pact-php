@@ -7,6 +7,7 @@ use PhpPact\Consumer\Model\Message;
 use PhpPact\Exception\ConnectionException;
 use PhpPact\Http\ClientInterface;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
+use GuzzleHttp\Exception\ConnectException as GuzzleConnectionException;
 
 /**
  * Http Service that interacts with the Ruby Standalone Mock Server.
@@ -45,18 +46,22 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     {
         $uri = $this->config->getBaseUri()->withPath('/');
 
-        $response = $this->client->get($uri, [
-            'headers' => [
-                'Content-Type'        => 'application/json',
-                'X-Pact-Mock-Service' => true,
-            ],
-        ]);
+        try {
+            $response = $this->client->get($uri, [
+                'headers' => [
+                    'Content-Type'        => 'application/json',
+                    'X-Pact-Mock-Service' => true,
+                ],
+            ]);
 
-        $body = $response->getBody()->getContents();
+            $body = $response->getBody()->getContents();
 
-        if ($response->getStatusCode() !== 200
-            || $body !== "Mock service running\n") {
-            throw new ConnectionException('Failed to receive a successful response from the Mock Server.');
+            if ($response->getStatusCode() !== 200
+                || $body !== "Mock service running\n") {
+                throw new ConnectionException('Failed to receive a successful response from the Mock Server.');
+            }
+        } catch (GuzzleConnectionException $e) {
+            throw new ConnectionException('Failed to receive a successful response from the Mock Server.', $e);
         }
 
         return true;
