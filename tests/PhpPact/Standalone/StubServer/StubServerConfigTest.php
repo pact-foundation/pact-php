@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Consumer;
+namespace PhpPactTest\Standalone\StubServer;
 
 use PhpPact\Standalone\StubService\StubServerConfig;
 use PHPUnit\Framework\TestCase;

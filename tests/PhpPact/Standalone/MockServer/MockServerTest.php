@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Consumer;
+namespace PhpPactTest\Standalone\MockServer;
 
 use GuzzleHttp\Exception\ConnectException;
 use PhpPact\Standalone\Exception\HealthCheckFailedException;
