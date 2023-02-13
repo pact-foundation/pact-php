@@ -3,12 +3,12 @@
 namespace PhpPact\Standalone\MockService;
 
 use Exception;
-use GuzzleHttp\Exception\ConnectException;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Exception\HealthCheckFailedException;
 use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 use PhpPact\Standalone\Runner\ProcessRunner;
+use PhpPact\Exception\ConnectionException;
 
 /**
  * Ruby Standalone Mock Server Wrapper
@@ -135,15 +135,12 @@ class MockServer
             ++$tries;
 
             try {
-                $status = $service->healthCheck();
-
-                return $status;
-            } catch (ConnectException $e) {
+                return $service->healthCheck();
+            } catch (ConnectionException $e) {
                 \sleep($retrySec);
             }
         } while ($tries <= $maxTries);
 
-        // @phpstan-ignore-next-line
         throw new HealthCheckFailedException("Failed to make connection to Mock Server in {$maxTries} attempts.");
     }
 }
