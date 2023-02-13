@@ -2,6 +2,7 @@
 
 namespace PhpPact\Standalone\MockService\Service;
 
+use GuzzleHttp\Exception\RequestException;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Exception\ConnectionException;
@@ -60,6 +61,8 @@ class MockServerHttpService implements MockServerHttpServiceInterface
                 || $body !== "Mock service running\n") {
                 throw new ConnectionException('Failed to receive a successful response from the Mock Server.');
             }
+        } catch (RequestException $e) {
+            throw new ConnectionException('Failed to receive a successful response from the Mock Server.', $e);
         } catch (GuzzleConnectionException $e) {
             throw new ConnectionException('Failed to receive a successful response from the Mock Server.', $e);
         }
