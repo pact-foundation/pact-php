@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Consumer;
+namespace PhpPactTest\Standalone\MockServer;
 
 use PhpPact\Standalone\MockService\MockServerConfig;
 use PHPUnit\Framework\TestCase;

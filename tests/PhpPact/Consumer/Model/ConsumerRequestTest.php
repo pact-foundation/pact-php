@@ -1,8 +1,9 @@
 <?php
 
-namespace PhpPact\Consumer\Model;
+namespace PhpPactTest\Consumer\Model;
 
 use PhpPact\Consumer\Matcher\Matcher;
+use PhpPact\Consumer\Model\ConsumerRequest;
 use PHPUnit\Framework\TestCase;
 
 class ConsumerRequestTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Consumer;
+namespace PhpPactTest\Consumer;
 
 use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;

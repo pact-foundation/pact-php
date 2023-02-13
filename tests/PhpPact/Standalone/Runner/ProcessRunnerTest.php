@@ -1,7 +1,8 @@
 <?php
 
-namespace PhpPact\Standalone\Runner;
+namespace PhpPactTest\Standalone\Runner;
 
+use PhpPact\Standalone\Runner\ProcessRunner;
 use PHPUnit\Framework\TestCase;
 
 class ProcessRunnerTest extends TestCase

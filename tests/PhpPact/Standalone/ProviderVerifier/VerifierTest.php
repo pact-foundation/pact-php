@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Standalone\ProviderVerifier;
+namespace PhpPactTest\Standalone\ProviderVerifier;
 
 use GuzzleHttp\Psr7\Uri;
 use Monolog\Handler\TestHandler;
@@ -9,6 +9,9 @@ use PhpPact\Broker\Service\BrokerHttpClient;
 use PhpPact\Broker\Service\BrokerHttpClientInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\ConsumerVersionSelectors;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
+use PhpPact\Standalone\ProviderVerifier\ProcessRunnerFactory;
+use PhpPact\Standalone\ProviderVerifier\Verifier;
+use PhpPact\Standalone\ProviderVerifier\VerifierProcess;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 
