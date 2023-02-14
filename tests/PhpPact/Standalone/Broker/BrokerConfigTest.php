@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Standalone\Broker;
+namespace PhpPactTest\Standalone\Broker;
 
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\Broker\BrokerConfig;

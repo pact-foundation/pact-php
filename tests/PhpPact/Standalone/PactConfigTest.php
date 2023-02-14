@@ -1,8 +1,9 @@
 <?php
 
-namespace PhpPact\Standalone;
+namespace PhpPactTest\Standalone;
 
 use PhpPact\Standalone\PactConfig;
+use PhpPact\Standalone\PactConfigInterface;
 use PHPUnit\Framework\TestCase;
 
 class PactConfigTest extends TestCase

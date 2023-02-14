@@ -1,8 +1,9 @@
 <?php
 
-namespace PhpPact\Consumer\Matcher;
+namespace PhpPactTest\Consumer\Matcher;
 
 use Exception;
+use PhpPact\Consumer\Matcher\Matcher;
 use PHPUnit\Framework\TestCase;
 
 class MatcherTest extends TestCase

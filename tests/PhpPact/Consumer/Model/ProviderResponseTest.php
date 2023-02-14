@@ -1,7 +1,8 @@
 <?php
 
-namespace PhpPact\Consumer\Model;
+namespace PhpPactTest\Consumer\Model;
 
+use PhpPact\Consumer\Model\ProviderResponse;
 use PHPUnit\Framework\TestCase;
 
 class ProviderResponseTest extends TestCase
