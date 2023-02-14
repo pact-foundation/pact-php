@@ -181,39 +181,19 @@ interface VerifierConfigInterface
 
     /**
      * @param string $format RSpec formatter. Defaults to custom Pact formatter. json and RspecJunitFormatter may also be used
-     *
-     * @return VerifierConfigInterface
      */
     public function setFormat(string $format): self;
 
-    /**
-     * @param int $timeout
-     *
-     * @return VerifierConfigInterface
-     */
     public function setProcessTimeout(int $timeout): self;
 
-    /**
-     * @param int $timeout
-     *
-     * @return VerifierConfigInterface
-     */
     public function setProcessIdleTimeout(int $timeout): self;
 
-    /**
-     * @return int
-     */
     public function getProcessTimeout(): int;
 
-    /**
-     * @return int
-     */
     public function getProcessIdleTimeout(): int;
 
     /**
      * @param bool $pending allow pacts which are in pending state to be verified without causing the overall task to fail
-     *
-     * @return VerifierConfigInterface
      */
     public function setEnablePending(bool $pending): self;
 
@@ -225,8 +205,6 @@ interface VerifierConfigInterface
     /**
      * @param string $date Includes pact marked as WIP since this date.
      *                     Accepted formats: Y-m-d (2020-01-30) or c (ISO 8601 date 2004-02-12T15:19:21+00:00)
-     *
-     * @return VerifierConfigInterface
      */
     public function setIncludeWipPactSince(string $date): self;
 
@@ -242,8 +220,6 @@ interface VerifierConfigInterface
 
     /**
      * @param callable $requestFilter
-     *
-     * @return $this
      */
     public function setRequestFilter(callable $requestFilter): self;
 }

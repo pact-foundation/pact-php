@@ -184,11 +184,6 @@ class VerifierConfig implements VerifierConfigInterface
         return $this;
     }
 
-    /**
-     * @param string $consumerVersionTag
-     *
-     * @return VerifierConfigInterface
-     */
     public function setConsumerVersionTag(string $consumerVersionTag): VerifierConfigInterface
     {
         return $this->addConsumerVersionTag($consumerVersionTag);
@@ -314,12 +309,9 @@ class VerifierConfig implements VerifierConfigInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addCustomProviderHeader(string $name, string $value): VerifierConfigInterface
     {
-        $this->customProviderHeaders[] = "{$name}: {$value}";
+        $this->customProviderHeaders[] = "$name: $value";
 
         return $this;
     }
@@ -378,11 +370,6 @@ class VerifierConfig implements VerifierConfigInterface
         return $this;
     }
 
-    /**
-     * @param int $timeout
-     *
-     * @return VerifierConfigInterface
-     */
     public function setProcessTimeout(int $timeout): VerifierConfigInterface
     {
         $this->processTimeout = $timeout;
@@ -390,11 +377,6 @@ class VerifierConfig implements VerifierConfigInterface
         return $this;
     }
 
-    /**
-     * @param int $timeout
-     *
-     * @return VerifierConfigInterface
-     */
     public function setProcessIdleTimeout(int $timeout): VerifierConfigInterface
     {
         $this->processIdleTimeout = $timeout;
@@ -402,17 +384,11 @@ class VerifierConfig implements VerifierConfigInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getProcessTimeout(): int
     {
         return $this->processTimeout;
     }
 
-    /**
-     * @return int
-     */
     public function getProcessIdleTimeout(): int
     {
         return $this->processIdleTimeout;
