@@ -57,14 +57,9 @@ class MockServerEnvConfig extends MockServerConfig
     /**
      * Parse environmental variables to be either null if not required or throw an error if required.
      *
-     * @param string $variableName
-     * @param bool   $required
-     *
      * @throws MissingEnvVariableException
-     *
-     * @return null|string
      */
-    private function parseEnv(string $variableName, bool $required = true)
+    private function parseEnv(string $variableName, bool $required = true): mixed
     {
         $result = null;
 

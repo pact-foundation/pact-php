@@ -8,19 +8,16 @@ use PhpPact\Standalone\Runner\ProcessRunner;
 
 /**
  * Ruby Standalone Stub Server Wrapper
- * Class StubServer.
  */
 class StubServer
 {
-    /** @var StubServerConfigInterface */
-    private $config;
+    private StubServerConfigInterface $config;
 
-    /** @var ProcessRunner */
-    private $processRunner;
+    private ProcessRunner $processRunner;
 
     public function __construct(StubServerConfigInterface $config)
     {
-        $this->config         = $config;
+        $this->config = $config;
     }
 
     /**
@@ -32,7 +29,7 @@ class StubServer
      *
      * @return int process ID of the started Stub Server
      */
-    public function start($wait = 1): int
+    public function start(int $wait = 1): int
     {
         $this->processRunner = new ProcessRunner(Scripts::getStubService(), $this->getArguments());
 
@@ -55,7 +52,7 @@ class StubServer
     /**
      * Build an array of command arguments.
      *
-     * @return array
+     * @return array<int, string>
      */
     private function getArguments(): array
     {

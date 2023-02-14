@@ -16,11 +16,9 @@ use PHPUnit\Framework\TestCase;
 
 class InteractionBuilderTest extends TestCase
 {
-    /** @var MockServerHttpServiceInterface */
-    private $service;
+    private MockServerHttpServiceInterface $service;
 
-    /** @var MockServer */
-    private $mockServer;
+    private MockServer $mockServer;
 
     /**
      * @throws MissingEnvVariableException

@@ -15,8 +15,6 @@ interface PactConfigInterface
 
     /**
      * @param string $consumer consumers name
-     *
-     * @return PactConfigInterface
      */
     public function setConsumer(string $consumer): self;
 
@@ -27,56 +25,40 @@ interface PactConfigInterface
 
     /**
      * @param string $provider providers name
-     *
-     * @return PactConfigInterface
      */
     public function setProvider(string $provider): self;
 
     /**
      * @return string url to place the pact files when written to disk
      */
-    public function getPactDir();
+    public function getPactDir(): string;
 
     /**
      * @param null|string $pactDir url to place the pact files when written to disk
-     *
-     * @return PactConfigInterface
      */
-    public function setPactDir($pactDir): self;
+    public function setPactDir(?string $pactDir): self;
 
     /**
      * @return string pact version
      */
-    public function getPactSpecificationVersion();
+    public function getPactSpecificationVersion(): string;
 
     /**
      * @param string $pactSpecificationVersion pact semver version
-     *
-     * @return PactConfigInterface
      */
-    public function setPactSpecificationVersion($pactSpecificationVersion): self;
+    public function setPactSpecificationVersion(string $pactSpecificationVersion): self;
 
     /**
      * @return string directory for log output
      */
-    public function getLog();
+    public function getLog(): string;
 
     /**
      * @param string $log directory for log output
-     *
-     * @return PactConfigInterface
      */
     public function setLog(string $log): self;
 
-    /**
-     * @return null|string
-     */
-    public function getLogLevel();
+    public function getLogLevel(): string;
 
-    /**
-     * @param string $logLevel
-     *
-     * @return $this
-     */
     public function setLogLevel(string $logLevel): self;
 }

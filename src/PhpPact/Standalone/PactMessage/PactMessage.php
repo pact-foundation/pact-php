@@ -31,13 +31,6 @@ class PactMessage
 
     /**
      * Update a pact with the given message, or create the pact if it does not exist. The MESSAGE_JSON may be in the legacy Ruby JSON format or the v2+ format.
-     *
-     * @param string $pactJson
-     * @param string $consumer
-     * @param string $provider
-     * @param string $pactDir
-     *
-     * @return bool
      */
     public function update(string $pactJson, string $consumer, string $provider, string $pactDir): bool
     {

@@ -11,24 +11,18 @@ use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 
 /**
  * Wrapper for the Ruby Standalone Verifier service.
- * Class VerifierServer.
  */
 class Verifier
 {
-    /** @var int */
-    protected $processTimeout = 60;
+    protected int $processTimeout = 60;
 
-    /** @var int */
-    protected $processIdleTimeout = 10;
+    protected int $processIdleTimeout = 10;
 
-    /** @var VerifierConfigInterface */
-    protected $config;
+    protected VerifierConfigInterface $config;
 
-    /** @var null|BrokerHttpClientInterface */
-    protected $brokerHttpClient;
+    protected ?BrokerHttpClientInterface $brokerHttpClient = null;
 
-    /** @var null|VerifierProcess */
-    protected $verifierProcess;
+    protected ?VerifierProcess $verifierProcess = null;
 
     public function __construct(
         VerifierConfigInterface $config,
@@ -48,13 +42,13 @@ class Verifier
     /**
      * @throws \Exception
      *
-     * @return array parameters to be passed into the process
+     * @return array<int, string> parameters to be passed into the process
      */
     public function getArguments(): array
     {
         $parameters = [];
 
-        if (!empty($this->config->getProviderName())) {
+        if ($this->config->getProviderName() !== null) {
             $parameters[] = "--provider='{$this->config->getProviderName()}'";
         }
 
@@ -108,7 +102,7 @@ class Verifier
             $parameters[] = "--broker-password={$this->config->getBrokerPassword()}";
         }
 
-        if ($this->config->getCustomProviderHeaders() !== null) {
+        if (count($this->config->getCustomProviderHeaders()) > 0) {
             foreach ($this->config->getCustomProviderHeaders() as $customProviderHeader) {
                 $parameters[] = "--custom-provider-header=\"{$customProviderHeader}\"";
             }
@@ -144,11 +138,10 @@ class Verifier
     /**
      * Make the request to the PACT Verifier Service to run a Pact file tests from the Pact Broker.
      *
-     * @param string      $consumerName    name of the consumer to be compared against
-     * @param null|string $tag             optional tag of the consumer such as a branch name
+     * @param string $consumerName name of the consumer to be compared against
+     * @param null|string $tag optional tag of the consumer such as a branch name
      * @param null|string $consumerVersion optional specific version of the consumer; this is overridden by tag
-     *
-     * @return Verifier
+     * @throws \Exception
      */
     public function verify(string $consumerName, string $tag = null, string $consumerVersion = null): self
     {
@@ -174,9 +167,8 @@ class Verifier
     /**
      * Provides a way to validate local Pact JSON files.
      *
-     * @param array $files paths to pact json files
-     *
-     * @return Verifier
+     * @param array<int, string> $files paths to pact json files
+     * @throws \Exception
      */
     public function verifyFiles(array $files): self
     {
@@ -189,8 +181,9 @@ class Verifier
 
     /**
      * Verify all Pacts from the Pact Broker are valid for the Provider.
+     * @throws \Exception
      */
-    public function verifyAll()
+    public function verifyAll(): void
     {
         $arguments = $this->getBrokerHttpClient()->getAllConsumerUrls($this->config->getProviderName());
 
@@ -201,10 +194,9 @@ class Verifier
 
     /**
      * Verify all PACTs for a given tag.
-     *
-     * @param string $tag
+     * @throws \Exception
      */
-    public function verifyAllForTag(string $tag)
+    public function verifyAllForTag(string $tag): void
     {
         $arguments = $this->getBrokerHttpClient()->getAllConsumerUrlsForTag($this->config->getProviderName(), $tag);
 
@@ -215,12 +207,16 @@ class Verifier
 
     /**
      * Verify all PACTs that match the VerifierConfig
+     * @throws \Exception
      */
-    public function verifyFromConfig()
+    public function verifyFromConfig(): void
     {
         $this->verifyAction($this->getArguments());
     }
 
+    /**
+     * @return array<string, int>
+     */
     public function getTimeoutValues(): array
     {
         return ['process_timeout' => $this->processTimeout, 'process_idle_timeout' => $this->processIdleTimeout];
@@ -229,9 +225,10 @@ class Verifier
     /**
      * Trigger execution of the Pact Verifier Service.
      *
-     * @param array $arguments
+     * @param array<int, string> $arguments
+     * @throws \Exception
      */
-    protected function verifyAction(array $arguments)
+    protected function verifyAction(array $arguments): void
     {
         $this->verifierProcess->run($arguments, $this->processTimeout, $this->processIdleTimeout);
     }

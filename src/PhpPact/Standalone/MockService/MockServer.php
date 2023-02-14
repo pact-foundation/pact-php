@@ -16,26 +16,17 @@ use PhpPact\Exception\ConnectionException;
  */
 class MockServer
 {
-    /** @var MockServerConfig */
-    private $config;
+    private MockServerConfig $config;
 
-    /** @var MockServerHttpService */
-    private $httpService;
+    private MockServerHttpService $httpService;
 
-    /** @var ProcessRunner */
-    private $processRunner;
+    private ProcessRunner $processRunner;
 
-    /**
-     * MockServer constructor.
-     *
-     * @param MockServerConfig           $config
-     * @param null|MockServerHttpService $httpService
-     */
     public function __construct(MockServerConfig $config, MockServerHttpService $httpService = null)
     {
-        $this->config         = $config;
+        $this->config = $config;
 
-        if (!$httpService) {
+        if ($httpService === null) {
             $this->httpService = new MockServerHttpService(new GuzzleClient(), $this->config);
         } else {
             $this->httpService = $httpService;
@@ -77,7 +68,7 @@ class MockServer
     /**
      * Build an array of command arguments.
      *
-     * @return array
+     * @return array<int, string>
      */
     private function getArguments(): array
     {
@@ -120,8 +111,6 @@ class MockServer
      * Make sure the server starts as expected.
      *
      * @throws Exception
-     *
-     * @return bool
      */
     private function verifyHealthCheck(): bool
     {

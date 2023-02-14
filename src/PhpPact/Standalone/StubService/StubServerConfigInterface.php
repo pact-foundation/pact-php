@@ -52,22 +52,20 @@ interface StubServerConfigInterface
     public function getBaseUri(): UriInterface;
 
     /**
-     * @return string directory for log output
+     * @return ?string directory for log output
      */
-    public function getLog();
+    public function getLog(): ?string;
 
     /**
      * @param string $log directory for log output
-     *
-     * @return StubServerConfigInterface
      */
     public function setLog(string $log): self;
 
     public function getPactLocation(): string;
 
-    public function setPactLocation(string $location);
+    public function setPactLocation(string $location): self;
 
     public function getEndpoint(): string;
 
-    public function setEndpoint(string $location);
+    public function setEndpoint(string $endpoint): self;
 }

@@ -9,68 +9,56 @@ use Psr\Http\Message\UriInterface;
  */
 class VerifierConfig implements VerifierConfigInterface
 {
-    /** @var null|UriInterface */
-    private $providerBaseUrl;
+    private ?UriInterface $providerBaseUrl = null;
 
-    /** @var null|string */
-    private $providerStatesSetupUrl;
+    private ?string $providerStatesSetupUrl = null;
 
-    /** @var string */
-    private $providerName;
+    private ?string $providerName = null;
 
-    /** @var string */
-    private $providerVersion;
+    private ?string $providerVersion = null;
 
-    /** @var null|string */
-    private $providerBranch;
+    private ?string $providerBranch;
 
-    /** @var array */
-    private $providerVersionTag = [];
+    /**
+     * @var array<int, string>
+     */
+    private array $providerVersionTag = [];
 
-    /** @var bool */
-    private $publishResults = false;
+    private bool $publishResults = false;
 
-    /** @var null|UriInterface */
-    private $brokerUri;
+    private ?UriInterface $brokerUri = null;
 
-    /** @var null|string */
-    private $brokerToken;
+    private ?string $brokerToken = null;
 
-    /** @var null|string */
-    private $brokerUsername;
+    private ?string $brokerUsername = null;
 
-    /** @var null|string */
-    private $brokerPassword;
+    private ?string $brokerPassword = null;
 
-    /** @var string[] */
-    private $customProviderHeaders;
+    /**
+     * @var array<int, string>
+     */
+    private array $customProviderHeaders = [];
 
-    /** @var bool */
-    private $verbose = false;
+    private bool $verbose = false;
 
-    /** @var null|string */
-    private $logDirectory;
+    private ?string $logDirectory = null;
 
-    /** @var string */
-    private $format;
+    private string $format;
 
-    /** @var int */
-    private $processTimeout = 60;
+    private int $processTimeout = 60;
 
-    /** @var int */
-    private $processIdleTimeout = 10;
+    private int $processIdleTimeout = 10;
 
-    /** @var bool */
-    private $enablePending = false;
+    private bool $enablePending = false;
 
-    /** @var null|string */
-    private $wipPactSince;
+    private ?string $wipPactSince = null;
 
-    /** @var array */
-    private $consumerVersionTag = [];
+    /**
+     * @var array<int, string>
+     */
+    private array $consumerVersionTag = [];
 
-    /** @var ConsumerVersionSelectors */
-    private $consumerVersionSelectors;
+    private ConsumerVersionSelectors $consumerVersionSelectors;
 
     /** @var null|callable */
     private $requestFilter;
@@ -83,7 +71,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderBaseUrl()
+    public function getProviderBaseUrl(): ?UriInterface
     {
         return $this->providerBaseUrl;
     }
@@ -101,7 +89,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderStatesSetupUrl()
+    public function getProviderStatesSetupUrl(): ?string
     {
         return $this->providerStatesSetupUrl;
     }
@@ -119,9 +107,9 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderName(): string
+    public function getProviderName(): ?string
     {
-        return (string) $this->providerName;
+        return $this->providerName;
     }
 
     /**
@@ -137,7 +125,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderVersion()
+    public function getProviderVersion(): ?string
     {
         return $this->providerVersion;
     }
@@ -155,7 +143,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderVersionTag()
+    public function getProviderVersionTag(): array
     {
         return $this->providerVersionTag;
     }
@@ -171,7 +159,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getConsumerVersionTag()
+    public function getConsumerVersionTag(): array
     {
         return $this->consumerVersionTag;
     }
@@ -239,7 +227,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getBrokerUri()
+    public function getBrokerUri(): ?UriInterface
     {
         return $this->brokerUri;
     }
@@ -275,7 +263,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getBrokerUsername()
+    public function getBrokerUsername(): ?string
     {
         return $this->brokerUsername;
     }
@@ -283,7 +271,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setBrokerUsername(string $brokerUsername)
+    public function setBrokerUsername(string $brokerUsername): VerifierConfigInterface
     {
         $this->brokerUsername = $brokerUsername;
 
@@ -293,7 +281,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getBrokerPassword()
+    public function getBrokerPassword(): ?string
     {
         return $this->brokerPassword;
     }
@@ -301,7 +289,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setBrokerPassword(string $brokerPassword)
+    public function setBrokerPassword(string $brokerPassword): self
     {
         $this->brokerPassword = $brokerPassword;
 
@@ -311,7 +299,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getCustomProviderHeaders()
+    public function getCustomProviderHeaders(): array
     {
         return $this->customProviderHeaders;
     }
@@ -357,7 +345,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getLogDirectory()
+    public function getLogDirectory(): ?string
     {
         return $this->logDirectory;
     }
@@ -375,7 +363,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getFormat()
+    public function getFormat(): string
     {
         return $this->format;
     }
@@ -461,7 +449,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getIncludeWipPactSince()
+    public function getIncludeWipPactSince(): ?string
     {
         return $this->wipPactSince;
     }

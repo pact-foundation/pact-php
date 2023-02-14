@@ -10,31 +10,15 @@ use Psr\Log\LoggerInterface;
 
 class VerifierProcess
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private ?LoggerInterface $logger = null;
 
-    /**
-     * @var ProcessRunnerFactory
-     */
-    private $processRunnerFactory;
+    private ProcessRunnerFactory $processRunnerFactory;
 
-    /**
-     * VerifierProcess constructor.
-     *
-     * @param ProcessRunnerFactory $processRunnerFactory
-     */
     public function __construct(ProcessRunnerFactory $processRunnerFactory = null)
     {
         $this->processRunnerFactory = $processRunnerFactory ?: new ProcessRunnerFactory();
     }
 
-    /**
-     * @param LoggerInterface $logger
-     *
-     * @return VerifierProcess
-     */
     public function setLogger(LoggerInterface $logger): self
     {
         $this->logger = $logger;
@@ -43,13 +27,10 @@ class VerifierProcess
     }
 
     /**
-     * Execute the Pact Verifier Service.
-     *
-     * @param array $arguments
-     * @param int   $processTimeout
-     * @param int   $processIdleTimeout
+     * @param array<int, string> $arguments
+     * @throws \Exception
      */
-    public function run(array $arguments, $processTimeout, $processIdleTimeout)
+    public function run(array $arguments, ?int $processTimeout = null, ?int $processIdleTimeout = null): void
     {
         $logger        = $this->getLogger();
         $processRunner = $this->processRunnerFactory->createRunner(
@@ -72,10 +53,7 @@ class VerifierProcess
         }
     }
 
-    /**
-     * @return LoggerInterface
-     */
-    private function getLogger()
+    private function getLogger(): LoggerInterface
     {
         if (null === $this->logger) {
             $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));

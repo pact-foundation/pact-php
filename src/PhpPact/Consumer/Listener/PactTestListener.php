@@ -17,32 +17,25 @@ use PHPUnit\Framework\TestSuite;
 
 /**
  * PACT listener that can be used with environment variables and easily attached to PHPUnit configuration.
- * Class PactTestListener
  */
 class PactTestListener implements TestListener
 {
     use TestListenerDefaultImplementation;
 
-    /** @var MockServer */
-    private $server;
-
+    private MockServer $server;
     /**
      * Name of the test suite configured in your phpunit config.
      *
-     * @var string[]
+     * @var array<int, string>
      */
-    private $testSuiteNames;
+    private array $testSuiteNames = [];
 
-    /** @var MockServerEnvConfig */
-    private $mockServerConfig;
+    private MockServerEnvConfig $mockServerConfig;
 
-    /** @var bool */
-    private $failed;
+    private bool $failed;
 
     /**
-     * PactTestListener constructor.
-     *
-     * @param string[] $testSuiteNames test suite names that need evaluated with the listener
+     * @param array<int, string> $testSuiteNames test suite names that need evaluated with the listener
      *
      * @throws MissingEnvVariableException
      */
@@ -53,8 +46,6 @@ class PactTestListener implements TestListener
     }
 
     /**
-     * @param TestSuite $suite
-     *
      * @throws \Exception
      */
     public function startTestSuite(TestSuite $suite): void
@@ -77,8 +68,6 @@ class PactTestListener implements TestListener
 
     /**
      * Publish JSON results to PACT Broker and stop the Mock Server.
-     *
-     * @param TestSuite $suite
      */
     public function endTestSuite(TestSuite $suite): void
     {

@@ -13,41 +13,30 @@ class PactMessageConfig implements PactConfigInterface
 {
     /**
      * Consumer name.
-     *
-     * @var string
      */
-    private $consumer;
+    private string $consumer;
 
     /**
      * Provider name.
-     *
-     * @var string
      */
-    private $provider;
+    private string $provider;
 
     /**
      * Directory to which the pacts will be written.
-     *
-     * @var string
      */
-    private $pactDir;
+    private ?string $pactDir = null;
 
     /**
      * The pact specification version to use when writing the pact. Note that only versions 1 and 2 are currently supported.
-     *
-     * @var string
      */
-    private $pactSpecificationVersion;
+    private string $pactSpecificationVersion;
 
     /**
      * File to which to log output.
-     *
-     * @var string
      */
-    private $log;
+    private string $log;
 
-    /** @var string */
-    private $logLevel;
+    private string $logLevel;
 
     /**
      * {@inheritdoc}
@@ -88,7 +77,7 @@ class PactMessageConfig implements PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getPactDir()
+    public function getPactDir(): string
     {
         if ($this->pactDir === null) {
             return \sys_get_temp_dir();
@@ -110,7 +99,7 @@ class PactMessageConfig implements PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getPactSpecificationVersion()
+    public function getPactSpecificationVersion(): string
     {
         return $this->pactSpecificationVersion;
     }
@@ -136,7 +125,7 @@ class PactMessageConfig implements PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getLog()
+    public function getLog(): string
     {
         return $this->log;
     }
@@ -151,7 +140,7 @@ class PactMessageConfig implements PactConfigInterface
         return $this;
     }
 
-    public function getLogLevel()
+    public function getLogLevel(): string
     {
         return $this->logLevel;
     }

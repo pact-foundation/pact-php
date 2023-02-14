@@ -11,12 +11,11 @@ use PhpPact\Standalone\Runner\ProcessRunner;
 
 class Broker
 {
-    /** @var Logger */
-    private $logger;
-    /** @var BrokerConfig */
-    private $config;
-    /** @var string */
-    private $command;
+    private Logger $logger;
+
+    private BrokerConfig $config;
+
+    private string $command;
 
     public function __construct(BrokerConfig $config)
     {
@@ -29,7 +28,10 @@ class Broker
             );
     }
 
-    public function canIDeploy()
+    /**
+     * @throws \Exception
+     */
+    public function canIDeploy(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -52,7 +54,7 @@ class Broker
     }
 
     /**
-     * @return array parameters to be passed into the process
+     * @return array<int, string> parameters to be passed into the process
      */
     public function getArguments(): array
     {
@@ -77,7 +79,10 @@ class Broker
         return $parameters;
     }
 
-    public function createOrUpdatePacticipant()
+    /**
+     * @throws \Exception
+     */
+    public function createOrUpdatePacticipant(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -99,7 +104,10 @@ class Broker
         return \json_decode($runner->getOutput(), true);
     }
 
-    public function createOrUpdateWebhook()
+    /**
+     * @throws \Exception
+     */
+    public function createOrUpdateWebhook(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -128,7 +136,10 @@ class Broker
         return \json_decode($runner->getOutput(), true);
     }
 
-    public function createVersionTag()
+    /**
+     * @throws \Exception
+     */
+    public function createVersionTag(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -151,7 +162,10 @@ class Broker
         return \json_decode($runner->getOutput(), true);
     }
 
-    public function createWebhook()
+    /**
+     * @throws \Exception
+     */
+    public function createWebhook(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -179,7 +193,10 @@ class Broker
         return \json_decode($runner->getOutput(), true);
     }
 
-    public function describeVersion()
+    /**
+     * @throws \Exception
+     */
+    public function describeVersion(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -201,7 +218,10 @@ class Broker
         return \json_decode($runner->getOutput(), true);
     }
 
-    public function listLatestPactVersions()
+    /**
+     * @throws \Exception
+     */
+    public function listLatestPactVersions(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -254,7 +274,10 @@ class Broker
         $this->logger->debug($runner->getOutput());
     }
 
-    public function testWebhook()
+    /**
+     * @throws \Exception
+     */
+    public function testWebhook(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,

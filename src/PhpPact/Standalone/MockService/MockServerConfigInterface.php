@@ -6,7 +6,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Mock Server configuration interface to allow for simple overrides that are reusable.
- * Interface MockServerConfigInterface.
  */
 interface MockServerConfigInterface
 {
@@ -17,8 +16,6 @@ interface MockServerConfigInterface
 
     /**
      * @param string $host The host of the mock service
-     *
-     * @return MockServerConfigInterface
      */
     public function setHost(string $host): self;
 
@@ -29,8 +26,6 @@ interface MockServerConfigInterface
 
     /**
      * @param int $port the port of the mock service
-     *
-     * @return MockServerConfigInterface
      */
     public function setPort(int $port): self;
 
@@ -41,14 +36,9 @@ interface MockServerConfigInterface
 
     /**
      * @param bool $secure set to true for https
-     *
-     * @return MockServerConfigInterface
      */
     public function setSecure(bool $secure): self;
 
-    /**
-     * @return UriInterface
-     */
     public function getBaseUri(): UriInterface;
 
     /**
@@ -58,44 +48,18 @@ interface MockServerConfigInterface
 
     /**
      * @param string $pactFileWriteMode 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
-     *
-     * @return MockServerConfigInterface
      */
     public function setPactFileWriteMode(string $pactFileWriteMode): self;
 
-    /**
-     * @return bool
-     */
     public function hasCors(): bool;
 
-    /**
-     * @param bool|string $flag
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setCors($flag): self;
+    public function setCors(string|bool $flag): self;
 
-    /**
-     * @param int $timeout
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setHealthCheckTimeout($timeout): self;
+    public function setHealthCheckTimeout(int $timeout): self;
 
-    /**
-     * @return int
-     */
     public function getHealthCheckTimeout(): int;
 
-    /**
-     * @param int $seconds
-     *
-     * @return MockServerConfigInterface
-     */
-    public function setHealthCheckRetrySec($seconds): self;
+    public function setHealthCheckRetrySec(int $seconds): self;
 
-    /**
-     * @return int
-     */
     public function getHealthCheckRetrySec(): int;
 }

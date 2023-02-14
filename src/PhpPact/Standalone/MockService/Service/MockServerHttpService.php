@@ -18,22 +18,10 @@ use GuzzleHttp\Exception\ConnectException as GuzzleConnectionException;
  */
 class MockServerHttpService implements MockServerHttpServiceInterface
 {
-    /**
-     * @var ClientInterface
-     */
-    private $client;
+    private ClientInterface $client;
 
-    /**
-     * @var MockServerConfigInterface
-     */
-    private $config;
+    private MockServerConfigInterface $config;
 
-    /**
-     * MockServerHttpService constructor.
-     *
-     * @param ClientInterface           $client
-     * @param MockServerConfigInterface $config
-     */
     public function __construct(ClientInterface $client, MockServerConfigInterface $config)
     {
         $this->client = $client;
@@ -113,10 +101,6 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
     /**
      * Separate function for messages, instead of interactions, as I am unsure what to do with the Ruby Standalone at the moment
-     *
-     * @param Message $message
-     *
-     * @return bool
      */
     public function registerMessage(Message $message): bool
     {
@@ -154,6 +138,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
     /**
      * {@inheritdoc}
+     * @throws \JsonException
      */
     public function getPactJson(): string
     {
@@ -165,7 +150,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
             ],
         ]);
 
-        return \json_encode(\json_decode($response->getBody()->getContents()));
+        return \json_encode(\json_decode($response->getBody()->getContents()), JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -173,6 +158,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
      *
      * If the Pact-PHP does not gracefully kill the Ruby Server, it will not write the
      * file to disk.  This enables a work around.
+     * @throws \JsonException
      */
     public function writePact(): string
     {

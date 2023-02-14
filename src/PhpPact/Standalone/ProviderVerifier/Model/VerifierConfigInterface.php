@@ -13,62 +13,52 @@ interface VerifierConfigInterface
     /**
      * @return null|UriInterface providers base url
      */
-    public function getProviderBaseUrl();
+    public function getProviderBaseUrl(): ?UriInterface;
 
     /**
      * @param UriInterface $providerBaseUrl providers base url
-     *
-     * @return VerifierConfigInterface
      */
     public function setProviderBaseUrl(UriInterface $providerBaseUrl): self;
 
     /**
      * @return null|string Base URL to setup the provider states at
      */
-    public function getProviderStatesSetupUrl();
+    public function getProviderStatesSetupUrl(): ?string;
 
     /**
      * @param string $providerStatesSetupUrl Base URL to setup the provider states at
-     *
-     * @return VerifierConfigInterface
      */
     public function setProviderStatesSetupUrl(string $providerStatesSetupUrl): self;
 
     /**
      * @return null|string name of the provider
      */
-    public function getProviderName();
+    public function getProviderName(): ?string;
 
     /**
-     * @param string $name Name of the provider
-     *
-     * @return VerifierConfigInterface
+     * @param string $providerName Name of the provider
      */
-    public function setProviderName(string $name): self;
+    public function setProviderName(string $providerName): self;
 
     /**
      * @return null|string providers version
      */
-    public function getProviderVersion();
+    public function getProviderVersion(): ?string;
 
     /**
-     * @param string $providerAppVersion providers version
-     *
-     * @return VerifierConfigInterface
+     * @param string $providerVersion providers version
      */
-    public function setProviderVersion(string $providerAppVersion): self;
+    public function setProviderVersion(string $providerVersion): self;
 
     /**
      * @param string $providerBranch providers branch name
-     *
-     * @return VerifierConfigInterface
      */
     public function setProviderBranch(string $providerBranch): self;
 
     /**
-     * @return array providers version tag
+     * @return array<int, string> providers version tag
      */
-    public function getProviderVersionTag();
+    public function getProviderVersionTag(): array;
 
     /**
      * @return null|string providers branch name
@@ -77,39 +67,28 @@ interface VerifierConfigInterface
 
     /**
      * @param string $providerVersionTag providers version tag
-     *
-     * @return VerifierConfigInterface
      */
     public function setProviderVersionTag(string $providerVersionTag): self;
 
     /**
-     * @return array consumers version tag
+     * @return array<int, string> consumers version tag
      */
-    public function getConsumerVersionTag();
+    public function getConsumerVersionTag(): array;
 
     /**
      * @param string $consumerVersionTag consumers version tag
-     *
-     * @return VerifierConfigInterface
      */
     public function addConsumerVersionTag(string $consumerVersionTag): self;
 
     /**
      * @param string $providerVersionTag provider version tag
-     *
-     * @return VerifierConfigInterface
      */
     public function addProviderVersionTag(string $providerVersionTag): self;
 
-    /**
-     * @return ConsumerVersionSelectors
-     */
     public function getConsumerVersionSelectors(): ConsumerVersionSelectors;
 
     /**
      * @param ConsumerVersionSelectors $selectors Consumer version selectors
-     *
-     * @return $this
      */
     public function setConsumerVersionSelectors(ConsumerVersionSelectors $selectors): self;
 
@@ -120,20 +99,16 @@ interface VerifierConfigInterface
 
     /**
      * @param bool $publishResults flag to publish results
-     *
-     * @return VerifierConfigInterface
      */
     public function setPublishResults(bool $publishResults): self;
 
     /**
      * @return null|UriInterface url to the pact broker
      */
-    public function getBrokerUri();
+    public function getBrokerUri(): ?UriInterface;
 
     /**
      * @param UriInterface $brokerUri uri to the pact broker
-     *
-     * @return VerifierConfigInterface
      */
     public function setBrokerUri(UriInterface $brokerUri): self;
 
@@ -144,44 +119,36 @@ interface VerifierConfigInterface
 
     /**
      * @param null|string $brokerToken token for the pact broker
-     *
-     * @return VerifierConfigInterface
      */
     public function setBrokerToken(?string $brokerToken): self;
 
     /**
      * @return null|string username for the pact broker if secured
      */
-    public function getBrokerUsername();
+    public function getBrokerUsername(): ?string;
 
     /**
      * @param string $brokerUsername username for the pact broker if secured
-     *
-     * @return VerifierConfigInterface
      */
-    public function setBrokerUsername(string $brokerUsername);
+    public function setBrokerUsername(string $brokerUsername): self;
 
     /**
      * @return null|string password for the pact broker if secured
      */
-    public function getBrokerPassword();
+    public function getBrokerPassword(): ?string;
 
     /**
      * @param string $brokerPassword password for the pact broker if secured
-     *
-     * @return VerifierConfigInterface
      */
-    public function setBrokerPassword(string $brokerPassword);
+    public function setBrokerPassword(string $brokerPassword): self;
 
     /**
-     * @return null|string[] custom headers for the request to the provider such as authorization
+     * @return array<int, string> custom headers for the request to the provider such as authorization
      */
-    public function getCustomProviderHeaders();
+    public function getCustomProviderHeaders(): array;
 
     /**
-     * @param string[] $customProviderHeaders custom headers for the requests to the provider such as authorization
-     *
-     * @return VerifierConfigInterface
+     * @param array<int, string> $customProviderHeaders custom headers for the requests to the provider such as authorization
      */
     public function setCustomProviderHeaders(array $customProviderHeaders): self;
 

@@ -15,85 +15,62 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
 {
     /**
      * Host on which to bind the service.
-     *
-     * @var string
      */
-    private $host = 'localhost';
+    private string $host = 'localhost';
 
     /**
      * Port on which to run the service.
-     *
-     * @var int
      */
-    private $port = 7200;
+    private int $port = 7200;
 
-    /**
-     * @var bool
-     */
-    private $secure = false;
+    private bool $secure = false;
 
     /**
      * Consumer name.
-     *
-     * @var string
      */
-    private $consumer;
+    private string $consumer;
 
     /**
      * Provider name.
-     *
-     * @var string
      */
-    private $provider;
+    private string $provider;
 
     /**
      * Directory to which the pacts will be written.
-     *
-     * @var string
      */
-    private $pactDir;
+    private ?string $pactDir = null;
 
     /**
      * `overwrite` or `merge`. Use `merge` when running multiple mock service
      * instances in parallel for the same consumer/provider pair. Ensure the
      * pact file is deleted before running tests when using this option so that
      * interactions deleted from the code are not maintained in the file.
-     *
-     * @var string
      */
-    private $pactFileWriteMode = 'overwrite';
+    private string $pactFileWriteMode = 'overwrite';
 
     /**
      * The pact specification version to use when writing the pact. Note that only versions 1 and 2 are currently supported.
-     *
-     * @var string
      */
-    private $pactSpecificationVersion;
+    private string $pactSpecificationVersion;
 
     /**
      * File to which to log output.
-     *
-     * @var string
      */
-    private $log;
+    private string $log;
 
     /** @var bool */
     private $cors = false;
 
     /**
      * The max allowed attempts the mock server has to be available in. Otherwise it is considered as sick.
-     *
-     * @var int
      */
-    private $healthCheckTimeout;
+    private int $healthCheckTimeout;
 
     /**
      * The seconds between health checks of mock server
-     *
-     * @var int
      */
-    private $healthCheckRetrySec;
-    private $logLevel;
+    private int $healthCheckRetrySec;
+    private string $logLevel;
 
     /**
      * {@inheritdoc}
@@ -198,7 +175,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getPactDir()
+    public function getPactDir(): string
     {
         if ($this->pactDir === null) {
             return \sys_get_temp_dir();
@@ -210,7 +187,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setPactDir($pactDir): PactConfigInterface
+    public function setPactDir(?string $pactDir): PactConfigInterface
     {
         if ($pactDir === null) {
             return $this;
@@ -254,7 +231,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getPactSpecificationVersion()
+    public function getPactSpecificationVersion(): string
     {
         return $this->pactSpecificationVersion;
     }
@@ -278,7 +255,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getLog()
+    public function getLog(): string
     {
         return $this->log;
     }
@@ -296,7 +273,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getLogLevel()
+    public function getLogLevel(): string
     {
         return $this->logLevel;
     }
@@ -320,7 +297,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         return $this->cors;
     }
 
-    public function setCors($flag): MockServerConfigInterface
+    public function setCors(string|bool $flag): MockServerConfigInterface
     {
         if ($flag === 'true') {
             $this->cors = true;
@@ -336,7 +313,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setHealthCheckTimeout($timeout): MockServerConfigInterface
+    public function setHealthCheckTimeout(int $timeout): MockServerConfigInterface
     {
         $this->healthCheckTimeout = $timeout;
 
@@ -354,7 +331,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setHealthCheckRetrySec($seconds): MockServerConfigInterface
+    public function setHealthCheckRetrySec(int $seconds): MockServerConfigInterface
     {
         $this->healthCheckRetrySec = $seconds;
 

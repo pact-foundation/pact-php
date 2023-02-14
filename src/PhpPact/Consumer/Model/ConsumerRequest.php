@@ -4,48 +4,27 @@ namespace PhpPact\Consumer\Model;
 
 /**
  * Request initiated by the consumer.
- * Class ConsumerRequest.
  */
 class ConsumerRequest implements \JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $method;
+    private string $method;
+
+    private mixed $path;
 
     /**
-     * @var array|string
+     * @var array<string, string>
      */
-    private $path;
+    private array $headers;
 
-    /**
-     * @var string[]
-     */
-    private $headers;
+    private mixed $body = null;
 
-    /**
-     * @var mixed
-     */
-    private $body;
+    private ?string $query = null;
 
-    /**
-     * @var string
-     */
-    private $query;
-
-    /**
-     * @return string
-     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
-    /**
-     * @param string $method
-     *
-     * @return ConsumerRequest
-     */
     public function setMethod(string $method): self
     {
         $this->method = $method;
@@ -53,20 +32,12 @@ class ConsumerRequest implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @return array|string
-     */
-    public function getPath()
+    public function getPath(): mixed
     {
         return $this->path;
     }
 
-    /**
-     * @param array|string $path
-     *
-     * @return ConsumerRequest
-     */
-    public function setPath($path): self
+    public function setPath(mixed $path): self
     {
         $this->path = $path;
 
@@ -76,15 +47,13 @@ class ConsumerRequest implements \JsonSerializable
     /**
      * @return string[]
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
 
     /**
      * @param string[] $headers
-     *
-     * @return ConsumerRequest
      */
     public function setHeaders(array $headers): self
     {
@@ -93,52 +62,30 @@ class ConsumerRequest implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @param string       $header
-     * @param array|string $value
-     *
-     * @return ConsumerRequest
-     */
-    public function addHeader(string $header, $value): self
+    public function addHeader(string $header, string $value): self
     {
         $this->headers[$header] = $value;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getBody()
+    public function getBody(): mixed
     {
         return $this->body;
     }
 
-    /**
-     * @param mixed $body
-     *
-     * @return ConsumerRequest
-     */
-    public function setBody($body)
+    public function setBody(mixed $body): self
     {
         $this->body = $body;
 
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getQuery()
+    public function getQuery(): ?string
     {
         return $this->query;
     }
 
-    /**
-     * @param string $query
-     *
-     * @return ConsumerRequest
-     */
     public function setQuery(string $query): self
     {
         $this->query = $query;
@@ -164,10 +111,10 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @return array<string, mixed>
      */
     #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $results = [];
 

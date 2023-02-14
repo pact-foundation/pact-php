@@ -7,18 +7,17 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Http Service Wrapper for Pact Broker
- * Class BrokerHttpService.
  */
 class BrokerHttpClient implements BrokerHttpClientInterface
 {
-    /** @var ClientInterface */
-    private $httpClient;
+    private ClientInterface $httpClient;
 
-    /** @var UriInterface */
-    private $baseUri;
+    private UriInterface $baseUri;
 
-    /** @var array */
-    private $headers;
+    /**
+     * @var array<string, string>
+     */
+    private array $headers;
 
     /**
      * {@inheritdoc}
@@ -37,7 +36,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
     /**
      * {@inheritdoc}
      */
-    public function publishJson(string $version, string $json)
+    public function publishJson(string $version, string $json): void
     {
         $array    = \json_decode($json, true);
         $consumer = $array['consumer']['name'];
@@ -55,7 +54,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
     /**
      * {@inheritdoc}
      */
-    public function tag(string $consumer, string $version, string $tag)
+    public function tag(string $consumer, string $version, string $tag): void
     {
         /** @var UriInterface $uri */
         $uri = $this->baseUri->withPath("/pacticipants/{$consumer}/versions/{$version}/tags/{$tag}");

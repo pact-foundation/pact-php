@@ -4,38 +4,26 @@ namespace PhpPact\Consumer\Model;
 
 /**
  * Response expectation that would be in response to a Consumer request from the Provider.
- * Class ProviderResponse.
  */
 class ProviderResponse implements \JsonSerializable
 {
-    /**
-     * @var int
-     */
-    private $status;
+    private int $status;
 
     /**
-     * @var null|string[]
+     * @var array<string, string>
      */
-    private $headers;
+    private array $headers = [];
 
     /**
-     * @var null|array
+     * @var ?array<mixed, mixed>
      */
-    private $body;
+    private ?array $body = null;
 
-    /**
-     * @return int
-     */
     public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     *
-     * @return ProviderResponse
-     */
     public function setStatus(int $status): self
     {
         $this->status = $status;
@@ -44,17 +32,15 @@ class ProviderResponse implements \JsonSerializable
     }
 
     /**
-     * @return null|string[]
+     * @return array<string, string>
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
 
     /**
-     * @param string[] $headers
-     *
-     * @return ProviderResponse
+     * @param array<string, string> $headers
      */
     public function setHeaders(array $headers): self
     {
@@ -63,13 +49,7 @@ class ProviderResponse implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @param string       $header
-     * @param array|string $value
-     *
-     * @return ProviderResponse
-     */
-    public function addHeader(string $header, $value): self
+    public function addHeader(string $header, string $value): self
     {
         $this->headers[$header] = $value;
 
@@ -77,19 +57,17 @@ class ProviderResponse implements \JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return ?array<mixed, mixed>
      */
-    public function getBody()
+    public function getBody(): ?array
     {
         return $this->body;
     }
 
     /**
-     * @param iterable $body
-     *
-     * @return ProviderResponse
+     * @param array<mixed, mixed> $body
      */
-    public function setBody($body): self
+    public function setBody(array $body): self
     {
         $this->body = $body;
 
@@ -100,7 +78,7 @@ class ProviderResponse implements \JsonSerializable
      * {@inheritdoc}
      */
     #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $results = [
             'status' => $this->getStatus(),

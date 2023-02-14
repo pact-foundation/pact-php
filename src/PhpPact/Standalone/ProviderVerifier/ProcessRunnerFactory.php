@@ -8,9 +8,6 @@ use Psr\Log\LoggerInterface;
 
 class ProcessRunnerFactory
 {
-    /**
-     * @var string
-     */
     private string $providerVerifier;
 
     public function __construct(?string $providerVerifier = null)
@@ -19,12 +16,9 @@ class ProcessRunnerFactory
     }
 
     /**
-     * @param array                $arguments
-     * @param LoggerInterface|null $logger
-     *
-     * @return ProcessRunner
+     * @param array<int, string> $arguments
      */
-    public function createRunner(array $arguments, LoggerInterface $logger = null)
+    public function createRunner(array $arguments, LoggerInterface $logger = null): ProcessRunner
     {
         $processRunner = new ProcessRunner($this->providerVerifier, $arguments);
         if ($logger) {
