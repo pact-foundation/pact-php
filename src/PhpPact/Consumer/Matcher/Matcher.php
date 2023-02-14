@@ -3,6 +3,7 @@
 namespace PhpPact\Consumer\Matcher;
 
 use Exception;
+
 use function preg_last_error;
 use function preg_match;
 
