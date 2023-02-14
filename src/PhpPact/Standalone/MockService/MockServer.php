@@ -87,7 +87,7 @@ class MockServer
         $results[] = "--host={$this->config->getHost()}";
         $results[] = "--port={$this->config->getPort()}";
 
-        if ($logLevel) {
+        if ($logLevel !== null) {
             $results[] = \sprintf('--log-level=%s', \escapeshellarg($logLevel));
         }
 
@@ -99,7 +99,7 @@ class MockServer
             $results[] = "--pact-specification-version={$this->config->getPactSpecificationVersion()}";
         }
 
-        if (!empty($this->config->getLog())) {
+        if ($this->config->getLog() !== null) {
             $log       = \escapeshellarg($this->config->getLog());
             $results[] = \sprintf('--log=%s', $log);
         }

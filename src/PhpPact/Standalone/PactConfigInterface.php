@@ -49,16 +49,16 @@ interface PactConfigInterface
     public function setPactSpecificationVersion(string $pactSpecificationVersion): self;
 
     /**
-     * @return string directory for log output
+     * @return null|string directory for log output
      */
-    public function getLog(): string;
+    public function getLog(): ?string;
 
     /**
      * @param string $log directory for log output
      */
     public function setLog(string $log): self;
 
-    public function getLogLevel(): string;
+    public function getLogLevel(): ?string;
 
     public function setLogLevel(string $logLevel): self;
 }

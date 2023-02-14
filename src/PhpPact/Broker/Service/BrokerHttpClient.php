@@ -42,7 +42,6 @@ class BrokerHttpClient implements BrokerHttpClientInterface
         $consumer = $array['consumer']['name'];
         $provider = $array['provider']['name'];
 
-        /** @var UriInterface $uri */
         $uri = $this->baseUri->withPath("/pacts/provider/{$provider}/consumer/{$consumer}/version/{$version}");
 
         $this->httpClient->put($uri, [
@@ -56,7 +55,6 @@ class BrokerHttpClient implements BrokerHttpClientInterface
      */
     public function tag(string $consumer, string $version, string $tag): void
     {
-        /** @var UriInterface $uri */
         $uri = $this->baseUri->withPath("/pacticipants/{$consumer}/versions/{$version}/tags/{$tag}");
         $this->httpClient->put($uri, [
             'headers' => $this->headers,

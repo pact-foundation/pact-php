@@ -103,10 +103,8 @@ class Message implements \JsonSerializable
 
     /**
      * @param mixed $contents
-     *
-     * @return Message
      */
-    public function setContents($contents)
+    public function setContents($contents): self
     {
         $this->contents = $contents;
 

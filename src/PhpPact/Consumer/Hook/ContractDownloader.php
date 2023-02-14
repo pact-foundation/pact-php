@@ -72,6 +72,9 @@ class ContractDownloader implements AfterLastTestHook
         . $this->mockServerConfig->getProvider() . '.json';
     }
 
+    /**
+     * @throws \JsonException
+     */
     private function getPactJson(): string
     {
         $uri      = $this->mockServerConfig->getBaseUri()->withPath('/pact');

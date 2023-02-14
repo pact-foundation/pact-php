@@ -17,7 +17,7 @@ class VerifierConfig implements VerifierConfigInterface
 
     private ?string $providerVersion = null;
 
-    private ?string $providerBranch;
+    private ?string $providerBranch = null;
 
     /**
      * @var array<int, string>
@@ -43,7 +43,7 @@ class VerifierConfig implements VerifierConfigInterface
 
     private ?string $logDirectory = null;
 
-    private string $format;
+    private ?string $format = null;
 
     private int $processTimeout = 60;
 
@@ -60,7 +60,7 @@ class VerifierConfig implements VerifierConfigInterface
 
     private ConsumerVersionSelectors $consumerVersionSelectors;
 
-    /** @var null|callable */
+    /** @var ?callable */
     private $requestFilter;
 
     public function __construct()
@@ -363,7 +363,7 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getFormat(): string
+    public function getFormat(): ?string
     {
         return $this->format;
     }

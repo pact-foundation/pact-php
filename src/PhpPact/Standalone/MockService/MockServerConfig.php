@@ -56,10 +56,9 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * File to which to log output.
      */
-    private string $log;
+    private ?string $log = null;
 
-    /** @var bool */
-    private $cors = false;
+    private bool $cors = false;
 
     /**
      * The max allowed attempts the mock server has to be available in. Otherwise it is considered as sick.
@@ -70,7 +69,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
      * The seconds between health checks of mock server
      */
     private int $healthCheckRetrySec;
-    private string $logLevel;
+    private ?string $logLevel = null;
 
     /**
      * {@inheritdoc}
@@ -83,7 +82,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setHost(string $host): MockServerConfigInterface
+    public function setHost(string $host): self
     {
         $this->host = $host;
 
@@ -101,7 +100,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setPort(int $port): MockServerConfigInterface
+    public function setPort(int $port): self
     {
         $this->port = $port;
 
@@ -147,7 +146,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setConsumer(string $consumer): PactConfigInterface
+    public function setConsumer(string $consumer): self
     {
         $this->consumer = $consumer;
 
@@ -165,7 +164,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setProvider(string $provider): PactConfigInterface
+    public function setProvider(string $provider): self
     {
         $this->provider = $provider;
 
@@ -187,7 +186,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setPactDir(?string $pactDir): PactConfigInterface
+    public function setPactDir(?string $pactDir): self
     {
         if ($pactDir === null) {
             return $this;
@@ -213,7 +212,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setPactFileWriteMode(string $pactFileWriteMode): MockServerConfigInterface
+    public function setPactFileWriteMode(string $pactFileWriteMode): self
     {
         $options = ['overwrite', 'merge'];
 
@@ -239,7 +238,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setPactSpecificationVersion($pactSpecificationVersion): PactConfigInterface
+    public function setPactSpecificationVersion(string $pactSpecificationVersion): self
     {
         /*
          * Parse the version but do not assign it.  If it is an invalid version, an exception is thrown
@@ -255,7 +254,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getLog(): string
+    public function getLog(): ?string
     {
         return $this->log;
     }
@@ -263,7 +262,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setLog(string $log): PactConfigInterface
+    public function setLog(string $log): self
     {
         $this->log = $log;
 
@@ -273,7 +272,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getLogLevel(): string
+    public function getLogLevel(): ?string
     {
         return $this->logLevel;
     }
@@ -297,7 +296,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         return $this->cors;
     }
 
-    public function setCors(string|bool $flag): MockServerConfigInterface
+    public function setCors(string|bool $flag): self
     {
         if ($flag === 'true') {
             $this->cors = true;

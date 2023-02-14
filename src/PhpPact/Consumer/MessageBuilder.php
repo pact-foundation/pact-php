@@ -32,7 +32,6 @@ class MessageBuilder implements BuilderInterface
     /**
      * Retrieve the verification call back
      *
-     * @param callable    $callback
      * @param null|string $description of the callback in case of multiple
      */
     public function setCallback(callable $callback, ?string $description = null): self
@@ -50,8 +49,6 @@ class MessageBuilder implements BuilderInterface
      * @param string $name      what is given to the request
      * @param array<mixed, mixed>  $params    for that request
      * @param bool   $overwrite clear pass states completely and start this array
-     *
-     * @return MessageBuilder
      */
     public function given(string $name, array $params = [], bool $overwrite = false): self
     {
@@ -84,8 +81,6 @@ class MessageBuilder implements BuilderInterface
      * Make the http request to the Mock Service to register the message.  Content is required.
      *
      * @param mixed $contents required to be in the message
-     *
-     * @return self
      */
     public function withContent($contents): self
     {
@@ -96,8 +91,6 @@ class MessageBuilder implements BuilderInterface
 
     /**
      * Run reify to create an example pact from the message (i.e. create messages from matchers)
-     *
-     * @return string
      */
     public function reify(): string
     {
@@ -111,8 +104,6 @@ class MessageBuilder implements BuilderInterface
      * @param null|string $description description of the pact and thus callback
      *
      * @throws \Exception
-     *
-     * @return bool
      */
     public function verifyMessage(callable $callback, ?string $description = null): bool
     {
@@ -128,8 +119,6 @@ class MessageBuilder implements BuilderInterface
      * @param null|string $description description of the pact and thus callback
      *
      * @throws \Exception if callback is not set
-     *
-     * @return bool
      */
     public function verify(?string $description = null): bool
     {
@@ -154,8 +143,6 @@ class MessageBuilder implements BuilderInterface
 
     /**
      * Write the Pact without deleting the interactions.
-     *
-     * @return bool
      */
     public function writePact(): bool
     {

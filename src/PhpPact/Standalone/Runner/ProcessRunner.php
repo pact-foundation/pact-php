@@ -19,12 +19,12 @@ class ProcessRunner
 {
     private Process $process;
 
-    private string $output;
+    private string $output = '';
 
     /** @var int command exit code */
     private int $exitCode;
 
-    private string $stderr;
+    private string $stderr = '';
 
     private ?LoggerInterface $logger = null;
 
@@ -44,7 +44,7 @@ class ProcessRunner
         return $this;
     }
 
-    public function getOutput(): ?string
+    public function getOutput(): string
     {
         return $this->output;
     }

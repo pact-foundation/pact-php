@@ -152,12 +152,6 @@ interface VerifierConfigInterface
      */
     public function setCustomProviderHeaders(array $customProviderHeaders): self;
 
-    /**
-     * @param string $name
-     * @param string $value
-     *
-     * @return VerifierConfigInterface
-     */
     public function addCustomProviderHeader(string $name, string $value): self;
 
     /**
@@ -167,27 +161,23 @@ interface VerifierConfigInterface
 
     /**
      * @param bool $verbose increase verbosity level
-     *
-     * @return VerifierConfigInterface
      */
     public function setVerbose(bool $verbose): self;
 
     /**
      * @return null|string set the directory for the pact.log file
      */
-    public function getLogDirectory();
+    public function getLogDirectory(): ?string;
 
     /**
      * @param string $log set the directory for the pact.log file
-     *
-     * @return VerifierConfigInterface
      */
     public function setLogDirectory(string $log): self;
 
     /**
      * @return null|string RSpec formatter. Defaults to custom Pact formatter. json and RspecJunitFormatter may also be used
      */
-    public function getFormat();
+    public function getFormat(): ?string;
 
     /**
      * @param string $format RSpec formatter. Defaults to custom Pact formatter. json and RspecJunitFormatter may also be used

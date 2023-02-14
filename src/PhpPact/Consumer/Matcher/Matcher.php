@@ -2,6 +2,10 @@
 
 namespace PhpPact\Consumer\Matcher;
 
+use Exception;
+use function preg_last_error;
+use function preg_match;
+
 /**
  * Matcher implementation. Builds the Ruby Mock Server specification json for interaction publishing.
  */
@@ -20,7 +24,7 @@ class Matcher
     /**
      * Alias for the `like()` function.
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return array<string, mixed>
      */
@@ -32,12 +36,16 @@ class Matcher
     /**
      * @param mixed $value example of what the expected data would be
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return array<string, mixed>
      */
     public function like(mixed $value): array
     {
+        if ($value === null) {
+            throw new \Exception('Value must not be null.');
+        }
+
         return [
             'contents'   => $value,
             'json_class' => 'Pact::SomethingLike',
@@ -72,16 +80,16 @@ class Matcher
      *
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function term(mixed $value, string $pattern): array
     {
-        $result = \preg_match("/$pattern/", $value);
+        $result = preg_match("/$pattern/", $value);
 
         if ($result === false || $result === 0) {
-            $errorCode = \preg_last_error();
+            $errorCode = preg_last_error();
 
-            throw new \Exception("The pattern {$pattern} is not valid for value {$value}. Failed with error code {$errorCode}.");
+            throw new Exception("The pattern {$pattern} is not valid for value {$value}. Failed with error code {$errorCode}.");
         }
 
         return [
@@ -102,7 +110,7 @@ class Matcher
      *
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function regex(mixed $value, string $pattern): array
     {
@@ -114,7 +122,7 @@ class Matcher
      *
      * @param string $value valid ISO8601 date, example: 2010-01-01
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return array<string, mixed>
      */
@@ -130,7 +138,7 @@ class Matcher
      *
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function timeISO8601(string $value = 'T22:44:30.652Z'): array
     {
@@ -144,7 +152,7 @@ class Matcher
      *
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function dateTimeISO8601(string $value = '2015-08-06T16:53:10+01:00'): array
     {
@@ -158,7 +166,7 @@ class Matcher
      *
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function dateTimeWithMillisISO8601(string $value = '2015-08-06T16:53:10.123+01:00'): array
     {
@@ -172,7 +180,7 @@ class Matcher
      *
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function timestampRFC3339(string $value = 'Mon, 31 Oct 2016 15:21:41 -0400'): array
     {
@@ -182,7 +190,7 @@ class Matcher
     /**
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function boolean(): array
     {
@@ -192,7 +200,7 @@ class Matcher
     /**
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function integer(int $int = 13): array
     {
@@ -202,7 +210,7 @@ class Matcher
     /**
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function decimal(float $float = 13.01): array
     {
@@ -212,7 +220,7 @@ class Matcher
     /**
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function hexadecimal(string $hex = '3F'): array
     {
@@ -222,7 +230,7 @@ class Matcher
     /**
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function uuid(string $uuid = 'ce118b6e-d8e1-11e7-9296-cec278b6b50a'): array
     {
@@ -232,7 +240,7 @@ class Matcher
     /**
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function ipv4Address(string $ip = '127.0.0.13'): array
     {
@@ -242,7 +250,7 @@ class Matcher
     /**
      * @return array<string, mixed>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function ipv6Address(string $ip = '::ffff:192.0.2.128'): array
     {

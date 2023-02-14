@@ -11,23 +11,15 @@ use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 
 /**
  * Build an interaction and send it to the Ruby Standalone Mock Service
- * Class InteractionBuilder.
  */
 class InteractionBuilder implements BuilderInterface
 {
-    /** @var MockServerHttpService */
-    protected $mockServerHttpService;
+    protected MockServerHttpService $mockServerHttpService;
 
-    /** @var MockServerConfigInterface */
-    protected $config;
-    /** @var Interaction */
-    private $interaction;
+    protected MockServerConfigInterface $config;
 
-    /**
-     * InteractionBuilder constructor.
-     *
-     * @param MockServerConfigInterface $config
-     */
+    private Interaction $interaction;
+
     public function __construct(MockServerConfigInterface $config)
     {
         $this->config                = $config;
@@ -37,8 +29,6 @@ class InteractionBuilder implements BuilderInterface
 
     /**
      * @param string $providerState what is given to the request
-     *
-     * @return InteractionBuilder
      */
     public function given(string $providerState): self
     {
@@ -49,8 +39,6 @@ class InteractionBuilder implements BuilderInterface
 
     /**
      * @param string $description what is received when the request is made
-     *
-     * @return InteractionBuilder
      */
     public function uponReceiving(string $description): self
     {
@@ -61,8 +49,6 @@ class InteractionBuilder implements BuilderInterface
 
     /**
      * @param ConsumerRequest $request mock of request sent
-     *
-     * @return InteractionBuilder
      */
     public function with(ConsumerRequest $request): self
     {

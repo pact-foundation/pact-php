@@ -6,7 +6,7 @@ use Psr\Http\Message\UriInterface;
 
 class BrokerConfig
 {
-    private ?UriInterface $brokerUri;
+    private ?UriInterface $brokerUri = null;
 
     private ?string $brokerToken = null;
 

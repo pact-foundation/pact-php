@@ -14,7 +14,7 @@ class ConsumerRequest implements \JsonSerializable
     /**
      * @var array<string, string>
      */
-    private array $headers;
+    private array $headers = [];
 
     private mixed $body = null;
 
@@ -45,7 +45,7 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @return string[]
+     * @return array<string, string>
      */
     public function getHeaders(): array
     {
@@ -93,12 +93,6 @@ class ConsumerRequest implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @param string $key
-     * @param string $value
-     *
-     * @return ConsumerRequest
-     */
     public function addQueryParameter(string $key, string $value): self
     {
         if ($this->query === null) {
