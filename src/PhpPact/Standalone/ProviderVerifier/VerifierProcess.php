@@ -61,14 +61,9 @@ class VerifierProcess
 
         try {
             $processRunner->runBlocking();
-
+        } finally {
             $logger->info('out > ' . $processRunner->getOutput());
             $logger->error('err > ' . $processRunner->getStderr());
-        } catch (\Exception $e) {
-            $logger->info('out > ' . $processRunner->getOutput());
-            $logger->error('err > ' . $processRunner->getStderr());
-
-            throw $e;
         }
     }
 

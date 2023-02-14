@@ -248,14 +248,9 @@ class Broker
 
         try {
             $runner->runBlocking();
-
+        } finally {
             $this->logger->info('out > ' . $runner->getOutput());
             $this->logger->error('err > ' . $runner->getStderr());
-        } catch (\Exception $e) {
-            $this->logger->info('out > ' . $runner->getOutput());
-            $this->logger->error('err > ' . $runner->getStderr());
-
-            throw $e;
         }
     }
 
