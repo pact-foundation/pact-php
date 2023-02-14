@@ -2,6 +2,7 @@
 
 namespace PhpPact\Standalone\StubService;
 
+use Amp\Process\ProcessException;
 use Exception;
 use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\Runner\ProcessRunner;
@@ -43,6 +44,7 @@ class StubServer
      * Stop the Stub Server process.
      *
      * @return bool Was stopping successful?
+     * @throws ProcessException
      */
     public function stop(): bool
     {

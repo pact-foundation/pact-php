@@ -100,9 +100,7 @@ class MessageBuilder implements BuilderInterface
     /**
      * Wrapper around verify()
      *
-     * @param callable     $callback
      * @param null|string $description description of the pact and thus callback
-     *
      * @throws \Exception
      */
     public function verifyMessage(callable $callback, ?string $description = null): bool
@@ -143,6 +141,7 @@ class MessageBuilder implements BuilderInterface
 
     /**
      * Write the Pact without deleting the interactions.
+     * @throws \JsonException
      */
     public function writePact(): bool
     {

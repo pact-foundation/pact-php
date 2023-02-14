@@ -17,8 +17,6 @@ interface StubServerConfigInterface
 
     /**
      * @param string $host The host of the stub service
-     *
-     * @return StubServerConfigInterface
      */
     public function setHost(string $host): self;
 
@@ -29,8 +27,6 @@ interface StubServerConfigInterface
 
     /**
      * @param int $port the port of the stub service
-     *
-     * @return StubServerConfigInterface
      */
     public function setPort(int $port): self;
 
@@ -41,8 +37,6 @@ interface StubServerConfigInterface
 
     /**
      * @param bool $secure set to true for https
-     *
-     * @return StubServerConfigInterface
      */
     public function setSecure(bool $secure): self;
 

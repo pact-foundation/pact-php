@@ -2,6 +2,7 @@
 
 namespace PhpPact\Standalone\MockService;
 
+use Amp\Process\ProcessException;
 use Exception;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Exception\HealthCheckFailedException;
@@ -12,7 +13,6 @@ use PhpPact\Exception\ConnectionException;
 
 /**
  * Ruby Standalone Mock Server Wrapper
- * Class MockServer.
  */
 class MockServer
 {
@@ -25,12 +25,7 @@ class MockServer
     public function __construct(MockServerConfig $config, MockServerHttpService $httpService = null)
     {
         $this->config = $config;
-
-        if ($httpService === null) {
-            $this->httpService = new MockServerHttpService(new GuzzleClient(), $this->config);
-        } else {
-            $this->httpService = $httpService;
-        }
+        $this->httpService = $httpService ?: new MockServerHttpService(new GuzzleClient(), $this->config);
     }
 
     /**
@@ -59,6 +54,7 @@ class MockServer
      * Stop the Mock Server process.
      *
      * @return bool Was stopping successful?
+     * @throws ProcessException
      */
     public function stop(): bool
     {

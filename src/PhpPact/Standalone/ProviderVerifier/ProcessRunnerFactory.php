@@ -12,7 +12,7 @@ class ProcessRunnerFactory
 
     public function __construct(?string $providerVerifier = null)
     {
-        $this->providerVerifier = $providerVerifier ?? Scripts::getProviderVerifier();
+        $this->providerVerifier = $providerVerifier ?: Scripts::getProviderVerifier();
     }
 
     /**

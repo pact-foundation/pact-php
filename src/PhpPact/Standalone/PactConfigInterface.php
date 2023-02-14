@@ -4,7 +4,6 @@ namespace PhpPact\Standalone;
 
 /**
  * Mock Server configuration interface to allow for simple overrides that are reusable.
- * Interface PactConfigInterface.
  */
 interface PactConfigInterface
 {

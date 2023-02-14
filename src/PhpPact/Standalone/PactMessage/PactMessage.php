@@ -11,10 +11,6 @@ class PactMessage
     /**
      * Build an example from the data structure back into its generated form
      * i.e. strip out all of the matchers etc
-     *
-     * @param Message $pact
-     *
-     * @return string
      */
     public function reify(Message $pact): string
     {

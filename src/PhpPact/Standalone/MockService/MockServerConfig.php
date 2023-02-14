@@ -9,7 +9,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Configuration defining the default PhpPact Ruby Standalone server.
- * Class MockServerConfig.
  */
 class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
 {
@@ -269,17 +268,11 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getLogLevel(): ?string
     {
         return $this->logLevel;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setLogLevel(string $logLevel): PactConfigInterface
     {
         $logLevel = \strtoupper($logLevel);
@@ -309,9 +302,6 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setHealthCheckTimeout(int $timeout): MockServerConfigInterface
     {
         $this->healthCheckTimeout = $timeout;
@@ -319,17 +309,11 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHealthCheckTimeout(): int
     {
         return $this->healthCheckTimeout;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setHealthCheckRetrySec(int $seconds): MockServerConfigInterface
     {
         $this->healthCheckRetrySec = $seconds;
@@ -337,9 +321,6 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHealthCheckRetrySec(): int
     {
         return $this->healthCheckRetrySec;

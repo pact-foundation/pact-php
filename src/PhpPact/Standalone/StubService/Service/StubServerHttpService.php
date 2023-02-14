@@ -17,12 +17,6 @@ class StubServerHttpService implements StubServerHttpServiceInterface
 
     private StubServerConfigInterface $config;
 
-    /**
-     * StubServerHttpService constructor.
-     *
-     * @param ClientInterface           $client
-     * @param StubServerConfigInterface $config
-     */
     public function __construct(ClientInterface $client, StubServerConfigInterface $config)
     {
         $this->client = $client;

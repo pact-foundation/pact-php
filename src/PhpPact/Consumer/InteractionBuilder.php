@@ -63,6 +63,7 @@ class InteractionBuilder implements BuilderInterface
      * @param ProviderResponse $response mock of response received
      *
      * @return bool returns true on success
+     * @throws \JsonException
      */
     public function willRespondWith(ProviderResponse $response): bool
     {
@@ -81,6 +82,7 @@ class InteractionBuilder implements BuilderInterface
 
     /**
      * Writes the file to disk and deletes interactions from mock server.
+     * @throws \JsonException
      */
     public function finalize(): bool
     {
@@ -95,6 +97,7 @@ class InteractionBuilder implements BuilderInterface
 
     /**
      * {@inheritdoc}
+     * @throws \JsonException
      */
     public function writePact(): bool
     {

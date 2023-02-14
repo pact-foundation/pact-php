@@ -5,9 +5,6 @@ namespace PhpPact\Standalone\MockService\Service;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Exception\ConnectionException;
 
-/**
- * Interface MockServerHttpServiceInterface.
- */
 interface MockServerHttpServiceInterface
 {
     /**

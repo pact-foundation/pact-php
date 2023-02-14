@@ -68,7 +68,7 @@ class PactTestListener implements TestListener
 
     /**
      * Publish JSON results to PACT Broker and stop the Mock Server.
-     * @throws \JsonException
+     * @throws \JsonException|\Amp\Process\ProcessException
      */
     public function endTestSuite(TestSuite $suite): void
     {

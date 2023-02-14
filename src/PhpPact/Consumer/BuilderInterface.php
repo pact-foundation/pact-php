@@ -14,8 +14,6 @@ interface BuilderInterface
 
     /**
      * Write the Pact without deleting the interactions.
-     *
-     * @return bool
      */
     public function writePact(): bool;
 }
