@@ -21,14 +21,11 @@ use stdClass;
 
 class MockServerHttpServiceTest extends TestCase
 {
-    /** @var MockServerHttpServiceInterface */
-    private $service;
+    private MockServerHttpServiceInterface $service;
 
-    /** @var MockServer */
-    private $mockServer;
+    private MockServer $mockServer;
 
-    /** @var MockServerConfigInterface */
-    private $config;
+    private MockServerConfigInterface $config;
 
     /**
      * @throws MissingEnvVariableException
@@ -50,13 +47,13 @@ class MockServerHttpServiceTest extends TestCase
     /**
      * @throws ConnectionException
      */
-    public function testHealthCheck()
+    public function testHealthCheck(): void
     {
         $result = $this->service->healthCheck();
         $this->assertTrue($result);
     }
 
-    public function testRegisterInteraction()
+    public function testRegisterInteraction(): void
     {
         $request = new ConsumerRequest();
         $request
@@ -77,19 +74,19 @@ class MockServerHttpServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testDeleteAllInteractions()
+    public function testDeleteAllInteractions(): void
     {
         $result = $this->service->deleteAllInteractions();
         $this->assertTrue($result);
     }
 
-    public function testVerifyInteractions()
+    public function testVerifyInteractions(): void
     {
         $result = $this->service->verifyInteractions();
         $this->assertTrue($result);
     }
 
-    public function testVerifyInteractionsFailure()
+    public function testVerifyInteractionsFailure(): void
     {
         $request = new ConsumerRequest();
         $request
@@ -112,13 +109,13 @@ class MockServerHttpServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testGetPactJson()
+    public function testGetPactJson(): void
     {
         $result = $this->service->getPactJson();
         $this->assertEquals('{"consumer":{"name":"someConsumer"},"provider":{"name":"someProvider"},"interactions":[],"metadata":{"pactSpecification":{"version":"2.0.0"}}}', $result);
     }
 
-    public function testFullGetInteraction()
+    public function testFullGetInteraction(): void
     {
         $request = new ConsumerRequest();
         $request
@@ -167,7 +164,7 @@ class MockServerHttpServiceTest extends TestCase
      * @throws MissingEnvVariableException
      * @throws \Exception
      */
-    public function testMatcherWithMockServer()
+    public function testMatcherWithMockServer(): void
     {
         $matcher = new Matcher();
 

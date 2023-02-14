@@ -14,7 +14,6 @@ use GuzzleHttp\Exception\ConnectException as GuzzleConnectionException;
  * Http Service that interacts with the Ruby Standalone Mock Server.
  *
  * @see https://github.com/pact-foundation/pact-mock_service
- * Class MockServerHttpService
  */
 class MockServerHttpService implements MockServerHttpServiceInterface
 {
@@ -86,7 +85,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     {
         $uri = $this->config->getBaseUri()->withPath('/interactions');
 
-        $body = \json_encode($interaction->jsonSerialize());
+        $body = \json_encode($interaction->jsonSerialize(), JSON_THROW_ON_ERROR);
 
         $this->client->post($uri, [
             'headers' => [
@@ -106,7 +105,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     {
         $uri = $this->config->getBaseUri()->withPath('/interactions');
 
-        $body = \json_encode($message->jsonSerialize());
+        $body = \json_encode($message->jsonSerialize(), JSON_THROW_ON_ERROR);
 
         $this->client->post($uri, [
             'headers' => [

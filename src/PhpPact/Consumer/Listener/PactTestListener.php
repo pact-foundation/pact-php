@@ -32,7 +32,7 @@ class PactTestListener implements TestListener
 
     private MockServerEnvConfig $mockServerConfig;
 
-    private bool $failed;
+    private bool $failed = false;
 
     /**
      * @param array<int, string> $testSuiteNames test suite names that need evaluated with the listener

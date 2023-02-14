@@ -296,7 +296,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         return $this->cors;
     }
 
-    public function setCors(string|bool $flag): self
+    public function setCors(mixed $flag): self
     {
         if ($flag === 'true') {
             $this->cors = true;

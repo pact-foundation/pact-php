@@ -53,7 +53,7 @@ interface MockServerConfigInterface
 
     public function hasCors(): bool;
 
-    public function setCors(string|bool $flag): self;
+    public function setCors(mixed $flag): self;
 
     public function setHealthCheckTimeout(int $timeout): self;
 

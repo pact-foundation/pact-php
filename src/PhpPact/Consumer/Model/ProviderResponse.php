@@ -75,16 +75,16 @@ class ProviderResponse implements \JsonSerializable
     }
 
     /**
-     * {@inheritdoc}
+     * @return array<string, mixed>
      */
     #[\ReturnTypeWillChange]
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         $results = [
             'status' => $this->getStatus(),
         ];
 
-        if ($this->getHeaders() !== null) {
+        if (count($this->getHeaders()) > 0) {
             $results['headers'] = $this->getHeaders();
         }
 

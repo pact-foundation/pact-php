@@ -114,7 +114,7 @@ class ConsumerRequest implements \JsonSerializable
 
         $results['method'] = $this->getMethod();
 
-        if ($this->getHeaders() !== null) {
+        if (count($this->getHeaders()) > 0) {
             $results['headers'] = $this->getHeaders();
         }
 
