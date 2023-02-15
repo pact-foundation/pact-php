@@ -60,6 +60,6 @@ class StubServerHttpService implements StubServerHttpServiceInterface
             ],
         ]);
 
-        return \json_encode(\json_decode($response->getBody()->getContents()), JSON_THROW_ON_ERROR);
+        return \json_encode(\json_decode($response->getBody()->getContents(), null, 512, JSON_THROW_ON_ERROR), JSON_THROW_ON_ERROR);
     }
 }

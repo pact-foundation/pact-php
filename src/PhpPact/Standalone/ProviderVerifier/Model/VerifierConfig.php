@@ -60,8 +60,8 @@ class VerifierConfig implements VerifierConfigInterface
 
     private ConsumerVersionSelectors $consumerVersionSelectors;
 
-    /** @var ?callable */
-    private $requestFilter;
+    /** @var null|callable */
+    private $requestFilter = null;
 
     public function __construct()
     {

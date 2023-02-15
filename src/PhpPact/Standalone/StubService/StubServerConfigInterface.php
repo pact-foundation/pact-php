@@ -6,7 +6,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Stub Server configuration interface to allow for simple overrides that are reusable.
- * Interface StubServerConfigInterface.
  */
 interface StubServerConfigInterface
 {

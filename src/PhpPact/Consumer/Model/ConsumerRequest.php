@@ -9,7 +9,10 @@ class ConsumerRequest implements \JsonSerializable
 {
     private string $method;
 
-    private mixed $path;
+    /**
+     * @var string|array<string, mixed>
+     */
+    private string|array $path;
 
     /**
      * @var array<string, string>
@@ -32,12 +35,18 @@ class ConsumerRequest implements \JsonSerializable
         return $this;
     }
 
-    public function getPath(): mixed
+    /**
+     * @return string|array<string, mixed>
+     */
+    public function getPath(): string|array
     {
         return $this->path;
     }
 
-    public function setPath(mixed $path): self
+    /**
+     * @param string|array<string, mixed> $path
+     */
+    public function setPath(string|array $path): self
     {
         $this->path = $path;
 
@@ -107,7 +116,6 @@ class ConsumerRequest implements \JsonSerializable
     /**
      * @return array<string, mixed>
      */
-    #[\ReturnTypeWillChange]
     public function jsonSerialize(): array
     {
         $results = [];

@@ -7,9 +7,6 @@ namespace PhpPact\Standalone;
  */
 interface PactConfigInterface
 {
-    /**
-     * @return string
-     */
     public function getConsumer(): string;
 
     /**
@@ -17,9 +14,6 @@ interface PactConfigInterface
      */
     public function setConsumer(string $consumer): self;
 
-    /**
-     * @return string
-     */
     public function getProvider(): string;
 
     /**

@@ -66,7 +66,6 @@ class Interaction implements \JsonSerializable
     /**
      * @return array<string, mixed>
      */
-    #[\ReturnTypeWillChange]
     public function jsonSerialize(): array
     {
         if ($this->getProviderState()) {

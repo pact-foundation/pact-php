@@ -50,7 +50,7 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -101,7 +101,7 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -133,7 +133,7 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -159,7 +159,7 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -190,7 +190,7 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -215,7 +215,7 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -239,7 +239,7 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function publish(): void
@@ -295,7 +295,7 @@ class Broker
             throw new \Exception($runner->getStderr());
         }
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function generateUuid(): string

@@ -68,6 +68,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
      * The seconds between health checks of mock server
      */
     private int $healthCheckRetrySec;
+
     private ?string $logLevel = null;
 
     /**

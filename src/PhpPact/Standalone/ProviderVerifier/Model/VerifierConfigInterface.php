@@ -6,7 +6,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Configuration to use with the verifier server.
- * Interface VerifierServerConfigInterface.
  */
 interface VerifierConfigInterface
 {

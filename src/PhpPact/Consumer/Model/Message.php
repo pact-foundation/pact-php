@@ -19,10 +19,7 @@ class Message implements \JsonSerializable
      */
     private array $metadata;
 
-    /**
-     * @var mixed
-     */
-    private $contents;
+    private mixed $contents;
 
     public function getDescription(): string
     {
@@ -46,6 +43,7 @@ class Message implements \JsonSerializable
 
     /**
      * @param array<mixed, mixed> $params
+     *
      * @return array<int, \stdClass>
      */
     public function setProviderState(string $name, array $params = [], bool $overwrite = true): array
@@ -93,18 +91,12 @@ class Message implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getContents()
+    public function getContents(): mixed
     {
         return $this->contents;
     }
 
-    /**
-     * @param mixed $contents
-     */
-    public function setContents($contents): self
+    public function setContents(mixed $contents): self
     {
         $this->contents = $contents;
 
@@ -113,9 +105,10 @@ class Message implements \JsonSerializable
 
     /**
      * {@inheritdoc}
+     *
+     * @return array<string, mixed>
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $out                = [];
         $out['description'] = $this->getDescription();

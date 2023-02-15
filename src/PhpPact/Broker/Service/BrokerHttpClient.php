@@ -38,7 +38,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
      */
     public function publishJson(string $version, string $json): void
     {
-        $array    = \json_decode($json, true);
+        $array    = \json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         $consumer = $array['consumer']['name'];
         $provider = $array['provider']['name'];
 
@@ -76,7 +76,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
             'headers' => $this->headers,
         ]);
 
-        $json = \json_decode($response->getBody()->getContents(), true);
+        $json = \json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 
         $urls = [];
         foreach ($json['_links']['pacts'] as $pact) {
@@ -97,7 +97,7 @@ class BrokerHttpClient implements BrokerHttpClientInterface
             'headers' => $this->headers,
         ]);
 
-        $json = \json_decode($response->getBody()->getContents(), true);
+        $json = \json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 
         $urls = [];
         foreach ($json['_links']['pacts'] as $pact) {

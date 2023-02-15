@@ -7,7 +7,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Configuration defining the default PhpPact Ruby Standalone server.
- * Class StubServerConfig.
  */
 class StubServerConfig implements StubServerConfigInterface
 {
