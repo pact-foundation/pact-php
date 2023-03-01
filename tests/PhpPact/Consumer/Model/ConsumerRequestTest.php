@@ -15,12 +15,14 @@ class ConsumerRequestTest extends TestCase
             ->setMethod('PUT')
             ->setPath('/somepath')
             ->addHeader('Content-Type', 'application/json')
+            ->addQueryParameter('fruit', ['apple', 'banana'])
             ->setBody([
                 'currentCity' => 'Austin',
             ]);
 
         $this->assertEquals('PUT', $model->getMethod());
-        $this->assertEquals(['Content-Type' => 'application/json'], $model->getHeaders());
+        $this->assertEquals(['Content-Type' => ['application/json']], $model->getHeaders());
+        $this->assertEquals(['fruit' => ['apple', 'banana']], $model->getQuery());
         $this->assertEquals('/somepath', $model->getPath());
         $this->assertEquals('{"currentCity":"Austin"}', $model->getBody());
     }
@@ -34,12 +36,14 @@ class ConsumerRequestTest extends TestCase
             ->setMethod('PATCH')
             ->setPath($matcher->regex("/somepath/$pathVariable/status", '\/somepath\/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}\/status'))
             ->addHeader('Content-Type', 'application/json')
+            ->addQueryParameter('food', 'milk')
             ->setBody([
                 'status' => 'finished',
             ]);
 
         $this->assertEquals('PATCH', $model->getMethod());
-        $this->assertEquals(['Content-Type' => 'application/json'], $model->getHeaders());
+        $this->assertEquals(['Content-Type' => ['application/json']], $model->getHeaders());
+        $this->assertEquals(['food' => ['milk']], $model->getQuery());
         $this->assertEquals('{"value":"\/somepath\/474d610b-c6e3-45bd-9f70-529e7ad21df0\/status","regex":"\\\\\\/somepath\\\\\\/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}\\\\\\/status","pact:matcher:type":"regex"}', $model->getPath());
         $this->assertEquals('{"status":"finished"}', $model->getBody());
     }

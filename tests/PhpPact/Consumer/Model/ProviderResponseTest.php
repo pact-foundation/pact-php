@@ -18,7 +18,7 @@ class ProviderResponseTest extends TestCase
             ]);
 
         $this->assertEquals(200, $model->getStatus());
-        $this->assertEquals(['Content-Type' => 'application/json'], $model->getHeaders());
+        $this->assertEquals(['Content-Type' => ['application/json']], $model->getHeaders());
         $this->assertEquals('{"currentCity":"Austin"}', $model->getBody());
     }
 }

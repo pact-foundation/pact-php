@@ -147,11 +147,15 @@ class Pact extends AbstractPact
         $id = $interaction->getId();
         $request = $interaction->getRequest();
         $this->ffi->pactffi_with_request($id, $request->getMethod(), $request->getPath());
-        foreach ($request->getHeaders() as $header => $value) {
-            $this->ffi->pactffi_with_header_v2($id, $this->ffi->InteractionPart_Request, $header, 0, $value);
+        foreach ($request->getHeaders() as $header => $values) {
+            foreach (array_values($values) as $index => $value) {
+                $this->ffi->pactffi_with_header_v2($id, $this->ffi->InteractionPart_Request, $header, $index, $value);
+            }
         }
-        foreach ($request->getQuery() as $key => $value) {
-            $this->ffi->pactffi_with_query_parameter_v2($id, $key, 0, $value);
+        foreach ($request->getQuery() as $key => $values) {
+            foreach (array_values($values) as $index => $value) {
+                $this->ffi->pactffi_with_query_parameter_v2($id, $key, $index, $value);
+            }
         }
         if (!\is_null($request->getBody())) {
             $success = $this->ffi->pactffi_with_body($id, $this->ffi->InteractionPart_Request, null, $request->getBody());
@@ -168,8 +172,10 @@ class Pact extends AbstractPact
         $id = $interaction->getId();
         $response = $interaction->getResponse();
         $this->ffi->pactffi_response_status($id, $response->getStatus());
-        foreach ($response->getHeaders() as $header => $value) {
-            $this->ffi->pactffi_with_header_v2($id, $this->ffi->InteractionPart_Response, $header, 0, $value);
+        foreach ($response->getHeaders() as $header => $values) {
+            foreach (array_values($values) as $index => $value) {
+                $this->ffi->pactffi_with_header_v2($id, $this->ffi->InteractionPart_Response, $header, $index, $value);
+            }
         }
         if (!\is_null($response->getBody())) {
             $success = $this->ffi->pactffi_with_body($id, $this->ffi->InteractionPart_Response, null, $response->getBody());

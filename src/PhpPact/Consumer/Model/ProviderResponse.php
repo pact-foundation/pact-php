@@ -67,14 +67,14 @@ class ProviderResponse implements \JsonSerializable
     }
 
     /**
-     * @param string $header
-     * @param string $value
+     * @param string       $header
+     * @param array|string $value
      *
      * @return ProviderResponse
      */
-    public function addHeader(string $header, string $value): self
+    public function addHeader(string $header, array|string $value): self
     {
-        $this->headers[$header] = $value;
+        $this->headers[$header] = is_array($value) ? $value : [$value];
 
         return $this;
     }

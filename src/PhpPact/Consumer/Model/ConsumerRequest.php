@@ -97,14 +97,14 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @param string $header
-     * @param string $value
+     * @param string       $header
+     * @param array|string $value
      *
      * @return ConsumerRequest
      */
-    public function addHeader(string $header, string $value): self
+    public function addHeader(string $header, array|string $value): self
     {
-        $this->headers[$header] = $value;
+        $this->headers[$header] = is_array($value) ? $value : [$value];
 
         return $this;
     }
@@ -160,14 +160,14 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @param string $key
-     * @param string $value
+     * @param string       $key
+     * @param array|string $value
      *
      * @return ConsumerRequest
      */
-    public function addQueryParameter(string $key, string $value): self
+    public function addQueryParameter(string $key, array|string $value): self
     {
-        $this->query[$key] = $value;
+        $this->query[$key] = is_array($value) ? $value : [$value];
 
         return $this;
     }
