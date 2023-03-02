@@ -20,7 +20,7 @@ class Scripts
     /**
      * @return string
      */
-    public static function getCode(): string
+    public static function getHeader(): string
     {
         return self::$destinationDir . '/bin/pact-ffi-headers/pact.h';
     }

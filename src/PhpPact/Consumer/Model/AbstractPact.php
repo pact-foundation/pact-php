@@ -15,6 +15,6 @@ abstract class AbstractPact
 
     public function __construct()
     {
-        $this->ffi = FFI::cdef(\file_get_contents(Scripts::getCode()), Scripts::getLibrary());
+        $this->ffi = FFI::cdef(\file_get_contents(Scripts::getHeader()), Scripts::getLibrary());
     }
 }
