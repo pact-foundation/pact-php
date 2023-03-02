@@ -69,7 +69,7 @@ class ProcessRunner
         return $this->process->getCommand();
     }
 
-    public function getStderr(): ?string
+    public function getStderr(): string
     {
         return $this->stderr;
     }
