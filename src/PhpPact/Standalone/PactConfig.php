@@ -2,8 +2,6 @@
 
 namespace PhpPact\Standalone;
 
-use Composer\Semver\VersionParser;
-
 /**
  * Class PactConfig.
  */
@@ -135,17 +133,9 @@ class PactConfig implements PactConfigInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \UnexpectedValueException
      */
     public function setPactSpecificationVersion(string $pactSpecificationVersion): self
     {
-        /*
-         * Parse the version but do not assign it.  If it is an invalid version, an exception is thrown
-         */
-        $parser = new VersionParser();
-        $parser->normalize($pactSpecificationVersion);
-
         $this->pactSpecificationVersion = $pactSpecificationVersion;
 
         return $this;

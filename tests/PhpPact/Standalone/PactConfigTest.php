@@ -43,13 +43,6 @@ class PactConfigTest extends TestCase
         static::assertSame($pactFileWriteMode, $this->config->getPactFileWriteMode());
     }
 
-    public function testInvalidPactSpecificationVersion(): void
-    {
-        $this->expectException(\UnexpectedValueException::class);
-        $this->expectExceptionMessage('Invalid version string "invalid"');
-        $this->config->setPactSpecificationVersion('invalid');
-    }
-
     public function testInvalidLogLevel(): void
     {
         $this->expectException(\InvalidArgumentException::class);
