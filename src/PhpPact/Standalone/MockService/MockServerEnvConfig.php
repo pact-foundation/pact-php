@@ -39,6 +39,10 @@ class MockServerEnvConfig extends MockServerConfig
         }
 
         $this->setPactSpecificationVersion($version);
+
+        if ($writeMode = $this->parseEnv('PACT_FILE_WRITE_MODE', false)) {
+            $this->setPactFileWriteMode($writeMode);
+        }
     }
 
     /**

@@ -25,5 +25,6 @@
         <env name="PACT_PROVIDER_NAME" value="someProvider"/>
         <env name="PACT_OUTPUT_DIR" value=".\example\output"/>
         <!-- <env name="PACT_BROKER_URI" value="http://localhost"/> -->
+        <env name="PACT_FILE_WRITE_MODE" value="merge"/>
     </php>
 </phpunit>

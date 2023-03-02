@@ -24,5 +24,6 @@
         <env name="PACT_CONSUMER_TAG" value="master"/>
         <env name="PACT_PROVIDER_NAME" value="someProvider"/>
         <env name="PACT_OUTPUT_DIR" value=".\example\output\\"/>
+        <env name="PACT_FILE_WRITE_MODE" value="merge"/>
     </php>
 </phpunit>

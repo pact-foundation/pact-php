@@ -57,7 +57,7 @@ class PactConfig implements PactConfigInterface
      *
      * @var string
      */
-    private string $pactFileWriteMode = self::MODE_OVERWRITE;
+    private string $pactFileWriteMode = self::MODE_MERGE;
 
     /**
      * {@inheritdoc}

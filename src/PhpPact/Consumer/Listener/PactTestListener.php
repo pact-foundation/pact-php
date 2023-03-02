@@ -7,6 +7,7 @@ use PhpPact\Standalone\Exception\MissingEnvVariableException;
 use PhpPact\Standalone\Broker\Broker;
 use PhpPact\Standalone\Broker\BrokerConfig;
 use PhpPact\Standalone\MockService\MockServerEnvConfig;
+use PhpPact\Standalone\PactConfigInterface;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestListener;
@@ -47,6 +48,24 @@ class PactTestListener implements TestListener
     {
         $this->testSuiteNames   = $testSuiteNames;
         $this->mockServerConfig = new MockServerEnvConfig();
+    }
+
+    /**
+     * @param TestSuite $suite
+     *
+     * @throws \Exception
+     */
+    public function startTestSuite(TestSuite $suite): void
+    {
+        if (
+            \in_array($suite->getName(), $this->testSuiteNames) &&
+            $this->mockServerConfig->getPactFileWriteMode() === PactConfigInterface::MODE_MERGE
+        ) {
+            $consumer = $this->mockServerConfig->getConsumer();
+            $provider = $this->mockServerConfig->getProvider();
+            $pactDir = $this->mockServerConfig->getPactDir();
+            unlink($pactDir . \DIRECTORY_SEPARATOR . "{$consumer}-{$provider}.json");
+        }
     }
 
     public function addError(Test $test, \Throwable $t, float $time): void
