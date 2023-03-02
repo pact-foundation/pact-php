@@ -115,8 +115,14 @@ class Pact extends AbstractPact
             '3.0.0' => $this->ffi->PactSpecification_V3,
             '4.0.0' => $this->ffi->PactSpecification_V4,
         ];
-        $version = $supportedVersions[$this->config->getPactSpecificationVersion()] ?? $this->ffi->PactSpecification_Unknown;
-        $this->ffi->pactffi_with_specification($this->id, $version);
+        $version = $this->config->getPactSpecificationVersion();
+        if (isset($supportedVersions[$version])) {
+            $specification = $supportedVersions[$version];
+        } else {
+            trigger_error(sprintf("Specification version '%s' is unknown", $version), E_USER_WARNING);
+            $specification = $this->ffi->PactSpecification_Unknown;
+        }
+        $this->ffi->pactffi_with_specification($this->id, $specification);
 
         return $this;
     }
