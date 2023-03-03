@@ -22,9 +22,7 @@ class VerifierTest extends TestCase
         $this->process = new Process(['php', '-S', 'localhost:7202', '-t', $publicPath]);
 
         $this->process->start();
-        $this->process->waitUntil(function ($type, $output) {
-            return false !== \strpos($output, 'Development Server (http://localhost:7202) started');
-        });
+        $this->process->waitUntil(fn () => is_resource(fsockopen('localhost', 7202)));
     }
 
     /**
