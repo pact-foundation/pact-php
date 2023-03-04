@@ -73,16 +73,16 @@ class PactTestListener implements TestListener
                 print 'PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.';
             } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_VERSION'))) {
                 print 'PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.';
-            } elseif (!($tag = \getenv('PACT_CONSUMER_TAG'))) {
-                print 'PACT_CONSUMER_TAG environment variable was not set. Skipping PACT file upload.';
             } else {
                 $brokerConfig = new BrokerConfig();
                 $brokerConfig->setPacticipant($this->mockServerConfig->getConsumer());
                 $brokerConfig->setPactLocations($this->mockServerConfig->getPactDir());
                 $brokerConfig->setBrokerUri(new Uri($pactBrokerUri));
                 $brokerConfig->setConsumerVersion($consumerVersion);
-                $brokerConfig->setVersion($consumerVersion);
-                $brokerConfig->setTag($tag);
+                if ($tag = \getenv('PACT_CONSUMER_TAG')) {
+                    $brokerConfig->setTag($tag);
+                }
+
                 if (($user = \getenv('PACT_BROKER_HTTP_AUTH_USER')) &&
                     ($pass = \getenv('PACT_BROKER_HTTP_AUTH_PASS'))
                 ) {
@@ -95,7 +95,6 @@ class PactTestListener implements TestListener
                 }
 
                 $broker = new Broker($brokerConfig);
-                $broker->createVersionTag();
                 $broker->publish();
                 print 'Pact file has been uploaded to the Broker successfully.';
             }
