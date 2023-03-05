@@ -64,7 +64,10 @@ class PactTestListener implements TestListener
             $consumer = $this->mockServerConfig->getConsumer();
             $provider = $this->mockServerConfig->getProvider();
             $pactDir = $this->mockServerConfig->getPactDir();
-            unlink($pactDir . \DIRECTORY_SEPARATOR . "{$consumer}-{$provider}.json");
+            $path = $pactDir . \DIRECTORY_SEPARATOR . "{$consumer}-{$provider}.json";
+            if (file_exists($path)) {
+                unlink($path);
+            }
         }
     }
 
