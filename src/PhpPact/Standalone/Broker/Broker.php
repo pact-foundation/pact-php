@@ -150,6 +150,10 @@ class Broker
                 fputs(STDOUT, $buffer);
             }
         });
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
     }
 
     public function testWebhook(): array
