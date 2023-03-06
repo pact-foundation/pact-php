@@ -11,7 +11,7 @@ use Psr\Http\Message\UriInterface;
 class StubServerConfig implements StubServerConfigInterface
 {
     private ?UriInterface $brokerUrl         = null;
-    private ?int $port                       = null;
+    private int $port                        = 0;
 
     private ?string $extension               = null;
     private ?string $logLevel                = null;
@@ -108,7 +108,7 @@ class StubServerConfig implements StubServerConfigInterface
         return $this->logLevel;
     }
 
-    public function getPort(): ?int
+    public function getPort(): int
     {
         return $this->port;
     }

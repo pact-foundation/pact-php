@@ -54,9 +54,9 @@ interface StubServerConfigInterface
     public function setLogLevel(string $logLevel): self;
 
     /**
-     * @return null|int the port of the stub service
+     * @return int the port of the stub service
      */
-    public function getPort(): ?int;
+    public function getPort(): int;
 
     /**
      * @param int $port Port to run on (defaults to random port assigned by the OS)

@@ -35,7 +35,12 @@ class StubServer
             echo $buffer;
         });
         $this->process->waitUntil(function (string $type, string $output) {
-            return false !== \strpos($output, 'Server started on port');
+            $result = preg_match('/Server started on port (\d+)/', $output, $matches);
+            if ($result === 1 && $this->config->getPort() === 0) {
+                $this->config->setPort((int)$matches[1]);
+            }
+
+            return $result;
         });
 
         return $this->process->getPid();
