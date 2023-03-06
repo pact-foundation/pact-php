@@ -46,8 +46,6 @@ class StubServerConfig implements StubServerConfigInterface
     private bool $emptyProviderState = false;
     private bool $insecureTls        = false;
 
-    private string $endpoint;
-
     public function getBrokerUrl(): ?UriInterface
     {
         return $this->brokerUrl;
@@ -255,18 +253,5 @@ class StubServerConfig implements StubServerConfigInterface
     public function getBaseUri(): UriInterface
     {
         return new Uri("http://localhost:{$this->getPort()}");
-    }
-
-
-    public function getEndpoint(): string
-    {
-        return $this->endpoint;
-    }
-
-    public function setEndpoint(string $endpoint): StubServerConfigInterface
-    {
-        $this->endpoint = $endpoint;
-
-        return $this;
     }
 }

@@ -14,14 +14,12 @@ class StubServerTest extends TestCase
     public function testStartAndStop()
     {
         try {
-            $files   = [__DIR__ . '/../../../_resources/someconsumer-someprovider.json'];
-            $port    = 7201;
-            $endpoint= 'test';
+            $files = [__DIR__ . '/../../../_resources/someconsumer-someprovider.json'];
+            $port  = 7201;
 
             $subject = (new StubServerConfig())
                 ->setFiles($files)
-                ->setPort($port)
-                ->setEndpoint($endpoint);
+                ->setPort($port);
 
             $stubServer = new StubServer($subject);
             $pid        = $stubServer->start();

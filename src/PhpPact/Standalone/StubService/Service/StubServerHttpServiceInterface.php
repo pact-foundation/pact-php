@@ -7,5 +7,5 @@ interface StubServerHttpServiceInterface
     /**
      * Get the current state of the PACT JSON file and write it to disk.
      */
-    public function getJson(): string;
+    public function getJson(string $endpoint): string;
 }

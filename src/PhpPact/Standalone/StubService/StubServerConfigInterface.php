@@ -150,8 +150,4 @@ interface StubServerConfigInterface
     public function getProviderNames(): array;
 
     public function getBaseUri(): UriInterface;
-
-    public function getEndpoint(): string;
-
-    public function setEndpoint(string $endpoint): self;
 }

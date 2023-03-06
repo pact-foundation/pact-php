@@ -400,13 +400,12 @@ $endpoint = 'test';
 
 $config = (new StubServerConfig())
             ->setFiles($files)
-            ->setPort($port)
-            ->setEndpoint($endpoint);
+            ->setPort($port);
 
 $stubServer = new StubServer($config);
 $stubServer->start();
 
 $service = new StubServerHttpService(new GuzzleClient(), $config);
 
-echo $service->getJson(); // output: {"results":[{"name":"Games"}]}
+echo $service->getJson($endpoint); // output: {"results":[{"name":"Games"}]}
 ```

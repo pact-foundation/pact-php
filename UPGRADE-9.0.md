@@ -50,3 +50,10 @@ UPGRADE FROM 8.x to 9.0
 
    $this->assertTrue($verifyResult);
    ```
+
+* Stub Server
+  * Endpoint now can be set by:
+  ```php
+  $service = new StubServerHttpService(new GuzzleClient(), $this->config);
+  $service->getJson($endpoint);
+  ```
