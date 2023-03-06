@@ -94,6 +94,10 @@ class PactTestListener implements TestListener
                     $brokerConfig->setBrokerToken($bearerToken);
                 }
 
+                if ($branch = \getenv('PACT_CONSUMER_BRANCH')) {
+                    $brokerConfig->setBranch($branch);
+                }
+
                 $broker = new Broker($brokerConfig);
                 $broker->publish();
                 print 'Pact file has been uploaded to the Broker successfully.';
