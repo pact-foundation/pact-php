@@ -53,7 +53,7 @@ class StubServerHttpService implements StubServerHttpServiceInterface
         $body = $response->getBody()->getContents();
 
         if ($response->getStatusCode() !== 200
-            || $body !== "Stub service running\n") {
+            || $body !== "Mock service running\n") {
             throw new ConnectionException('Failed to receive a successful response from the Stub Server.');
         }
 
