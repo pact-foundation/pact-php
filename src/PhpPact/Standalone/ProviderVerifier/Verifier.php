@@ -24,7 +24,9 @@ class Verifier
     public function __construct(VerifierConfigInterface $config)
     {
         $this->ffi = FFI::cdef(\file_get_contents(Scripts::getHeader()), Scripts::getLibrary());
-        $this->ffi->pactffi_init('PACT_LOGLEVEL');
+        if ($level = \getenv('PACT_LOGLEVEL')) {
+            $this->ffi->pactffi_init_with_log_level($level);
+        }
         $this->newHandle($config);
     }
 
