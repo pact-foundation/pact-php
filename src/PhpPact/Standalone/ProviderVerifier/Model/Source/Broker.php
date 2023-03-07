@@ -78,7 +78,7 @@ class Broker extends Url implements BrokerInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderBranch(): string
+    public function getProviderBranch(): ?string
     {
         return $this->providerBranch;
     }

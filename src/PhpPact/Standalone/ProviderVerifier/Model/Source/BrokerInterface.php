@@ -47,9 +47,9 @@ interface BrokerInterface extends UrlInterface
     public function setProviderTags(array $providerTags): self;
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getProviderBranch(): string;
+    public function getProviderBranch(): ?string;
 
     /**
      * @param string $providerBranch
