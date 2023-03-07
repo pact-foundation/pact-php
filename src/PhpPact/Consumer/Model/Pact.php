@@ -81,7 +81,11 @@ class Pact extends AbstractPact
 
     private function given(Interaction $interaction): self
     {
-        $this->ffi->pactffi_given($interaction->getId(), $interaction->getProviderState());
+        foreach ($interaction->getProviderStates() as $providerState) {
+            foreach ($providerState->getParams() as $key => $value) {
+                $this->ffi->pactffi_given_with_param($interaction->getId(), $providerState->getName(), $key, $value);
+            }
+        }
 
         return $this;
     }

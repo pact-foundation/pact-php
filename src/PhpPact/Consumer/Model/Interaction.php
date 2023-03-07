@@ -8,6 +8,8 @@ namespace PhpPact\Consumer\Model;
  */
 class Interaction
 {
+    use ProviderStates;
+
     /**
      * @var int
      */
@@ -17,11 +19,6 @@ class Interaction
      * @var string
      */
     private string $description;
-
-    /**
-     * @var null|string
-     */
-    private ?string $providerState = null;
 
     /**
      * @var ConsumerRequest
@@ -69,26 +66,6 @@ class Interaction
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getProviderState(): ?string
-    {
-        return $this->providerState;
-    }
-
-    /**
-     * @param string $providerState
-     *
-     * @return Interaction
-     */
-    public function setProviderState(string $providerState): self
-    {
-        $this->providerState = $providerState;
 
         return $this;
     }

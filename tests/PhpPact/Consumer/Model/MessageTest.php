@@ -3,6 +3,7 @@
 namespace PhpPactTest\Consumer\Model;
 
 use PhpPact\Consumer\Model\Message;
+use PhpPact\Consumer\Model\ProviderState;
 use PHPUnit\Framework\TestCase;
 
 class MessageTest extends TestCase
@@ -25,7 +26,11 @@ class MessageTest extends TestCase
 
         static::assertSame($id, $subject->getId());
         static::assertSame($description, $subject->getDescription());
-        static::assertEquals([(object) ['name' => $providerStateName, 'params' => $providerStateParams]], $subject->getProviderStates());
+        $providerStates = $subject->getProviderStates();
+        static::assertCount(1, $providerStates);
+        static::assertContainsOnlyInstancesOf(ProviderState::class, $providerStates);
+        static::assertEquals($providerStateName, $providerStates[0]->getName());
+        static::assertEquals($providerStateParams, $providerStates[0]->getParams());
         static::assertSame($metadata, $subject->getMetadata());
         static::assertSame($contents, $subject->getContents());
     }

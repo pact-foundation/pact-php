@@ -8,6 +8,8 @@ namespace PhpPact\Consumer\Model;
  */
 class Message
 {
+    use ProviderStates;
+
     /**
      * @var int
      */
@@ -17,11 +19,6 @@ class Message
      * @var string
      */
     private string $description;
-
-    /**
-     * @var array
-     */
-    private array $providerStates = [];
 
     /**
      * @var array
@@ -69,48 +66,6 @@ class Message
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getProviderStates(): array
-    {
-        return $this->providerStates;
-    }
-
-    /**
-     * @param mixed $overwrite
-     *
-     * @return array
-     */
-    public function setProviderState(string $name, array $params = [], $overwrite = true): array
-    {
-        $this->addProviderState($name, $params, $overwrite);
-
-        return $this->providerStates;
-    }
-
-    /**
-     * @param string $name
-     * @param array  $params
-     * @param bool   $overwrite - if true reset the entire state
-     *
-     * @return $this
-     */
-    public function addProviderState(string $name, array $params, $overwrite = false): self
-    {
-        $providerState         = new \stdClass();
-        $providerState->name   = $name;
-        $providerState->params = $params;
-
-        if ($overwrite === true) {
-            $this->providerStates = [];
-        }
-
-        $this->providerStates[] = $providerState;
 
         return $this;
     }

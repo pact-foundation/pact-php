@@ -40,8 +40,8 @@ class PactMessage extends AbstractPact
     private function given(Message $message): self
     {
         foreach ($message->getProviderStates() as $providerState) {
-            foreach ($providerState->params as $key => $value) {
-                $this->ffi->pactffi_message_given_with_param($message->getId(), $providerState->name, (string) $key, $value);
+            foreach ($providerState->getParams() as $key => $value) {
+                $this->ffi->pactffi_message_given_with_param($message->getId(), $providerState->getName(), $key, $value);
             }
         }
 

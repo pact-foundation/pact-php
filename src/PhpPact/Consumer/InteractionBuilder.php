@@ -33,12 +33,14 @@ class InteractionBuilder implements BuilderInterface
 
     /**
      * @param string $providerState what is given to the request
+     * @param array  $params    for that request
+     * @param bool   $overwrite clear pass states completely and start this array
      *
      * @return InteractionBuilder
      */
-    public function given(string $providerState): self
+    public function given(string $providerState, array $params = [], bool $overwrite = false): self
     {
-        $this->interaction->setProviderState($providerState);
+        $this->interaction->setProviderState($providerState, $params, $overwrite);
 
         return $this;
     }
