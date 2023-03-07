@@ -113,7 +113,7 @@ class Verifier
     {
         $this->ffi->pactffi_verifier_url_source(
             $this->handle,
-            $url->getUrl(),
+            (string) $url->getUrl(),
             $url->getUsername(),
             $url->getPassword(),
             $url->getToken()
@@ -134,7 +134,7 @@ class Verifier
         $consumerVersionTags = ArrayData::createFrom($broker->getConsumerVersionTags());
         $this->ffi->pactffi_verifier_broker_source_with_selectors(
             $this->handle,
-            $broker->getUrl(),
+            (string) $broker->getUrl(),
             $broker->getUsername(),
             $broker->getPassword(),
             $broker->getToken(),
