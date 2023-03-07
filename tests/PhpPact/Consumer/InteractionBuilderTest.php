@@ -37,7 +37,7 @@ class InteractionBuilderTest extends TestCase
 
         $builder = new InteractionBuilder(new MockServerEnvConfig());
         $builder
-            ->given('A test request.')
+            ->given('A test request.', ['key' => 'value'])
             ->uponReceiving('A test response.')
             ->with($request)
             ->willRespondWith($response);
@@ -75,7 +75,7 @@ class InteractionBuilderTest extends TestCase
 
         $builder = new InteractionBuilder(new MockServerEnvConfig());
         $builder
-            ->given('A test request.')
+            ->given('A test request.', ['key' => 'value'])
             ->uponReceiving('A test response.')
             ->with($request)
             ->willRespondWith($response);
@@ -109,7 +109,7 @@ class InteractionBuilderTest extends TestCase
 
         $builder = new InteractionBuilder(new MockServerEnvConfig());
         $builder
-            ->given('A test request.')
+            ->given('A test request.', ['key' => 'value'])
             ->uponReceiving('A test response.')
             ->with($request)
             ->willRespondWith($response);

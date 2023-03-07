@@ -8,6 +8,8 @@ namespace PhpPact\Consumer\Model;
  */
 class Message implements \JsonSerializable
 {
+    use ProviderStates;
+
     /**
      * @var string
      */
@@ -16,12 +18,7 @@ class Message implements \JsonSerializable
     /**
      * @var array
      */
-    private $providerStates = [];
-
-    /**
-     * @var array
-     */
-    private $metadata;
+    private array $metadata;
 
     /**
      * @var mixed
@@ -44,48 +41,6 @@ class Message implements \JsonSerializable
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getProviderStates(): array
-    {
-        return $this->providerStates;
-    }
-
-    /**
-     * @param mixed $overwrite
-     *
-     * @return array
-     */
-    public function setProviderState(string $name, array $params = [], $overwrite = true): array
-    {
-        $this->addProviderState($name, $params, $overwrite);
-
-        return $this->providerStates;
-    }
-
-    /**
-     * @param string $name
-     * @param array  $params
-     * @param bool   $overwrite - if true reset the entire state
-     *
-     * @return Message
-     */
-    public function addProviderState(string $name, array $params, $overwrite = false): self
-    {
-        $providerState         = new \stdClass();
-        $providerState->name   = $name;
-        $providerState->params = $params;
-
-        if ($overwrite === true) {
-            $this->providerStates = [];
-        }
-
-        $this->providerStates[] = $providerState;
 
         return $this;
     }

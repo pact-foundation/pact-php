@@ -172,7 +172,7 @@ Now that we have the request and response, we need to build the interaction and 
 $config  = new MockServerEnvConfig();
 $builder = new InteractionBuilder($config);
 $builder
-    ->given('a person exists')
+    ->given('a person exists', ['name' => 'Bob'])
     ->uponReceiving('a get request to /hello/{name}')
     ->with($request)
     ->willRespondWith($response); // This has to be last. This is what makes FFI calls to register the interaction and start the mock server.
