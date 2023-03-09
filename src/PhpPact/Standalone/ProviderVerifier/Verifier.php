@@ -56,7 +56,7 @@ class Verifier
             $this->handle,
             $config->getStateChangeUrl() ? (string) $config->getStateChangeUrl() : null,
             $config->isStateChangeTeardown(),
-            !$config->isStateChangeAsQuery()
+            $config->isStateChangeAsBody()
         );
         $this->ffi->pactffi_verifier_set_verification_options(
             $this->handle,

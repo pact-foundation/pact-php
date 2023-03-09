@@ -19,7 +19,7 @@ class VerifierConfigTest extends TestCase
         $filterNoState          = true;
         $filterState            = 'given state';
         $stateChangeUrl         = new Uri('http://domain.com/change');
-        $stateChangeAsQuery     = true;
+        $stateChangeAsBody      = true;
         $stateChangeTeardown    = true;
         $requestTimeout         = 500;
         $disableSslVerification = true;
@@ -43,7 +43,7 @@ class VerifierConfigTest extends TestCase
             ->setFilterState($filterState)
             // Provider State
             ->setStateChangeUrl($stateChangeUrl)
-            ->setStateChangeAsQuery($stateChangeAsQuery)
+            ->setStateChangeAsBody($stateChangeAsBody)
             ->setStateChangeTeardown($stateChangeTeardown)
             // Verification Options
             ->setRequestTimeout($requestTimeout)
@@ -66,7 +66,7 @@ class VerifierConfigTest extends TestCase
         static::assertSame($filterNoState, $subject->getFilterNoState());
         static::assertSame($filterState, $subject->getFilterState());
         static::assertSame($stateChangeUrl, $subject->getStateChangeUrl());
-        static::assertSame($stateChangeAsQuery, $subject->isStateChangeAsQuery());
+        static::assertSame($stateChangeAsBody, $subject->isStateChangeAsBody());
         static::assertSame($stateChangeTeardown, $subject->isStateChangeTeardown());
         static::assertSame($requestTimeout, $subject->getRequestTimeout());
         static::assertSame($disableSslVerification, $subject->isDisableSslVerification());

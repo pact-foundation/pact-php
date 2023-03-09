@@ -22,16 +22,16 @@ interface ProviderStateInterface
     public function setStateChangeUrl(UriInterface $stateChangeUrl): self;
 
     /**
-     * @param bool $stateChangeAsQuery
+     * @param bool $stateChangeAsBody
      *
      * @return $this
      */
-    public function setStateChangeAsQuery(bool $stateChangeAsQuery): self;
+    public function setStateChangeAsBody(bool $stateChangeAsBody): self;
 
     /**
      * @return bool
      */
-    public function isStateChangeAsQuery(): bool;
+    public function isStateChangeAsBody(): bool;
 
     /**
      * @param bool $stateChangeTeardown

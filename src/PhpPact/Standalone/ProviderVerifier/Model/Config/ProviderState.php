@@ -11,7 +11,7 @@ use Psr\Http\Message\UriInterface;
 trait ProviderState
 {
     private ?UriInterface $stateChangeUrl = null;
-    private bool $stateChangeAsQuery      = false;
+    private bool $stateChangeAsBody       = true;
     private bool $stateChangeTeardown     = false;
 
     /**
@@ -35,9 +35,9 @@ trait ProviderState
     /**
      * {@inheritdoc}
      */
-    public function setStateChangeAsQuery(bool $stateChangeAsQuery): VerifierConfigInterface
+    public function setStateChangeAsBody(bool $stateChangeAsBody): VerifierConfigInterface
     {
-        $this->stateChangeAsQuery = $stateChangeAsQuery;
+        $this->stateChangeAsBody = $stateChangeAsBody;
 
         return $this;
     }
@@ -45,9 +45,9 @@ trait ProviderState
     /**
      * {@inheritdoc}
      */
-    public function isStateChangeAsQuery(): bool
+    public function isStateChangeAsBody(): bool
     {
-        return $this->stateChangeAsQuery;
+        return $this->stateChangeAsBody;
     }
 
     /**

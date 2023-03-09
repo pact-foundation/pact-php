@@ -243,7 +243,7 @@ $config
     ->setFilterState('state')
     ->setPublishResults(true)
     ->setDisableSslVerification(true)
-    ->setStateChangeAsQuery(true)
+    ->setStateChangeAsBody(false)
     ->setStateChangeTeardown(true)
     ->setRequestTimeout(500);
 
