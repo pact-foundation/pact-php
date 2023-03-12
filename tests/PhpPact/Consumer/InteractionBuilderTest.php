@@ -36,13 +36,13 @@ class InteractionBuilderTest extends TestCase
             ->addHeader('Content-Type', 'application/json');
 
         $builder = new InteractionBuilder(new MockServerEnvConfig());
-        $result  = $builder
+        $builder
             ->given('A test request.')
             ->uponReceiving('A test response.')
             ->with($request)
             ->willRespondWith($response);
 
-        $this->assertTrue($result);
+        $this->assertFalse($builder->verify());
     }
 
     /**
@@ -74,13 +74,13 @@ class InteractionBuilderTest extends TestCase
             ]);
 
         $builder = new InteractionBuilder(new MockServerEnvConfig());
-        $result  = $builder
+        $builder
             ->given('A test request.')
             ->uponReceiving('A test response.')
             ->with($request)
             ->willRespondWith($response);
 
-        $this->assertTrue($result);
+        $this->assertFalse($builder->verify());
     }
 
     /**
@@ -108,12 +108,12 @@ class InteractionBuilderTest extends TestCase
             ]);
 
         $builder = new InteractionBuilder(new MockServerEnvConfig());
-        $result  = $builder
+        $builder
             ->given('A test request.')
             ->uponReceiving('A test response.')
             ->with($request)
             ->willRespondWith($response);
 
-        $this->assertTrue($result);
+        $this->assertFalse($builder->verify());
     }
 }

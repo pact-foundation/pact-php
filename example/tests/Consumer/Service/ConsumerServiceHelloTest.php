@@ -42,8 +42,7 @@ class ConsumerServiceHelloTest extends TestCase
         $builder
             ->uponReceiving('A get request to /hello/{name}')
             ->with($request)
-            ->willRespondWith($response); // This has to be last. This is what makes a FFI call to the Mock Server to set the interaction.
-        $builder->createMockServer();
+            ->willRespondWith($response); // This has to be last. This is what makes FFI calls to register the interaction and start the mock server.
 
         $service = new HttpClientService($config->getBaseUri()); // Pass in the URL to the Mock Server.
         $result  = $service->getHelloString('Bob'); // Make the real API request against the Mock Server.

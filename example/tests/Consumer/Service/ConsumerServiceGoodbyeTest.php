@@ -37,7 +37,6 @@ class ConsumerServiceGoodbyeTest extends TestCase
             ->uponReceiving('A get request to /goodbye/{name}')
             ->with($request)
             ->willRespondWith($response);
-        $builder->createMockServer();
 
         $service = new HttpClientService($config->getBaseUri());
         $result  = $service->getGoodbyeString('Bob');

@@ -27,7 +27,7 @@ class Pact extends AbstractPact
             ->withSpecification();
     }
 
-    public function createMockServer(): void
+    private function createMockServer(): void
     {
         $port = $this->ffi->pactffi_create_mock_server_for_transport(
             $this->id,
@@ -83,7 +83,8 @@ class Pact extends AbstractPact
             ->given($interaction)
             ->uponReceiving($interaction)
             ->with($interaction)
-            ->willRespondWith($interaction);
+            ->willRespondWith($interaction)
+            ->createMockServer();
 
         return true;
     }

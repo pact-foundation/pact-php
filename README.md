@@ -175,15 +175,7 @@ $builder
     ->given('a person exists')
     ->uponReceiving('a get request to /hello/{name}')
     ->with($request)
-    ->willRespondWith($response); // This has to be last. This is what makes an API request to the Mock Server to set the interaction.
-```
-
-### Start the Mock Server
-
-Mock server need to be started manually
-
-```php
-$builder->createMockServer();
+    ->willRespondWith($response); // This has to be last. This is what makes FFI calls to register the interaction and start the mock server.
 ```
 
 ### Make the Request

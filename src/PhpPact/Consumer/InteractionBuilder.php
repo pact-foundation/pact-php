@@ -86,12 +86,4 @@ class InteractionBuilder implements BuilderInterface
     {
         return $this->pact->verifyInteractions();
     }
-
-    /**
-     * Create mock server before verifying.
-     */
-    public function createMockServer(): void
-    {
-        $this->pact->createMockServer();
-    }
 }
