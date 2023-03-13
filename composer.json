@@ -23,7 +23,6 @@
         "composer/semver": "^1.4.0|^3.2.0",
         "symfony/process": "^4.4|^5.4|^6.0",
         "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
-        "phpunit/phpunit": ">=8.5.23 <10",
         "tienvx/composer-downloads-plugin": "^1.2.0"
     },
     "require-dev": {
@@ -32,7 +31,8 @@
         "slim/psr7": "^1.2.0",
         "friendsofphp/php-cs-fixer": "^3.0",
         "php-amqplib/php-amqplib": "^3.0",
-        "phpstan/phpstan": "^1.9"
+        "phpstan/phpstan": "^1.9",
+        "phpunit/phpunit": ">=8.5.23 <10"
     },
     "autoload": {
         "psr-4": {
@@ -64,25 +64,13 @@
         "static-code-analysis": "phpstan",
         "lint": "php-cs-fixer fix --dry-run",
         "fix": "php-cs-fixer fix",
-        "test": "phpunit --debug -c example/phpunit.all.xml"
+        "test": [
+            "php -r \"array_map('unlink', glob('./example/output/*.json'));\"",
+            "phpunit --debug -c example/phpunit.all.xml"
+        ]
     },
     "extra": {
         "downloads": {
-            "pact-ruby-standalone": {
-                "version": "1.91.0",
-                "variables": {
-                    "{$os}": "PHP_OS_FAMILY === 'Windows' ? 'win32' : (PHP_OS === 'Darwin' ? 'osx' : 'linux')",
-                    "{$architecture}": "PHP_OS === 'Linux' ? '-x86_64' : ''",
-                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'zip' : 'tar.gz'",
-                    "{$keep}": "PHP_OS_FAMILY === 'Windows' ? 'pact-broker.bat' : 'pact-broker'"
-                },
-                "url": "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v{$version}/pact-{$version}-{$os}{$architecture}.{$extension}",
-                "path": "bin/pact-ruby-standalone",
-                "ignore": [
-                    "bin/*",
-                    "!bin/{$keep}"
-                ]
-            },
             "pact-ffi-headers": {
                 "version": "0.4.4",
                 "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/pact.h",

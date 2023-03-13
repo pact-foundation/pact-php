@@ -30,9 +30,4 @@ class Scripts
     {
         return self::$destinationDir . '/bin/pact-stub-server/pact-stub-server';
     }
-
-    public static function getBroker(): string
-    {
-        return self::$destinationDir . '/bin/pact-ruby-standalone/bin/pact-broker';
-    }
 }

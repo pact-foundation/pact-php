@@ -50,3 +50,16 @@ UPGRADE FROM 8.x to 9.0
 
    $this->assertTrue($verifyResult);
    ```
+
+* Consumer
+  * Pact file write mode has been changed from 'overwrite' to 'merge'. Make sure old pact files are removed before running tests.
+
+   ```shell
+   rm /path/to/pacts/*.json
+   ```
+
+  * Pact files now can ONLY be uploaded to Pact Broker by downloading and running Pact CLI manually.
+
+   ```shell
+   pact-broker publish /path/to/pacts/*.json --consumer-app-version 1.0.0 --branch main --broker-base-url https://test.pactflow.io --broker-token SomeToken
+   ```

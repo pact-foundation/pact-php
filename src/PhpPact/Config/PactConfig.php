@@ -39,7 +39,7 @@ class PactConfig implements PactConfigInterface
      * pact file is deleted before running tests when using this option so that
      * interactions deleted from the code are not maintained in the file.
      */
-    private string $pactFileWriteMode = self::MODE_OVERWRITE;
+    private string $pactFileWriteMode = self::MODE_MERGE;
 
     /**
      * {@inheritdoc}

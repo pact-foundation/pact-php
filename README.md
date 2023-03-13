@@ -17,7 +17,6 @@ Table of contents
   - [Specifications](#specifications)
   - [Installation](#installation)
   - [Basic Consumer Usage](#basic-consumer-usage)
-    - [Publish Contracts To Pact Broker](#publish-contracts-to-pact-broker)
     - [Create Consumer Unit Test](#create-consumer-unit-test)
     - [Create Mock Request](#create-mock-request)
     - [Create Mock Response](#create-mock-response)
@@ -25,6 +24,10 @@ Table of contents
     - [Make the Request](#make-the-request)
     - [Verify Interactions](#verify-interactions)
     - [Make Assertions](#make-assertions)
+    - [Delete Old Pact](#delete-old-pact)
+    - [Publish Contracts To Pact Broker](#publish-contracts-to-pact-broker)
+        - [CLI](#cli)
+        - [Github Actions](#github-actions)
   - [Basic Provider Usage](#basic-provider-usage)
         - [Create Unit Test](#create-unit-test)
         - [Start API](#start-api)
@@ -80,12 +83,6 @@ Composer hosts older versions under `mattersight/phppact`, which is abandoned. P
 ## Basic Consumer Usage
 
 All of the following code will be used exclusively for the Consumer.
-
-### Publish Contracts To Pact Broker
-
-When all tests in test suite are passed, you may want to publish generated contract files to pact broker automatically.
-
-The easiest way to configure this is to use a [PHPUnit Listener](https://phpunit.de/manual/current/en/appendixes.configuration.html#appendixes.configuration.test-listeners). A default listener is included in this project, see [PactTestListener.php](/src/PhpPact/Consumer/Listener/PactTestListener.php). This utilizes environmental variables for configurations. These env variables can either be added to the system or to the phpunit.xml configuration file. Here is an example [phpunit.xml](/example/phpunit.consumer.xml) file configured to use the default. Keep in mind that both the test suite and the arguments array must be the same value.
 
 ### Create Consumer Unit Test
 
@@ -202,6 +199,32 @@ Verify that the data you would expect given the response configured is correct.
 ```php
 $this->assertEquals('Hello, Bob', $result); // Make your assertions.
 ```
+
+### Delete Old Pact
+
+If the value of `PACT_FILE_WRITE_MODE` is `merge`, before running the test, we need to delete the old pact manually:
+
+```shell
+rm /path/to/pacts/consumer-provider.json
+```
+
+### Publish Contracts To Pact Broker
+
+When all tests in test suite are passed, you may want to publish generated contract files to pact broker.
+
+#### CLI
+
+Run this command using CLI tool:
+
+```shell
+pact-broker publish /path/to/pacts/consumer-provider.json --consumer-app-version 1.0.0 --branch main --broker-base-url https://test.pactflow.io --broker-token SomeToken
+```
+
+See more at https://docs.pact.io/pact_broker/publishing_and_retrieving_pacts#publish-using-cli-tools
+
+#### Github Actions
+
+See how to use at https://github.com/pactflow/actions/tree/main/publish-pact-files
 
 ## Basic Provider Usage
 
