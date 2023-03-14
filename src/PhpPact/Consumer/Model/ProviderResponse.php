@@ -14,7 +14,7 @@ class ProviderResponse implements \JsonSerializable
     private int $status;
 
     /**
-     * @var string[]
+     * @var array<string, string[]>
      */
     private array $headers = [];
 
@@ -44,7 +44,7 @@ class ProviderResponse implements \JsonSerializable
     }
 
     /**
-     * @return string[]
+     * @return array<string, string[]>
      */
     public function getHeaders(): array
     {
@@ -74,9 +74,19 @@ class ProviderResponse implements \JsonSerializable
      */
     public function addHeader(string $header, array|string $value): self
     {
-        $this->headers[$header] = is_array($value) ? $value : [$value];
+        $this->headers[$header] = [];
+        if (is_array($value)) {
+            array_walk($value, fn (string $value) => $this->addHeaderValue($header, $value));
+        } else {
+            $this->addHeaderValue($header, $value);
+        }
 
         return $this;
+    }
+
+    private function addHeaderValue(string $header, string $value): void
+    {
+        $this->headers[$header][] = $value;
     }
 
     /**

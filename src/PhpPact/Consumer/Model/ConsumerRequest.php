@@ -19,7 +19,7 @@ class ConsumerRequest implements \JsonSerializable
     private string $path;
 
     /**
-     * @var string[]
+     * @var array<string, string[]>
      */
     private array $headers = [];
 
@@ -29,7 +29,7 @@ class ConsumerRequest implements \JsonSerializable
     private ?string $body  = null;
 
     /**
-     * @var array
+     * @var array<string, string[]>
      */
     private array $query = [];
 
@@ -74,7 +74,7 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @return array
+     * @return array<string, string[]>
      */
     public function getHeaders(): array
     {
@@ -104,9 +104,19 @@ class ConsumerRequest implements \JsonSerializable
      */
     public function addHeader(string $header, array|string $value): self
     {
-        $this->headers[$header] = is_array($value) ? $value : [$value];
+        $this->headers[$header] = [];
+        if (is_array($value)) {
+            array_walk($value, fn (string $value) => $this->addHeaderValue($header, $value));
+        } else {
+            $this->addHeaderValue($header, $value);
+        }
 
         return $this;
+    }
+
+    private function addHeaderValue(string $header, string $value): void
+    {
+        $this->headers[$header][] = $value;
     }
 
     /**
@@ -137,7 +147,7 @@ class ConsumerRequest implements \JsonSerializable
     }
 
     /**
-     * @return array
+     * @return array<string, string[]>
      */
     public function getQuery(): array
     {
@@ -167,9 +177,19 @@ class ConsumerRequest implements \JsonSerializable
      */
     public function addQueryParameter(string $key, array|string $value): self
     {
-        $this->query[$key] = is_array($value) ? $value : [$value];
+        $this->query[$key] = [];
+        if (is_array($value)) {
+            array_walk($value, fn (string $value) => $this->addQueryParameterValue($key, $value));
+        } else {
+            $this->addQueryParameterValue($key, $value);
+        }
 
         return $this;
+    }
+
+    private function addQueryParameterValue(string $key, string $value): void
+    {
+        $this->query[$key][] = $value;
     }
 
     /**
