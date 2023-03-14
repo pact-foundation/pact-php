@@ -10,8 +10,6 @@ use PhpPact\Standalone\Exception\MissingEnvVariableException;
  */
 class MockServerEnvConfig extends MockServerConfig
 {
-    public const DEFAULT_SPECIFICATION_VERSION = '3.0.0';
-
     /**
      * MockServerEnvConfig constructor.
      *

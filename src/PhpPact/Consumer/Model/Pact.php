@@ -2,13 +2,8 @@
 
 namespace PhpPact\Consumer\Model;
 
-use FFI;
-use PhpPact\Consumer\Exception\InteractionRequestBodyNotAddedException;
-use PhpPact\Consumer\Exception\InteractionResponseBodyNotAddedException;
 use PhpPact\Consumer\Exception\MockServerNotStartedException;
-use PhpPact\Consumer\Exception\PactFileNotWroteException;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
-use PhpPact\Standalone\PactConfigInterface;
 
 /**
  * Class Pact.
@@ -18,13 +13,10 @@ class Pact extends AbstractPact
     /**
      * @param MockServerConfigInterface $config
      */
-    public function __construct(private MockServerConfigInterface $config)
+    public function __construct(MockServerConfigInterface $config)
     {
-        parent::__construct();
-        $this
-            ->initWithLogLevel()
-            ->newPact()
-            ->withSpecification();
+        parent::__construct($config);
+        $this->initWithLogLevel();
     }
 
     private function createMockServer(): void
@@ -45,29 +37,29 @@ class Pact extends AbstractPact
 
     public function verifyInteractions(): bool
     {
-        $result = $this->ffi->pactffi_mock_server_matched($this->config->getPort());
+        $matched = $this->ffi->pactffi_mock_server_matched($this->config->getPort());
 
-        if ($result) {
-            $error = $this->ffi->pactffi_write_pact_file(
-                $this->config->getPort(),
-                $this->config->getPactDir(),
-                $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
-            );
-            if ($error) {
-                throw new PactFileNotWroteException($error);
+        try {
+            if ($matched) {
+                $this->writePact();
             }
+        } finally {
+            $this->cleanUp();
         }
 
-        $this->ffi->pactffi_cleanup_mock_server($this->config->getPort());
-        $this->ffi->pactffi_free_pact_handle($this->id);
+        return $matched;
+    }
 
-        return $result;
+    protected function cleanUp(): void
+    {
+        parent::cleanUp();
+        $this->ffi->pactffi_cleanup_mock_server($this->config->getPort());
     }
 
     public function registerInteraction(Interaction $interaction): bool
     {
+        $interaction->setId($this->newInteraction($interaction->getDescription()));
         $this
-            ->newInteraction($interaction)
             ->given($interaction)
             ->uponReceiving($interaction)
             ->with($interaction)
@@ -83,48 +75,6 @@ class Pact extends AbstractPact
         if ($logLevel) {
             $this->ffi->pactffi_init_with_log_level($logLevel);
         }
-
-        return $this;
-    }
-
-    private function newPact(): self
-    {
-        $this->id = $this->ffi->pactffi_new_pact($this->config->getConsumer(), $this->config->getProvider());
-
-        return $this;
-    }
-
-    protected function getSpecification(): int
-    {
-        $supportedVersions = [
-            '1.0.0' => $this->ffi->PactSpecification_V1,
-            '1.1.0' => $this->ffi->PactSpecification_V1_1,
-            '2.0.0' => $this->ffi->PactSpecification_V2,
-            '3.0.0' => $this->ffi->PactSpecification_V3,
-            '4.0.0' => $this->ffi->PactSpecification_V4,
-        ];
-        $version = $this->config->getPactSpecificationVersion();
-        if (isset($supportedVersions[$version])) {
-            $specification = $supportedVersions[$version];
-        } else {
-            trigger_error(sprintf("Specification version '%s' is unknown", $version), E_USER_WARNING);
-            $specification = $this->ffi->PactSpecification_Unknown;
-        }
-
-        return $specification;
-    }
-
-    private function withSpecification(): self
-    {
-        $this->ffi->pactffi_with_specification($this->id, $this->getSpecification());
-
-        return $this;
-    }
-
-    private function newInteraction(Interaction $interaction): self
-    {
-        $id = $this->ffi->pactffi_new_interaction($this->id, $interaction->getDescription());
-        $interaction->setId($id);
 
         return $this;
     }
@@ -148,22 +98,9 @@ class Pact extends AbstractPact
         $id = $interaction->getId();
         $request = $interaction->getRequest();
         $this->ffi->pactffi_with_request($id, $request->getMethod(), $request->getPath());
-        foreach ($request->getHeaders() as $header => $values) {
-            foreach (array_values($values) as $index => $value) {
-                $this->ffi->pactffi_with_header_v2($id, $this->ffi->InteractionPart_Request, $header, $index, $value);
-            }
-        }
-        foreach ($request->getQuery() as $key => $values) {
-            foreach (array_values($values) as $index => $value) {
-                $this->ffi->pactffi_with_query_parameter_v2($id, $key, $index, $value);
-            }
-        }
-        if (!\is_null($request->getBody())) {
-            $success = $this->ffi->pactffi_with_body($id, $this->ffi->InteractionPart_Request, null, $request->getBody());
-            if (!$success) {
-                throw new InteractionRequestBodyNotAddedException();
-            }
-        }
+        $this->withHeaders($id, $this->ffi->InteractionPart_Request, $request->getHeaders());
+        $this->withQuery($id, $request->getQuery());
+        $this->withBody($id, $this->ffi->InteractionPart_Request, null, $request->getBody());
 
         return $this;
     }
@@ -173,18 +110,27 @@ class Pact extends AbstractPact
         $id = $interaction->getId();
         $response = $interaction->getResponse();
         $this->ffi->pactffi_response_status($id, $response->getStatus());
-        foreach ($response->getHeaders() as $header => $values) {
-            foreach (array_values($values) as $index => $value) {
-                $this->ffi->pactffi_with_header_v2($id, $this->ffi->InteractionPart_Response, $header, $index, $value);
-            }
-        }
-        if (!\is_null($response->getBody())) {
-            $success = $this->ffi->pactffi_with_body($id, $this->ffi->InteractionPart_Response, null, $response->getBody());
-            if (!$success) {
-                throw new InteractionResponseBodyNotAddedException();
-            }
-        }
+        $this->withHeaders($id, $this->ffi->InteractionPart_Response, $response->getHeaders());
+        $this->withBody($id, $this->ffi->InteractionPart_Response, null, $response->getBody());
 
         return $this;
+    }
+
+    private function withHeaders(int $interaction, int $part, array $headers): void
+    {
+        foreach ($headers as $header => $values) {
+            foreach (array_values($values) as $index => $value) {
+                $this->ffi->pactffi_with_header_v2($interaction, $part, (string) $header, (int) $index, (string) $value);
+            }
+        }
+    }
+
+    private function withQuery(int $interaction, array $query): void
+    {
+        foreach ($query as $key => $values) {
+            foreach (array_values($values) as $index => $value) {
+                $this->ffi->pactffi_with_query_parameter_v2($interaction, (string) $key, (int) $index, (string) $value);
+            }
+        }
     }
 }

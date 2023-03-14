@@ -33,7 +33,7 @@ class PactConfig implements PactConfigInterface
      *
      * @var string
      */
-    private string $pactSpecificationVersion;
+    private string $pactSpecificationVersion = self::DEFAULT_SPECIFICATION_VERSION;
 
     /**
      * File to which to log output.
