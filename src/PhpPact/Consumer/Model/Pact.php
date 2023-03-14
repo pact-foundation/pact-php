@@ -94,7 +94,7 @@ class Pact extends AbstractPact
         return $this;
     }
 
-    private function withSpecification(): self
+    protected function getSpecification(): int
     {
         $supportedVersions = [
             '1.0.0' => $this->ffi->PactSpecification_V1,
@@ -110,7 +110,13 @@ class Pact extends AbstractPact
             trigger_error(sprintf("Specification version '%s' is unknown", $version), E_USER_WARNING);
             $specification = $this->ffi->PactSpecification_Unknown;
         }
-        $this->ffi->pactffi_with_specification($this->id, $specification);
+
+        return $specification;
+    }
+
+    private function withSpecification(): self
+    {
+        $this->ffi->pactffi_with_specification($this->id, $this->getSpecification());
 
         return $this;
     }
