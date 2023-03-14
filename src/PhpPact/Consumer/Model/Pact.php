@@ -38,14 +38,7 @@ class Pact extends AbstractPact
         );
 
         if ($port < 0) {
-            $message = match ($port) {
-                -1 => 'An invalid handle was received. Handles should be created with `pactffi_new_pact`',
-                -2 => 'Transport_config is not valid JSON',
-                -3 => 'The mock server could not be started',
-                -4 => 'The method panicked',
-                -5 => 'The address is not valid',
-            };
-            throw new MockServerNotStartedException($message);
+            throw new MockServerNotStartedException($port);
         }
         $this->config->setPort($port);
     }
@@ -61,12 +54,7 @@ class Pact extends AbstractPact
                 $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
             );
             if ($error) {
-                $message = match ($error) {
-                    1 => 'A general panic was caught',
-                    2 => 'The pact file was not able to be written',
-                    3 => 'A mock server with the provided port was not found',
-                };
-                throw new PactFileNotWroteException($message);
+                throw new PactFileNotWroteException($error);
             }
         }
 
