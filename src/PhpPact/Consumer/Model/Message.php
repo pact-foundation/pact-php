@@ -2,12 +2,16 @@
 
 namespace PhpPact\Consumer\Model;
 
+use JsonException;
+use PhpPact\Consumer\Model\Interaction\ContentTypeTrait;
+
 /**
  * Message metadata and contents to be posted to the Mock Server for PACT tests.
  */
 class Message
 {
     use ProviderStates;
+    use ContentTypeTrait;
 
     private string $description;
 
@@ -16,7 +20,7 @@ class Message
      */
     private array $metadata = [];
 
-    private mixed $contents;
+    private ?string $contents = null;
 
     public function getDescription(): string
     {
@@ -56,14 +60,24 @@ class Message
         $this->metadata[$key] = $value;
     }
 
-    public function getContents(): mixed
+    public function getContents(): ?string
     {
         return $this->contents;
     }
 
+    /**
+     * @throws JsonException
+     */
     public function setContents(mixed $contents): self
     {
-        $this->contents = $contents;
+        if (\is_string($contents) || \is_null($contents)) {
+            $this->contents = $contents;
+        } else {
+            $this->contents = \json_encode($contents, JSON_THROW_ON_ERROR);
+            if (!isset($this->contentType)) {
+                $this->setContentType('application/json');
+            }
+        }
 
         return $this;
     }

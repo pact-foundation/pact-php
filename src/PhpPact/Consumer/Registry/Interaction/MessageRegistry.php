@@ -25,20 +25,12 @@ class MessageRegistry extends AbstractRegistry implements MessageRegistryInterfa
 
     public function registerMessage(Message $message): void
     {
-        if (\is_string($message->getContents())) {
-            $contents    = $message->getContents();
-            $contentType = 'text/plain';
-        } else {
-            $contents    = \json_encode($message->getContents(), JSON_THROW_ON_ERROR);
-            $contentType = 'application/json';
-        }
-
         $this
             ->newInteraction($message->getDescription())
             ->given($message->getProviderStates())
             ->expectsToReceive($message->getDescription())
             ->withMetadata($message->getMetadata())
-            ->withContents($contentType, $contents);
+            ->withContents($message->getContentType(), $message->getContents());
     }
 
     protected function newInteraction(string $description): self

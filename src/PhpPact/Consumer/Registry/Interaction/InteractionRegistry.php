@@ -76,7 +76,7 @@ class InteractionRegistry extends AbstractRegistry implements InteractionRegistr
             ->withRequest($request->getMethod(), $request->getPath())
             ->withQueryParameters($request->getQuery())
             ->withHeaders($request->getHeaders())
-            ->withBody(null, $request->getBody());
+            ->withBody($request->getContentType(), $request->getBody());
 
         return $this;
     }
@@ -86,7 +86,7 @@ class InteractionRegistry extends AbstractRegistry implements InteractionRegistr
         $this->responseRegistry
             ->withResponse($response->getStatus())
             ->withHeaders($response->getHeaders())
-            ->withBody(null, $response->getBody());
+            ->withBody($response->getContentType(), $response->getBody());
 
         return $this;
     }
