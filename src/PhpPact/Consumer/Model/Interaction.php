@@ -11,11 +11,6 @@ class Interaction
     use ProviderStates;
 
     /**
-     * @var int
-     */
-    private int $id;
-
-    /**
      * @var string
      */
     private string $description;
@@ -29,26 +24,6 @@ class Interaction
      * @var ProviderResponse
      */
     private ProviderResponse $response;
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return Interaction
-     */
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     /**
      * @return string

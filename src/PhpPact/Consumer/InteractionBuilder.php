@@ -2,9 +2,10 @@
 
 namespace PhpPact\Consumer;
 
+use PhpPact\Consumer\Driver\InteractionDriver;
+use PhpPact\Consumer\Driver\InteractionDriverInterface;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
-use PhpPact\Consumer\Model\Pact;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 
@@ -17,8 +18,8 @@ class InteractionBuilder implements BuilderInterface
     /** @var Interaction */
     protected Interaction $interaction;
 
-    /** @var Pact */
-    protected Pact $pact;
+    /** @var InteractionDriverInterface */
+    protected InteractionDriverInterface $driver;
 
     /**
      * InteractionBuilder constructor.
@@ -28,7 +29,7 @@ class InteractionBuilder implements BuilderInterface
     public function __construct(MockServerConfigInterface $config)
     {
         $this->interaction           = new Interaction();
-        $this->pact                  = new Pact($config);
+        $this->driver                = new InteractionDriver($config);
     }
 
     /**
@@ -78,7 +79,7 @@ class InteractionBuilder implements BuilderInterface
     {
         $this->interaction->setResponse($response);
 
-        return $this->pact->registerInteraction($this->interaction);
+        return $this->driver->registerInteraction($this->interaction);
     }
 
     /**
@@ -86,6 +87,6 @@ class InteractionBuilder implements BuilderInterface
      */
     public function verify(): bool
     {
-        return $this->pact->verifyInteractions();
+        return $this->driver->verifyInteractions();
     }
 }

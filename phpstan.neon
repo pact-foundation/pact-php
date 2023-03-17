@@ -1,4 +1,4 @@
 parameters:
     excludePaths:
-        - src/PhpPact/Consumer/Model/AbstractPact.php
-        - src/PhpPact/Consumer/Model/Pact.php
+        - src/PhpPact/Consumer/Driver/AbstractDriver.php
+        - src/PhpPact/Consumer/Driver/InteractionDriver.php
