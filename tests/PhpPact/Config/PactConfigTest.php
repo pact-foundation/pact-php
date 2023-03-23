@@ -1,9 +1,9 @@
 <?php
 
-namespace PhpPactTest\Standalone;
+namespace PhpPactTest\Config;
 
-use PhpPact\Standalone\PactConfig;
-use PhpPact\Standalone\PactConfigInterface;
+use PhpPact\Config\PactConfig;
+use PhpPact\Config\PactConfigInterface;
 use PHPUnit\Framework\TestCase;
 
 class PactConfigTest extends TestCase
@@ -46,8 +46,8 @@ class PactConfigTest extends TestCase
     public function testInvalidLogLevel(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('LogLevel TRACE not supported.');
-        $this->config->setLogLevel('TRACE');
+        $this->expectExceptionMessage('LogLevel VERBOSE not supported.');
+        $this->config->setLogLevel('VERBOSE');
     }
 
     public function testInvalidPactFileWriteMode(): void

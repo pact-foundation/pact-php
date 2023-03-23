@@ -3,7 +3,7 @@
 namespace PhpPact\Standalone\MockService;
 
 use GuzzleHttp\Psr7\Uri;
-use PhpPact\Standalone\PactConfig;
+use PhpPact\Config\PactConfig;
 use Psr\Http\Message\UriInterface;
 
 /**

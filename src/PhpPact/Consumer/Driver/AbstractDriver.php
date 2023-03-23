@@ -4,7 +4,7 @@ namespace PhpPact\Consumer\Driver;
 
 use FFI;
 use PhpPact\Standalone\Installer\Model\Scripts;
-use PhpPact\Standalone\PactConfigInterface;
+use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Exception\PactFileNotWroteException;
 use PhpPact\Consumer\Exception\InteractionBodyNotAddedException;
 use PhpPact\Consumer\Model\ProviderState;

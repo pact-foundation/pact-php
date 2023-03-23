@@ -1,12 +1,14 @@
 <?php
 
-namespace PhpPact\Standalone;
+namespace PhpPact\Config;
 
 /**
  * Class PactConfig.
  */
 class PactConfig implements PactConfigInterface
 {
+    use LogLevelTrait;
+
     /**
      * Consumer name.
      *
@@ -41,11 +43,6 @@ class PactConfig implements PactConfigInterface
      * @var null|string
      */
     private ?string $log = null;
-
-    /**
-     * @var null|string
-     */
-    private ?string $logLevel = null;
 
     /**
      * `overwrite` or `merge`. Use `merge` when running multiple mock service
@@ -155,28 +152,6 @@ class PactConfig implements PactConfigInterface
     public function setLog(string $log): self
     {
         $this->log = $log;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLogLevel(): ?string
-    {
-        return $this->logLevel;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLogLevel(string $logLevel): self
-    {
-        $logLevel = \strtoupper($logLevel);
-        if (!\in_array($logLevel, ['DEBUG', 'INFO', 'WARN', 'ERROR'])) {
-            throw new \InvalidArgumentException('LogLevel ' . $logLevel . ' not supported.');
-        }
-        $this->logLevel = $logLevel;
 
         return $this;
     }

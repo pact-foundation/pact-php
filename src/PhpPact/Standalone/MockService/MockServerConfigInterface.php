@@ -2,7 +2,7 @@
 
 namespace PhpPact\Standalone\MockService;
 
-use PhpPact\Standalone\PactConfigInterface;
+use PhpPact\Config\PactConfigInterface;
 use Psr\Http\Message\UriInterface;
 
 /**

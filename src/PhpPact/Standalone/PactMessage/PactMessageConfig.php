@@ -2,7 +2,7 @@
 
 namespace PhpPact\Standalone\PactMessage;
 
-use PhpPact\Standalone\PactConfig;
+use PhpPact\Config\PactConfig;
 
 /**
  * Configuration defining the default PhpPact Ruby Standalone server.

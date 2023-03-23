@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Standalone;
+namespace PhpPact\Config;
 
 /**
  * Mock Server configuration interface to allow for simple overrides that are reusable.
