@@ -3,7 +3,9 @@
 namespace PhpPact\Consumer\Driver;
 
 use FFI;
+use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Exception\MockServerNotStartedException;
+use PhpPact\Consumer\Exception\MockServerNotWrotePactFileException;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 
 trait HasMockServerTrait
@@ -47,4 +49,16 @@ trait HasMockServerTrait
     abstract protected function getMockServerTransport(): string;
 
     abstract protected function getMockServerConfig(): MockServerConfigInterface;
+
+    protected function mockServerWritePact(): void
+    {
+        $error = $this->ffi->pactffi_write_pact_file(
+            $this->getMockServerConfig()->getPort(),
+            $this->config->getPactDir(),
+            $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
+        );
+        if ($error) {
+            throw new MockServerNotWrotePactFileException($error);
+        }
+    }
 }

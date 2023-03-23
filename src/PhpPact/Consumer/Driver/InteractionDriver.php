@@ -35,6 +35,11 @@ class InteractionDriver extends AbstractDriver implements InteractionDriverInter
         parent::cleanUp();
     }
 
+    protected function writePact(): void
+    {
+        $this->mockServerWritePact();
+    }
+
     public function registerInteraction(Interaction $interaction): bool
     {
         $this
