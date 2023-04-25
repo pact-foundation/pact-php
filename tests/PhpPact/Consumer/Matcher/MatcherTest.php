@@ -346,4 +346,19 @@ class MatcherTest extends TestCase
 
         $this->assertEquals($expected, $this->matcher->email());
     }
+
+    /**
+     * @throws Exception
+     */
+    public function testFromProviderState()
+    {
+        $expected = [
+            'value'               => '123',
+            'expression'          => '${id}',
+            'pact:matcher:type'   => 'type',
+            'pact:generator:type' => 'ProviderState',
+        ];
+
+        $this->assertEquals($expected, $this->matcher->fromProviderState('${id}', '123'));
+    }
 }
