@@ -281,16 +281,10 @@ class Matcher
      * @param string $expression
      * @param mixed  $value
      *
-     * @throws \Exception
-     *
      * @return array
      */
     public function fromProviderState(string $expression, mixed $value): array
     {
-        if ($value === null) {
-            throw new \Exception('Value must not be null.');
-        }
-
         return [
             'value'               => $value,
             'expression'          => $expression,

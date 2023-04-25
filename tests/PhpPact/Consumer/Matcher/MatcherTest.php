@@ -347,9 +347,6 @@ class MatcherTest extends TestCase
         $this->assertEquals($expected, $this->matcher->email());
     }
 
-    /**
-     * @throws Exception
-     */
     public function testFromProviderState()
     {
         $expected = [
