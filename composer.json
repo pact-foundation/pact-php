@@ -79,13 +79,13 @@
     "extra": {
         "downloads": {
             "pact-ruby-standalone": {
-                "version": "3.1.2.2-alpha",
+                "version": "2.0.0",
                 "variables": {
                     "{$os}": "PHP_OS_FAMILY === 'Windows' ? 'windows' : (PHP_OS === 'Darwin' ? 'osx' : 'linux')",
-                    "{$architecture}": "strtolower(php_uname('m')) === 'arm64' || strtolower(php_uname('m')) === 'aarch64' ? '-arm64' : (strtolower(php_uname('m')) === 'x86_64' ? '-x86_64' : (strtolower(php_uname('m')) === 'x86' && PHP_OS_FAMILY === 'Windows' ? '-x86' : '-x86_64'))",
+                    "{$architecture}": "strtolower(php_uname('m')) === 'arm64' || strtolower(php_uname('m')) === 'aarch64' ? '-arm64' : (strtolower(php_uname('m')) === 'x86' && PHP_OS_FAMILY === 'Windows' ? '-x86' : '-x86_64'))",
                     "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'zip' : 'tar.gz'"
                 },
-                "url": "https://github.com/you54f/pact-ruby-standalone/releases/download/v{$version}/pact-{$version}-{$os}{$architecture}.{$extension}",
+                "url": "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v{$version}/pact-{$version}-{$os}{$architecture}.{$extension}",
                 "path": "bin/pact-ruby-standalone"
             }
         }
