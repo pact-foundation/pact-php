@@ -36,7 +36,7 @@ class Broker
             \array_merge(
                 [
                     'can-i-deploy',
-                    '--pacticipant=' . $this->config->getPacticipant(),
+                    '--pacticipant=\'' . $this->config->getPacticipant().'\'',
                     '--version=' . $this->config->getVersion()
                 ],
                 $this->getArguments()
@@ -135,7 +135,7 @@ class Broker
             \array_merge(
                 [
                     'create-version-tag',
-                    '--pacticipant=' . $this->config->getPacticipant(),
+                    '--pacticipant=\'' . $this->config->getPacticipant().'\'',
                     '--version=' . $this->config->getVersion(),
                     '--tag=' . $this->config->getTag(),
                 ],
@@ -186,7 +186,7 @@ class Broker
             \array_merge(
                 [
                     'describe-version',
-                    '--pacticipant=' . $this->config->getPacticipant(),
+                    '--pacticipant=\'' . $this->config->getPacticipant().'\'',
                     '--output=json',
                 ],
                 $this->getArguments()
