@@ -2,6 +2,7 @@
 
 namespace PhpPact\Standalone\MockService;
 
+use Amp\Process\ProcessException;
 use Exception;
 use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\Exception\HealthCheckFailedException;
@@ -12,34 +13,19 @@ use PhpPact\Exception\ConnectionException;
 
 /**
  * Ruby Standalone Mock Server Wrapper
- * Class MockServer.
  */
 class MockServer
 {
-    /** @var MockServerConfig */
-    private $config;
+    private MockServerConfig $config;
 
-    /** @var MockServerHttpService */
-    private $httpService;
+    private MockServerHttpService $httpService;
 
-    /** @var ProcessRunner */
-    private $processRunner;
+    private ProcessRunner $processRunner;
 
-    /**
-     * MockServer constructor.
-     *
-     * @param MockServerConfig           $config
-     * @param null|MockServerHttpService $httpService
-     */
     public function __construct(MockServerConfig $config, MockServerHttpService $httpService = null)
     {
-        $this->config         = $config;
-
-        if (!$httpService) {
-            $this->httpService = new MockServerHttpService(new GuzzleClient(), $this->config);
-        } else {
-            $this->httpService = $httpService;
-        }
+        $this->config = $config;
+        $this->httpService = $httpService ?: new MockServerHttpService(new GuzzleClient(), $this->config);
     }
 
     /**
@@ -68,6 +54,7 @@ class MockServer
      * Stop the Mock Server process.
      *
      * @return bool Was stopping successful?
+     * @throws ProcessException
      */
     public function stop(): bool
     {
@@ -77,7 +64,7 @@ class MockServer
     /**
      * Build an array of command arguments.
      *
-     * @return array
+     * @return array<int, string>
      */
     private function getArguments(): array
     {
@@ -96,7 +83,7 @@ class MockServer
         $results[] = "--host={$this->config->getHost()}";
         $results[] = "--port={$this->config->getPort()}";
 
-        if ($logLevel) {
+        if ($logLevel !== null) {
             $results[] = \sprintf('--log-level=%s', \escapeshellarg($logLevel));
         }
 
@@ -108,7 +95,7 @@ class MockServer
             $results[] = "--pact-specification-version={$this->config->getPactSpecificationVersion()}";
         }
 
-        if (!empty($this->config->getLog())) {
+        if ($this->config->getLog() !== null) {
             $log       = \escapeshellarg($this->config->getLog());
             $results[] = \sprintf('--log=%s', $log);
         }
@@ -120,8 +107,6 @@ class MockServer
      * Make sure the server starts as expected.
      *
      * @throws Exception
-     *
-     * @return bool
      */
     private function verifyHealthCheck(): bool
     {
