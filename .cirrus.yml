@@ -9,11 +9,12 @@ BUILD_TEST_TASK_TEMPLATE: &BUILD_TEST_TASK_TEMPLATE
 
 linux_arm64_task:  
   env:
+    COMPOSER_ALLOW_SUPERUSER: 1
     matrix:
       - IMAGE: php:8.2
       - IMAGE: php:8.1
       - IMAGE: php:8.0
-  container:
+  arm_container:
     image: $IMAGE
     architecture: arm64
   pre_req_script: 
@@ -26,19 +27,19 @@ linux_arm64_task:
   << : *BUILD_TEST_TASK_TEMPLATE
 
 
-macos_arm64_task:
-# https://www.markhesketh.com/switching-multiple-php-versions-on-macos/
-  env:
-    matrix:
-      - VERSION: 8.2
-      - VERSION: 8.1
-      - VERSION: 8.0
-  macos_instance:
-    image: ghcr.io/cirruslabs/macos-ventura-base:latest
-  pre_req_script: 
-      - brew install php@$VERSION composer
-  version_check_script: 
-      - php --version
-  << : *BUILD_TEST_TASK_TEMPLATE
+# macos_arm64_task:
+# # https://www.markhesketh.com/switching-multiple-php-versions-on-macos/
+#   env:
+#     matrix:
+#       - VERSION: 8.2
+#       - VERSION: 8.1
+#       - VERSION: 8.0
+#   macos_instance:
+#     image: ghcr.io/cirruslabs/macos-ventura-base:latest
+#   pre_req_script: 
+#       - brew install php@$VERSION composer
+#   version_check_script: 
+#       - php --version
+#   << : *BUILD_TEST_TASK_TEMPLATE
 
 
