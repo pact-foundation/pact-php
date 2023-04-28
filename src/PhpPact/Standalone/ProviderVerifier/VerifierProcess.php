@@ -59,12 +59,7 @@ class VerifierProcess
 
         $logger->info("Verifying PACT with script:\n{$processRunner->getCommand()}\n\n");
 
-        try {
-            $processRunner->runBlocking();
-        } finally {
-            $logger->info('out > ' . $processRunner->getOutput());
-            $logger->error('err > ' . $processRunner->getStderr());
-        }
+        $processRunner->runBlocking();
     }
 
     /**

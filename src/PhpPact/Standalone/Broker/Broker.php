@@ -44,10 +44,6 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
         return \json_decode($runner->getOutput(), true);
     }
 
@@ -92,10 +88,6 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
         return \json_decode($runner->getOutput(), true);
     }
 
@@ -121,10 +113,6 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
         return \json_decode($runner->getOutput(), true);
     }
 
@@ -143,10 +131,6 @@ class Broker
             )
         );
         $runner->runBlocking();
-
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
 
         return \json_decode($runner->getOutput(), true);
     }
@@ -172,10 +156,6 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
         return \json_decode($runner->getOutput(), true);
     }
 
@@ -194,10 +174,6 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
         return \json_decode($runner->getOutput(), true);
     }
 
@@ -214,10 +190,6 @@ class Broker
             )
         );
         $runner->runBlocking();
-
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
 
         return \json_decode($runner->getOutput(), true);
     }
@@ -246,12 +218,7 @@ class Broker
             )
         );
 
-        try {
             $runner->runBlocking();
-        } finally {
-            $this->logger->info('out > ' . $runner->getOutput());
-            $this->logger->error('err > ' . $runner->getStderr());
-        }
     }
 
     public function testWebhook()
@@ -267,10 +234,6 @@ class Broker
             )
         );
         $runner->runBlocking();
-
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
 
         return \json_decode($runner->getOutput(), true);
     }
