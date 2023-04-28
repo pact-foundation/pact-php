@@ -17,7 +17,7 @@ class BrokerConfigTest extends TestCase
         $pactFileWriteMode        = 'merge';
         $log                      = 'test-log-dir/';
         $cors                     = true;
-        $pactSpecificationVersion = 2.0;
+        $pactSpecificationVersion = '2.0';
 
         $subject = (new MockServerConfig())
             ->setHost($host)

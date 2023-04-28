@@ -5,16 +5,18 @@ namespace PhpPact\Standalone\ProviderVerifier\Model;
 use Countable;
 use Iterator;
 
+/**
+ * @implements Iterator<int, string>
+ */
 class ConsumerVersionSelectors implements Iterator, Countable
 {
-    /** @var int */
-    private $position = 0;
+    private int $position = 0;
 
-    /** @var string[] */
-    private $selectors = [];
+    /** @var array<int, string>> */
+    private array $selectors;
 
     /**
-     * @param string[] $selectors
+     * @param array<int, string> $selectors
      */
     public function __construct(array $selectors = [])
     {
@@ -41,13 +43,13 @@ class ConsumerVersionSelectors implements Iterator, Countable
     }
 
     #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): int
     {
         return $this->position;
     }
 
     #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->selectors[$this->position]);
     }
@@ -59,7 +61,7 @@ class ConsumerVersionSelectors implements Iterator, Countable
     }
 
     #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): int
     {
         return \count($this->selectors);
     }

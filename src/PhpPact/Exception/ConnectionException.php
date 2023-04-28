@@ -6,7 +6,6 @@ use Exception;
 
 /**
  * Unable to connect to server.
- * Class ConnectionException.
  */
 class ConnectionException extends Exception
 {

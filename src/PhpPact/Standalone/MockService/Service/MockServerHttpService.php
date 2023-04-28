@@ -14,26 +14,13 @@ use GuzzleHttp\Exception\ConnectException as GuzzleConnectionException;
  * Http Service that interacts with the Ruby Standalone Mock Server.
  *
  * @see https://github.com/pact-foundation/pact-mock_service
- * Class MockServerHttpService
  */
 class MockServerHttpService implements MockServerHttpServiceInterface
 {
-    /**
-     * @var ClientInterface
-     */
-    private $client;
+    private ClientInterface $client;
 
-    /**
-     * @var MockServerConfigInterface
-     */
-    private $config;
+    private MockServerConfigInterface $config;
 
-    /**
-     * MockServerHttpService constructor.
-     *
-     * @param ClientInterface           $client
-     * @param MockServerConfigInterface $config
-     */
     public function __construct(ClientInterface $client, MockServerConfigInterface $config)
     {
         $this->client = $client;
@@ -98,7 +85,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
     {
         $uri = $this->config->getBaseUri()->withPath('/interactions');
 
-        $body = \json_encode($interaction->jsonSerialize());
+        $body = \json_encode($interaction->jsonSerialize(), JSON_THROW_ON_ERROR);
 
         $this->client->post($uri, [
             'headers' => [
@@ -113,16 +100,12 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
     /**
      * Separate function for messages, instead of interactions, as I am unsure what to do with the Ruby Standalone at the moment
-     *
-     * @param Message $message
-     *
-     * @return bool
      */
     public function registerMessage(Message $message): bool
     {
         $uri = $this->config->getBaseUri()->withPath('/interactions');
 
-        $body = \json_encode($message->jsonSerialize());
+        $body = \json_encode($message->jsonSerialize(), JSON_THROW_ON_ERROR);
 
         $this->client->post($uri, [
             'headers' => [
@@ -154,6 +137,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
 
     /**
      * {@inheritdoc}
+     * @throws \JsonException
      */
     public function getPactJson(): string
     {
@@ -165,7 +149,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
             ],
         ]);
 
-        return \json_encode(\json_decode($response->getBody()->getContents()));
+        return \json_encode(\json_decode($response->getBody()->getContents()), JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -173,6 +157,7 @@ class MockServerHttpService implements MockServerHttpServiceInterface
      *
      * If the Pact-PHP does not gracefully kill the Ruby Server, it will not write the
      * file to disk.  This enables a work around.
+     * @throws \JsonException
      */
     public function writePact(): string
     {

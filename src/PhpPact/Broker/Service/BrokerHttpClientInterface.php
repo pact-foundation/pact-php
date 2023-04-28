@@ -7,16 +7,13 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Interface for http interaction with the PACT Broker.
- * Interface BrokerHttpServiceInterface.
  */
 interface BrokerHttpClientInterface
 {
     /**
-     * HttpServiceInterface constructor.
-     *
-     * @param ClientInterface $client  Http Client
-     * @param UriInterface    $baseUri Base URI for the PhpPact Broker
-     * @param array           $headers additional headers
+     * @param ClientInterface       $client  Http Client
+     * @param UriInterface          $baseUri Base URI for the PhpPact Broker
+     * @param array<string, string> $headers additional headers
      */
     public function __construct(ClientInterface $client, UriInterface $baseUri, array $headers);
 
@@ -26,18 +23,12 @@ interface BrokerHttpClientInterface
      * @param string $version Consumer version
      * @param string $json    PACT File JSON
      */
-    public function publishJson(string $version, string $json);
+    public function publishJson(string $version, string $json): void;
 
     /**
      * Tag a consumer version with a tag.
-     *
-     * @param string $consumer
-     * @param string $version
-     * @param string $tag
-     *
-     * @return mixed
      */
-    public function tag(string $consumer, string $version, string $tag);
+    public function tag(string $consumer, string $version, string $tag): void;
 
     /**
      * Get all Pact urls for the consumer.
@@ -45,17 +36,14 @@ interface BrokerHttpClientInterface
      * @param string $provider provider name
      * @param string $version  version of the provider
      *
-     * @return string[]
+     * @return array<int, string>
      */
     public function getAllConsumerUrls(string $provider, string $version = 'latest'): array;
 
     /**
      * Get all Pact URLs for a specific tag.
      *
-     * @param string $provider
-     * @param string $tag
-     *
-     * @return array
+     * @return array<int, string>
      */
     public function getAllConsumerUrlsForTag(string $provider, string $tag): array;
 }

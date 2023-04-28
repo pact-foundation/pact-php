@@ -4,7 +4,6 @@ namespace PhpPact\Consumer;
 
 /**
  * Build an Pact and send it to the Ruby Standalone Mock Service
- * Class BuilderInterface.
  */
 interface BuilderInterface
 {
@@ -15,8 +14,6 @@ interface BuilderInterface
 
     /**
      * Write the Pact without deleting the interactions.
-     *
-     * @return bool
      */
     public function writePact(): bool;
 }

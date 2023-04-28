@@ -17,26 +17,19 @@ use Psr\Log\LoggerInterface;
  */
 class ProcessRunner
 {
-    /** @var Process */
-    private $process;
+    private Process $process;
 
-    /** @var string command output */
-    private $output;
+    private string $output = '';
 
     /** @var int command exit code */
-    private $exitCode;
+    private int $exitCode;
 
-    /** @var string */
-    private $stderr;
+    private string $stderr = '';
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private ?LoggerInterface $logger = null;
 
     /**
-     * @param string $command
-     * @param array  $arguments
+     * @param array<int, string> $arguments
      */
     public function __construct(string $command, array $arguments)
     {
@@ -44,11 +37,6 @@ class ProcessRunner
         $this->process   = new Process($command . ' ' . \implode(' ', $arguments));
     }
 
-    /**
-     * @param LoggerInterface $logger
-     *
-     * @return ProcessRunner
-     */
     public function setLogger(LoggerInterface $logger): self
     {
         $this->logger = $logger;
@@ -56,33 +44,21 @@ class ProcessRunner
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOutput(): ?string
+    public function getOutput(): string
     {
         return $this->output;
     }
 
-    /**
-     * @param string $output
-     */
     public function setOutput(string $output): void
     {
         $this->output = $output;
     }
 
-    /**
-     * @return int
-     */
     public function getExitCode(): int
     {
         return $this->exitCode;
     }
 
-    /**
-     * @param int $exitCode
-     */
     public function setExitCode(int $exitCode): void
     {
         $this->exitCode = $exitCode;
@@ -93,17 +69,11 @@ class ProcessRunner
         return $this->process->getCommand();
     }
 
-    /**
-     * @return string
-     */
-    public function getStderr(): ?string
+    public function getStderr(): string
     {
         return $this->stderr;
     }
 
-    /**
-     * @param string $stderr
-     */
     public function setStderr(string $stderr): void
     {
         $this->stderr = $stderr;
@@ -176,11 +146,9 @@ class ProcessRunner
     /**
      * Run the process and set output
      *
-     * @param bool $blocking
-     *
      * @return int Process Id
      */
-    public function run($blocking = false): int
+    public function run(bool $blocking = false): int
     {
         return $blocking
             ? $this->runBlocking()
@@ -191,8 +159,6 @@ class ProcessRunner
      * Stop the running process
      *
      * @throws ProcessException
-     *
-     * @return bool
      */
     public function stop(): bool
     {
@@ -213,10 +179,7 @@ class ProcessRunner
         return true;
     }
 
-    /**
-     * @return LoggerInterface
-     */
-    private function getLogger()
+    private function getLogger(): LoggerInterface
     {
         if (null === $this->logger) {
             $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));

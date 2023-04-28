@@ -7,10 +7,9 @@ use PhpPact\Standalone\Runner\ProcessRunner;
 
 class Broker
 {
-    /** @var BrokerConfig */
-    private $config;
-    /** @var string */
-    private $command;
+    private BrokerConfig $config;
+
+    private string $command;
 
     public function __construct(BrokerConfig $config)
     {
@@ -18,7 +17,10 @@ class Broker
         $this->command = Scripts::getBroker();
     }
 
-    public function canIDeploy()
+    /**
+     * @throws \Exception
+     */
+    public function canIDeploy(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -33,11 +35,11 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
-     * @return array parameters to be passed into the process
+     * @return array<int, string> parameters to be passed into the process
      */
     public function getArguments(): array
     {
@@ -62,7 +64,10 @@ class Broker
         return $parameters;
     }
 
-    public function createOrUpdatePacticipant()
+    /**
+     * @throws \Exception
+     */
+    public function createOrUpdatePacticipant(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -77,10 +82,13 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function createOrUpdateWebhook()
+    /**
+     * @throws \Exception
+     */
+    public function createOrUpdateWebhook(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -102,10 +110,13 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function createVersionTag()
+    /**
+     * @throws \Exception
+     */
+    public function createVersionTag(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -121,10 +132,13 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function createWebhook()
+    /**
+     * @throws \Exception
+     */
+    public function createWebhook(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -145,10 +159,13 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function describeVersion()
+    /**
+     * @throws \Exception
+     */
+    public function describeVersion(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -163,10 +180,13 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function listLatestPactVersions()
+    /**
+     * @throws \Exception
+     */
+    public function listLatestPactVersions(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -180,7 +200,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function publish(): void
@@ -210,7 +230,10 @@ class Broker
         $runner->runBlocking();
     }
 
-    public function testWebhook()
+    /**
+     * @throws \Exception
+     */
+    public function testWebhook(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -224,7 +247,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function generateUuid(): string
