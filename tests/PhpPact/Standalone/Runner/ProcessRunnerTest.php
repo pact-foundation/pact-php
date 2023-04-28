@@ -67,7 +67,7 @@ class ProcessRunnerTest extends TestCase
         } catch (\Exception $e) {
             $this->assertEquals(42, $e->getCode());
             $this->assertStringContainsString("PactPHP Process returned non-zero exit code: 42", $e->getMessage());
-    }
+        }
         $this->assertTrue((\stripos($p->getOutput(), $expectedOutput) !== false), "Expect '{$expectedOutput}' to be in the output:");
         $this->assertTrue((\stripos($p->getStderr(), $expectedErr) !== false), "Expect '{$expectedErr}' to be in the stderr");
     }

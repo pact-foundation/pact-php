@@ -91,7 +91,7 @@ class BrokerTest extends TestCase
         $broker = new Broker($config);
         try {
             $broker->publish();
-        } catch(\Exception $e){
+        } catch(\Exception $e) {
             $this->assertEquals(1, $e->getCode());
             $this->assertStringContainsString("PactPHP Process returned non-zero exit code: 1", $e->getMessage());
         }

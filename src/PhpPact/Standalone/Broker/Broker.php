@@ -2,17 +2,11 @@
 
 namespace PhpPact\Standalone\Broker;
 
-use Amp\ByteStream\ResourceOutputStream;
-use Amp\Log\ConsoleFormatter;
-use Amp\Log\StreamHandler;
-use Monolog\Logger;
 use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\Runner\ProcessRunner;
 
 class Broker
 {
-    /** @var Logger */
-    private $logger;
     /** @var BrokerConfig */
     private $config;
     /** @var string */
@@ -22,11 +16,6 @@ class Broker
     {
         $this->config  = $config;
         $this->command = Scripts::getBroker();
-        $this->logger  = (new Logger('console'))
-            ->pushHandler(
-                (new StreamHandler(new ResourceOutputStream(\STDOUT)))
-                    ->setFormatter(new ConsoleFormatter(null, null, true))
-            );
     }
 
     public function canIDeploy()
@@ -218,7 +207,7 @@ class Broker
             )
         );
 
-            $runner->runBlocking();
+        $runner->runBlocking();
     }
 
     public function testWebhook()
