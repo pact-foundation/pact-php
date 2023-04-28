@@ -387,4 +387,25 @@ class MatcherTest extends TestCase
 
         $this->assertEquals($expected, $this->matcher->ipv6Address());
     }
+
+
+    /**
+     * @throws Exception
+     */
+    public function testEmail()
+    {
+
+        $expected = [
+            'data' => [
+                'generate' => 'hello@pact.io',
+                'matcher'  => [
+                    'json_class' => 'Regexp',
+                    'o'          => 0,
+                    's'          => '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$',
+                ],
+            ],
+            'json_class' => 'Pact::Term',
+        ];
+        $this->assertEquals($expected, $this->matcher->email());
+    }
 }

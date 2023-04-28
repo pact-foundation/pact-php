@@ -12,6 +12,7 @@ use function preg_match;
  */
 class Matcher
 {
+    public const EMAIL_FORMAT                        = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
     public const ISO8601_DATE_FORMAT                 = '^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))?)$';
     public const ISO8601_DATETIME_FORMAT             = '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?$';
     public const ISO8601_DATETIME_WITH_MILLIS_FORMAT = '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d{3}([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?$';
@@ -256,5 +257,17 @@ class Matcher
     public function ipv6Address(string $ip = '::ffff:192.0.2.128'): array
     {
         return $this->term($ip, self::IPV6_FORMAT);
+    }
+
+    /**
+     * @param string $email
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
+    public function email(string $email = 'hello@pact.io'): array
+    {
+        return $this->term($email, self::EMAIL_FORMAT);
     }
 }
