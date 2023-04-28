@@ -260,11 +260,9 @@ class Matcher
     }
 
     /**
-     * @param string $email
+     * @return array<string, mixed>
      *
      * @throws \Exception
-     *
-     * @return array
      */
     public function email(string $email = 'hello@pact.io'): array
     {
