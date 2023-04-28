@@ -39,13 +39,13 @@ class ProcessRunnerTest extends TestCase
         try {
             $p->runBlocking();
         } catch (\Exception $e) {
+            $exitCode = $p->getExitCode();
+            $this->assertEquals($exitCode, $e->getCode());
+            $this->assertStringContainsString("PactPHP Process returned non-zero exit code: $exitCode", $e->getMessage());
+            $this->assertNotEquals($exitCode, 0, 'Expect the exit code to be non-zero: ' . $exitCode);
+            $this->assertStringContainsString($expectedErr, $p->getStderr(), "Expect '{$expectedErr}' to be in the stderr");
+            $this->assertEquals(null, $p->getOutput(), 'Expect a null stdout');
         }
-
-        $exitCode = $p->getExitCode();
-
-        $this->assertNotEquals($exitCode, 0, 'Expect the exit code to be non-zero: ' . $exitCode);
-        $this->assertStringContainsString($expectedErr, $p->getStderr(), "Expect '{$expectedErr}' to be in the stderr");
-        $this->assertEquals(null, $p->getOutput(), 'Expect a null stdout');
     }
 
     /**
@@ -62,12 +62,12 @@ class ProcessRunnerTest extends TestCase
         $p              = new ProcessRunner($cmd, []);
         $expectedOutput = 'third line';
         $expectedErr    = 'fourth line';
-
         try {
             $p->runBlocking();
         } catch (\Exception $e) {
+            $this->assertEquals(42, $e->getCode());
+            $this->assertStringContainsString("PactPHP Process returned non-zero exit code: 42", $e->getMessage());
         }
-
         $this->assertTrue((\stripos($p->getOutput(), $expectedOutput) !== false), "Expect '{$expectedOutput}' to be in the output:");
         $this->assertTrue((\stripos($p->getStderr(), $expectedErr) !== false), "Expect '{$expectedErr}' to be in the stderr");
     }

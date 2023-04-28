@@ -40,17 +40,7 @@ class VerifierProcess
 
         $logger->info("Verifying PACT with script:\n{$processRunner->getCommand()}\n\n");
 
-        try {
-            $processRunner->runBlocking();
-
-            $logger->info('out > ' . $processRunner->getOutput());
-            $logger->error('err > ' . $processRunner->getStderr());
-        } catch (\Exception $e) {
-            $logger->info('out > ' . $processRunner->getOutput());
-            $logger->error('err > ' . $processRunner->getStderr());
-
-            throw $e;
-        }
+        $processRunner->runBlocking();
     }
 
     private function getLogger(): LoggerInterface

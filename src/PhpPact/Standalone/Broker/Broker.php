@@ -2,30 +2,20 @@
 
 namespace PhpPact\Standalone\Broker;
 
-use Amp\ByteStream\ResourceOutputStream;
-use Amp\Log\ConsoleFormatter;
-use Amp\Log\StreamHandler;
-use Monolog\Logger;
 use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\Runner\ProcessRunner;
 
 class Broker
 {
-    private Logger $logger;
-
-    private BrokerConfig $config;
-
-    private string $command;
+    /** @var BrokerConfig */
+    private $config;
+    /** @var string */
+    private $command;
 
     public function __construct(BrokerConfig $config)
     {
         $this->config  = $config;
         $this->command = Scripts::getBroker();
-        $this->logger  = (new Logger('console'))
-            ->pushHandler(
-                (new StreamHandler(new ResourceOutputStream(\STDOUT)))
-                    ->setFormatter(new ConsoleFormatter(null, null, true))
-            );
     }
 
     /**
@@ -46,11 +36,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return \json_decode($runner->getOutput(), true);
     }
 
     /**
@@ -97,11 +83,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return \json_decode($runner->getOutput(), true);
     }
 
     /**
@@ -129,11 +111,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return \json_decode($runner->getOutput(), true);
     }
 
     /**
@@ -155,11 +133,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return \json_decode($runner->getOutput(), true);
     }
 
     /**
@@ -186,11 +160,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return \json_decode($runner->getOutput(), true);
     }
 
     /**
@@ -211,11 +181,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return \json_decode($runner->getOutput(), true);
     }
 
     /**
@@ -235,11 +201,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return \json_decode($runner->getOutput(), true);
     }
 
     public function publish(): void
@@ -265,13 +227,8 @@ class Broker
                 $this->getArguments()
             )
         );
+
         $runner->runBlocking();
-
-        if ($runner->getExitCode() !== 0) {
-            $this->logger->error($runner->getStderr());
-        }
-
-        $this->logger->debug($runner->getOutput());
     }
 
     /**
@@ -291,11 +248,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
+        return \json_decode($runner->getOutput(), true);
     }
 
     public function generateUuid(): string

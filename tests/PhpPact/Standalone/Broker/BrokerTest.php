@@ -78,4 +78,22 @@ class BrokerTest extends TestCase
         $result = $broker->listLatestPactVersions();
         $this->assertArrayHasKey('pacts', $result);
     }
+
+    /**
+     * @test
+     *
+     * @throws \Exception
+     */
+    public function publishLogsStdError(): void
+    {
+        $config = new BrokerConfig();
+        $config->setPactLocations('not a directory');
+        $broker = new Broker($config);
+        try {
+            $broker->publish();
+        } catch(\Exception $e) {
+            $this->assertEquals(1, $e->getCode());
+            $this->assertStringContainsString("PactPHP Process returned non-zero exit code: 1", $e->getMessage());
+        }
+    }
 }
