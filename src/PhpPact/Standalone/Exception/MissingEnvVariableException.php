@@ -6,7 +6,6 @@ use Exception;
 
 /**
  * Exception for a required environmental variable.
- * Class MissingEnvVariableException.
  */
 class MissingEnvVariableException extends Exception
 {

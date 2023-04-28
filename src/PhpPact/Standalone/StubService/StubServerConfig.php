@@ -7,38 +7,28 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Configuration defining the default PhpPact Ruby Standalone server.
- * Class StubServerConfig.
  */
 class StubServerConfig implements StubServerConfigInterface
 {
     /**
      * Host on which to bind the service.
-     *
-     * @var string
      */
-    private $host = 'localhost';
+    private string $host = 'localhost';
 
     /**
      * Port on which to run the service.
-     *
-     * @var int
      */
-    private $port = 7201;
+    private int $port = 7201;
 
-    /**
-     * @var bool
-     */
-    private $secure = false;
+    private bool $secure = false;
 
     /**
      * File to which to log output.
-     *
-     * @var string
      */
-    private $log;
+    private ?string $log = null;
 
-    private $pactLocation;
-    private $endpoint;
+    private string $pactLocation;
+    private string $endpoint;
 
     /**
      * {@inheritdoc}
@@ -107,7 +97,7 @@ class StubServerConfig implements StubServerConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getLog()
+    public function getLog(): ?string
     {
         return $this->log;
     }
@@ -127,7 +117,7 @@ class StubServerConfig implements StubServerConfigInterface
         return $this->pactLocation;
     }
 
-    public function setPactLocation(string $location)
+    public function setPactLocation(string $location): self
     {
         $this->pactLocation = $location;
 
@@ -139,7 +129,7 @@ class StubServerConfig implements StubServerConfigInterface
         return $this->endpoint;
     }
 
-    public function setEndpoint(string $endpoint)
+    public function setEndpoint(string $endpoint): self
     {
         $this->endpoint = $endpoint;
 

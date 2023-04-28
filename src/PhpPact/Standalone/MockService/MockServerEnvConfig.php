@@ -6,15 +6,12 @@ use PhpPact\Standalone\Exception\MissingEnvVariableException;
 
 /**
  * An environment variable based mock server configuration.
- * Class MockServerEnvConfig.
  */
 class MockServerEnvConfig extends MockServerConfig
 {
     public const DEFAULT_SPECIFICATION_VERSION = '2.0.0';
 
     /**
-     * MockServerEnvConfig constructor.
-     *
      * @throws MissingEnvVariableException
      */
     public function __construct()
@@ -57,14 +54,9 @@ class MockServerEnvConfig extends MockServerConfig
     /**
      * Parse environmental variables to be either null if not required or throw an error if required.
      *
-     * @param string $variableName
-     * @param bool   $required
-     *
      * @throws MissingEnvVariableException
-     *
-     * @return null|string
      */
-    private function parseEnv(string $variableName, bool $required = true)
+    private function parseEnv(string $variableName, bool $required = true): mixed
     {
         $result = null;
 

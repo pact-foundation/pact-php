@@ -7,15 +7,12 @@ use GuzzleHttp\Psr7\Uri;
 
 /**
  * Example HTTP Service
- * Class HttpClientService
  */
 class HttpClientService
 {
-    /** @var Client */
-    private $httpClient;
+    private Client $httpClient;
 
-    /** @var string */
-    private $baseUri;
+    private string $baseUri;
 
     public function __construct(string $baseUri)
     {
@@ -25,10 +22,6 @@ class HttpClientService
 
     /**
      * Get Hello String
-     *
-     * @param string $name
-     *
-     * @return string
      */
     public function getHelloString(string $name): string
     {
@@ -36,17 +29,13 @@ class HttpClientService
             'headers' => ['Content-Type' => 'application/json']
         ]);
         $body   = $response->getBody();
-        $object = \json_decode($body);
+        $object = \json_decode($body, null, 512, JSON_THROW_ON_ERROR);
 
         return $object->message;
     }
 
     /**
      * Get Goodbye String
-     *
-     * @param string $name
-     *
-     * @return string
      */
     public function getGoodbyeString(string $name): string
     {
@@ -54,7 +43,7 @@ class HttpClientService
             'headers' => ['Content-Type' => 'application/json']
         ]);
         $body   = $response->getBody();
-        $object = \json_decode($body);
+        $object = \json_decode($body, null, 512, JSON_THROW_ON_ERROR);
 
         return $object->message;
     }

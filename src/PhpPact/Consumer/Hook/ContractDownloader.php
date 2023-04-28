@@ -15,15 +15,11 @@ use RuntimeException;
 
 class ContractDownloader implements AfterLastTestHook
 {
-    /** @var MockServerConfig */
-    private $mockServerConfig;
+    private MockServerConfig $mockServerConfig;
 
-    /** @var null|ClientInterface */
-    private $client;
+    private ?ClientInterface $client = null;
 
     /**
-     * ContractDownloader constructor.
-     *
      * @throws MissingEnvVariableException
      */
     public function __construct()
@@ -76,6 +72,9 @@ class ContractDownloader implements AfterLastTestHook
         . $this->mockServerConfig->getProvider() . '.json';
     }
 
+    /**
+     * @throws \JsonException
+     */
     private function getPactJson(): string
     {
         $uri      = $this->mockServerConfig->getBaseUri()->withPath('/pact');
@@ -93,6 +92,6 @@ class ContractDownloader implements AfterLastTestHook
             ]
         );
 
-        return \json_encode(\json_decode($response->getBody()->getContents()));
+        return \json_encode(\json_decode($response->getBody()->getContents(), null, 512, JSON_THROW_ON_ERROR), JSON_THROW_ON_ERROR);
     }
 }

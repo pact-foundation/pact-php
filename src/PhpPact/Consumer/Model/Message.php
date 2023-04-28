@@ -4,43 +4,28 @@ namespace PhpPact\Consumer\Model;
 
 /**
  * Request/Response Pair to be posted to the Ruby Standalone Mock Server for PACT tests.
- * Class Interaction.
  */
 class Message implements \JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $description;
+    private string $description;
 
     /**
-     * @var array
+     * @var array<int, \stdClass>
      */
-    private $providerStates = [];
+    private array $providerStates = [];
 
     /**
-     * @var array
+     * @var array<string, string>
      */
-    private $metadata;
+    private array $metadata;
 
-    /**
-     * @var mixed
-     */
-    private $contents;
+    private mixed $contents;
 
-    /**
-     * @return string
-     */
     public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * @param string $description
-     *
-     * @return Message
-     */
     public function setDescription(string $description): self
     {
         $this->description = $description;
@@ -49,7 +34,7 @@ class Message implements \JsonSerializable
     }
 
     /**
-     * @return array
+     * @return array<int, \stdClass>
      */
     public function getProviderStates(): array
     {
@@ -57,11 +42,11 @@ class Message implements \JsonSerializable
     }
 
     /**
-     * @param mixed $overwrite
+     * @param array<mixed, mixed> $params
      *
-     * @return array
+     * @return array<int, \stdClass>
      */
-    public function setProviderState(string $name, array $params = [], $overwrite = true): array
+    public function setProviderState(string $name, array $params = [], bool $overwrite = true): array
     {
         $this->addProviderState($name, $params, $overwrite);
 
@@ -70,12 +55,10 @@ class Message implements \JsonSerializable
 
     /**
      * @param string $name
-     * @param array  $params
+     * @param array<mixed, mixed>  $params
      * @param bool   $overwrite - if true reset the entire state
-     *
-     * @return Message
      */
-    public function addProviderState(string $name, array $params, $overwrite = false): self
+    public function addProviderState(string $name, array $params, bool $overwrite = false): self
     {
         $providerState         = new \stdClass();
         $providerState->name   = $name;
@@ -91,7 +74,7 @@ class Message implements \JsonSerializable
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getMetadata(): array
     {
@@ -99,9 +82,7 @@ class Message implements \JsonSerializable
     }
 
     /**
-     * @param array $metadata
-     *
-     * @return Message
+     * @param array<string, string> $metadata
      */
     public function setMetadata(array $metadata): self
     {
@@ -110,20 +91,12 @@ class Message implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getContents()
+    public function getContents(): mixed
     {
         return $this->contents;
     }
 
-    /**
-     * @param mixed $contents
-     *
-     * @return Message
-     */
-    public function setContents($contents)
+    public function setContents(mixed $contents): self
     {
         $this->contents = $contents;
 
@@ -132,9 +105,10 @@ class Message implements \JsonSerializable
 
     /**
      * {@inheritdoc}
+     *
+     * @return array<string, mixed>
      */
-    #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $out                = [];
         $out['description'] = $this->getDescription();
