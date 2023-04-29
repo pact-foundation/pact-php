@@ -16,9 +16,8 @@ linux_arm64_task:
       - IMAGE: php:8.0
   container:
     image: $IMAGE
-    architecture: arm64
   pre_req_script: 
-      - apt update --yes && apt install --yes zip unzip git
+      - apt update --yes && apt install --yes zip unzip git libyaml-dev
       - curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
       - php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
       - docker-php-ext-install sockets
@@ -26,20 +25,19 @@ linux_arm64_task:
       - php --version
   << : *BUILD_TEST_TASK_TEMPLATE
 
-
-# macos_arm64_task:
-# # https://www.markhesketh.com/switching-multiple-php-versions-on-macos/
-#   env:
-#     matrix:
-#       - VERSION: 8.2
-#       - VERSION: 8.1
-#       - VERSION: 8.0
-#   macos_instance:
-#     image: ghcr.io/cirruslabs/macos-ventura-base:latest
-#   pre_req_script: 
-#       - brew install php@$VERSION composer
-#   version_check_script: 
-#       - php --version
-#   << : *BUILD_TEST_TASK_TEMPLATE
+macos_arm64_task:
+# https://www.markhesketh.com/switching-multiple-php-versions-on-macos/
+  env:
+    matrix:
+      - VERSION: 8.2
+      - VERSION: 8.1
+      - VERSION: 8.0
+  macos_instance:
+    image: ghcr.io/cirruslabs/macos-ventura-base:latest
+  pre_req_script: 
+      - brew install php@$VERSION composer
+  version_check_script: 
+      - php --version
+  << : *BUILD_TEST_TASK_TEMPLATE
 
 
