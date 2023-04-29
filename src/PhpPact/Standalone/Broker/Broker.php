@@ -7,10 +7,9 @@ use PhpPact\Standalone\Runner\ProcessRunner;
 
 class Broker
 {
-    /** @var BrokerConfig */
-    private $config;
-    /** @var string */
-    private $command;
+    private BrokerConfig $config;
+
+    private string $command;
 
     public function __construct(BrokerConfig $config)
     {
@@ -36,7 +35,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -83,7 +82,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -111,7 +110,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -133,7 +132,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -160,7 +159,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -181,7 +180,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -201,7 +200,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function publish(): void
@@ -248,7 +247,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function generateUuid(): string
