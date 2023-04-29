@@ -14,7 +14,7 @@ linux_arm64_task:
       - IMAGE: php:8.2
       - IMAGE: php:8.1
       - IMAGE: php:8.0
-  arm_container:
+  container:
     image: $IMAGE
     architecture: arm64
   pre_req_script: 

@@ -42,24 +42,31 @@ class BrokerTest extends TestCase
     //    $this->assertContains('-', (new Broker(new BrokerConfig()))->generateUuid());
     //}
 
-    /**
+
+           /**
      * @test
      *
      * @throws \Exception
      */
     public function describeVersion(): void
     {
-        $config = new BrokerConfig();
-        $config->setPacticipant('Animal Profile Service')
-            ->setBrokerUri(new Uri('https://test.pactflow.io'))
-            ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
-            ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1');
-        $broker = new Broker($config);
 
-        $result = $broker->describeVersion();
+        // this test has slain many a developer 🤯
+        // if (php_uname('m') != 'arm64' && PHP_OS != 'Linux') {
+            $config = new BrokerConfig();
+            $config->setPacticipant('Animal Profile Service')
+                ->setBrokerUri(new Uri('https://test.pactflow.io'))
+                ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
+                ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1');
+            $broker = new Broker($config);
 
-        $this->assertArrayHasKey('number', $result);
+            $result = $broker->describeVersion();
+
+            $this->assertArrayHasKey('number', $result);
+        // };
     }
+
+
 
     /**
      * @test
