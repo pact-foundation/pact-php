@@ -53,16 +53,16 @@ class BrokerTest extends TestCase
 
         // this test has slain many a developer 🤯
         // if (php_uname('m') != 'arm64' && PHP_OS != 'Linux') {
-            $config = new BrokerConfig();
-            $config->setPacticipant('Animal Profile Service')
-                ->setBrokerUri(new Uri('https://test.pactflow.io'))
-                ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
-                ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1');
-            $broker = new Broker($config);
+        $config = new BrokerConfig();
+        $config->setPacticipant('Animal Profile Service')
+            ->setBrokerUri(new Uri('https://test.pactflow.io'))
+            ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
+            ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1');
+        $broker = new Broker($config);
 
-            $result = $broker->describeVersion();
+        $result = $broker->describeVersion();
 
-            $this->assertArrayHasKey('number', $result);
+        $this->assertArrayHasKey('number', $result);
         // };
     }
 
