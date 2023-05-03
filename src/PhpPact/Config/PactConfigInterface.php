@@ -55,7 +55,7 @@ interface PactConfigInterface
     public function getPactSpecificationVersion(): string;
 
     /**
-     * @param string $pactSpecificationVersion pact version
+     * @param string $pactSpecificationVersion pact semver version
      *
      * @return $this
      */

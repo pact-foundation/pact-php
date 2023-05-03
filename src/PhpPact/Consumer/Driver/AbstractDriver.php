@@ -2,6 +2,7 @@
 
 namespace PhpPact\Consumer\Driver;
 
+use Composer\Semver\Comparator;
 use FFI;
 use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Config\PactConfigInterface;
@@ -47,22 +48,18 @@ abstract class AbstractDriver implements DriverInterface
 
     protected function getSpecification(): int
     {
-        $supportedVersions = [
-            '1.0.0' => $this->ffi->PactSpecification_V1,
-            '1.1.0' => $this->ffi->PactSpecification_V1_1,
-            '2.0.0' => $this->ffi->PactSpecification_V2,
-            '3.0.0' => $this->ffi->PactSpecification_V3,
-            '4.0.0' => $this->ffi->PactSpecification_V4,
-        ];
-        $version = $this->config->getPactSpecificationVersion();
-        if (isset($supportedVersions[$version])) {
-            $specification = $supportedVersions[$version];
-        } else {
-            trigger_error(sprintf("Specification version '%s' is unknown", $version), E_USER_WARNING);
-            $specification = $this->ffi->PactSpecification_Unknown;
-        }
+        return match (true) {
+            $this->versionEqualTo('1.0.0') => $this->ffi->PactSpecification_V1,
+            $this->versionEqualTo('1.1.0') => $this->ffi->PactSpecification_V1_1,
+            $this->versionEqualTo('2.0.0') => $this->ffi->PactSpecification_V2,
+            $this->versionEqualTo('3.0.0') => $this->ffi->PactSpecification_V3,
+            $this->versionEqualTo('4.0.0') => $this->ffi->PactSpecification_V4,
+            default => function () {
+                trigger_error(sprintf("Specification version '%s' is unknown", $this->config->getPactSpecificationVersion()), E_USER_WARNING);
 
-        return $specification;
+                return $this->ffi->PactSpecification_Unknown;
+            },
+        };
     }
 
     protected function cleanUp(): void
@@ -119,5 +116,10 @@ abstract class AbstractDriver implements DriverInterface
     protected function setDescription(string $description): void
     {
         $this->ffi->pactffi_upon_receiving($this->interactionId, $description);
+    }
+
+    private function versionEqualTo(string $version): bool
+    {
+        return Comparator::equalTo($this->config->getPactSpecificationVersion(), $version);
     }
 }
