@@ -7,7 +7,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Mock Server configuration interface to allow for simple overrides that are reusable.
- * Interface MockServerConfigInterface.
  */
 interface MockServerConfigInterface extends PactConfigInterface
 {
@@ -18,8 +17,6 @@ interface MockServerConfigInterface extends PactConfigInterface
 
     /**
      * @param string $host The host of the mock service
-     *
-     * @return MockServerConfigInterface
      */
     public function setHost(string $host): self;
 
@@ -30,8 +27,6 @@ interface MockServerConfigInterface extends PactConfigInterface
 
     /**
      * @param int $port the port of the mock service
-     *
-     * @return MockServerConfigInterface
      */
     public function setPort(int $port): self;
 
@@ -42,13 +37,8 @@ interface MockServerConfigInterface extends PactConfigInterface
 
     /**
      * @param bool $secure set to true for https
-     *
-     * @return MockServerConfigInterface
      */
     public function setSecure(bool $secure): self;
 
-    /**
-     * @return UriInterface
-     */
     public function getBaseUri(): UriInterface;
 }

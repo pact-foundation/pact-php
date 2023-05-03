@@ -12,10 +12,13 @@ use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestListener;
 use PHPUnit\Framework\TestListenerDefaultImplementation;
 use PHPUnit\Framework\TestSuite;
+use Throwable;
+
+use function getenv;
+use function in_array;
 
 /**
  * PACT listener that can be used with environment variables and easily attached to PHPUnit configuration.
- * Class PactTestListener
  *
  * @internal
  */
@@ -26,20 +29,16 @@ class PactTestListener implements TestListener
     /**
      * Name of the test suite configured in your phpunit config.
      *
-     * @var string[]
+     * @var array<int, string>
      */
-    private array $testSuiteNames;
+    private array $testSuiteNames = [];
 
-    /** @var MockServerEnvConfig */
     private MockServerEnvConfig $mockServerConfig;
 
-    /** @var bool */
     private bool $failed = false;
 
     /**
-     * PactTestListener constructor.
-     *
-     * @param string[] $testSuiteNames test suite names that need evaluated with the listener
+     * @param array<int, string> $testSuiteNames test suite names that need evaluated with the listener
      *
      * @throws MissingEnvVariableException
      */
@@ -49,7 +48,7 @@ class PactTestListener implements TestListener
         $this->mockServerConfig = new MockServerEnvConfig();
     }
 
-    public function addError(Test $test, \Throwable $t, float $time): void
+    public function addError(Test $test, Throwable $t, float $time): void
     {
         $this->failed = true;
     }
@@ -61,19 +60,17 @@ class PactTestListener implements TestListener
 
     /**
      * Publish JSON results to PACT Broker and stop the Mock Server.
-     *
-     * @param TestSuite $suite
      */
     public function endTestSuite(TestSuite $suite): void
     {
-        if (\in_array($suite->getName(), $this->testSuiteNames)) {
+        if (in_array($suite->getName(), $this->testSuiteNames)) {
             if ($this->failed === true) {
                 print 'A unit test has failed. Skipping PACT file upload.';
-            } elseif (!($pactBrokerUri = \getenv('PACT_BROKER_URI'))) {
+            } elseif (!($pactBrokerUri = getenv('PACT_BROKER_URI'))) {
                 print 'PACT_BROKER_URI environment variable was not set. Skipping PACT file upload.';
-            } elseif (!($consumerVersion = \getenv('PACT_CONSUMER_VERSION'))) {
+            } elseif (!($consumerVersion = getenv('PACT_CONSUMER_VERSION'))) {
                 print 'PACT_CONSUMER_VERSION environment variable was not set. Skipping PACT file upload.';
-            } elseif (!($tag = \getenv('PACT_CONSUMER_TAG'))) {
+            } elseif (!($tag = getenv('PACT_CONSUMER_TAG'))) {
                 print 'PACT_CONSUMER_TAG environment variable was not set. Skipping PACT file upload.';
             } else {
                 $brokerConfig = new BrokerConfig();
@@ -83,14 +80,14 @@ class PactTestListener implements TestListener
                 $brokerConfig->setConsumerVersion($consumerVersion);
                 $brokerConfig->setVersion($consumerVersion);
                 $brokerConfig->setTag($tag);
-                if (($user = \getenv('PACT_BROKER_HTTP_AUTH_USER')) &&
-                    ($pass = \getenv('PACT_BROKER_HTTP_AUTH_PASS'))
+                if (($user = getenv('PACT_BROKER_HTTP_AUTH_USER')) &&
+                    ($pass = getenv('PACT_BROKER_HTTP_AUTH_PASS'))
                 ) {
                     $brokerConfig->setBrokerUsername($user);
                     $brokerConfig->setBrokerPassword($pass);
                 }
 
-                if ($bearerToken = \getenv('PACT_BROKER_BEARER_TOKEN')) {
+                if ($bearerToken = getenv('PACT_BROKER_BEARER_TOKEN')) {
                     $brokerConfig->setBrokerToken($bearerToken);
                 }
 

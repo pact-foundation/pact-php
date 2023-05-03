@@ -5,49 +5,33 @@ namespace PhpPact\Http;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
-/**
- * Http Client Interface
- * Interface ClientInterface.
- */
 interface ClientInterface
 {
     /**
      * Get Request.
      *
-     * @param UriInterface $uri
-     * @param array        $options
-     *
-     * @return ResponseInterface
+     * @param array<string, mixed> $options
      */
     public function get(UriInterface $uri, array $options = []): ResponseInterface;
 
     /**
      * Put Request.
      *
-     * @param UriInterface $uri
-     * @param array        $options
-     *
-     * @return ResponseInterface
+     * @param array<string, mixed> $options
      */
     public function put(UriInterface $uri, array $options = []): ResponseInterface;
 
     /**
      * Post Request.
      *
-     * @param UriInterface $uri
-     * @param array        $options
-     *
-     * @return ResponseInterface
+     * @param array<string, mixed> $options
      */
     public function post(UriInterface $uri, array $options = []): ResponseInterface;
 
     /**
      * Delete Request.
      *
-     * @param UriInterface $uri
-     * @param array        $options
-     *
-     * @return ResponseInterface
+     * @param array<string, mixed> $options
      */
     public function delete(UriInterface $uri, array $options = []): ResponseInterface;
 }

@@ -2,45 +2,32 @@
 
 namespace PhpPact\Config;
 
-/**
- * Class PactConfig.
- */
 class PactConfig implements PactConfigInterface
 {
     use LogLevelTrait;
 
     /**
      * Consumer name.
-     *
-     * @var string
      */
     private string $consumer;
 
     /**
      * Provider name.
-     *
-     * @var string
      */
     private string $provider;
 
     /**
      * Directory to which the pacts will be written.
-     *
-     * @var null|string
      */
     private ?string $pactDir = null;
 
     /**
      * The pact specification version to use when writing the pact. Note that only versions 1, 2, 3 and 4 are currently supported.
-     *
-     * @var string
      */
     private string $pactSpecificationVersion = self::DEFAULT_SPECIFICATION_VERSION;
 
     /**
      * File to which to log output.
-     *
-     * @var null|string
      */
     private ?string $log = null;
 
@@ -49,8 +36,6 @@ class PactConfig implements PactConfigInterface
      * instances in parallel for the same consumer/provider pair. Ensure the
      * pact file is deleted before running tests when using this option so that
      * interactions deleted from the code are not maintained in the file.
-     *
-     * @var string
      */
     private string $pactFileWriteMode = self::MODE_OVERWRITE;
 

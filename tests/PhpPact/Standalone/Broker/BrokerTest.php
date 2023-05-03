@@ -50,7 +50,7 @@ class BrokerTest extends TestCase
     public function describeVersion(): void
     {
         $config = new BrokerConfig();
-        $config->setPacticipant(\rawurlencode('Animal Profile Service'))
+        $config->setPacticipant('Animal Profile Service')
             ->setBrokerUri(new Uri('https://test.pactflow.io'))
             ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
             ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1');
@@ -69,7 +69,7 @@ class BrokerTest extends TestCase
     public function listLatestPactVersions(): void
     {
         $config = new BrokerConfig();
-        $config->setPacticipant(\rawurlencode('Animal Profile Service'))
+        $config->setPacticipant("\"Animal Profile Service\"")
             ->setBrokerUri(new Uri('https://test.pactflow.io'))
             ->setBrokerUsername('dXfltyFMgNOFZAxr8io9wJ37iUpY42M')
             ->setBrokerPassword('O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1');
@@ -77,5 +77,23 @@ class BrokerTest extends TestCase
 
         $result = $broker->listLatestPactVersions();
         $this->assertArrayHasKey('pacts', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @throws \Exception
+     */
+    public function publishLogsStdError(): void
+    {
+        $config = new BrokerConfig();
+        $config->setPactLocations('not a directory');
+        $broker = new Broker($config);
+        try {
+            $broker->publish();
+        } catch(\Exception $e) {
+            $this->assertEquals(1, $e->getCode());
+            $this->assertStringContainsString("PactPHP Process returned non-zero exit code: 1", $e->getMessage());
+        }
     }
 }

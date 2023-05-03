@@ -5,7 +5,7 @@ namespace PhpPact\Consumer\Model;
 trait ProviderStates
 {
     /**
-     * @var array
+     * @var array<int, ProviderState>
      */
     private array $providerStates = [];
 
@@ -19,7 +19,7 @@ trait ProviderStates
 
     /**
      * @param string $name
-     * @param array  $params
+     * @param array<string, string> $params
      * @param bool   $overwrite
      *
      * @return array<int, ProviderState>
@@ -33,7 +33,7 @@ trait ProviderStates
 
     /**
      * @param string $name
-     * @param array  $params
+     * @param array<string, string> $params
      * @param bool   $overwrite - if true reset the entire state
      *
      * @return $this

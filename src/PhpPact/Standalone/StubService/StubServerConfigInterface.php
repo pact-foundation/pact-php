@@ -6,7 +6,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Stub Server configuration interface to allow for simple overrides that are reusable.
- * Interface StubServerConfigInterface.
  */
 interface StubServerConfigInterface
 {
@@ -17,8 +16,6 @@ interface StubServerConfigInterface
 
     /**
      * @param string $host The host of the stub service
-     *
-     * @return StubServerConfigInterface
      */
     public function setHost(string $host): self;
 
@@ -29,8 +26,6 @@ interface StubServerConfigInterface
 
     /**
      * @param int $port the port of the stub service
-     *
-     * @return StubServerConfigInterface
      */
     public function setPort(int $port): self;
 
@@ -41,8 +36,6 @@ interface StubServerConfigInterface
 
     /**
      * @param bool $secure set to true for https
-     *
-     * @return StubServerConfigInterface
      */
     public function setSecure(bool $secure): self;
 
@@ -52,22 +45,20 @@ interface StubServerConfigInterface
     public function getBaseUri(): UriInterface;
 
     /**
-     * @return string directory for log output
+     * @return ?string directory for log output
      */
-    public function getLog();
+    public function getLog(): ?string;
 
     /**
      * @param string $log directory for log output
-     *
-     * @return StubServerConfigInterface
      */
     public function setLog(string $log): self;
 
     public function getPactLocation(): string;
 
-    public function setPactLocation(string $location);
+    public function setPactLocation(string $location): self;
 
     public function getEndpoint(): string;
 
-    public function setEndpoint(string $location);
+    public function setEndpoint(string $endpoint): self;
 }

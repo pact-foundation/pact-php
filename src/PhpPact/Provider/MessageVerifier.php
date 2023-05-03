@@ -19,60 +19,45 @@ use Monolog\Logger;
 use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
+use Psr\Log\LoggerInterface;
 
 class MessageVerifier extends Verifier
 {
-    /** @var array */
-    protected $callbacks;
+    /** @var array<string, callable> */
+    protected array $callbacks = [];
 
     /**
      * Default host name for the proxy server
-     *
-     * @var string
      */
-    protected $defaultProxyHost = 'localhost';
+    protected string $defaultProxyHost = 'localhost';
 
     /**
      * Default port for the proxy server to listen on
-     *
-     * @var int
      */
-    protected $defaultProxyPort = 7201;
+    protected int $defaultProxyPort = 7201;
 
     /**
      * floor(provider-verification timeout / this value) = default verificationDelaySec
-     *
-     * @var int
      */
-    protected $defaultDelayFactor = 3;
+    protected int $defaultDelayFactor = 3;
 
     /**
      * Set the number of seconds to delay the verification test to allow the proxy server to be stood up
      *
      * By default, it is a third of the provider-verification timeout
-     *
-     * @var float
      */
-    protected $verificationDelaySec;
+    protected float $verificationDelaySec;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private ?LoggerInterface $logger = null;
 
-    /**
-     * MessageVerifier constructor.
-     *
-     * @param VerifierConfigInterface $config
-     */
     public function __construct(VerifierConfigInterface $config)
     {
         parent::__construct($config);
 
         $this->callbacks = [];
 
-        $baseUrl = @$this->config->getProviderBaseUrl();
-        if (!$baseUrl) {
+        $baseUrl = $this->config->getProviderBaseUrl();
+        if ($baseUrl === null) {
             $config->setProviderBaseUrl(new Uri("http://{$this->defaultProxyHost}:{$this->defaultProxyPort}"));
         }
 
@@ -81,9 +66,7 @@ class MessageVerifier extends Verifier
     }
 
     /**
-     * @param array $callbacks
-     *
-     * @return self
+     * @param array<string, callable> $callbacks
      */
     public function setCallbacks(array $callbacks): self
     {
@@ -95,29 +78,19 @@ class MessageVerifier extends Verifier
     /**
      * Add an individual call back
      *
-     * @param string   $key
-     * @param callable $callback
-     *
      * @throws \Exception
-     *
-     * @return MessageVerifier
      */
     public function addCallback(string $key, callable $callback): self
     {
-        if (!isset($this->callbacks[$key])) {
-            $this->callbacks[$key] = $callback;
-        } else {
+        if (isset($this->callbacks[$key])) {
             throw new \Exception("Callback with key ($key) already exists");
         }
+
+        $this->callbacks[$key] = $callback;
 
         return $this;
     }
 
-    /**
-     * @param float $verificationDelaySec
-     *
-     * @return MessageVerifier
-     */
     public function setVerificationDelaySec(float $verificationDelaySec): self
     {
         $this->verificationDelaySec = $verificationDelaySec;
@@ -125,12 +98,7 @@ class MessageVerifier extends Verifier
         return $this;
     }
 
-    /**
-     * @param Logger $logger
-     *
-     * @return MessageVerifier
-     */
-    public function setLogger(Logger $logger): self
+    public function setLogger(LoggerInterface $logger): self
     {
         $this->logger = $logger;
 
@@ -138,11 +106,9 @@ class MessageVerifier extends Verifier
     }
 
     /**
-     * @param array $arguments
-     *
      * @throws \Exception
      */
-    protected function verifyAction(array $arguments)
+    protected function verifyAction(array $arguments): void
     {
         if (\count($this->callbacks) < 1) {
             throw new \Exception('Callback needs to bet set when using message pacts');
@@ -228,10 +194,7 @@ class MessageVerifier extends Verifier
         Loop::run($lambdaLoop);
     }
 
-    /**
-     * @return Logger
-     */
-    private function getLogger()
+    private function getLogger(): LoggerInterface
     {
         if (null === $this->logger) {
             $logHandler = new StreamHandler(new ResourceOutputStream(\STDOUT));

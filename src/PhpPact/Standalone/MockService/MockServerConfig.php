@@ -8,21 +8,16 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * Configuration defining the default PhpPact Ruby Standalone server.
- * Class MockServerConfig.
  */
 class MockServerConfig extends PactConfig implements MockServerConfigInterface
 {
     /**
      * Host on which to bind the service.
-     *
-     * @var string
      */
     private string $host = 'localhost';
 
     /**
      * Port on which to run the service. A value of zero will result in the operating system allocating an available port.
-     *
-     * @var int
      */
     private int $port = 7200;
 

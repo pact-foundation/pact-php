@@ -11,21 +11,12 @@ use PhpPact\Standalone\MockService\MockServerConfigInterface;
 
 /**
  * Build an interaction and send it to the Ruby Standalone Mock Service
- * Class InteractionBuilder.
  */
 class InteractionBuilder implements BuilderInterface
 {
-    /** @var Interaction */
+    protected InteractionDriverInterface $driver;
     protected Interaction $interaction;
 
-    /** @var InteractionDriverInterface */
-    protected InteractionDriverInterface $driver;
-
-    /**
-     * InteractionBuilder constructor.
-     *
-     * @param MockServerConfigInterface $config
-     */
     public function __construct(MockServerConfigInterface $config)
     {
         $this->interaction           = new Interaction();
@@ -34,10 +25,8 @@ class InteractionBuilder implements BuilderInterface
 
     /**
      * @param string $providerState what is given to the request
-     * @param array  $params    for that request
+     * @param array<string, string>  $params    for that request
      * @param bool   $overwrite clear pass states completely and start this array
-     *
-     * @return InteractionBuilder
      */
     public function given(string $providerState, array $params = [], bool $overwrite = false): self
     {
@@ -48,8 +37,6 @@ class InteractionBuilder implements BuilderInterface
 
     /**
      * @param string $description what is received when the request is made
-     *
-     * @return InteractionBuilder
      */
     public function uponReceiving(string $description): self
     {
@@ -60,8 +47,6 @@ class InteractionBuilder implements BuilderInterface
 
     /**
      * @param ConsumerRequest $request mock of request sent
-     *
-     * @return InteractionBuilder
      */
     public function with(ConsumerRequest $request): self
     {
@@ -74,6 +59,7 @@ class InteractionBuilder implements BuilderInterface
      * @param ProviderResponse $response mock of response received
      *
      * @return bool returns true on success
+     * @throws \JsonException
      */
     public function willRespondWith(ProviderResponse $response): bool
     {

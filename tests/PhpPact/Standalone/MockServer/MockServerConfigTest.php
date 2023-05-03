@@ -16,7 +16,7 @@ class MockServerConfigTest extends TestCase
         $pactDir                  = 'test-pact-dir/';
         $pactFileWriteMode        = 'merge';
         $log                      = 'test-log-dir/';
-        $pactSpecificationVersion = '2.0.0';
+        $pactSpecificationVersion = '2.0';
 
         $subject = (new MockServerConfig())
             ->setHost($host)

@@ -49,6 +49,12 @@ class StubServerHttpServiceTest extends TestCase
         $this->stubServer->stop();
     }
 
+    public function testHealthCheck()
+    {
+        $result = $this->service->healthCheck();
+        $this->assertTrue($result);
+    }
+
     public function testGetJson()
     {
         $result = $this->service->getJson();

@@ -6,6 +6,9 @@ class ProviderState
 {
     private string $name;
 
+    /**
+     * @var array<string, string>
+     */
     private array $params = [];
 
     public function getName(): string
@@ -26,6 +29,9 @@ class ProviderState
         return $this->params;
     }
 
+    /**
+     * @param array<string, string> $params
+     */
     public function setParams(array $params = []): void
     {
         foreach ($params as $key => $value) {

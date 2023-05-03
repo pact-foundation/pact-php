@@ -4,13 +4,9 @@ namespace PhpPact\Consumer\Model;
 
 /**
  * Response expectation that would be in response to a Consumer request from the Provider.
- * Class ProviderResponse.
  */
 class ProviderResponse
 {
-    /**
-     * @var int
-     */
     private int $status;
 
     /**
@@ -18,24 +14,13 @@ class ProviderResponse
      */
     private array $headers = [];
 
-    /**
-     * @var null|string
-     */
     private ?string $body  = null;
 
-    /**
-     * @return int
-     */
     public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @param int $status
-     *
-     * @return ProviderResponse
-     */
     public function setStatus(int $status): self
     {
         $this->status = $status;
@@ -52,9 +37,7 @@ class ProviderResponse
     }
 
     /**
-     * @param string[] $headers
-     *
-     * @return ProviderResponse
+     * @param array<string, string[]> $headers
      */
     public function setHeaders(array $headers): self
     {
@@ -67,10 +50,7 @@ class ProviderResponse
     }
 
     /**
-     * @param string       $header
-     * @param array|string $value
-     *
-     * @return ProviderResponse
+     * @param string[]|string $value
      */
     public function addHeader(string $header, array|string $value): self
     {
@@ -89,28 +69,18 @@ class ProviderResponse
         $this->headers[$header][] = $value;
     }
 
-    /**
-     * @return null|string
-     */
     public function getBody(): ?string
     {
         return $this->body;
     }
 
-    /**
-     * @param mixed $body
-     *
-     * @return ProviderResponse
-     */
     public function setBody(mixed $body): self
     {
-        if (\is_string($body)) {
+        if (\is_string($body) || \is_null($body)) {
             $this->body = $body;
-        } elseif (!\is_null($body)) {
-            $this->body = \json_encode($body);
-            $this->addHeader('Content-Type', 'application/json');
         } else {
-            $this->body = null;
+            $this->body = \json_encode($body, JSON_THROW_ON_ERROR);
+            $this->addHeader('Content-Type', 'application/json');
         }
 
         return $this;

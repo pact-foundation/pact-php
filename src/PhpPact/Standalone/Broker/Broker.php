@@ -2,41 +2,32 @@
 
 namespace PhpPact\Standalone\Broker;
 
-use Amp\ByteStream\ResourceOutputStream;
-use Amp\Log\ConsoleFormatter;
-use Amp\Log\StreamHandler;
-use Monolog\Logger;
 use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\Runner\ProcessRunner;
 
 class Broker
 {
-    /** @var Logger */
-    private Logger $logger;
-    /** @var BrokerConfig */
     private BrokerConfig $config;
-    /** @var string */
+
     private string $command;
 
     public function __construct(BrokerConfig $config)
     {
         $this->config  = $config;
         $this->command = Scripts::getBroker();
-        $this->logger  = (new Logger('console'))
-            ->pushHandler(
-                (new StreamHandler(new ResourceOutputStream(\STDOUT)))
-                    ->setFormatter(new ConsoleFormatter(null, null, true))
-            );
     }
 
-    public function canIDeploy()
+    /**
+     * @throws \Exception
+     */
+    public function canIDeploy(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
             \array_merge(
                 [
                     'can-i-deploy',
-                    '--pacticipant=' . $this->config->getPacticipant(),
+                    '--pacticipant=\'' . $this->config->getPacticipant().'\'',
                     '--version=' . $this->config->getVersion()
                 ],
                 $this->getArguments()
@@ -44,15 +35,11 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
-     * @return array parameters to be passed into the process
+     * @return array<int, string> parameters to be passed into the process
      */
     public function getArguments(): array
     {
@@ -77,7 +64,10 @@ class Broker
         return $parameters;
     }
 
-    public function createOrUpdatePacticipant()
+    /**
+     * @throws \Exception
+     */
+    public function createOrUpdatePacticipant(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -92,14 +82,13 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function createOrUpdateWebhook()
+    /**
+     * @throws \Exception
+     */
+    public function createOrUpdateWebhook(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -121,21 +110,20 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function createVersionTag()
+    /**
+     * @throws \Exception
+     */
+    public function createVersionTag(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
             \array_merge(
                 [
                     'create-version-tag',
-                    '--pacticipant=' . $this->config->getPacticipant(),
+                    '--pacticipant=\'' . $this->config->getPacticipant().'\'',
                     '--version=' . $this->config->getVersion(),
                     '--tag=' . $this->config->getTag(),
                 ],
@@ -144,14 +132,13 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function createWebhook()
+    /**
+     * @throws \Exception
+     */
+    public function createWebhook(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -172,21 +159,20 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function describeVersion()
+    /**
+     * @throws \Exception
+     */
+    public function describeVersion(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
             \array_merge(
                 [
                     'describe-version',
-                    '--pacticipant=' . $this->config->getPacticipant(),
+                    '--pacticipant=\'' . $this->config->getPacticipant().'\'',
                     '--output=json',
                 ],
                 $this->getArguments()
@@ -194,14 +180,13 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function listLatestPactVersions()
+    /**
+     * @throws \Exception
+     */
+    public function listLatestPactVersions(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -215,11 +200,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function publish(): void
@@ -245,16 +226,14 @@ class Broker
                 $this->getArguments()
             )
         );
+
         $runner->runBlocking();
-
-        if ($runner->getExitCode() !== 0) {
-            $this->logger->error($runner->getStderr());
-        }
-
-        $this->logger->debug($runner->getOutput());
     }
 
-    public function testWebhook()
+    /**
+     * @throws \Exception
+     */
+    public function testWebhook(): mixed
     {
         $runner = new ProcessRunner(
             $this->command,
@@ -268,11 +247,7 @@ class Broker
         );
         $runner->runBlocking();
 
-        if ($runner->getExitCode() !== 0) {
-            throw new \Exception($runner->getStderr());
-        }
-
-        return \json_decode($runner->getOutput(), true);
+        return \json_decode($runner->getOutput(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     public function generateUuid(): string

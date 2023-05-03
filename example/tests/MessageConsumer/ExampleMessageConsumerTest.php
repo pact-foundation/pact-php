@@ -4,18 +4,19 @@ namespace MessageConsumer;
 
 require_once __DIR__ . '/../../src/MessageConsumer/ExampleMessageConsumer.php';
 
-use PhpPact\Broker\Service\BrokerHttpClient;
+use Exception;
 use PhpPact\Consumer\MessageBuilder;
-use PhpPact\Http\GuzzleClient;
+use PhpPact\Config\PactConfigInterface;
 use PhpPact\Standalone\PactMessage\PactMessageConfig;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * Class ExampleMessageConsumerTest
  */
 class ExampleMessageConsumerTest extends TestCase
 {
-    private static $config;
+    private static PactConfigInterface $config;
 
     public static function setUpBeforeClass(): void
     {
@@ -40,13 +41,13 @@ class ExampleMessageConsumerTest extends TestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testProcessText()
     {
         $builder    = new MessageBuilder(self::$config);
 
-        $contents       = new \stdClass();
+        $contents       = new stdClass();
         $contents->text = 'Hello Mary';
 
         $metadata = ['queue'=>'wind cries', 'routing_key'=>'wind cries'];
@@ -70,13 +71,13 @@ class ExampleMessageConsumerTest extends TestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testProcessSong()
     {
         $builder    = new MessageBuilder(self::$config);
 
-        $contents       = new \stdClass();
+        $contents       = new stdClass();
         $contents->song = 'And the wind whispers Mary';
 
         $metadata = ['queue'=>'And the clowns have all gone to bed', 'routing_key'=>'And the clowns have all gone to bed'];
@@ -96,7 +97,7 @@ class ExampleMessageConsumerTest extends TestCase
 
         try {
             $builder->verify();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $hasException = true;
         }
 

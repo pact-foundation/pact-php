@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ '8.0', '8.1' ]
+        php: [ '8.2' ]
 
     steps:
       - name: 🛑 Cancel Previous Runs
@@ -70,7 +70,6 @@ jobs:
         uses: ramsey/composer-install@v2
         with:
           dependency-versions: ${{ matrix.dependencies }}
-          composer-options: ${{ matrix.composer-options }}
 
       - name: Composer test
         run: composer test

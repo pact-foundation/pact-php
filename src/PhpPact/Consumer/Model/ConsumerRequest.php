@@ -4,18 +4,11 @@ namespace PhpPact\Consumer\Model;
 
 /**
  * Request initiated by the consumer.
- * Class ConsumerRequest.
  */
 class ConsumerRequest
 {
-    /**
-     * @var string
-     */
     private string $method;
 
-    /**
-     * @var string
-     */
     private string $path;
 
     /**
@@ -23,9 +16,6 @@ class ConsumerRequest
      */
     private array $headers = [];
 
-    /**
-     * @var null|string
-     */
     private ?string $body  = null;
 
     /**
@@ -33,19 +23,11 @@ class ConsumerRequest
      */
     private array $query = [];
 
-    /**
-     * @return string
-     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
-    /**
-     * @param string $method
-     *
-     * @return ConsumerRequest
-     */
     public function setMethod(string $method): self
     {
         $this->method = $method;
@@ -53,22 +35,17 @@ class ConsumerRequest
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPath(): string
     {
         return $this->path;
     }
 
     /**
-     * @param array|string $path
-     *
-     * @return ConsumerRequest
+     * @param string|array<string, mixed> $path
      */
-    public function setPath(array|string $path): self
+    public function setPath(string|array $path): self
     {
-        $this->path = is_array($path) ? json_encode($path) : $path;
+        $this->path = is_array($path) ? json_encode($path, JSON_THROW_ON_ERROR) : $path;
 
         return $this;
     }
@@ -82,9 +59,7 @@ class ConsumerRequest
     }
 
     /**
-     * @param string[] $headers
-     *
-     * @return ConsumerRequest
+     * @param array<string, string|string[]> $headers
      */
     public function setHeaders(array $headers): self
     {
@@ -97,10 +72,7 @@ class ConsumerRequest
     }
 
     /**
-     * @param string       $header
-     * @param array|string $value
-     *
-     * @return ConsumerRequest
+     * @param string|string[] $value
      */
     public function addHeader(string $header, array|string $value): self
     {
@@ -119,25 +91,17 @@ class ConsumerRequest
         $this->headers[$header][] = $value;
     }
 
-    /**
-     * @return null|string
-     */
     public function getBody(): ?string
     {
         return $this->body;
     }
 
-    /**
-     * @param mixed $body
-     *
-     * @return ConsumerRequest
-     */
     public function setBody(mixed $body): self
     {
         if (\is_string($body)) {
             $this->body = $body;
         } elseif (!\is_null($body)) {
-            $this->body = \json_encode($body);
+            $this->body = \json_encode($body, JSON_THROW_ON_ERROR);
             $this->addHeader('Content-Type', 'application/json');
         } else {
             $this->body = null;
@@ -155,9 +119,7 @@ class ConsumerRequest
     }
 
     /**
-     * @param array $query
-     *
-     * @return ConsumerRequest
+     * @param array<string, string|string[]> $query
      */
     public function setQuery(array $query): self
     {
@@ -170,10 +132,7 @@ class ConsumerRequest
     }
 
     /**
-     * @param string       $key
-     * @param array|string $value
-     *
-     * @return ConsumerRequest
+     * @param string|string[] $value
      */
     public function addQueryParameter(string $key, array|string $value): self
     {

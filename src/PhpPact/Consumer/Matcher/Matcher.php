@@ -2,14 +2,18 @@
 
 namespace PhpPact\Consumer\Matcher;
 
+use Exception;
+
+use function preg_last_error;
+use function preg_match;
+
 /**
  * Matcher implementation. Builds the Pact FFI specification json for interaction publishing.
  * @see https://docs.pact.io/implementation_guides/rust/pact_ffi/integrationjson
- *
- * Class Matcher.
  */
 class Matcher
 {
+    public const EMAIL_FORMAT                        = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
     public const ISO8601_DATE_FORMAT                 = '^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))?)$';
     public const ISO8601_DATETIME_FORMAT             = '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?$';
     public const ISO8601_DATETIME_WITH_MILLIS_FORMAT = '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d{3}([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?$';
@@ -23,13 +27,11 @@ class Matcher
     /**
      * Alias for the `like()` function.
      *
-     * @param mixed $value
+     * @throws Exception
      *
-     * @throws \Exception
-     *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function somethingLike($value): array
+    public function somethingLike(mixed $value): array
     {
         return $this->like($value);
     }
@@ -37,14 +39,14 @@ class Matcher
     /**
      * @param mixed $value example of what the expected data would be
      *
-     * @throws \Exception
+     * @throws Exception
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function like($value): array
+    public function like(mixed $value): array
     {
         if ($value === null) {
-            throw new \Exception('Value must not be null.');
+            throw new Exception('Value must not be null.');
         }
 
         return [
@@ -59,9 +61,9 @@ class Matcher
      * @param mixed $value example of what the expected data would be
      * @param int   $min   minimum number of objects to verify against
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function eachLike($value, int $min = 1): array
+    public function eachLike(mixed $value, int $min = 1): array
     {
         return [
             'value' => array_fill(0, $min, $value),
@@ -76,18 +78,18 @@ class Matcher
      * @param mixed  $value   example of what the expected data would be
      * @param string $pattern valid Ruby regex pattern
      *
-     * @throws \Exception
+     * @return array<string, mixed>
      *
-     * @return array
+     * @throws Exception
      */
-    public function term($value, string $pattern): array
+    public function term(mixed $value, string $pattern): array
     {
-        $result = \preg_match("/$pattern/", $value);
+        $result = preg_match("/$pattern/", $value);
 
         if ($result === false || $result === 0) {
-            $errorCode = \preg_last_error();
+            $errorCode = preg_last_error();
 
-            throw new \Exception("The pattern {$pattern} is not valid for value {$value}. Failed with error code {$errorCode}.");
+            throw new Exception("The pattern {$pattern} is not valid for value {$value}. Failed with error code {$errorCode}.");
         }
 
         return [
@@ -100,14 +102,11 @@ class Matcher
     /**
      * Alias for the term matcher.
      *
-     * @param mixed  $value
-     * @param string $pattern
+     * @return array<string, mixed>
      *
-     * @throws \Exception
-     *
-     * @return array
+     * @throws Exception
      */
-    public function regex($value, string $pattern): array
+    public function regex(mixed $value, string $pattern): array
     {
         return $this->term($value, $pattern);
     }
@@ -117,9 +116,9 @@ class Matcher
      *
      * @param string $value valid ISO8601 date, example: 2010-01-01
      *
-     * @throws \Exception
+     * @throws Exception
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function dateISO8601(string $value = '2013-02-01'): array
     {
@@ -131,9 +130,9 @@ class Matcher
      *
      * @param string $value
      *
-     * @throws \Exception
+     * @return array<string, mixed>
      *
-     * @return array
+     * @throws Exception
      */
     public function timeISO8601(string $value = 'T22:44:30.652Z'): array
     {
@@ -145,9 +144,9 @@ class Matcher
      *
      * @param string $value
      *
-     * @throws \Exception
+     * @return array<string, mixed>
      *
-     * @return array
+     * @throws Exception
      */
     public function dateTimeISO8601(string $value = '2015-08-06T16:53:10+01:00'): array
     {
@@ -159,9 +158,9 @@ class Matcher
      *
      * @param string $value
      *
-     * @throws \Exception
+     * @return array<string, mixed>
      *
-     * @return array
+     * @throws Exception
      */
     public function dateTimeWithMillisISO8601(string $value = '2015-08-06T16:53:10.123+01:00'): array
     {
@@ -173,9 +172,9 @@ class Matcher
      *
      * @param string $value
      *
-     * @throws \Exception
+     * @return array<string, mixed>
      *
-     * @return array
+     * @throws Exception
      */
     public function timestampRFC3339(string $value = 'Mon, 31 Oct 2016 15:21:41 -0400'): array
     {
@@ -183,9 +182,9 @@ class Matcher
     }
 
     /**
-     * @throws \Exception
+     * @return array<string, mixed>
      *
-     * @return array
+     * @throws Exception
      */
     public function boolean(): array
     {
@@ -193,11 +192,9 @@ class Matcher
     }
 
     /**
-     * @param int $int
+     * @return array<string, mixed>
      *
-     * @throws \Exception
-     *
-     * @return array
+     * @throws Exception
      */
     public function integer(int $int = 13): array
     {
@@ -205,11 +202,9 @@ class Matcher
     }
 
     /**
-     * @param float $float
+     * @return array<string, mixed>
      *
-     * @throws \Exception
-     *
-     * @return array
+     * @throws Exception
      */
     public function decimal(float $float = 13.01): array
     {
@@ -217,11 +212,9 @@ class Matcher
     }
 
     /**
-     * @param string $hex
+     * @return array<string, mixed>
      *
-     * @throws \Exception
-     *
-     * @return array
+     * @throws Exception
      */
     public function hexadecimal(string $hex = '3F'): array
     {
@@ -229,11 +222,9 @@ class Matcher
     }
 
     /**
-     * @param string $uuid
+     * @return array<string, mixed>
      *
-     * @throws \Exception
-     *
-     * @return array
+     * @throws Exception
      */
     public function uuid(string $uuid = 'ce118b6e-d8e1-11e7-9296-cec278b6b50a'): array
     {
@@ -241,11 +232,9 @@ class Matcher
     }
 
     /**
-     * @param string $ip
+     * @return array<string, mixed>
      *
-     * @throws \Exception
-     *
-     * @return array
+     * @throws Exception
      */
     public function ipv4Address(string $ip = '127.0.0.13'): array
     {
@@ -253,14 +242,22 @@ class Matcher
     }
 
     /**
-     * @param string $ip
+     * @return array<string, mixed>
      *
-     * @throws \Exception
-     *
-     * @return array
+     * @throws Exception
      */
     public function ipv6Address(string $ip = '::ffff:192.0.2.128'): array
     {
         return $this->term($ip, self::IPV6_FORMAT);
+    }
+
+    /**
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    public function email(string $email = 'hello@pact.io'): array
+    {
+        return $this->term($email, self::EMAIL_FORMAT);
     }
 }

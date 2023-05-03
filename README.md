@@ -22,7 +22,6 @@ Table of contents
     - [Create Mock Request](#create-mock-request)
     - [Create Mock Response](#create-mock-response)
     - [Build the Interaction](#build-the-interaction)
-    - [Start the Mock Server](#start-the-mock-server)
     - [Make the Request](#make-the-request)
     - [Verify Interactions](#verify-interactions)
     - [Make Assertions](#make-assertions)
@@ -160,6 +159,7 @@ hexadecimal | Regex to match a hexadecimal number. Example: 3F | Value (Defaults
 uuid | Regex to match a uuid. | Value (Defaults to ce118b6e-d8e1-11e7-9296-cec278b6b50a) | $matcher->uuid('ce118b6e-d8e1-11e7-9296-cec278b6b50a')
 ipv4Address | Regex to match a ipv4 address. | Value (Defaults to 127.0.0.13) | $matcher->ipv4Address('127.0.0.1')
 ipv6Address | Regex to match a ipv6 address. | Value (Defaults to ::ffff:192.0.2.128) | $matcher->ipv6Address('::ffff:192.0.2.1')
+email | Regex to match an address. | Value (hello@pact.io) | $matcher->email('hello@pact.io')
 
 ### Build the Interaction
 
