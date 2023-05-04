@@ -2,13 +2,11 @@
 
 namespace PhpPact\Consumer;
 
+use PhpPact\Consumer\Factory\InteractionRegistryFactory;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Consumer\Service\InteractionRegistry;
 use PhpPact\Consumer\Service\InteractionRegistryInterface;
-use PhpPact\Consumer\Service\MockServer;
-use PhpPact\Consumer\Service\PactRegistry;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 
 /**
@@ -19,9 +17,9 @@ class InteractionBuilder implements BuilderInterface
     private InteractionRegistryInterface $registry;
     private Interaction $interaction;
 
-    public function __construct(MockServerConfigInterface $config)
+    public function __construct(MockServerConfigInterface|InteractionRegistryInterface $registry)
     {
-        $this->registry    = $this->createRegistry($config);
+        $this->registry    = $registry instanceof InteractionRegistryInterface ? $registry : InteractionRegistryFactory::create($registry, $registry);
         $this->interaction = new Interaction();
     }
 
@@ -75,13 +73,5 @@ class InteractionBuilder implements BuilderInterface
     public function verify(): bool
     {
         return $this->registry->verifyInteractions();
-    }
-
-    protected function createRegistry(MockServerConfigInterface $config): InteractionRegistryInterface
-    {
-        $pactRegistry = new PactRegistry($config);
-        $mockServer = new MockServer($pactRegistry, $config);
-
-        return new InteractionRegistry($mockServer);
     }
 }

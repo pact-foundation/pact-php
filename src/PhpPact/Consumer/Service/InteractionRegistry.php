@@ -2,20 +2,16 @@
 
 namespace PhpPact\Consumer\Service;
 
+use PhpPact\Consumer\Driver\Interaction\DriverInterface;
+use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
 use PhpPact\Consumer\Model\Interaction;
-use PhpPact\Consumer\Service\Helper\BodyTrait;
-use PhpPact\Consumer\Service\Helper\DescriptionTrait;
-use PhpPact\Consumer\Service\Helper\ProviderStatesTrait;
 
 class InteractionRegistry implements InteractionRegistryInterface
 {
-    use ProviderStatesTrait;
-    use DescriptionTrait;
-    use BodyTrait;
-
-    public function __construct(private MockServerInterface $mockServer)
-    {
-        $this->createFFI();
+    public function __construct(
+        private InteractionDriverInterface $driver,
+        private MockServerInterface $mockServer
+    ) {
     }
 
     public function verifyInteractions(): bool
@@ -35,16 +31,14 @@ class InteractionRegistry implements InteractionRegistryInterface
 
     public function registerInteraction(Interaction $interaction): bool
     {
-        $pactId = $this->mockServer->init();
 
         $this
-            ->newInteraction($pactId, $interaction->getDescription())
+            ->newInteraction($interaction)
             ->given($interaction)
             ->uponReceiving($interaction)
             ->with($interaction)
-            ->willRespondWith($interaction);
-
-        $this->mockServer->start();
+            ->willRespondWith($interaction)
+            ->startMockServer();
 
         return true;
     }
@@ -59,23 +53,23 @@ class InteractionRegistry implements InteractionRegistryInterface
         $this->mockServer->writePact();
     }
 
-    private function newInteraction(int $pactId, string $description): self
+    private function newInteraction(Interaction $interaction): self
     {
-        $this->interactionId = $this->ffi->pactffi_new_interaction($pactId, $description);
+        $this->driver->newInteraction($interaction->getDescription());
 
         return $this;
     }
 
     private function given(Interaction $interaction): self
     {
-        $this->setProviderStates($interaction->getProviderStates());
+        $this->driver->setProviderStates($interaction->getProviderStates());
 
         return $this;
     }
 
     private function uponReceiving(Interaction $interaction): self
     {
-        $this->setDescription($interaction->getDescription());
+        $this->driver->setDescription($interaction->getDescription());
 
         return $this;
     }
@@ -83,10 +77,10 @@ class InteractionRegistry implements InteractionRegistryInterface
     private function with(Interaction $interaction): self
     {
         $request = $interaction->getRequest();
-        $this->ffi->pactffi_with_request($this->getId(), $request->getMethod(), $request->getPath());
-        $this->setHeaders($this->ffi->InteractionPart_Request, $request->getHeaders());
-        $this->setQuery($request->getQuery());
-        $this->setBody($this->ffi->InteractionPart_Request, null, $request->getBody());
+        $this->driver->setRequest($request->getMethod(), $request->getPath());
+        $this->driver->setHeaders(DriverInterface::REQUEST, $request->getHeaders());
+        $this->driver->setQuery($request->getQuery());
+        $this->driver->setBody(DriverInterface::REQUEST, null, $request->getBody());
 
         return $this;
     }
@@ -94,34 +88,15 @@ class InteractionRegistry implements InteractionRegistryInterface
     private function willRespondWith(Interaction $interaction): self
     {
         $response = $interaction->getResponse();
-        $this->ffi->pactffi_response_status($this->getId(), $response->getStatus());
-        $this->setHeaders($this->ffi->InteractionPart_Response, $response->getHeaders());
-        $this->setBody($this->ffi->InteractionPart_Response, null, $response->getBody());
+        $this->driver->setResponse($response->getStatus());
+        $this->driver->setHeaders(DriverInterface::RESPONSE, $response->getHeaders());
+        $this->driver->setBody(DriverInterface::RESPONSE, null, $response->getBody());
 
         return $this;
     }
 
-    /**
-     * @param array<string, string[]> $headers
-     */
-    private function setHeaders(int $part, array $headers): void
+    private function startMockServer(): void
     {
-        foreach ($headers as $header => $values) {
-            foreach (array_values($values) as $index => $value) {
-                $this->ffi->pactffi_with_header_v2($this->getId(), $part, (string) $header, (int) $index, (string) $value);
-            }
-        }
-    }
-
-    /**
-     * @param array<string, string[]> $query
-     */
-    private function setQuery(array $query): void
-    {
-        foreach ($query as $key => $values) {
-            foreach (array_values($values) as $index => $value) {
-                $this->ffi->pactffi_with_query_parameter_v2($this->getId(), (string) $key, (int) $index, (string) $value);
-            }
-        }
+        $this->mockServer->start();
     }
 }

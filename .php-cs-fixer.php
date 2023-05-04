@@ -7,7 +7,8 @@ $finder->files()
     ->name('*.php');
 
 $config = new PhpCsFixer\Config();
-$config->setRules(['@PSR12' => true,
+$config->setRules([
+        '@PSR12' => true,
         'strict_param' => false,
         'array_syntax' => ['syntax' => 'short'],
     ])
