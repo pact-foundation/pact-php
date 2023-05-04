@@ -42,7 +42,7 @@ Table of contents
   - [Usage for the optional `pact-stub-service`](#usage-for-the-optional-pact-stub-service)
 
 ## Versions
-9.X adds support for pact specification 3.X & 4.X via Pact FFI.   This results in dropping PHP 7.4
+9.X updates internal dependencies and libraries + adds support for pact specification 3.X & 4.X via Pact FFI.   This results in dropping PHP 7.4
 
 8.X updates internal dependencies and libraries.   This results in dropping PHP 7.3
 

@@ -21,8 +21,8 @@ class InteractionBuilder implements BuilderInterface
 
     public function __construct(MockServerConfigInterface $config)
     {
-        $this->interaction = new Interaction();
         $this->registry    = $this->createRegistry($config);
+        $this->interaction = new Interaction();
     }
 
     /**
