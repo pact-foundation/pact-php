@@ -4,9 +4,6 @@ namespace PhpPact\Consumer\Exception;
 
 use Exception;
 
-/**
- * Class PactFileNotWroteException.
- */
 class PactFileNotWroteException extends Exception
 {
     public function __construct(int $code)

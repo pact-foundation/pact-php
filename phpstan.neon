@@ -1,4 +1,9 @@
 parameters:
-    excludePaths:
-        - src/PhpPact/Consumer/Driver/AbstractDriver.php
-        - src/PhpPact/Consumer/Driver/InteractionDriver.php
+    level: 7
+    ignoreErrors:
+        -
+            messages:
+                - '#Call to an undefined method FFI::[a-zA-Z0-9\\_]+\(\)#'
+                - '#Access to an undefined property FFI::\$[a-zA-Z0-9\\_]+#'
+            paths:
+                - src/PhpPact/Consumer/Service/*

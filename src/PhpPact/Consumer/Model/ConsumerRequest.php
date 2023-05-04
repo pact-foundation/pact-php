@@ -2,6 +2,8 @@
 
 namespace PhpPact\Consumer\Model;
 
+use JsonException;
+
 /**
  * Request initiated by the consumer.
  */
@@ -42,6 +44,8 @@ class ConsumerRequest
 
     /**
      * @param string|array<string, mixed> $path
+     *
+     * @throws JsonException
      */
     public function setPath(string|array $path): self
     {
@@ -96,6 +100,9 @@ class ConsumerRequest
         return $this->body;
     }
 
+    /**
+     * @throws JsonException
+     */
     public function setBody(mixed $body): self
     {
         if (\is_string($body)) {

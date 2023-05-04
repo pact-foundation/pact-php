@@ -1,10 +1,10 @@
 <?php
 
-namespace PhpPact\Consumer\Driver;
+namespace PhpPact\Consumer\Service;
 
 use PhpPact\Consumer\Model\Interaction;
 
-interface InteractionDriverInterface extends DriverInterface
+interface InteractionRegistryInterface
 {
     public function verifyInteractions(): bool;
 

@@ -2,11 +2,13 @@
 
 namespace PhpPact\Consumer;
 
-use PhpPact\Consumer\Driver\InteractionDriver;
-use PhpPact\Consumer\Driver\InteractionDriverInterface;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
+use PhpPact\Consumer\Service\InteractionRegistry;
+use PhpPact\Consumer\Service\InteractionRegistryInterface;
+use PhpPact\Consumer\Service\MockServer;
+use PhpPact\Consumer\Service\PactRegistry;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 
 /**
@@ -14,13 +16,13 @@ use PhpPact\Standalone\MockService\MockServerConfigInterface;
  */
 class InteractionBuilder implements BuilderInterface
 {
-    protected InteractionDriverInterface $driver;
-    protected Interaction $interaction;
+    private InteractionRegistryInterface $registry;
+    private Interaction $interaction;
 
     public function __construct(MockServerConfigInterface $config)
     {
-        $this->interaction           = new Interaction();
-        $this->driver                = new InteractionDriver($config);
+        $this->interaction = new Interaction();
+        $this->registry    = $this->createRegistry($config);
     }
 
     /**
@@ -59,13 +61,12 @@ class InteractionBuilder implements BuilderInterface
      * @param ProviderResponse $response mock of response received
      *
      * @return bool returns true on success
-     * @throws \JsonException
      */
     public function willRespondWith(ProviderResponse $response): bool
     {
         $this->interaction->setResponse($response);
 
-        return $this->driver->registerInteraction($this->interaction);
+        return $this->registry->registerInteraction($this->interaction);
     }
 
     /**
@@ -73,6 +74,14 @@ class InteractionBuilder implements BuilderInterface
      */
     public function verify(): bool
     {
-        return $this->driver->verifyInteractions();
+        return $this->registry->verifyInteractions();
+    }
+
+    protected function createRegistry(MockServerConfigInterface $config): InteractionRegistryInterface
+    {
+        $pactRegistry = new PactRegistry($config);
+        $mockServer = new MockServer($pactRegistry, $config);
+
+        return new InteractionRegistry($mockServer);
     }
 }

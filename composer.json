@@ -71,7 +71,7 @@
     },
     "scripts": {
         "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
-        "static-code-analysis": "phpstan analyse src/ --level=7 -c phpstan.neon",
+        "static-code-analysis": "phpstan analyse src/",
         "lint": "php-cs-fixer fix --config .php-cs-fixer.php --dry-run",
         "fix": "php-cs-fixer fix --config .php-cs-fixer.php",
         "test": "phpunit --debug -c example/phpunit.all.xml"

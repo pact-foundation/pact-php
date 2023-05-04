@@ -2,6 +2,8 @@
 
 namespace PhpPact\Consumer\Model;
 
+use JsonException;
+
 /**
  * Response expectation that would be in response to a Consumer request from the Provider.
  */
@@ -74,6 +76,9 @@ class ProviderResponse
         return $this->body;
     }
 
+    /**
+     * @throws JsonException
+     */
     public function setBody(mixed $body): self
     {
         if (\is_string($body) || \is_null($body)) {
