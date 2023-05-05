@@ -61,14 +61,14 @@ class InteractionRegistry implements InteractionRegistryInterface
 
     private function given(Interaction $interaction): self
     {
-        $this->driver->setProviderStates($interaction->getProviderStates());
+        $this->driver->given($interaction->getProviderStates());
 
         return $this;
     }
 
     private function uponReceiving(Interaction $interaction): self
     {
-        $this->driver->setDescription($interaction->getDescription());
+        $this->driver->uponReceiving($interaction->getDescription());
 
         return $this;
     }
@@ -76,10 +76,10 @@ class InteractionRegistry implements InteractionRegistryInterface
     private function with(Interaction $interaction): self
     {
         $request = $interaction->getRequest();
-        $this->driver->setRequest($request->getMethod(), $request->getPath());
-        $this->driver->setHeaders(DriverInterface::REQUEST, $request->getHeaders());
-        $this->driver->setQuery($request->getQuery());
-        $this->driver->setBody(DriverInterface::REQUEST, null, $request->getBody());
+        $this->driver->withRequest($request->getMethod(), $request->getPath());
+        $this->driver->withHeaders(DriverInterface::REQUEST, $request->getHeaders());
+        $this->driver->withQueryParameters($request->getQuery());
+        $this->driver->withBody(DriverInterface::REQUEST, null, $request->getBody());
 
         return $this;
     }
@@ -87,9 +87,9 @@ class InteractionRegistry implements InteractionRegistryInterface
     private function willRespondWith(Interaction $interaction): self
     {
         $response = $interaction->getResponse();
-        $this->driver->setResponse($response->getStatus());
-        $this->driver->setHeaders(DriverInterface::RESPONSE, $response->getHeaders());
-        $this->driver->setBody(DriverInterface::RESPONSE, null, $response->getBody());
+        $this->driver->withResponse($response->getStatus());
+        $this->driver->withHeaders(DriverInterface::RESPONSE, $response->getHeaders());
+        $this->driver->withBody(DriverInterface::RESPONSE, null, $response->getBody());
 
         return $this;
     }

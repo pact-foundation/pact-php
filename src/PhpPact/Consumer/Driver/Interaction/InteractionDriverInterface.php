@@ -2,19 +2,30 @@
 
 namespace PhpPact\Consumer\Driver\Interaction;
 
+use PhpPact\Consumer\Model\ProviderState;
+
 interface InteractionDriverInterface extends DriverInterface
 {
+    public function uponReceiving(string $description): void;
+
+    public function withBody(string $part, ?string $contentType = null, ?string $body = null): void;
+
+    /**
+     * @param ProviderState[] $providerStates
+     */
+    public function given(array $providerStates): void;
+
     /**
      * @param array<string, string[]> $headers
      */
-    public function setHeaders(string $part, array $headers): void;
+    public function withHeaders(string $part, array $headers): void;
 
     /**
-     * @param array<string, string[]> $query
+     * @param array<string, string[]> $queryParams
      */
-    public function setQuery(array $query): void;
+    public function withQueryParameters(array $queryParams): void;
 
-    public function setRequest(string $method, string $path): void;
+    public function withRequest(string $method, string $path): void;
 
-    public function setResponse(int $status): void;
+    public function withResponse(int $status): void;
 }
