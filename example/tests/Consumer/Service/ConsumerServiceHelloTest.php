@@ -45,10 +45,10 @@ class ConsumerServiceHelloTest extends TestCase
             ->willRespondWith($response); // This has to be last. This is what makes FFI calls to register the interaction and start the mock server.
 
         $service = new HttpClientService($config->getBaseUri()); // Pass in the URL to the Mock Server.
-        $result  = $service->getHelloString('Bob'); // Make the real API request against the Mock Server.
+        $helloResult = $service->getHelloString('Bob'); // Make the real API request against the Mock Server.
+        $verifyResult = $builder->verify(); // This will verify that the interactions took place.
 
-        $this->assertTrue($builder->verify()); // This will verify that the interactions took place.
-
-        $this->assertEquals('Hello, Bob', $result); // Make your assertions.
+        $this->assertTrue($verifyResult); // Make your assertions.
+        $this->assertEquals('Hello, Bob', $helloResult);
     }
 }
