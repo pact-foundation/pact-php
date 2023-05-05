@@ -19,9 +19,6 @@ class Scripts
         return self::$destinationDir . '/bin/pact-ffi-headers/pact.h';
     }
 
-    /**
-     * @return string
-     */
     public static function getLibrary(): string
     {
         $extension = PHP_OS_FAMILY === 'Windows' ? 'dll' : (PHP_OS === 'Darwin' ? 'dylib' : 'so');
