@@ -105,13 +105,11 @@ class ConsumerRequest
      */
     public function setBody(mixed $body): self
     {
-        if (\is_string($body)) {
+        if (\is_string($body) || \is_null($body)) {
             $this->body = $body;
-        } elseif (!\is_null($body)) {
+        } else {
             $this->body = \json_encode($body, JSON_THROW_ON_ERROR);
             $this->addHeader('Content-Type', 'application/json');
-        } else {
-            $this->body = null;
         }
 
         return $this;
