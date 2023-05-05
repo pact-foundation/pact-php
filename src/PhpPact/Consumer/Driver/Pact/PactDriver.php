@@ -15,10 +15,7 @@ class PactDriver implements PactDriverInterface
         private FFIInterface $ffi,
         private PactConfigInterface $config
     ) {
-        $this
-            ->initWithLogLevel()
-            ->newPact()
-            ->withSpecification();
+        $this->setUp();
     }
 
     public function getId(): int
@@ -43,6 +40,14 @@ class PactDriver implements PactDriverInterface
         if ($error) {
             throw new PactFileNotWroteException($error);
         }
+    }
+
+    protected function setUp(): void
+    {
+        $this
+            ->initWithLogLevel()
+            ->newPact()
+            ->withSpecification();
     }
 
     protected function getSpecification(): int
