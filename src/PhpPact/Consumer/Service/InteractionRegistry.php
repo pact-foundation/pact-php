@@ -31,7 +31,6 @@ class InteractionRegistry implements InteractionRegistryInterface
 
     public function registerInteraction(Interaction $interaction): bool
     {
-
         $this
             ->newInteraction($interaction)
             ->given($interaction)

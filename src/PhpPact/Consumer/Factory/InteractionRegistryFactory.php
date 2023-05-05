@@ -13,14 +13,12 @@ use PhpPact\Consumer\Service\MockServer;
 
 class InteractionRegistryFactory
 {
-    public static function create(
-        PactConfigInterface $pactConfig,
-        MockServerConfigInterface $mockServerConfig
-    ): InteractionRegistryInterface {
+    public static function create(MockServerConfigInterface $config): InteractionRegistryInterface
+    {
         $ffi = new FFI();
-        $pactDriver = new PactDriver($ffi, $pactConfig);
+        $pactDriver = new PactDriver($ffi, $config);
         $interactionDriver = new InteractionDriver($ffi, $pactDriver);
-        $mockServer = new MockServer($ffi, $pactDriver, $mockServerConfig);
+        $mockServer = new MockServer($ffi, $pactDriver, $config);
 
         return new InteractionRegistry($interactionDriver, $mockServer);
     }

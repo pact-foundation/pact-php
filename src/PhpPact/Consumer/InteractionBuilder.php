@@ -19,7 +19,7 @@ class InteractionBuilder implements BuilderInterface
 
     public function __construct(MockServerConfigInterface|InteractionRegistryInterface $registry)
     {
-        $this->registry    = $registry instanceof InteractionRegistryInterface ? $registry : InteractionRegistryFactory::create($registry, $registry);
+        $this->registry    = $registry instanceof InteractionRegistryInterface ? $registry : InteractionRegistryFactory::create($registry);
         $this->interaction = new Interaction();
     }
 
