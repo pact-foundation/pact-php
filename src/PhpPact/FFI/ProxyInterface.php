@@ -1,8 +1,8 @@
 <?php
 
-namespace PhpPact\Consumer\Service;
+namespace PhpPact\FFI;
 
-interface FFIInterface
+interface ProxyInterface
 {
     /**
      * @param array<int, mixed> $arguments

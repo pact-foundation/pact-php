@@ -2,7 +2,6 @@
 
 namespace PhpPact\Consumer\Service;
 
-use PhpPact\Consumer\Driver\Interaction\DriverInterface;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
 use PhpPact\Consumer\Model\Interaction;
 
@@ -77,9 +76,9 @@ class InteractionRegistry implements InteractionRegistryInterface
     {
         $request = $interaction->getRequest();
         $this->driver->withRequest($request->getMethod(), $request->getPath());
-        $this->driver->withHeaders(DriverInterface::REQUEST, $request->getHeaders());
+        $this->driver->withHeaders(true, $request->getHeaders());
         $this->driver->withQueryParameters($request->getQuery());
-        $this->driver->withBody(DriverInterface::REQUEST, null, $request->getBody());
+        $this->driver->withBody(true, null, $request->getBody());
 
         return $this;
     }
@@ -88,8 +87,8 @@ class InteractionRegistry implements InteractionRegistryInterface
     {
         $response = $interaction->getResponse();
         $this->driver->withResponse($response->getStatus());
-        $this->driver->withHeaders(DriverInterface::RESPONSE, $response->getHeaders());
-        $this->driver->withBody(DriverInterface::RESPONSE, null, $response->getBody());
+        $this->driver->withHeaders(false, $response->getHeaders());
+        $this->driver->withBody(false, null, $response->getBody());
 
         return $this;
     }

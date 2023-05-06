@@ -8,7 +8,7 @@ interface InteractionDriverInterface extends DriverInterface
 {
     public function uponReceiving(string $description): void;
 
-    public function withBody(string $part, ?string $contentType = null, ?string $body = null): void;
+    public function withBody(bool $isRequest, ?string $contentType = null, ?string $body = null): void;
 
     /**
      * @param ProviderState[] $providerStates
@@ -18,7 +18,7 @@ interface InteractionDriverInterface extends DriverInterface
     /**
      * @param array<string, string[]> $headers
      */
-    public function withHeaders(string $part, array $headers): void;
+    public function withHeaders(bool $isRequest, array $headers): void;
 
     /**
      * @param array<string, string[]> $queryParams

@@ -1,14 +1,14 @@
 <?php
 
-namespace PhpPact\Consumer\Service;
+namespace PhpPact\FFI;
 
-use FFI as CoreFFI;
-use PhpPact\Consumer\Exception\HeaderNotReadException;
+use FFI;
+use PhpPact\FFI\Exception\HeaderNotReadException;
 use PhpPact\Standalone\Installer\Model\Scripts;
 
-class FFI implements FFIInterface
+class Proxy implements ProxyInterface
 {
-    private CoreFFI $ffi;
+    private FFI $ffi;
 
     public function __construct()
     {
@@ -16,12 +16,9 @@ class FFI implements FFIInterface
         if (!is_string($code)) {
             throw new HeaderNotReadException();
         }
-        $this->ffi = CoreFFI::cdef($code, Scripts::getLibrary());
+        $this->ffi = FFI::cdef($code, Scripts::getLibrary());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function call(string $name, ...$arguments): mixed
     {
         return $this->ffi->{$name}(...$arguments);
