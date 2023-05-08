@@ -14,4 +14,9 @@ abstract class AbstractDriver implements DriverInterface
         protected PactDriverInterface $pactDriver
     ) {
     }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
 }
