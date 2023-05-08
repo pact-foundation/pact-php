@@ -191,7 +191,8 @@ Verify that all interactions took place that were registered.
 This typically should be in each test, that way the test that failed to verify is marked correctly.
 
 ```php
-$this->assertTrue($builder->verify());
+$verifyResult = $builder->verify();
+$this->assertTrue($verifyResult);
 ```
 
 ### Make Assertions

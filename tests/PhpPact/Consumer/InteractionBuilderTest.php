@@ -42,7 +42,9 @@ class InteractionBuilderTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        $this->assertFalse($builder->verify());
+        $verifyResult = $builder->verify();
+
+        $this->assertFalse($verifyResult);
     }
 
     /**
@@ -80,7 +82,9 @@ class InteractionBuilderTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        $this->assertFalse($builder->verify());
+        $verifyResult = $builder->verify();
+
+        $this->assertFalse($verifyResult);
     }
 
     /**
@@ -114,6 +118,8 @@ class InteractionBuilderTest extends TestCase
             ->with($request)
             ->willRespondWith($response);
 
-        $this->assertFalse($builder->verify());
+        $verifyResult = $builder->verify();
+
+        $this->assertFalse($verifyResult);
     }
 }
