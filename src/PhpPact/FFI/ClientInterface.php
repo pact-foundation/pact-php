@@ -2,7 +2,7 @@
 
 namespace PhpPact\FFI;
 
-interface ProxyInterface
+interface ClientInterface
 {
     /**
      * @param array<int, mixed> $arguments

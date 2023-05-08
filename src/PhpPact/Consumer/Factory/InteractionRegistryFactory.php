@@ -6,7 +6,7 @@ use PhpPact\Consumer\Driver\Interaction\InteractionDriver;
 use PhpPact\Consumer\Driver\Pact\PactDriver;
 use PhpPact\Consumer\Service\InteractionRegistry;
 use PhpPact\Consumer\Service\InteractionRegistryInterface;
-use PhpPact\FFI\Proxy;
+use PhpPact\FFI\Client;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPact\Consumer\Service\MockServer;
 
@@ -14,10 +14,10 @@ class InteractionRegistryFactory
 {
     public static function create(MockServerConfigInterface $config): InteractionRegistryInterface
     {
-        $proxy = new Proxy();
-        $pactDriver = new PactDriver($proxy, $config);
-        $interactionDriver = new InteractionDriver($proxy, $pactDriver);
-        $mockServer = new MockServer($proxy, $pactDriver, $config);
+        $client = new Client();
+        $pactDriver = new PactDriver($client, $config);
+        $interactionDriver = new InteractionDriver($client, $pactDriver);
+        $mockServer = new MockServer($client, $pactDriver, $config);
 
         return new InteractionRegistry($interactionDriver, $mockServer);
     }

@@ -6,7 +6,7 @@ use FFI;
 use PhpPact\FFI\Exception\HeaderNotReadException;
 use PhpPact\Standalone\Installer\Model\Scripts;
 
-class Proxy implements ProxyInterface
+class Client implements ClientInterface
 {
     private FFI $ffi;
 

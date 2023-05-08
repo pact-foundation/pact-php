@@ -5,14 +5,14 @@ namespace PhpPact\Consumer\Driver\Pact;
 use Composer\Semver\Comparator;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Exception\PactFileNotWroteException;
-use PhpPact\FFI\ProxyInterface;
+use PhpPact\FFI\ClientInterface;
 
 class PactDriver implements PactDriverInterface
 {
     protected int $id;
 
     public function __construct(
-        private ProxyInterface $proxy,
+        private ClientInterface $client,
         private PactConfigInterface $config
     ) {
         $this->setUp();
@@ -25,13 +25,13 @@ class PactDriver implements PactDriverInterface
 
     public function cleanUp(): void
     {
-        $this->proxy->call('pactffi_free_pact_handle', $this->id);
+        $this->client->call('pactffi_free_pact_handle', $this->id);
         unset($this->id);
     }
 
     public function writePact(): void
     {
-        $error = $this->proxy->call(
+        $error = $this->client->call(
             'pactffi_pact_handle_write_file',
             $this->id,
             $this->config->getPactDir(),
@@ -53,15 +53,15 @@ class PactDriver implements PactDriverInterface
     protected function getSpecification(): int
     {
         return match (true) {
-            $this->versionEqualTo('1.0.0') => $this->proxy->get('PactSpecification_V1'),
-            $this->versionEqualTo('1.1.0') => $this->proxy->get('PactSpecification_V1_1'),
-            $this->versionEqualTo('2.0.0') => $this->proxy->get('PactSpecification_V2'),
-            $this->versionEqualTo('3.0.0') => $this->proxy->get('PactSpecification_V3'),
-            $this->versionEqualTo('4.0.0') => $this->proxy->get('PactSpecification_V4'),
+            $this->versionEqualTo('1.0.0') => $this->client->get('PactSpecification_V1'),
+            $this->versionEqualTo('1.1.0') => $this->client->get('PactSpecification_V1_1'),
+            $this->versionEqualTo('2.0.0') => $this->client->get('PactSpecification_V2'),
+            $this->versionEqualTo('3.0.0') => $this->client->get('PactSpecification_V3'),
+            $this->versionEqualTo('4.0.0') => $this->client->get('PactSpecification_V4'),
             default => function () {
                 trigger_error(sprintf("Specification version '%s' is unknown", $this->config->getPactSpecificationVersion()), E_USER_WARNING);
 
-                return $this->proxy->get('PactSpecification_Unknown');
+                return $this->client->get('PactSpecification_Unknown');
             },
         };
     }
@@ -75,7 +75,7 @@ class PactDriver implements PactDriverInterface
     {
         $logLevel = $this->config->getLogLevel();
         if ($logLevel) {
-            $this->proxy->call('pactffi_init_with_log_level', $logLevel);
+            $this->client->call('pactffi_init_with_log_level', $logLevel);
         }
 
         return $this;
@@ -83,14 +83,14 @@ class PactDriver implements PactDriverInterface
 
     private function newPact(): self
     {
-        $this->id = $this->proxy->call('pactffi_new_pact', $this->config->getConsumer(), $this->config->getProvider());
+        $this->id = $this->client->call('pactffi_new_pact', $this->config->getConsumer(), $this->config->getProvider());
 
         return $this;
     }
 
     private function withSpecification(): self
     {
-        $this->proxy->call('pactffi_with_specification', $this->id, $this->getSpecification());
+        $this->client->call('pactffi_with_specification', $this->id, $this->getSpecification());
 
         return $this;
     }
