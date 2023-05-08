@@ -2,6 +2,8 @@
 
 namespace PhpPact\Config;
 
+use InvalidArgumentException;
+
 /**
  * Mock Server configuration interface to allow for simple overrides that are reusable.
  */
@@ -67,6 +69,8 @@ interface PactConfigInterface
 
     /**
      * @param string $pactFileWriteMode 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
+     *
+     * @throws InvalidArgumentException If mode is incorrect.
      */
     public function setPactFileWriteMode(string $pactFileWriteMode): self;
 }
