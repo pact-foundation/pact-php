@@ -101,9 +101,11 @@ class ConsumerRequest
     }
 
     /**
+     * @param array<mixed>|string|null $body
+     *
      * @throws JsonException
      */
-    public function setBody(mixed $body): self
+    public function setBody(array|string|null $body): self
     {
         if (\is_string($body) || \is_null($body)) {
             $this->body = $body;
