@@ -2,10 +2,9 @@
 
 namespace PhpPact\Consumer\Driver\Interaction\Contents;
 
+use PhpPact\Consumer\Driver\Interaction\Part\ResponsePartTrait;
+
 class ResponseBodyDriver extends AbstractBodyDriver
 {
-    protected function getPart(): int
-    {
-        return $this->client->get('InteractionPart_Response');
-    }
+    use ResponsePartTrait;
 }

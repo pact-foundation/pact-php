@@ -9,6 +9,8 @@ use PhpPact\FFI\ClientInterface;
 
 class RequestDriver extends AbstractPartDriver implements RequestDriverInterface
 {
+    use RequestPartTrait;
+
     public function __construct(
         ClientInterface $client,
         InteractionDriverInterface $interactionDriver,
@@ -33,10 +35,5 @@ class RequestDriver extends AbstractPartDriver implements RequestDriverInterface
         $this->client->call('pactffi_with_request', $this->getInteractionId(), $method, $path);
 
         return $this;
-    }
-
-    protected function getPart(): int
-    {
-        return $this->client->get('InteractionPart_Request');
     }
 }

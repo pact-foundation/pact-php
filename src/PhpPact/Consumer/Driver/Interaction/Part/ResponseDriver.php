@@ -9,6 +9,8 @@ use PhpPact\FFI\ClientInterface;
 
 class ResponseDriver extends AbstractPartDriver implements ResponseDriverInterface
 {
+    use ResponsePartTrait;
+
     public function __construct(
         ClientInterface $client,
         InteractionDriverInterface $interactionDriver,
@@ -22,10 +24,5 @@ class ResponseDriver extends AbstractPartDriver implements ResponseDriverInterfa
         $this->client->call('pactffi_response_status', $this->getInteractionId(), $status);
 
         return $this;
-    }
-
-    protected function getPart(): int
-    {
-        return $this->client->get('InteractionPart_Response');
     }
 }
