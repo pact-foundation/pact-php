@@ -6,5 +6,5 @@ interface DriverInterface
 {
     public function getId(): int;
 
-    public function newInteraction(string $description): void;
+    public function newInteraction(string $description): static;
 }

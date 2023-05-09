@@ -7,7 +7,7 @@ interface RequestDriverInterface extends PartDriverInterface
     /**
      * @param array<string, string[]> $queryParams
      */
-    public function withQueryParameters(array $queryParams): void;
+    public function withQueryParameters(array $queryParams): self;
 
-    public function withRequest(string $method, string $path): void;
+    public function withRequest(string $method, string $path): self;
 }

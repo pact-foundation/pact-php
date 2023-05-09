@@ -2,36 +2,35 @@
 
 namespace PhpPact\Consumer\Driver\Interaction\Part;
 
+use PhpPact\Consumer\Driver\Interaction\Contents\ContentsDriverInterface;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
-use PhpPact\Consumer\Exception\InteractionBodyNotAddedException;
 use PhpPact\FFI\ClientInterface;
 
 abstract class AbstractPartDriver implements PartDriverInterface
 {
     public function __construct(
         protected ClientInterface $client,
-        protected InteractionDriverInterface $interactionDriver
+        protected InteractionDriverInterface $interactionDriver,
+        private ContentsDriverInterface $contentsDriver
     ) {
     }
 
-    public function withBody(?string $contentType = null, ?string $body = null): void
+    public function withBody(?string $contentType = null, ?string $body = null): self
     {
-        if (is_null($body)) {
-            return;
-        }
-        $success = $this->client->call('pactffi_with_body', $this->getInteractionId(), $this->getPart(), $contentType, $body);
-        if (!$success) {
-            throw new InteractionBodyNotAddedException();
-        }
+        $this->contentsDriver->withContents($contentType, $body);
+
+        return $this;
     }
 
-    public function withHeaders(array $headers): void
+    public function withHeaders(array $headers): self
     {
         foreach ($headers as $header => $values) {
             foreach (array_values($values) as $index => $value) {
                 $this->client->call('pactffi_with_header_v2', $this->getInteractionId(), $this->getPart(), (string) $header, (int) $index, (string) $value);
             }
         }
+
+        return $this;
     }
 
     protected function getInteractionId(): int

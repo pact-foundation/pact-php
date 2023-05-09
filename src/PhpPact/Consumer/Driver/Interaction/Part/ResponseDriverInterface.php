@@ -4,5 +4,5 @@ namespace PhpPact\Consumer\Driver\Interaction\Part;
 
 interface ResponseDriverInterface extends PartDriverInterface
 {
-    public function withResponse(int $status): void;
+    public function withResponse(int $status): self;
 }
