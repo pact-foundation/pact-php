@@ -12,8 +12,8 @@ class PactDriver implements PactDriverInterface
     protected int $id;
 
     public function __construct(
-        private ClientInterface $client,
-        private PactConfigInterface $config
+        protected ClientInterface $client,
+        protected PactConfigInterface $config
     ) {
         $this->setUp();
     }
