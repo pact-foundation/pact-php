@@ -35,12 +35,32 @@ class MockServer implements MockServerInterface
         $this->config->setPort($port);
     }
 
-    public function isMatched(): bool
+    public function verify(): bool
     {
-        return $this->client->call('pactffi_mock_server_matched', $this->config->getPort());
+        $matched = $this->client->call('pactffi_mock_server_matched', $this->config->getPort());
+
+        try {
+            if ($matched) {
+                $this->writePact();
+            }
+        } finally {
+            $this->cleanUp();
+        }
+
+        return $matched;
     }
 
-    public function writePact(): void
+    protected function getTransport(): string
+    {
+        return $this->config->isSecure() ? 'https' : 'http';
+    }
+
+    protected function getTransportConfig(): ?string
+    {
+        return null;
+    }
+
+    private function writePact(): void
     {
         $error = $this->client->call(
             'pactffi_write_pact_file',
@@ -53,19 +73,9 @@ class MockServer implements MockServerInterface
         }
     }
 
-    public function cleanUp(): void
+    private function cleanUp(): void
     {
         $this->client->call('pactffi_cleanup_mock_server', $this->config->getPort());
         $this->pactDriver->cleanUp();
-    }
-
-    protected function getTransport(): string
-    {
-        return $this->config->isSecure() ? 'https' : 'http';
-    }
-
-    protected function getTransportConfig(): ?string
-    {
-        return null;
     }
 }

@@ -15,17 +15,7 @@ class InteractionRegistry implements InteractionRegistryInterface
 
     public function verifyInteractions(): bool
     {
-        $matched = $this->mockServer->isMatched();
-
-        try {
-            if ($matched) {
-                $this->mockServer->writePact();
-            }
-        } finally {
-            $this->mockServer->cleanUp();
-        }
-
-        return $matched;
+        return $this->mockServer->verify();
     }
 
     public function registerInteraction(Interaction $interaction): bool
