@@ -19,4 +19,6 @@ abstract class AbstractDriver implements DriverInterface
     {
         return $this->id;
     }
+
+    abstract protected function newInteraction(string $description): self;
 }

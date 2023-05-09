@@ -20,13 +20,7 @@ class InteractionRegistry implements InteractionRegistryInterface
 
     public function registerInteraction(Interaction $interaction): bool
     {
-        $this->interactionDriver
-            ->newInteraction($interaction->getDescription())
-            ->given($interaction->getProviderStates())
-            ->uponReceiving($interaction->getDescription())
-            ->with($interaction->getRequest())
-            ->willRespondWith($interaction->getResponse());
-
+        $this->interactionDriver->registerInteraction($interaction);
         $this->mockServer->start();
 
         return true;

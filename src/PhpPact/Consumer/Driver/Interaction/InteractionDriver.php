@@ -8,7 +8,9 @@ use PhpPact\Consumer\Driver\Interaction\Part\ResponseDriver;
 use PhpPact\Consumer\Driver\Interaction\Part\ResponseDriverInterface;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Model\ConsumerRequest;
+use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
+use PhpPact\Consumer\Model\ProviderState;
 use PhpPact\FFI\ClientInterface;
 
 class InteractionDriver extends AbstractDriver implements InteractionDriverInterface
@@ -27,21 +29,34 @@ class InteractionDriver extends AbstractDriver implements InteractionDriverInter
         $this->responseDriver = $responseDriver ?? new ResponseDriver($client, $this);
     }
 
-    public function newInteraction(string $description): static
+    public function registerInteraction(Interaction $interaction): void
+    {
+        $this
+            ->newInteraction($interaction->getDescription())
+            ->given($interaction->getProviderStates())
+            ->uponReceiving($interaction->getDescription())
+            ->with($interaction->getRequest())
+            ->willRespondWith($interaction->getResponse());
+    }
+
+    protected function newInteraction(string $description): self
     {
         $this->id = $this->client->call('pactffi_new_interaction', $this->pactDriver->getId(), $description);
 
         return $this;
     }
 
-    public function uponReceiving(string $description): self
+    private function uponReceiving(string $description): self
     {
         $this->client->call('pactffi_upon_receiving', $this->id, $description);
 
         return $this;
     }
 
-    public function given(array $providerStates): self
+    /**
+     * @param ProviderState[] $providerStates
+     */
+    private function given(array $providerStates): self
     {
         foreach ($providerStates as $providerState) {
             $this->client->call('pactffi_given', $this->id, $providerState->getName());
@@ -53,7 +68,7 @@ class InteractionDriver extends AbstractDriver implements InteractionDriverInter
         return $this;
     }
 
-    public function with(ConsumerRequest $request): self
+    private function with(ConsumerRequest $request): self
     {
         $this->requestDriver
             ->withRequest($request->getMethod(), $request->getPath())
@@ -64,7 +79,7 @@ class InteractionDriver extends AbstractDriver implements InteractionDriverInter
         return $this;
     }
 
-    public function willRespondWith(ProviderResponse $response): self
+    private function willRespondWith(ProviderResponse $response): self
     {
         $this->responseDriver
             ->withResponse($response->getStatus())
