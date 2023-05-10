@@ -1,8 +1,8 @@
 <?php
 
-namespace PhpPact\Consumer\Driver\Interaction\Part;
+namespace PhpPact\Consumer\Registry\Interaction\Part;
 
-interface PartDriverInterface
+interface PartRegistryInterface
 {
     public function withBody(?string $contentType = null, ?string $body = null): self;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace PhpPact\Consumer\Driver\Interaction\Part;
+namespace PhpPact\Consumer\Registry\Interaction\Part;
 
-interface RequestDriverInterface extends PartDriverInterface
+interface RequestRegistryInterface extends PartRegistryInterface
 {
     /**
      * @param array<string, string[]> $queryParams

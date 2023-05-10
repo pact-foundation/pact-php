@@ -1,12 +1,10 @@
 <?php
 
-namespace PhpPact\Consumer\Service;
+namespace PhpPact\Consumer\Registry\Interaction;
 
 use PhpPact\Consumer\Model\Interaction;
 
-interface InteractionRegistryInterface
+interface InteractionRegistryInterface extends RegistryInterface
 {
-    public function verifyInteractions(): bool;
-
     public function registerInteraction(Interaction $interaction): bool;
 }

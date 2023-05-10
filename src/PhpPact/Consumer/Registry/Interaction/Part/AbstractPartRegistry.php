@@ -1,23 +1,23 @@
 <?php
 
-namespace PhpPact\Consumer\Driver\Interaction\Part;
+namespace PhpPact\Consumer\Registry\Interaction\Part;
 
-use PhpPact\Consumer\Driver\Interaction\Contents\ContentsDriverInterface;
-use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
+use PhpPact\Consumer\Registry\Interaction\Contents\ContentsRegistryInterface;
+use PhpPact\Consumer\Registry\Interaction\InteractionRegistryInterface;
 use PhpPact\FFI\ClientInterface;
 
-abstract class AbstractPartDriver implements PartDriverInterface
+abstract class AbstractPartRegistry implements PartRegistryInterface
 {
     public function __construct(
         protected ClientInterface $client,
-        protected InteractionDriverInterface $interactionDriver,
-        private ContentsDriverInterface $contentsDriver
+        protected InteractionRegistryInterface $interactionRegistry,
+        private ContentsRegistryInterface $contentsRegistry
     ) {
     }
 
     public function withBody(?string $contentType = null, ?string $body = null): self
     {
-        $this->contentsDriver->withContents($contentType, $body);
+        $this->contentsRegistry->withContents($contentType, $body);
 
         return $this;
     }
@@ -35,7 +35,7 @@ abstract class AbstractPartDriver implements PartDriverInterface
 
     protected function getInteractionId(): int
     {
-        return $this->interactionDriver->getId();
+        return $this->interactionRegistry->getId();
     }
 
     abstract protected function getPart(): int;

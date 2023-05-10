@@ -1,22 +1,22 @@
 <?php
 
-namespace PhpPact\Consumer\Driver\Interaction\Part;
+namespace PhpPact\Consumer\Registry\Interaction\Part;
 
-use PhpPact\Consumer\Driver\Interaction\Contents\ContentsDriverInterface;
-use PhpPact\Consumer\Driver\Interaction\Contents\RequestBodyDriver;
-use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
+use PhpPact\Consumer\Registry\Interaction\Contents\ContentsRegistryInterface;
+use PhpPact\Consumer\Registry\Interaction\Contents\RequestBodyRegistry;
+use PhpPact\Consumer\Registry\Interaction\InteractionRegistryInterface;
 use PhpPact\FFI\ClientInterface;
 
-class RequestDriver extends AbstractPartDriver implements RequestDriverInterface
+class RequestRegistry extends AbstractPartRegistry implements RequestRegistryInterface
 {
     use RequestPartTrait;
 
     public function __construct(
         ClientInterface $client,
-        InteractionDriverInterface $interactionDriver,
-        ?ContentsDriverInterface $requestBodyDriver = null
+        InteractionRegistryInterface $interactionRegistry,
+        ?ContentsRegistryInterface $requestBodyRegistry = null
     ) {
-        parent::__construct($client, $interactionDriver, $requestBodyDriver ?? new RequestBodyDriver($client, $interactionDriver));
+        parent::__construct($client, $interactionRegistry, $requestBodyRegistry ?? new RequestBodyRegistry($client, $interactionRegistry));
     }
 
     public function withQueryParameters(array $queryParams): self

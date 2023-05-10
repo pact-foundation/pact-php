@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Consumer\Driver\Interaction\Part;
+namespace PhpPact\Consumer\Registry\Interaction\Part;
 
 trait ResponsePartTrait
 {

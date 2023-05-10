@@ -3,9 +3,9 @@
 namespace PhpPact\Consumer\Service;
 
 use PhpPact\Config\PactConfigInterface;
-use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Exception\MockServerNotStartedException;
 use PhpPact\Consumer\Exception\MockServerNotWrotePactFileException;
+use PhpPact\Consumer\Registry\Pact\PactRegistryInterface;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 
@@ -13,7 +13,7 @@ class MockServer implements MockServerInterface
 {
     public function __construct(
         private ClientInterface $client,
-        private PactDriverInterface $pactDriver,
+        private PactRegistryInterface $pactRegistry,
         private MockServerConfigInterface $config
     ) {
     }
@@ -22,7 +22,7 @@ class MockServer implements MockServerInterface
     {
         $port = $this->client->call(
             'pactffi_create_mock_server_for_transport',
-            $this->pactDriver->getId(),
+            $this->pactRegistry->getId(),
             $this->config->getHost(),
             $this->config->getPort(),
             $this->getTransport(),
@@ -76,6 +76,6 @@ class MockServer implements MockServerInterface
     private function cleanUp(): void
     {
         $this->client->call('pactffi_cleanup_mock_server', $this->config->getPort());
-        $this->pactDriver->cleanUp();
+        $this->pactRegistry->deletePact();
     }
 }

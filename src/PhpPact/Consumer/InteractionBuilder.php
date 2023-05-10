@@ -2,11 +2,11 @@
 
 namespace PhpPact\Consumer;
 
-use PhpPact\Consumer\Factory\InteractionRegistryFactory;
+use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
+use PhpPact\Consumer\Factory\InteractionDriverFactory;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Consumer\Service\InteractionRegistryInterface;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 
 /**
@@ -14,12 +14,12 @@ use PhpPact\Standalone\MockService\MockServerConfigInterface;
  */
 class InteractionBuilder implements BuilderInterface
 {
-    private InteractionRegistryInterface $registry;
+    private InteractionDriverInterface $driver;
     private Interaction $interaction;
 
-    public function __construct(MockServerConfigInterface|InteractionRegistryInterface $registry)
+    public function __construct(MockServerConfigInterface|InteractionDriverInterface $driver)
     {
-        $this->registry    = $registry instanceof InteractionRegistryInterface ? $registry : InteractionRegistryFactory::create($registry);
+        $this->driver      = $driver instanceof InteractionDriverInterface ? $driver : InteractionDriverFactory::create($driver);
         $this->interaction = new Interaction();
     }
 
@@ -64,7 +64,7 @@ class InteractionBuilder implements BuilderInterface
     {
         $this->interaction->setResponse($response);
 
-        return $this->registry->registerInteraction($this->interaction);
+        return $this->driver->registerInteraction($this->interaction);
     }
 
     /**
@@ -72,6 +72,6 @@ class InteractionBuilder implements BuilderInterface
      */
     public function verify(): bool
     {
-        return $this->registry->verifyInteractions();
+        return $this->driver->verifyInteractions();
     }
 }

@@ -1,16 +1,16 @@
 <?php
 
-namespace PhpPact\Consumer\Driver\Interaction\Contents;
+namespace PhpPact\Consumer\Registry\Interaction\Contents;
 
-use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
 use PhpPact\Consumer\Exception\InteractionBodyNotAddedException;
+use PhpPact\Consumer\Registry\Interaction\InteractionRegistryInterface;
 use PhpPact\FFI\ClientInterface;
 
-abstract class AbstractBodyDriver implements ContentsDriverInterface
+abstract class AbstractBodyRegistry implements ContentsRegistryInterface
 {
     public function __construct(
         protected ClientInterface $client,
-        protected InteractionDriverInterface $interactionDriver
+        protected InteractionRegistryInterface $interactionRegistry
     ) {
     }
 
@@ -19,7 +19,7 @@ abstract class AbstractBodyDriver implements ContentsDriverInterface
         if (is_null($body)) {
             return;
         }
-        $success = $this->client->call('pactffi_with_body', $this->interactionDriver->getId(), $this->getPart(), $contentType, $body);
+        $success = $this->client->call('pactffi_with_body', $this->interactionRegistry->getId(), $this->getPart(), $contentType, $body);
         if (!$success) {
             throw new InteractionBodyNotAddedException();
         }

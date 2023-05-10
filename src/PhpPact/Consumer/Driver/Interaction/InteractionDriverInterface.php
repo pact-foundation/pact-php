@@ -4,7 +4,9 @@ namespace PhpPact\Consumer\Driver\Interaction;
 
 use PhpPact\Consumer\Model\Interaction;
 
-interface InteractionDriverInterface extends DriverInterface
+interface InteractionDriverInterface
 {
-    public function registerInteraction(Interaction $interaction): void;
+    public function registerInteraction(Interaction $interaction): bool;
+
+    public function verifyInteractions(): bool;
 }

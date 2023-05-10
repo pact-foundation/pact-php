@@ -1,17 +1,17 @@
 <?php
 
-namespace PhpPact\Consumer\Driver\Interaction;
+namespace PhpPact\Consumer\Registry\Interaction;
 
-use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
+use PhpPact\Consumer\Registry\Pact\PactRegistryInterface;
 use PhpPact\FFI\ClientInterface;
 
-abstract class AbstractDriver implements DriverInterface
+abstract class AbstractRegistry implements RegistryInterface
 {
     protected int $id;
 
     public function __construct(
         protected ClientInterface $client,
-        protected PactDriverInterface $pactDriver
+        protected PactRegistryInterface $pactRegistry
     ) {
     }
 

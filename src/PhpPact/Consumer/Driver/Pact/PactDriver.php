@@ -5,35 +5,28 @@ namespace PhpPact\Consumer\Driver\Pact;
 use Composer\Semver\Comparator;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Exception\PactFileNotWroteException;
+use PhpPact\Consumer\Registry\Pact\PactRegistryInterface;
 use PhpPact\FFI\ClientInterface;
 
 class PactDriver implements PactDriverInterface
 {
-    protected int $id;
-
     public function __construct(
         protected ClientInterface $client,
-        protected PactConfigInterface $config
+        protected PactConfigInterface $config,
+        protected PactRegistryInterface $pactRegistry
     ) {
-        $this->setUp();
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
     }
 
     public function cleanUp(): void
     {
-        $this->client->call('pactffi_free_pact_handle', $this->id);
-        unset($this->id);
+        $this->pactRegistry->deletePact();
     }
 
     public function writePact(): void
     {
         $error = $this->client->call(
             'pactffi_pact_handle_write_file',
-            $this->id,
+            $this->pactRegistry->getId(),
             $this->config->getPactDir(),
             $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
         );
@@ -42,12 +35,11 @@ class PactDriver implements PactDriverInterface
         }
     }
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         $this
             ->initWithLogLevel()
-            ->newPact()
-            ->withSpecification();
+            ->registerPact();
     }
 
     protected function getSpecification(): int
@@ -81,16 +73,13 @@ class PactDriver implements PactDriverInterface
         return $this;
     }
 
-    private function newPact(): self
+    private function registerPact(): self
     {
-        $this->id = $this->client->call('pactffi_new_pact', $this->config->getConsumer(), $this->config->getProvider());
-
-        return $this;
-    }
-
-    private function withSpecification(): self
-    {
-        $this->client->call('pactffi_with_specification', $this->id, $this->getSpecification());
+        $this->pactRegistry->registerPact(
+            $this->config->getConsumer(),
+            $this->config->getProvider(),
+            $this->getSpecification()
+        );
 
         return $this;
     }
