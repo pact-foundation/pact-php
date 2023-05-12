@@ -3,8 +3,8 @@
 namespace PhpPact\Consumer;
 
 use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
-use PhpPact\Consumer\Factory\Builder\InteractionDriverFactory;
-use PhpPact\Consumer\Factory\Builder\InteractionDriverFactoryInterface;
+use PhpPact\Consumer\Factory\InteractionDriverFactory;
+use PhpPact\Consumer\Factory\InteractionDriverFactoryInterface;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;

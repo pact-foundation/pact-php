@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Consumer\Factory\Builder;
+namespace PhpPact\Consumer\Factory;
 
 use PhpPact\Consumer\Driver\Interaction\InteractionDriver;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
