@@ -14,8 +14,14 @@ class MockServerEnvConfig extends MockServerConfig
      */
     public function __construct()
     {
-        $this->setHost($this->parseEnv('PACT_MOCK_SERVER_HOST'));
-        $this->setPort((int) $this->parseEnv('PACT_MOCK_SERVER_PORT'));
+        if ($host = $this->parseEnv('PACT_MOCK_SERVER_HOST', false)) {
+            $this->setHost($host);
+        }
+
+        if ($port = $this->parseEnv('PACT_MOCK_SERVER_PORT', false)) {
+            $this->setPort((int) $port);
+        }
+
         $this->setConsumer($this->parseEnv('PACT_CONSUMER_NAME'));
         $this->setProvider($this->parseEnv('PACT_PROVIDER_NAME'));
         $this->setPactDir($this->parseEnv('PACT_OUTPUT_DIR', false));

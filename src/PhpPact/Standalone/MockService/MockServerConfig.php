@@ -19,7 +19,7 @@ class MockServerConfig extends PactConfig implements MockServerConfigInterface
     /**
      * Port on which to run the service. A value of zero will result in the operating system allocating an available port.
      */
-    private int $port = 7200;
+    private int $port = 0;
 
     /**
      * @var bool
