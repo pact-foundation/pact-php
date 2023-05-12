@@ -29,4 +29,24 @@ class StubServerTest extends TestCase
             $this->assertTrue($result);
         }
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function testRandomPort(): void
+    {
+        try {
+            $files = [__DIR__ . '/../../../_resources/someconsumer-someprovider.json'];
+
+            $subject = (new StubServerConfig())
+                ->setFiles($files);
+
+            $stubServer = new StubServer($subject);
+            $stubServer->start();
+            $this->assertGreaterThan(0, $subject->getPort());
+        } finally {
+            $result = $stubServer->stop();
+            $this->assertTrue($result);
+        }
+    }
 }

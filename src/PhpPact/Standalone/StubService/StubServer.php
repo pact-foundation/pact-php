@@ -4,6 +4,7 @@ namespace PhpPact\Standalone\StubService;
 
 use Exception;
 use PhpPact\Standalone\Installer\Model\Scripts;
+use PhpPact\Standalone\StubService\Exception\LogLevelNotSupportedException;
 use Symfony\Component\Process\Process;
 
 /**
@@ -34,9 +35,22 @@ class StubServer
         $this->process->start(function (string $type, string $buffer) {
             echo $buffer;
         });
-        $this->process->waitUntil(function (string $type, string $output) {
-            return false !== \strpos($output, 'Server started on port');
-        });
+
+        $logLevel = $this->config->getLogLevel();
+        if (is_null($logLevel) || in_array($logLevel, ['info', 'debug', 'trace'])) {
+            $this->process->waitUntil(function (string $type, string $output) {
+                $result = preg_match('/Server started on port (\d+)/', $output, $matches);
+                if ($result === 1 && $this->config->getPort() === 0) {
+                    $this->config->setPort((int)$matches[1]);
+                }
+
+                return $result;
+            });
+        } else {
+            if ($this->config->getPort() === 0) {
+                throw new LogLevelNotSupportedException(sprintf("Setting random port for stub server required log level 'info', 'debug' or 'trace'. '%s' given.", $logLevel));
+            }
+        }
 
         return $this->process->getPid();
     }
