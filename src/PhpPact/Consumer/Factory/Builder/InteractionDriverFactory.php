@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Consumer\Factory;
+namespace PhpPact\Consumer\Factory\Builder;
 
 use PhpPact\Consumer\Driver\Interaction\InteractionDriver;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
@@ -11,9 +11,9 @@ use PhpPact\FFI\Client;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPact\Consumer\Service\MockServer;
 
-class InteractionDriverFactory
+class InteractionDriverFactory implements InteractionDriverFactoryInterface
 {
-    public static function create(MockServerConfigInterface $config): InteractionDriverInterface
+    public function create(MockServerConfigInterface $config): InteractionDriverInterface
     {
         $client = new Client();
         $pactRegistry = new PactRegistry($client);

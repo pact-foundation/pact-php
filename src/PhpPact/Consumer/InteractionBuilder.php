@@ -3,7 +3,8 @@
 namespace PhpPact\Consumer;
 
 use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
-use PhpPact\Consumer\Factory\InteractionDriverFactory;
+use PhpPact\Consumer\Factory\Builder\InteractionDriverFactory;
+use PhpPact\Consumer\Factory\Builder\InteractionDriverFactoryInterface;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
@@ -17,9 +18,9 @@ class InteractionBuilder implements BuilderInterface
     private InteractionDriverInterface $driver;
     private Interaction $interaction;
 
-    public function __construct(MockServerConfigInterface|InteractionDriverInterface $driver)
+    public function __construct(MockServerConfigInterface $config, ?InteractionDriverFactoryInterface $driverFactory = null)
     {
-        $this->driver      = $driver instanceof InteractionDriverInterface ? $driver : InteractionDriverFactory::create($driver);
+        $this->driver      = ($driverFactory ?? new InteractionDriverFactory())->create($config);
         $this->interaction = new Interaction();
     }
 
