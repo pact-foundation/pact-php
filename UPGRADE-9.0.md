@@ -63,3 +63,10 @@ UPGRADE FROM 8.x to 9.0
    ```shell
    pact-broker publish /path/to/pacts/*.json --consumer-app-version 1.0.0 --branch main --broker-base-url https://test.pactflow.io --broker-token SomeToken
    ```
+
+* Stub Server
+  * Endpoint now can be set by:
+  ```php
+  $service = new StubServerHttpService(new GuzzleClient(), $this->config);
+  $service->getJson($endpoint);
+  ```

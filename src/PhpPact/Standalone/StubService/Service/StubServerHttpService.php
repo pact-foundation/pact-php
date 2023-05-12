@@ -26,9 +26,9 @@ class StubServerHttpService implements StubServerHttpServiceInterface
      * {@inheritdoc}
      * @throws \JsonException
      */
-    public function getJson(): string
+    public function getJson(string $endpoint): string
     {
-        $uri      = $this->config->getBaseUri()->withPath('/' . $this->config->getEndpoint());
+        $uri      = $this->config->getBaseUri()->withPath('/' . $endpoint);
         $response = $this->client->get($uri, [
             'headers' => [
                 'Content-Type' => 'application/json',

@@ -28,14 +28,12 @@ class StubServerHttpServiceTest extends TestCase
      */
     protected function setUp(): void
     {
-        $files    = [__DIR__ . '/../../../../_resources/someconsumer-someprovider.json'];
-        $port     = 7201;
-        $endpoint = 'test';
+        $files = [__DIR__ . '/../../../../_resources/someconsumer-someprovider.json'];
+        $port  = 7201;
 
         $this->config = (new StubServerConfig())
             ->setFiles($files)
-            ->setPort($port)
-            ->setEndpoint($endpoint);
+            ->setPort($port);
 
         $this->stubServer = new StubServer($this->config);
         $this->stubServer->start();
@@ -49,7 +47,8 @@ class StubServerHttpServiceTest extends TestCase
 
     public function testGetJson()
     {
-        $result = $this->service->getJson();
+        $endpoint = 'test';
+        $result = $this->service->getJson($endpoint);
         $this->assertEquals('{"results":[{"name":"Games"}]}', $result);
     }
 }
