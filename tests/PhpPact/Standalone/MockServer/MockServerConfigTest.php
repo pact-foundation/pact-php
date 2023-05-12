@@ -17,6 +17,8 @@ class MockServerConfigTest extends TestCase
         $pactFileWriteMode        = 'merge';
         $log                      = 'test-log-dir/';
         $cors                     = true;
+        $healthCheckTimeout       = 11;
+        $healthCheckRetrySec      = 22;
         $pactSpecificationVersion = '2.0';
 
         $subject = (new MockServerConfig())
@@ -28,7 +30,9 @@ class MockServerConfigTest extends TestCase
             ->setPactFileWriteMode($pactFileWriteMode)
             ->setLog($log)
             ->setPactSpecificationVersion($pactSpecificationVersion)
-            ->setCors($cors);
+            ->setCors($cors)
+            ->setHealthCheckTimeout($healthCheckTimeout)
+            ->setHealthCheckRetrySec($healthCheckRetrySec);
 
         static::assertSame($host, $subject->getHost());
         static::assertSame($port, $subject->getPort());
@@ -39,5 +43,7 @@ class MockServerConfigTest extends TestCase
         static::assertSame($log, $subject->getLog());
         static::assertSame($pactSpecificationVersion, $subject->getPactSpecificationVersion());
         static::assertSame($cors, $subject->hasCors());
+        static::assertSame($healthCheckTimeout, $subject->getHealthCheckTimeout());
+        static::assertSame($healthCheckRetrySec, $subject->getHealthCheckRetrySec());
     }
 }

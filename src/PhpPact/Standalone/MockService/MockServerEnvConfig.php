@@ -9,8 +9,6 @@ use PhpPact\Standalone\Exception\MissingEnvVariableException;
  */
 class MockServerEnvConfig extends MockServerConfig
 {
-    public const DEFAULT_SPECIFICATION_VERSION = '2.0.0';
-
     /**
      * @throws MissingEnvVariableException
      */
