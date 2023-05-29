@@ -30,7 +30,7 @@ class StubServer
      */
     public function start(): ?int
     {
-        $this->process = new Process([Scripts::getStubService(), ...$this->getArguments()]);
+        $this->process = new Process([Scripts::getStubService(), ...$this->getArguments()], null, ['PACT_BROKER_BASE_URL' => false]);
 
         $this->process->start(function (string $type, string $buffer) {
             echo $buffer;
