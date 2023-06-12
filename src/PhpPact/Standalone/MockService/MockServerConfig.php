@@ -62,12 +62,12 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * The max allowed attempts the mock server has to be available in. Otherwise it is considered as sick.
      */
-    private int $healthCheckTimeout;
+    private int $healthCheckTimeout = 10;
 
     /**
      * The seconds between health checks of mock server
      */
-    private int $healthCheckRetrySec;
+    private int $healthCheckRetrySec = 1;
 
     private ?string $logLevel = null;
 
@@ -118,7 +118,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setSecure(bool $secure): MockServerConfigInterface
+    public function setSecure(bool $secure): self
     {
         $this->secure = $secure;
 
@@ -274,7 +274,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         return $this->logLevel;
     }
 
-    public function setLogLevel(string $logLevel): PactConfigInterface
+    public function setLogLevel(string $logLevel): self
     {
         $logLevel = \strtoupper($logLevel);
         if (!\in_array($logLevel, ['DEBUG', 'INFO', 'WARN', 'ERROR'])) {
@@ -303,7 +303,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         return $this;
     }
 
-    public function setHealthCheckTimeout(int $timeout): MockServerConfigInterface
+    public function setHealthCheckTimeout(int $timeout): self
     {
         $this->healthCheckTimeout = $timeout;
 
@@ -315,7 +315,7 @@ class MockServerConfig implements MockServerConfigInterface, PactConfigInterface
         return $this->healthCheckTimeout;
     }
 
-    public function setHealthCheckRetrySec(int $seconds): MockServerConfigInterface
+    public function setHealthCheckRetrySec(int $seconds): self
     {
         $this->healthCheckRetrySec = $seconds;
 
