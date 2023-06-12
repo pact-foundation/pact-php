@@ -20,7 +20,7 @@ class MockServerConfigTest extends TestCase
         $cors                     = true;
         $pactSpecificationVersion = '2.0';
         $healthCheckTimeout       = 20;
-        $healthCheckRetrySec      = 2;
+        $healthCheckRetrySec      = 2.0;
         $secure                   = false;
 
         $subject = (new MockServerConfig())
