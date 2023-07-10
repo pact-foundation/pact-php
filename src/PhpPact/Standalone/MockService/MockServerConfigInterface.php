@@ -41,16 +41,6 @@ interface MockServerConfigInterface
 
     public function getBaseUri(): UriInterface;
 
-    /**
-     * @return string 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
-     */
-    public function getPactFileWriteMode(): string;
-
-    /**
-     * @param string $pactFileWriteMode 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
-     */
-    public function setPactFileWriteMode(string $pactFileWriteMode): self;
-
     public function hasCors(): bool;
 
     public function setCors(mixed $flag): self;

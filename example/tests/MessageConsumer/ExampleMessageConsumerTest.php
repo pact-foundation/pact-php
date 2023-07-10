@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../src/MessageConsumer/ExampleMessageConsumer.php';
 
 use Exception;
 use PhpPact\Consumer\MessageBuilder;
-use PhpPact\Standalone\PactConfigInterface;
+use PhpPact\Config\PactConfigInterface;
 use PhpPact\Standalone\PactMessage\PactMessageConfig;
 use PHPUnit\Framework\TestCase;
 use stdClass;

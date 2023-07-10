@@ -3,7 +3,7 @@
 namespace PhpPact\Consumer;
 
 use PhpPact\Consumer\Model\Message;
-use PhpPact\Standalone\PactConfigInterface;
+use PhpPact\Config\PactConfigInterface;
 use PhpPact\Standalone\PactMessage\PactMessage;
 
 /**
