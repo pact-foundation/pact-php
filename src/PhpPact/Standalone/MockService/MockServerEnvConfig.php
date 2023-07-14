@@ -33,13 +33,13 @@ class MockServerEnvConfig extends MockServerConfig
 
         $timeout = $this->parseEnv('PACT_MOCK_SERVER_HEALTH_CHECK_TIMEOUT', false);
         if (!$timeout) {
-            $timeout = 10;
+            $timeout = 100;
         }
         $this->setHealthCheckTimeout($timeout);
 
         $seconds = $this->parseEnv('PACT_MOCK_SERVER_HEALTH_CHECK_RETRY_SEC', false);
         if (!$seconds) {
-            $seconds = 1;
+            $seconds = 0.1;
         }
         $this->setHealthCheckRetrySec($seconds);
 

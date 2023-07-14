@@ -40,8 +40,6 @@ class PactMessage
         $process = new ProcessRunner(Scripts::getPactMessage(), $arguments);
         $process->runBlocking();
 
-        \sleep(1);
-
         return true;
     }
 }

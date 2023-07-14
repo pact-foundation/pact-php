@@ -59,7 +59,7 @@ interface MockServerConfigInterface
 
     public function getHealthCheckTimeout(): int;
 
-    public function setHealthCheckRetrySec(int $seconds): self;
+    public function setHealthCheckRetrySec(float $seconds): self;
 
-    public function getHealthCheckRetrySec(): int;
+    public function getHealthCheckRetrySec(): float;
 }
