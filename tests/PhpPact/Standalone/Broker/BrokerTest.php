@@ -42,6 +42,7 @@ class BrokerTest extends TestCase
     //    $this->assertContains('-', (new Broker(new BrokerConfig()))->generateUuid());
     //}
 
+
     /**
      * @test
      *
@@ -49,6 +50,9 @@ class BrokerTest extends TestCase
      */
     public function describeVersion(): void
     {
+
+        // this test has slain many a developer 🤯
+        // if (php_uname('m') != 'arm64' && PHP_OS != 'Linux') {
         $config = new BrokerConfig();
         $config->setPacticipant('Animal Profile Service')
             ->setBrokerUri(new Uri('https://test.pactflow.io'))
@@ -59,7 +63,10 @@ class BrokerTest extends TestCase
         $result = $broker->describeVersion();
 
         $this->assertArrayHasKey('number', $result);
+        // };
     }
+
+
 
     /**
      * @test
