@@ -118,7 +118,7 @@ class MockServer
             try {
                 return $service->healthCheck();
             } catch (ConnectionException $e) {
-                \usleep(round($retrySec * 1000000));
+                \usleep(intval(round($retrySec * 1000000)));
             }
         } while ($tries <= $maxTries);
 
