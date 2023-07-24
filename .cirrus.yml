@@ -1,0 +1,52 @@
+BUILD_TEST_TASK_TEMPLATE: &BUILD_TEST_TASK_TEMPLATE
+  arch_check_script:
+    - uname -am
+  install_script:
+      - composer install
+  cirrus_ci_macos_local_script: |
+      if [ "$(uname -s)" == 'Darwin' ] && [ "$CIRRUS_CLI" == 'true' ]; then
+        chmod +x vendor/bin/php-cs-fixer
+        chmod +x vendor/bin/phpstan
+        chmod +x vendor/bin/phpunit
+        chmod +x bin/pact-stub-server/pact-stub-server
+      fi
+  lint_script:
+      - composer run lint
+  static_analysis_script:
+      - composer run static-code-analysis
+  test_script:
+      - composer test
+
+linux_arm64_task:  
+  env:
+    COMPOSER_ALLOW_SUPERUSER: 1
+    matrix:
+      - VERSION: 8.2
+      - VERSION: 8.1
+      - VERSION: 8.0
+  container:
+    image: php:$VERSION
+  pre_req_script: 
+      - apt update --yes && apt install --yes zip unzip git libffi-dev
+      - curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
+      - php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+      - docker-php-ext-install sockets
+      - docker-php-ext-install ffi
+  version_check_script: 
+      - php --version
+  << : *BUILD_TEST_TASK_TEMPLATE
+
+macos_arm64_task:
+# https://www.markhesketh.com/switching-multiple-php-versions-on-macos/
+  env:
+    matrix:
+      - VERSION: 8.2
+      - VERSION: 8.1
+      - VERSION: 8.0
+  macos_instance:
+    image: ghcr.io/cirruslabs/macos-ventura-base:latest
+  pre_req_script: 
+      - brew install php@$VERSION composer
+  version_check_script: 
+      - php --version
+  << : *BUILD_TEST_TASK_TEMPLATE
