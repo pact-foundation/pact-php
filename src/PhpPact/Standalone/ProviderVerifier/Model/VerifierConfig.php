@@ -2,86 +2,92 @@
 
 namespace PhpPact\Standalone\ProviderVerifier\Model;
 
-use Psr\Http\Message\UriInterface;
+use PhpPact\Config\LogLevelTrait;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\CallingApp;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\CallingAppInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\ConsumerFilters;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\ConsumerFiltersInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\FilterInfo;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\FilterInfoInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\PluginDirTrait;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderInfo;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderInfoInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderState;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderStateInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransportInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\PublishOptionsInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\VerificationOptions;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\VerificationOptionsInterface;
 
-/**
- * {@inheritdoc}
- */
 class VerifierConfig implements VerifierConfigInterface
 {
-    private ?UriInterface $providerBaseUrl = null;
+    use LogLevelTrait;
+    use PluginDirTrait;
 
-    private ?string $providerStatesSetupUrl = null;
-
-    private ?string $providerName = null;
-
-    private ?string $providerVersion = null;
-
-    private ?string $providerBranch = null;
+    private CallingAppInterface $callingApp;
+    private ProviderInfoInterface $providerInfo;
 
     /**
-     * @var array<int, string>
+     * @var array<int, ProviderTransportInterface>
      */
-    private array $providerVersionTag = [];
+    private array $providerTransports = [];
 
-    private bool $publishResults = false;
-
-    private ?UriInterface $brokerUri = null;
-
-    private ?string $brokerToken = null;
-
-    private ?string $brokerUsername = null;
-
-    private ?string $brokerPassword = null;
-
-    /**
-     * @var array<int, string>
-     */
-    private array $customProviderHeaders = [];
-
-    private bool $verbose = false;
-
-    private ?string $logDirectory = null;
-
-    private ?string $format = null;
-
-    private int $processTimeout = 60;
-
-    private int $processIdleTimeout = 10;
-
-    private bool $enablePending = false;
-
-    private ?string $wipPactSince = null;
-
-    /**
-     * @var array<int, string>
-     */
-    private array $consumerVersionTag = [];
-
-    private ConsumerVersionSelectors $consumerVersionSelectors;
-
-    /** @var null|callable */
-    private $requestFilter = null;
+    private FilterInfoInterface $filterInfo;
+    private ProviderStateInterface $providerState;
+    private VerificationOptionsInterface $verificationOptions;
+    private ?PublishOptionsInterface $publishOptions = null;
+    private ConsumerFiltersInterface $consumerFilters;
 
     public function __construct()
     {
-        $this->consumerVersionSelectors = new ConsumerVersionSelectors();
+        $this->callingApp = new CallingApp();
+        $this->providerInfo = new ProviderInfo();
+        $this->filterInfo = new FilterInfo();
+        $this->providerState = new ProviderState();
+        $this->verificationOptions = new VerificationOptions();
+        $this->consumerFilters = new ConsumerFilters();
+    }
+
+    public function setCallingApp(CallingAppInterface $callingApp): self
+    {
+        $this->callingApp = $callingApp;
+
+        return $this;
+    }
+
+    public function getCallingApp(): CallingAppInterface
+    {
+        return $this->callingApp;
+    }
+
+    public function setProviderInfo(ProviderInfoInterface $providerInfo): self
+    {
+        $this->providerInfo = $providerInfo;
+
+        return $this;
+    }
+
+    public function getProviderInfo(): ProviderInfoInterface
+    {
+        return $this->providerInfo;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getProviderBaseUrl(): ?UriInterface
+    public function setProviderTransports(array $providerTransports): self
     {
-        return $this->providerBaseUrl;
+        $this->providerTransports = [];
+        foreach ($providerTransports as $providerTransport) {
+            $this->addProviderTransport($providerTransport);
+        }
+
+        return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setProviderBaseUrl(UriInterface $providerBaseUrl): VerifierConfigInterface
+    public function addProviderTransport(ProviderTransportInterface $providerTransport): self
     {
-        $this->providerBaseUrl = $providerBaseUrl;
+        $this->providerTransports[] = $providerTransport;
 
         return $this;
     }
@@ -89,374 +95,73 @@ class VerifierConfig implements VerifierConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getProviderStatesSetupUrl(): ?string
+    public function getProviderTransports(): array
     {
-        return $this->providerStatesSetupUrl;
+        return $this->providerTransports;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setProviderStatesSetupUrl(string $providerStatesSetupUrl): VerifierConfigInterface
+    public function setFilterInfo(FilterInfoInterface $filterInfo): self
     {
-        $this->providerStatesSetupUrl = $providerStatesSetupUrl;
+        $this->filterInfo = $filterInfo;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getProviderName(): ?string
+    public function getFilterInfo(): FilterInfoInterface
     {
-        return $this->providerName;
+        return $this->filterInfo;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setProviderName(string $providerName): VerifierConfigInterface
+    public function setProviderState(ProviderStateInterface $providerState): self
     {
-        $this->providerName = $providerName;
+        $this->providerState = $providerState;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getProviderVersion(): ?string
+    public function getProviderState(): ProviderStateInterface
     {
-        return $this->providerVersion;
+        return $this->providerState;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setProviderVersion(string $providerVersion): VerifierConfigInterface
+    public function setPublishOptions(?PublishOptionsInterface $publishOptions): self
     {
-        $this->providerVersion = $providerVersion;
+        $this->publishOptions = $publishOptions;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getProviderVersionTag(): array
+    public function getPublishOptions(): ?PublishOptionsInterface
     {
-        return $this->providerVersionTag;
+        return $this->publishOptions;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setProviderVersionTag(string $providerVersionTag): VerifierConfigInterface
-    {
-        return $this->addProviderVersionTag($providerVersionTag);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getConsumerVersionTag(): array
-    {
-        return $this->consumerVersionTag;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addConsumerVersionTag(string $consumerVersionTag): VerifierConfigInterface
-    {
-        $this->consumerVersionTag[] = $consumerVersionTag;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addProviderVersionTag(string $providerVersionTag): VerifierConfigInterface
-    {
-        $this->providerVersionTag[] = $providerVersionTag;
-
-        return $this;
-    }
-
-    public function setConsumerVersionTag(string $consumerVersionTag): VerifierConfigInterface
-    {
-        return $this->addConsumerVersionTag($consumerVersionTag);
-    }
-
-    public function getConsumerVersionSelectors(): ConsumerVersionSelectors
-    {
-        return $this->consumerVersionSelectors;
-    }
-
-    public function setConsumerVersionSelectors(ConsumerVersionSelectors $selectors): VerifierConfigInterface
-    {
-        $this->consumerVersionSelectors = $selectors;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function isPublishResults(): bool
     {
-        return $this->publishResults;
+        return $this->publishOptions !== null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setPublishResults(bool $publishResults): VerifierConfigInterface
+    public function setConsumerFilters(ConsumerFiltersInterface $consumerFilters): self
     {
-        $this->publishResults = $publishResults;
+        $this->consumerFilters = $consumerFilters;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBrokerUri(): ?UriInterface
+    public function getConsumerFilters(): ConsumerFiltersInterface
     {
-        return $this->brokerUri;
+        return $this->consumerFilters;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setBrokerUri(UriInterface $brokerUri): VerifierConfigInterface
+    public function setVerificationOptions(VerificationOptionsInterface $verificationOptions): self
     {
-        $this->brokerUri = $brokerUri;
+        $this->verificationOptions = $verificationOptions;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}}
-     */
-    public function getBrokerToken(): ?string
+    public function getVerificationOptions(): VerificationOptionsInterface
     {
-        return $this->brokerToken;
-    }
-
-    /**
-     * {@inheritdoc }
-     */
-    public function setBrokerToken(?string $brokerToken): VerifierConfigInterface
-    {
-        $this->brokerToken = $brokerToken;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBrokerUsername(): ?string
-    {
-        return $this->brokerUsername;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setBrokerUsername(string $brokerUsername): VerifierConfigInterface
-    {
-        $this->brokerUsername = $brokerUsername;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBrokerPassword(): ?string
-    {
-        return $this->brokerPassword;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setBrokerPassword(string $brokerPassword): self
-    {
-        $this->brokerPassword = $brokerPassword;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomProviderHeaders(): array
-    {
-        return $this->customProviderHeaders;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setCustomProviderHeaders(array $customProviderHeaders): VerifierConfigInterface
-    {
-        $this->customProviderHeaders = $customProviderHeaders;
-
-        return $this;
-    }
-
-    public function addCustomProviderHeader(string $name, string $value): VerifierConfigInterface
-    {
-        $this->customProviderHeaders[] = "$name: $value";
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isVerbose(): bool
-    {
-        return $this->verbose;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setVerbose(bool $verbose): VerifierConfigInterface
-    {
-        $this->verbose = $verbose;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLogDirectory(): ?string
-    {
-        return $this->logDirectory;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLogDirectory(string $log): VerifierConfigInterface
-    {
-        $this->logDirectory = $log;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormat(): ?string
-    {
-        return $this->format;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setFormat(string $format): VerifierConfigInterface
-    {
-        $this->format = $format;
-
-        return $this;
-    }
-
-    public function setProcessTimeout(int $timeout): VerifierConfigInterface
-    {
-        $this->processTimeout = $timeout;
-
-        return $this;
-    }
-
-    public function setProcessIdleTimeout(int $timeout): VerifierConfigInterface
-    {
-        $this->processIdleTimeout = $timeout;
-
-        return $this;
-    }
-
-    public function getProcessTimeout(): int
-    {
-        return $this->processTimeout;
-    }
-
-    public function getProcessIdleTimeout(): int
-    {
-        return $this->processIdleTimeout;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isEnablePending(): bool
-    {
-        return $this->enablePending;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setEnablePending(bool $pending): VerifierConfigInterface
-    {
-        $this->enablePending = $pending;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setIncludeWipPactSince(string $date): VerifierConfigInterface
-    {
-        $this->wipPactSince = $date;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getIncludeWipPactSince(): ?string
-    {
-        return $this->wipPactSince;
-    }
-
-    public function getRequestFilter(): ?callable
-    {
-        return $this->requestFilter;
-    }
-
-    public function setRequestFilter(callable $requestFilter): VerifierConfigInterface
-    {
-        $this->requestFilter = $requestFilter;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setProviderBranch(string $providerBranch): VerifierConfigInterface
-    {
-        $this->providerBranch = $providerBranch;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getProviderBranch(): ?string
-    {
-        return $this->providerBranch;
+        return $this->verificationOptions;
     }
 }

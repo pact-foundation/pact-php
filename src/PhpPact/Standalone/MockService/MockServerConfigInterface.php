@@ -2,12 +2,13 @@
 
 namespace PhpPact\Standalone\MockService;
 
+use PhpPact\Config\PactConfigInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
  * Mock Server configuration interface to allow for simple overrides that are reusable.
  */
-interface MockServerConfigInterface
+interface MockServerConfigInterface extends PactConfigInterface
 {
     /**
      * @return string the host of the mock service
@@ -40,16 +41,4 @@ interface MockServerConfigInterface
     public function setSecure(bool $secure): self;
 
     public function getBaseUri(): UriInterface;
-
-    public function hasCors(): bool;
-
-    public function setCors(mixed $flag): self;
-
-    public function setHealthCheckTimeout(int $timeout): self;
-
-    public function getHealthCheckTimeout(): int;
-
-    public function setHealthCheckRetrySec(int $seconds): self;
-
-    public function getHealthCheckRetrySec(): int;
 }
