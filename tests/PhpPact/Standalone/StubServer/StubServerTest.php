@@ -14,20 +14,36 @@ class StubServerTest extends TestCase
     public function testStartAndStop()
     {
         try {
-            $pactLocation = __DIR__ . '/../../../_resources/someconsumer-someprovider.json';
-            $host         = 'localhost';
-            $port         = 7201;
-            $endpoint     = 'test';
+            $files = [__DIR__ . '/../../../_resources/someconsumer-someprovider.json'];
+            $port  = 7201;
 
             $subject = (new StubServerConfig())
-                ->setPactLocation($pactLocation)
-                ->setHost($host)
-                ->setPort($port)
-            ->setEndpoint($endpoint);
+                ->setFiles($files)
+                ->setPort($port);
 
             $stubServer = new StubServer($subject);
             $pid        = $stubServer->start();
             $this->assertTrue(\is_int($pid));
+        } finally {
+            $result = $stubServer->stop();
+            $this->assertTrue($result);
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testRandomPort(): void
+    {
+        try {
+            $files = [__DIR__ . '/../../../_resources/someconsumer-someprovider.json'];
+
+            $subject = (new StubServerConfig())
+                ->setFiles($files);
+
+            $stubServer = new StubServer($subject);
+            $stubServer->start();
+            $this->assertGreaterThan(0, $subject->getPort());
         } finally {
             $result = $stubServer->stop();
             $this->assertTrue($result);

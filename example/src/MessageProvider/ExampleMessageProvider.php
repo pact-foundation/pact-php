@@ -4,32 +4,20 @@ namespace MessageProvider;
 
 class ExampleMessageProvider
 {
-    /** @var array */
-    private $metadata;
+    private array $metadata;
 
-    /**
-     * @var mixed
-     */
-    private $contents;
+    private mixed $contents;
 
-    public function __construct($metadata = [])
+    public function __construct(array $metadata = [])
     {
         $this->metadata = $metadata;
     }
 
-    /**
-     * @return array
-     */
     public function getMetadata(): array
     {
         return $this->metadata;
     }
 
-    /**
-     * @param array $metadata
-     *
-     * @return ExampleMessageProvider
-     */
     public function setMetadata(array $metadata): self
     {
         $this->metadata = $metadata;
@@ -37,20 +25,12 @@ class ExampleMessageProvider
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getContents()
+    public function getContents(): mixed
     {
         return $this->contents;
     }
 
-    /**
-     * @param mixed $contents
-     *
-     * @return ExampleMessageProvider
-     */
-    public function setContents($contents)
+    public function setContents(mixed $contents): self
     {
         $this->contents = $contents;
 
@@ -59,10 +39,8 @@ class ExampleMessageProvider
 
     /**
      *  Build metadata and content for message
-     *
-     * @return string
      */
-    public function Build()
+    public function Build(): string
     {
         $obj           = new \stdClass();
         $obj->metadata = $this->metadata;

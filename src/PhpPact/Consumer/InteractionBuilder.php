@@ -2,37 +2,36 @@
 
 namespace PhpPact\Consumer;
 
+use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
+use PhpPact\Consumer\Factory\InteractionDriverFactory;
+use PhpPact\Consumer\Factory\InteractionDriverFactoryInterface;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Http\GuzzleClient;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
-use PhpPact\Standalone\MockService\Service\MockServerHttpService;
 
 /**
  * Build an interaction and send it to the Ruby Standalone Mock Service
  */
 class InteractionBuilder implements BuilderInterface
 {
-    protected MockServerHttpService $mockServerHttpService;
-
-    protected MockServerConfigInterface $config;
-
+    private InteractionDriverInterface $driver;
     private Interaction $interaction;
 
-    public function __construct(MockServerConfigInterface $config)
+    public function __construct(MockServerConfigInterface $config, ?InteractionDriverFactoryInterface $driverFactory = null)
     {
-        $this->config                = $config;
-        $this->mockServerHttpService = new MockServerHttpService(new GuzzleClient(), $config);
-        $this->interaction           = new Interaction();
+        $this->driver      = ($driverFactory ?? new InteractionDriverFactory())->create($config);
+        $this->interaction = new Interaction();
     }
 
     /**
      * @param string $providerState what is given to the request
+     * @param array<string, string>  $params    for that request
+     * @param bool   $overwrite clear pass states completely and start this array
      */
-    public function given(string $providerState): self
+    public function given(string $providerState, array $params = [], bool $overwrite = false): self
     {
-        $this->interaction->setProviderState($providerState);
+        $this->interaction->setProviderState($providerState, $params, $overwrite);
 
         return $this;
     }
@@ -58,18 +57,15 @@ class InteractionBuilder implements BuilderInterface
     }
 
     /**
-     * Make the http request to the Mock Service to register the interaction.
-     *
      * @param ProviderResponse $response mock of response received
      *
      * @return bool returns true on success
-     * @throws \JsonException
      */
     public function willRespondWith(ProviderResponse $response): bool
     {
         $this->interaction->setResponse($response);
 
-        return $this->mockServerHttpService->registerInteraction($this->interaction);
+        return $this->driver->registerInteraction($this->interaction);
     }
 
     /**
@@ -77,33 +73,6 @@ class InteractionBuilder implements BuilderInterface
      */
     public function verify(): bool
     {
-        return $this->mockServerHttpService->verifyInteractions();
-    }
-
-    /**
-     * Writes the file to disk and deletes interactions from mock server.
-     * @throws \JsonException
-     */
-    public function finalize(): bool
-    {
-        // Write the pact file to disk.
-        $this->mockServerHttpService->getPactJson();
-
-        // Delete the interactions.
-        $this->mockServerHttpService->deleteAllInteractions();
-
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws \JsonException
-     */
-    public function writePact(): bool
-    {
-        // Write the pact file to disk.
-        $this->mockServerHttpService->getPactJson();
-
-        return true;
+        return $this->driver->verifyInteractions();
     }
 }

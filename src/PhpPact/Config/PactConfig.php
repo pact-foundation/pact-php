@@ -6,6 +6,8 @@ use Composer\Semver\VersionParser;
 
 class PactConfig implements PactConfigInterface
 {
+    use LogLevelTrait;
+
     /**
      * Consumer name.
      */
@@ -22,17 +24,9 @@ class PactConfig implements PactConfigInterface
     private ?string $pactDir = null;
 
     /**
-     * `overwrite` or `merge`. Use `merge` when running multiple mock service
-     * instances in parallel for the same consumer/provider pair. Ensure the
-     * pact file is deleted before running tests when using this option so that
-     * interactions deleted from the code are not maintained in the file.
+     * The pact specification version to use when writing the pact. Note that only versions 1, 2, 3 and 4 are currently supported.
      */
-    private string $pactFileWriteMode = self::MODE_OVERWRITE;
-
-    /**
-     * The pact specification version to use when writing the pact. Note that only versions 1 and 2 are currently supported.
-     */
-    private string $pactSpecificationVersion;
+    private string $pactSpecificationVersion = self::DEFAULT_SPECIFICATION_VERSION;
 
     /**
      * File to which to log output.
@@ -40,6 +34,13 @@ class PactConfig implements PactConfigInterface
     private ?string $log = null;
 
     private ?string $logLevel = null;
+    /**
+     * `overwrite` or `merge`. Use `merge` when running multiple mock service
+     * instances in parallel for the same consumer/provider pair. Ensure the
+     * pact file is deleted before running tests when using this option so that
+     * interactions deleted from the code are not maintained in the file.
+     */
+    private string $pactFileWriteMode = self::MODE_MERGE;
 
     /**
      * {@inheritdoc}
@@ -110,32 +111,6 @@ class PactConfig implements PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getPactFileWriteMode(): string
-    {
-        return $this->pactFileWriteMode;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setPactFileWriteMode(string $pactFileWriteMode): self
-    {
-        $options = [self::MODE_OVERWRITE, self::MODE_MERGE];
-
-        if (!\in_array($pactFileWriteMode, $options)) {
-            $implodedOptions = \implode(', ', $options);
-
-            throw new \InvalidArgumentException("Invalid PhpPact File Write Mode, value must be one of the following: {$implodedOptions}.");
-        }
-
-        $this->pactFileWriteMode = $pactFileWriteMode;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getPactSpecificationVersion(): string
     {
         return $this->pactSpecificationVersion;
@@ -177,18 +152,28 @@ class PactConfig implements PactConfigInterface
         return $this;
     }
 
-    public function getLogLevel(): ?string
+    /**
+     * {@inheritdoc}
+     */
+    public function getPactFileWriteMode(): string
     {
-        return $this->logLevel;
+        return $this->pactFileWriteMode;
     }
 
-    public function setLogLevel(string $logLevel): PactConfigInterface
+    /**
+     * {@inheritdoc}
+     */
+    public function setPactFileWriteMode(string $pactFileWriteMode): self
     {
-        $logLevel = \strtoupper($logLevel);
-        if (!\in_array($logLevel, ['DEBUG', 'INFO', 'WARN', 'ERROR'])) {
-            throw new \InvalidArgumentException('LogLevel ' . $logLevel . ' not supported.');
+        $options = [self::MODE_OVERWRITE, self::MODE_MERGE];
+
+        if (!\in_array($pactFileWriteMode, $options)) {
+            $implodedOptions = \implode(', ', $options);
+
+            throw new \InvalidArgumentException("Invalid PhpPact File Write Mode, value must be one of the following: {$implodedOptions}.");
         }
-        $this->logLevel = $logLevel;
+
+        $this->pactFileWriteMode = $pactFileWriteMode;
 
         return $this;
     }

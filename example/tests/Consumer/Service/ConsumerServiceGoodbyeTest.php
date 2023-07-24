@@ -39,10 +39,10 @@ class ConsumerServiceGoodbyeTest extends TestCase
             ->willRespondWith($response);
 
         $service = new HttpClientService($config->getBaseUri());
-        $result  = $service->getGoodbyeString('Bob');
+        $goodbyeResult = $service->getGoodbyeString('Bob');
+        $verifyResult = $builder->verify();
 
-        $builder->verify();
-
-        $this->assertEquals('Goodbye, Bob', $result);
+        $this->assertTrue($verifyResult);
+        $this->assertEquals('Goodbye, Bob', $goodbyeResult);
     }
 }

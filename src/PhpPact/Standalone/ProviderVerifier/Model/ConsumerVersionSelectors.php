@@ -12,8 +12,8 @@ class ConsumerVersionSelectors implements Iterator, Countable
 {
     private int $position = 0;
 
-    /** @var array<int, string>> */
-    private array $selectors;
+    /** @var array<int, string> */
+    private array $selectors = [];
 
     /**
      * @param array<int, string> $selectors
@@ -30,37 +30,31 @@ class ConsumerVersionSelectors implements Iterator, Countable
         return $this;
     }
 
-    #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): string
     {
         return $this->selectors[$this->position];
     }
 
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         ++$this->position;
     }
 
-    #[\ReturnTypeWillChange]
     public function key(): int
     {
         return $this->position;
     }
 
-    #[\ReturnTypeWillChange]
     public function valid(): bool
     {
         return isset($this->selectors[$this->position]);
     }
 
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
 
-    #[\ReturnTypeWillChange]
     public function count(): int
     {
         return \count($this->selectors);

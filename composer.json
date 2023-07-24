@@ -19,33 +19,20 @@
     ],
     "require": {
         "php": "^8.0",
-        "ext-openssl": "*",
         "ext-json": "*",
         "composer/semver": "^1.4.0|^3.2.0",
-        "amphp/amp": "^2.5.1",
-        "amphp/byte-stream": "^1.8",
-        "amphp/dns": "^1.2.3",
-        "amphp/hpack": "^3.1.0",
-        "amphp/http-server": "^2.1",
-        "amphp/log": "^1.1",
-        "amphp/process": "^1.1.1",
-        "amphp/serialization": "^1.0",
-        "amphp/socket": "^1.1.3",
-        "amphp/sync": "^1.4.0",
-        "amphp/cache": "^1.4.0",
-        "amphp/windows-registry": "v0.3.3",
+        "symfony/process": "^4.4|^5.4|^6.0",
         "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
-        "phpunit/phpunit": ">=8.5.23 <10",
-        "tienvx/composer-downloads-plugin": "^1.1.0"
+        "tienvx/composer-downloads-plugin": "^1.2.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
-        "mockery/mockery": "^1.4.2",
         "slim/slim": "^4.6",
         "slim/psr7": "^1.2.0",
         "friendsofphp/php-cs-fixer": "^3.0",
         "php-amqplib/php-amqplib": "^3.0",
-        "phpstan/phpstan": "^1.9"
+        "phpstan/phpstan": "^1.9",
+        "phpunit/phpunit": ">=8.5.23 <10"
     },
     "autoload": {
         "psr-4": {
@@ -66,27 +53,49 @@
             "MessageProvider\\": [
                 "example/src/MessageProvider",
                 "example/tests/MessageProvider"
+            ],
+            "Provider\\": [
+                "example/src/Provider"
             ]
         }
     },
     "scripts": {
         "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
-        "static-code-analysis": "phpstan analyse src/ --level=7",
-        "lint": "php-cs-fixer fix --config .php-cs-fixer.php --dry-run",
-        "fix": "php-cs-fixer fix --config .php-cs-fixer.php",
-        "test": "phpunit --debug -c example/phpunit.all.xml"
+        "static-code-analysis": "phpstan",
+        "lint": "php-cs-fixer fix --dry-run",
+        "fix": "php-cs-fixer fix",
+        "test": [
+            "php -r \"array_map('unlink', glob('./example/output/*.json'));\"",
+            "phpunit --debug -c example/phpunit.all.xml"
+        ]
     },
     "extra": {
         "downloads": {
-            "pact-ruby-standalone": {
-                "version": "1.91.0",
+            "pact-ffi-headers": {
+                "version": "0.4.4",
+                "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/pact.h",
+                "path": "bin/pact-ffi-headers/pact.h"
+            },
+            "pact-ffi-lib": {
+                "version": "0.4.4",
                 "variables": {
-                    "{$os}": "PHP_OS_FAMILY === 'Windows' ? 'win32' : (PHP_OS === 'Darwin' ? 'osx' : 'linux')",
-                    "{$architecture}": "PHP_OS === 'Linux' ? '-x86_64' : ''",
-                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'zip' : 'tar.gz'"
+                    "{$prefix}": "PHP_OS_FAMILY === 'Windows' ? 'pact_ffi' : 'libpact_ffi'",
+                    "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
+                    "{$architecture}": "in_array(php_uname('m'), ['arm64', 'aarch64']) ? (PHP_OS === 'Darwin' ? 'aarch64-apple-darwin' : 'aarch64') : 'x86_64'",
+                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'dll' : (PHP_OS === 'Darwin' ? 'dylib' : 'so')"
                 },
-                "url": "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v{$version}/pact-{$version}-{$os}{$architecture}.{$extension}",
-                "path": "bin/pact-ruby-standalone"
+                "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/{$prefix}-{$os}-{$architecture}.{$extension}.gz",
+                "path": "bin/pact-ffi-lib/pact.{$extension}"
+            },
+            "pact-stub-server": {
+                "version": "0.5.3",
+                "variables": {
+                    "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
+                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? '.exe' : ''"
+                },
+                "url": "https://github.com/pact-foundation/pact-stub-server/releases/download/v{$version}/pact-stub-server-{$os}-x86_64{$extension}.gz",
+                "path": "bin/pact-stub-server/pact-stub-server{$extension}",
+                "executable": true
             }
         }
     },
