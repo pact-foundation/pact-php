@@ -91,9 +91,10 @@
                 "version": "0.5.3",
                 "variables": {
                     "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
+                    "{$architecture}": "in_array(php_uname('m'), ['arm64', 'aarch64']) ? 'aarch64' : 'x86_64'",
                     "{$extension}": "PHP_OS_FAMILY === 'Windows' ? '.exe' : ''"
                 },
-                "url": "https://github.com/pact-foundation/pact-stub-server/releases/download/v{$version}/pact-stub-server-{$os}-x86_64{$extension}.gz",
+                "url": "https://github.com/pact-foundation/pact-stub-server/releases/download/v{$version}/pact-stub-server-{$os}-{$architecture}{$extension}.gz",
                 "path": "bin/pact-stub-server/pact-stub-server{$extension}",
                 "executable": true
             }

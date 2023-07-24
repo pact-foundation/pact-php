@@ -2,61 +2,76 @@
   "consumer": {
     "name": "someConsumer"
   },
-  "provider": {
-    "name": "someProvider"
-  },
   "interactions": [
-    {
-      "description": "A get request to /goodbye/{name}",
-      "providerState": "Get Goodbye",
-      "request": {
-        "method": "GET",
-        "path": "/goodbye/Bob",
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": {
-          "message": "Goodbye, Bob"
-        }
-      },
-      "metadata": null
-    },
     {
       "description": "A get request to /hello/{name}",
       "request": {
-        "method": "GET",
-        "path": "/hello/Bob",
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      },
-      "response": {
-        "status": 200,
         "headers": {
           "Content-Type": "application/json"
         },
+        "method": "GET",
+        "path": "/hello/Bob"
+      },
+      "response": {
         "body": {
           "message": "Hello, Bob"
         },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "matchingRules": {
-          "$.body.message": {
-            "match": "regex",
-            "regex": "(Hello, )[A-Za-z]+"
-          }
+          "body": {
+            "$.message": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "(Hello, )[A-Za-z]+"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "A get request to /goodbye/{name}",
+      "providerStates": [
+        {
+          "name": "Get Goodbye"
         }
+      ],
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "GET",
+        "path": "/goodbye/Bob"
       },
-      "metadata": null
+      "response": {
+        "body": {
+          "message": "Goodbye, Bob"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
     }
   ],
   "metadata": {
+    "pactRust": {
+      "ffi": "0.4.4",
+      "mockserver": "1.0.3",
+      "models": "1.0.13"
+    },
     "pactSpecification": {
-      "version": "2.0.0"
+      "version": "3.0.0"
     }
+  },
+  "provider": {
+    "name": "someProvider"
   }
 }
