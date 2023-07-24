@@ -17,23 +17,14 @@ class MockServerConfig extends PactConfig implements MockServerConfigInterface
     private string $host = 'localhost';
 
     /**
-     * Port on which to run the service.
+     * Port on which to run the service. A value of zero will result in the operating system allocating an available port.
      */
-    private int $port = 7200;
+    private int $port = 0;
 
+    /**
+     * @var bool
+     */
     private bool $secure = false;
-
-    private bool $cors = false;
-
-    /**
-     * The max allowed attempts the mock server has to be available in. Otherwise it is considered as sick.
-     */
-    private int $healthCheckTimeout;
-
-    /**
-     * The seconds between health checks of mock server
-     */
-    private int $healthCheckRetrySec;
 
     /**
      * {@inheritdoc}
@@ -97,47 +88,5 @@ class MockServerConfig extends PactConfig implements MockServerConfigInterface
         $protocol = $this->secure ? 'https' : 'http';
 
         return new Uri("{$protocol}://{$this->getHost()}:{$this->getPort()}");
-    }
-
-    public function hasCors(): bool
-    {
-        return $this->cors;
-    }
-
-    public function setCors(mixed $flag): self
-    {
-        if ($flag === 'true') {
-            $this->cors = true;
-        } elseif ($flag === 'false') {
-            $this->cors = false;
-        } else {
-            $this->cors = (bool) $flag;
-        }
-
-        return $this;
-    }
-
-    public function setHealthCheckTimeout(int $timeout): MockServerConfigInterface
-    {
-        $this->healthCheckTimeout = $timeout;
-
-        return $this;
-    }
-
-    public function getHealthCheckTimeout(): int
-    {
-        return $this->healthCheckTimeout;
-    }
-
-    public function setHealthCheckRetrySec(int $seconds): MockServerConfigInterface
-    {
-        $this->healthCheckRetrySec = $seconds;
-
-        return $this;
-    }
-
-    public function getHealthCheckRetrySec(): int
-    {
-        return $this->healthCheckRetrySec;
     }
 }

@@ -2,264 +2,223 @@
 
 namespace PhpPact\Standalone\ProviderVerifier;
 
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
-use PhpPact\Broker\Service\BrokerHttpClient;
-use PhpPact\Broker\Service\BrokerHttpClientInterface;
-use PhpPact\Http\GuzzleClient;
+use FFI\CData;
+use PhpPact\FFI\Client;
+use PhpPact\FFI\ClientInterface;
+use PhpPact\FFI\Model\ArrayData;
+use PhpPact\Standalone\ProviderVerifier\Model\Source\BrokerInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\Source\UrlInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 
-/**
- * Wrapper for the Ruby Standalone Verifier service.
- */
 class Verifier
 {
-    protected int $processTimeout = 60;
+    protected ClientInterface $client;
+    protected CData $handle;
 
-    protected int $processIdleTimeout = 10;
-
-    protected VerifierConfigInterface $config;
-
-    protected ?BrokerHttpClientInterface $brokerHttpClient = null;
-
-    protected ?VerifierProcess $verifierProcess = null;
-
-    public function __construct(
-        VerifierConfigInterface $config,
-        VerifierProcess $verifierProcess = null,
-        BrokerHttpClient $brokerHttpClient = null
-    ) {
-        $this->config             = $config;
-        $this->verifierProcess    = $verifierProcess ?: new VerifierProcess();
-        $this->processTimeout     = $config->getProcessTimeout();
-        $this->processIdleTimeout = $config->getProcessIdleTimeout();
-
-        if ($brokerHttpClient) {
-            $this->brokerHttpClient = $brokerHttpClient;
-        }
+    public function __construct(VerifierConfigInterface $config)
+    {
+        $this->client = new Client();
+        $this
+            ->newHandle($config)
+            ->setProviderInfo($config)
+            ->setProviderTransports($config)
+            ->setFilterInfo($config)
+            ->setProviderState($config)
+            ->setVerificationOptions($config)
+            ->setPublishOptions($config)
+            ->setConsumerFilters($config)
+            ->setLogLevel($config)
+            ->setPluginDir($config);
     }
 
-    /**
-     * @throws \Exception
-     *
-     * @return array<int, string> parameters to be passed into the process
-     */
-    public function getArguments(): array
+    private function newHandle(VerifierConfigInterface $config): self
     {
-        $parameters = [];
-
-        if ($this->config->getProviderName() !== null) {
-            $parameters[] = "--provider='{$this->config->getProviderName()}'";
-        }
-
-        if ($this->config->getProviderBaseUrl() !== null) {
-            $parameters[] = "--provider-base-url={$this->config->getProviderBaseUrl()}";
-        }
-
-        if ($this->config->getProviderVersion() !== null) {
-            $parameters[] = "--provider-app-version={$this->config->getProviderVersion()}";
-        }
-
-        if ($this->config->getProviderBranch() !== null) {
-            $parameters[] = "--provider-version-branch={$this->config->getProviderBranch()}";
-        }
-
-        if (\count($this->config->getConsumerVersionTag()) > 0) {
-            foreach ($this->config->getConsumerVersionTag() as $tag) {
-                $parameters[] = "--consumer-version-tag={$tag}";
-            }
-        }
-
-        if (\count($this->config->getConsumerVersionSelectors()) > 0) {
-            foreach ($this->config->getConsumerVersionSelectors() as $selector) {
-                $parameters[] = "--consumer-version-selector='{$selector}'";
-            }
-        }
-
-        if (\count($this->config->getProviderVersionTag()) > 0) {
-            foreach ($this->config->getProviderVersionTag() as $tag) {
-                $parameters[] = "--provider-version-tag={$tag}";
-            }
-        }
-
-        if ($this->config->getProviderStatesSetupUrl() !== null) {
-            $parameters[] = "--provider-states-setup-url={$this->config->getProviderStatesSetupUrl()}";
-        }
-
-        if ($this->config->isPublishResults() === true) {
-            $parameters[] = '--publish-verification-results';
-        }
-
-        if ($this->config->getBrokerToken() !== null) {
-            $parameters[] = "--broker-token={$this->config->getBrokerToken()}";
-        }
-
-        if ($this->config->getBrokerUsername() !== null) {
-            $parameters[] = "--broker-username={$this->config->getBrokerUsername()}";
-        }
-
-        if ($this->config->getBrokerPassword() !== null) {
-            $parameters[] = "--broker-password={$this->config->getBrokerPassword()}";
-        }
-
-        if (count($this->config->getCustomProviderHeaders()) > 0) {
-            foreach ($this->config->getCustomProviderHeaders() as $customProviderHeader) {
-                $parameters[] = "--custom-provider-header=\"{$customProviderHeader}\"";
-            }
-        }
-
-        if ($this->config->isVerbose() === true) {
-            $parameters[] = '--verbose=VERBOSE';
-        }
-
-        if ($this->config->getLogDirectory() !== null) {
-            $parameters[] = "--log-dir={$this->config->getLogDirectory()}";
-        }
-
-        if ($this->config->getFormat() !== null) {
-            $parameters[] = "--format={$this->config->getFormat()}";
-        }
-
-        if ($this->config->isEnablePending() === true) {
-            $parameters[] = '--enable-pending';
-        }
-
-        if ($this->config->getIncludeWipPactSince() !== null) {
-            $parameters[] = "--include-wip-pacts-since={$this->config->getIncludeWipPactSince()}";
-        }
-
-        if ($this->config->getBrokerUri() !== null) {
-            $parameters[] = "--pact-broker-base-url={$this->config->getBrokerUri()->__toString()}";
-        }
-
-        return $parameters;
-    }
-
-    /**
-     * Make the request to the PACT Verifier Service to run a Pact file tests from the Pact Broker.
-     *
-     * @param string $consumerName name of the consumer to be compared against
-     * @param null|string $tag optional tag of the consumer such as a branch name
-     * @param null|string $consumerVersion optional specific version of the consumer; this is overridden by tag
-     * @throws \Exception
-     */
-    public function verify(string $consumerName, string $tag = null, string $consumerVersion = null): self
-    {
-        $path = "/pacts/provider/{$this->config->getProviderName()}/consumer/{$consumerName}/";
-
-        if ($tag) {
-            $path .= "latest/{$tag}/";
-        } elseif ($consumerVersion) {
-            $path .= "version/{$consumerVersion}/";
-        } else {
-            $path .= 'latest/';
-        }
-
-        $uri = $this->config->getBrokerUri()->withPath($path);
-
-        $arguments = \array_merge([$uri->__toString()], $this->getArguments());
-
-        $this->verifyAction($arguments);
+        $this->handle = $this->client->call(
+            'pactffi_verifier_new_for_application',
+            $config->getCallingApp()->getName(),
+            $config->getCallingApp()->getVersion()
+        );
 
         return $this;
     }
 
-    /**
-     * Provides a way to validate local Pact JSON files.
-     *
-     * @param array<int, string> $files paths to pact json files
-     * @throws \Exception
-     */
-    public function verifyFiles(array $files): self
+    private function setProviderInfo(VerifierConfigInterface $config): self
     {
-        $arguments = \array_merge($files, $this->getArguments());
-
-        $this->verifyAction($arguments);
+        $this->client->call(
+            'pactffi_verifier_set_provider_info',
+            $this->handle,
+            $config->getProviderInfo()->getName(),
+            $config->getProviderInfo()->getScheme(),
+            $config->getProviderInfo()->getHost(),
+            $config->getProviderInfo()->getPort(),
+            $config->getProviderInfo()->getPath()
+        );
 
         return $this;
     }
 
-    /**
-     * Verify all Pacts from the Pact Broker are valid for the Provider.
-     * @throws \Exception
-     */
-    public function verifyAll(): void
+    private function setProviderTransports(VerifierConfigInterface $config): self
     {
-        $arguments = $this->getBrokerHttpClient()->getAllConsumerUrls($this->config->getProviderName());
-
-        $arguments = \array_merge($arguments, $this->getArguments());
-
-        $this->verifyAction($arguments);
-    }
-
-    /**
-     * Verify all PACTs for a given tag.
-     * @throws \Exception
-     */
-    public function verifyAllForTag(string $tag): void
-    {
-        $arguments = $this->getBrokerHttpClient()->getAllConsumerUrlsForTag($this->config->getProviderName(), $tag);
-
-        $arguments = \array_merge($arguments, $this->getArguments());
-
-        $this->verifyAction($arguments);
-    }
-
-    /**
-     * Verify all PACTs that match the VerifierConfig
-     * @throws \Exception
-     */
-    public function verifyFromConfig(): void
-    {
-        $this->verifyAction($this->getArguments());
-    }
-
-    /**
-     * @return array<string, int>
-     */
-    public function getTimeoutValues(): array
-    {
-        return ['process_timeout' => $this->processTimeout, 'process_idle_timeout' => $this->processIdleTimeout];
-    }
-
-    /**
-     * Trigger execution of the Pact Verifier Service.
-     *
-     * @param array<int, string> $arguments
-     * @throws \Exception
-     */
-    protected function verifyAction(array $arguments): void
-    {
-        $this->verifierProcess->run($arguments, $this->processTimeout, $this->processIdleTimeout);
-    }
-
-    protected function getBrokerHttpClient(): BrokerHttpClientInterface
-    {
-        if (!$this->brokerHttpClient) {
-            $user      = $this->config->getBrokerUsername();
-            $password  = $this->config->getBrokerPassword();
-            $token     = $this->config->getBrokerToken();
-            $reqFilter = $this->config->getRequestFilter();
-
-            $config = [];
-            if (\strlen($token) > 0) {
-                $config = ['headers' => ['Authorization' => 'Bearer ' . $token]];
-            } elseif ($user && $password) {
-                $config = ['auth' => [$user, $password]];
-            }
-            if (\is_callable($reqFilter)) {
-                $stack = HandlerStack::create();
-                $stack->push(Middleware::mapRequest($reqFilter), 'requestFilter');
-                $config['handler'] = $stack;
-            }
-            if (($sslVerify = \getenv('PACT_BROKER_SSL_VERIFY'))) {
-                $client['verify'] = $sslVerify !== 'no';
-            }
-            $client = new GuzzleClient($config);
-
-            $this->brokerHttpClient = new BrokerHttpClient($client, $this->config->getBrokerUri());
+        foreach ($config->getProviderTransports() as $transport) {
+            $this->client->call(
+                'pactffi_verifier_add_provider_transport',
+                $this->handle,
+                $transport->getProtocol(),
+                $transport->getPort(),
+                $transport->getPath(),
+                $transport->getScheme()
+            );
         }
 
-        return $this->brokerHttpClient;
+        return $this;
+    }
+
+    private function setFilterInfo(VerifierConfigInterface $config): self
+    {
+        $this->client->call(
+            'pactffi_verifier_set_provider_state',
+            $this->handle,
+            $config->getProviderState()->getStateChangeUrl() ? (string) $config->getProviderState()->getStateChangeUrl() : null,
+            $config->getProviderState()->isStateChangeTeardown(),
+            $config->getProviderState()->isStateChangeAsBody()
+        );
+
+        return $this;
+    }
+
+    private function setProviderState(VerifierConfigInterface $config): self
+    {
+        $this->client->call(
+            'pactffi_verifier_set_filter_info',
+            $this->handle,
+            $config->getFilterInfo()->getFilterDescription(),
+            $config->getFilterInfo()->getFilterState(),
+            $config->getFilterInfo()->getFilterNoState()
+        );
+
+        return $this;
+    }
+
+    private function setVerificationOptions(VerifierConfigInterface $config): self
+    {
+        $this->client->call(
+            'pactffi_verifier_set_verification_options',
+            $this->handle,
+            $config->getVerificationOptions()->isDisableSslVerification(),
+            $config->getVerificationOptions()->getRequestTimeout()
+        );
+
+        return $this;
+    }
+
+    private function setPublishOptions(VerifierConfigInterface $config): self
+    {
+        if ($config->isPublishResults()) {
+            $providerTags = ArrayData::createFrom($config->getPublishOptions()->getProviderTags());
+            $this->client->call(
+                'pactffi_verifier_set_publish_options',
+                $this->handle,
+                $config->getPublishOptions()->getProviderVersion(),
+                $config->getPublishOptions()->getBuildUrl(),
+                $providerTags?->getItems(),
+                $providerTags?->getSize(),
+                $config->getPublishOptions()->getProviderBranch()
+            );
+        }
+
+        return $this;
+    }
+
+    private function setConsumerFilters(VerifierConfigInterface $config): self
+    {
+        $filterConsumerNames = ArrayData::createFrom($config->getConsumerFilters()->getFilterConsumerNames());
+        $this->client->call(
+            'pactffi_verifier_set_consumer_filters',
+            $this->handle,
+            $filterConsumerNames?->getItems(),
+            $filterConsumerNames?->getSize()
+        );
+
+        return $this;
+    }
+
+    private function setLogLevel(VerifierConfigInterface $config): self
+    {
+        if ($logLevel = $config->getLogLevel()) {
+            $this->client->call('pactffi_init_with_log_level', $logLevel);
+        }
+
+        return $this;
+    }
+
+    private function setPluginDir(VerifierConfigInterface $config): self
+    {
+        if ($pluginDir = $config->getPluginDir()) {
+            \putenv("PACT_PLUGIN_DIR={$pluginDir}");
+        }
+
+        return $this;
+    }
+
+    public function addFile(string $file): self
+    {
+        $this->client->call('pactffi_verifier_add_file_source', $this->handle, $file);
+
+        return $this;
+    }
+
+    public function addDirectory(string $directory): self
+    {
+        $this->client->call('pactffi_verifier_add_directory_source', $this->handle, $directory);
+
+        return $this;
+    }
+
+    public function addUrl(UrlInterface $url): self
+    {
+        $this->client->call(
+            'pactffi_verifier_url_source',
+            $this->handle,
+            (string) $url->getUrl(),
+            $url->getUsername(),
+            $url->getPassword(),
+            $url->getToken()
+        );
+
+        return $this;
+    }
+
+    public function addBroker(BrokerInterface $broker): self
+    {
+        $providerTags = ArrayData::createFrom($broker->getProviderTags());
+        $consumerVersionSelectors = ArrayData::createFrom(iterator_to_array($broker->getConsumerVersionSelectors()));
+        $consumerVersionTags = ArrayData::createFrom($broker->getConsumerVersionTags());
+        $this->client->call(
+            'pactffi_verifier_broker_source_with_selectors',
+            $this->handle,
+            (string) $broker->getUrl(),
+            $broker->getUsername(),
+            $broker->getPassword(),
+            $broker->getToken(),
+            $broker->isEnablePending(),
+            $broker->getIncludeWipPactSince(),
+            $providerTags?->getItems(),
+            $providerTags?->getSize(),
+            $broker->getProviderBranch(),
+            $consumerVersionSelectors?->getItems(),
+            $consumerVersionSelectors?->getSize(),
+            $consumerVersionTags?->getItems(),
+            $consumerVersionTags?->getSize()
+        );
+
+        return $this;
+    }
+
+    public function verify(): bool
+    {
+        $error = $this->client->call('pactffi_verifier_execute', $this->handle);
+        $this->client->call('pactffi_verifier_shutdown', $this->handle);
+
+        return !$error;
     }
 }

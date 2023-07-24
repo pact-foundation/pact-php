@@ -2,8 +2,6 @@
 
 namespace MessageConsumer;
 
-require_once __DIR__ . '/../../src/MessageConsumer/ExampleMessageConsumer.php';
-
 use Exception;
 use PhpPact\Consumer\MessageBuilder;
 use PhpPact\Config\PactConfigInterface;
@@ -28,18 +26,6 @@ class ExampleMessageConsumerTest extends TestCase
                         ->setPactDir(__DIR__ . '/../../output/');
     }
 
-    public static function tearDownAfterClass(): void
-    {
-        parent::tearDownAfterClass();
-
-        // build out brokerHttpService as your example
-        /*
-        $brokerHttpService = new BrokerHttpClient(new GuzzleClient(), new Uri($pactBrokerUri));
-        $brokerHttpService->publishJson($json, $consumerVersion);
-        $brokerHttpService->tag($this->mockServerConfig->getConsumer(), $consumerVersion, $tag);
-        */
-    }
-
     /**
      * @throws Exception
      */
@@ -53,7 +39,7 @@ class ExampleMessageConsumerTest extends TestCase
         $metadata = ['queue'=>'wind cries', 'routing_key'=>'wind cries'];
 
         $builder
-            ->given('a message', ['foo'])
+            ->given('a message', ['foo' => 'bar'])
             ->expectsToReceive('an alligator named Mary exists')
             ->withMetadata($metadata)
             ->withContent($contents);
@@ -63,11 +49,9 @@ class ExampleMessageConsumerTest extends TestCase
         $callback        = [$consumerMessage, 'ProcessText'];
         $builder->setCallback($callback);
 
-        $hasException = false;
+        $verifyResult = $builder->verify();
 
-        $builder->verify();
-
-        $this->assertTrue(true, 'Expects to reach this true statement by running verify()');
+        $this->assertTrue($verifyResult);
     }
 
     /**
@@ -93,14 +77,8 @@ class ExampleMessageConsumerTest extends TestCase
         $callback        = [$consumerMessage, 'ProcessSong'];
         $builder->setCallback($callback);
 
-        $hasException = false;
+        $verifyResult = $builder->verify();
 
-        try {
-            $builder->verify();
-        } catch (Exception $e) {
-            $hasException = true;
-        }
-
-        $this->assertFalse($hasException, 'Expects verification to pass without exceptions being thrown');
+        $this->assertTrue($verifyResult);
     }
 }

@@ -2,52 +2,53 @@
   "consumer": {
     "name": "test_consumer"
   },
-  "provider": {
-    "name": "test_provider"
-  },
   "messages": [
     {
-      "description": "an alligator named Mary exists",
-      "providerStates": [
-        {
-          "name": "a message"
-        }
-      ],
       "contents": {
-        "text": "Hello Mary"
+        "song": "And the wind whispers Mary"
       },
-      "matchingRules": {
-        "body": {
-        }
-      },
-      "metaData": {
-        "queue": "wind cries",
-        "routing_key": "wind cries"
-      }
-    },
-    {
       "description": "footprints dressed in red",
+      "metadata": {
+        "contentType": "application/json",
+        "queue": "And the clowns have all gone to bed",
+        "routing_key": "And the clowns have all gone to bed"
+      },
       "providerStates": [
         {
           "name": "You can hear happiness staggering on down the street"
         }
-      ],
+      ]
+    },
+    {
       "contents": {
-        "song": "And the wind whispers Mary"
+        "text": "Hello Mary"
       },
-      "matchingRules": {
-        "body": {
+      "description": "an alligator named Mary exists",
+      "metadata": {
+        "contentType": "application/json",
+        "queue": "wind cries",
+        "routing_key": "wind cries"
+      },
+      "providerStates": [
+        {
+          "name": "a message",
+          "params": {
+            "foo": "bar"
+          }
         }
-      },
-      "metaData": {
-        "queue": "And the clowns have all gone to bed",
-        "routing_key": "And the clowns have all gone to bed"
-      }
+      ]
     }
   ],
   "metadata": {
+    "pactRust": {
+      "ffi": "0.4.4",
+      "models": "1.0.13"
+    },
     "pactSpecification": {
-      "version": "2.0.0"
+      "version": "3.0.0"
     }
+  },
+  "provider": {
+    "name": "test_provider"
   }
 }

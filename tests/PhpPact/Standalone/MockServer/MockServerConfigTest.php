@@ -15,25 +15,23 @@ class MockServerConfigTest extends TestCase
         $consumer                 = 'test-consumer';
         $pactDir                  = 'test-pact-dir/';
         $pactFileWriteMode        = 'merge';
+        $logLevel                 = 'INFO';
         $log                      = 'test-log-dir/';
-        $cors                     = true;
-        $healthCheckTimeout       = 11;
-        $healthCheckRetrySec      = 22;
-        $pactSpecificationVersion = '2.0';
+        $pactSpecificationVersion = '3.0.0';
+        $secure                   = false;
 
-        $subject = (new MockServerConfig())
-            ->setHost($host)
+        $subject = new MockServerConfig();
+        $subject->setHost($host)
             ->setPort($port)
             ->setProvider($provider)
             ->setConsumer($consumer)
             ->setPactDir($pactDir)
             ->setPactFileWriteMode($pactFileWriteMode)
+            ->setLogLevel($logLevel)
             ->setLog($log)
-            ->setPactSpecificationVersion($pactSpecificationVersion)
-            ->setCors($cors)
-            ->setHealthCheckTimeout($healthCheckTimeout)
-            ->setHealthCheckRetrySec($healthCheckRetrySec);
+            ->setPactSpecificationVersion($pactSpecificationVersion);
 
+        static::assertSame($secure, $subject->isSecure());
         static::assertSame($host, $subject->getHost());
         static::assertSame($port, $subject->getPort());
         static::assertSame($provider, $subject->getProvider());
@@ -41,9 +39,7 @@ class MockServerConfigTest extends TestCase
         static::assertSame($pactDir, $subject->getPactDir());
         static::assertSame($pactFileWriteMode, $subject->getPactFileWriteMode());
         static::assertSame($log, $subject->getLog());
+        static::assertSame($logLevel, $subject->getLogLevel());
         static::assertSame($pactSpecificationVersion, $subject->getPactSpecificationVersion());
-        static::assertSame($cors, $subject->hasCors());
-        static::assertSame($healthCheckTimeout, $subject->getHealthCheckTimeout());
-        static::assertSame($healthCheckRetrySec, $subject->getHealthCheckRetrySec());
     }
 }

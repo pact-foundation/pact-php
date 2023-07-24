@@ -20,7 +20,7 @@ class PactConfigTest extends TestCase
         $provider                 = 'test-provider';
         $consumer                 = 'test-consumer';
         $pactDir                  = 'test-pact-dir/';
-        $pactSpecificationVersion = '2.0.0';
+        $pactSpecificationVersion = '3.0.0';
         $log                      = 'test-log-dir/';
         $logLevel                 = 'ERROR';
         $pactFileWriteMode        = 'merge';
