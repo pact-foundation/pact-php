@@ -15,8 +15,10 @@ class MockServerConfigTest extends TestCase
         $consumer                 = 'test-consumer';
         $pactDir                  = 'test-pact-dir/';
         $pactFileWriteMode        = 'merge';
+        $logLevel                 = 'INFO';
         $log                      = 'test-log-dir/';
-        $pactSpecificationVersion = '2.0';
+        $pactSpecificationVersion = '3.0.0';
+        $secure                   = false;
 
         $subject = new MockServerConfig();
         $subject->setHost($host)
@@ -25,9 +27,11 @@ class MockServerConfigTest extends TestCase
             ->setConsumer($consumer)
             ->setPactDir($pactDir)
             ->setPactFileWriteMode($pactFileWriteMode)
+            ->setLogLevel($logLevel)
             ->setLog($log)
             ->setPactSpecificationVersion($pactSpecificationVersion);
 
+        static::assertSame($secure, $subject->isSecure());
         static::assertSame($host, $subject->getHost());
         static::assertSame($port, $subject->getPort());
         static::assertSame($provider, $subject->getProvider());
@@ -35,6 +39,7 @@ class MockServerConfigTest extends TestCase
         static::assertSame($pactDir, $subject->getPactDir());
         static::assertSame($pactFileWriteMode, $subject->getPactFileWriteMode());
         static::assertSame($log, $subject->getLog());
+        static::assertSame($logLevel, $subject->getLogLevel());
         static::assertSame($pactSpecificationVersion, $subject->getPactSpecificationVersion());
     }
 }

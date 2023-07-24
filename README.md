@@ -45,7 +45,10 @@ Table of contents
   - [Usage for the optional `pact-stub-service`](#usage-for-the-optional-pact-stub-service)
 
 ## Versions
-9.X updates internal dependencies and libraries + adds support for pact specification 3.X & 4.X via Pact FFI.   This results in dropping PHP 7.4
+
+10.X updates internal dependencies and libraries + adds support for pact specification 3.X & 4.X via Pact FFI.
+
+9.X updates internal dependencies and libraries including pact-ruby-standalone v2.x which adds support for ARM64 CPU's for Linux/MacOS and providing x86 and x86_64 Windows via pact-ruby-standalone v2.x.   This results in dropping PHP 7.4
 
 8.X updates internal dependencies and libraries.   This results in dropping PHP 7.3
 
@@ -64,11 +67,22 @@ If you wish to stick with the 2.X implementation, you can continue to pull from 
 
 The 3.X version is the version of Pact-PHP, not the pact specification version that it supports.
 
-Pact-Php 3.X -> 8.X supports [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2).
-Pact-Php 9.X supports:
+Pact-Php 3.X -> 9.X supports [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2).
+Pact-Php 10.X supports:
     * [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2)
     * [Pact-Specification 3.X](https://github.com/pact-foundation/pact-specification/tree/version-3).
     * [Pact-Specification 4.X](https://github.com/pact-foundation/pact-specification/tree/version-4).
+
+##  Supported Platforms
+
+| OS      | Architecture | Supported  | Pact-PHP Version |
+| ------- | ------------ | ---------  | ---------------- |
+| OSX     | x86_64       | ✅         | All              |
+| Linux   | x86_64       | ✅         | All              |
+| OSX     | arm64        | ✅         | 9.x +            |
+| Linux   | arm64        | ✅         | 9.x +            |
+| Windows | x86_64       | ✅         | All              |
+| Windows | x86          | ✅         | All              |  
 
 ## Installation
 
