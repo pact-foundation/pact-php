@@ -93,23 +93,24 @@ class Matcher
     }
 
     /**
-     * @param mixed $value example of what the expected data would be
-     * @param int   $min   minimum number of objects to verify against
+     * @param array $values example of what the expected data would be
+     * @param int   $min    minimum number of objects to verify against
+     * @param int   $min    maximum number of objects to verify against
      *
      * @return array<string, mixed>
      */
-    public function atLeastAndMostLike(mixed $value, int $min, int $max): array
+    public function arrayLike(array $values, ?int $min = null, ?int $max = null): array
     {
-        if ($min <= 0 || $min > $max) {
+        if (($min !== null && $min <= 0) || ($min !== null && $max !== null && $min > $max)) {
             throw new Exception('Invalid minimum number of elements');
         }
 
         return [
-            'value' => array_fill(0, $min, $value),
+            'value' => $values,
             'pact:matcher:type' => 'type',
-            'min' => $min,
-            'max' => $max,
-        ];
+        ] +
+        ($min === null ? [] : ['min' => $min]) +
+        ($max === null ? [] : ['max' => $max]);
     }
 
     /**

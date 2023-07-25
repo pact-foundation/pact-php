@@ -134,36 +134,45 @@ class MatcherTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testAtLeastAndMostLikeInvalidMin()
+    public function testArrayLikeNegativeMin()
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Invalid minimum number of elements');
-        $this->matcher->atLeastAndMostLike('text', 10, 1);
+        $this->matcher->arrayLike(['text'], -2, 9);
     }
 
     /**
-     * @dataProvider dataProviderForEachLikeTest
+     * @throws Exception
      */
-    public function testAtLeastAndMostLike(object|array $value)
+    public function testArrayLikeMinLargerThanMax()
     {
-        $eachValueMatcher = [
-            'value1' => [
-                'value'             => 1,
-                'pact:matcher:type' => 'type',
-            ],
-            'value2' => 2,
-        ];
-        $expected = \json_encode([
-            'value' => [
-                $eachValueMatcher,
-                $eachValueMatcher,
-            ],
-            'pact:matcher:type' => 'type',
-            'min'               => 2,
-            'max'               => 4,
-        ]);
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Invalid minimum number of elements');
+        $this->matcher->arrayLike(['text'], 10, 1);
+    }
 
-        $actual = \json_encode($this->matcher->atLeastAndMostLike($value, 2, 4));
+    public function dataProviderForArrayLikeTest()
+    {
+        return [
+            [null, null, []],
+            [2, null, ['min' => 2]],
+            [null, 5, ['max' => 5]],
+            [3, 8, ['min' => 3, 'max' => 8]],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderForArrayLikeTest
+     */
+    public function testArrayLike(?int $min, ?int $max, array $expectedMinMax)
+    {
+        $values = ['test1', 'test2'];
+        $expected = \json_encode([
+            'value'             => $values,
+            'pact:matcher:type' => 'type',
+        ] + $expectedMinMax);
+
+        $actual = \json_encode($this->matcher->arrayLike($values, $min, $max));
 
         $this->assertEquals($expected, $actual);
     }
