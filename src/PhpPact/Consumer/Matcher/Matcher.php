@@ -93,9 +93,9 @@ class Matcher
     }
 
     /**
-     * @param array $values example of what the expected data would be
-     * @param int   $min    minimum number of objects to verify against
-     * @param int   $min    maximum number of objects to verify against
+     * @param array<mixed> $values example of what the expected data would be
+     * @param int          $min    minimum number of objects to verify against
+     * @param int          $min    maximum number of objects to verify against
      *
      * @return array<string, mixed>
      */
