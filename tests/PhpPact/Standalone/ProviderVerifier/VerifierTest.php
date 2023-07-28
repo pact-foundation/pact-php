@@ -19,7 +19,7 @@ class VerifierTest extends TestCase
     {
         $publicPath    =  __DIR__ . '/../../../_public/';
 
-        $this->process = new Process(['php', '-S', '127.0.0.1:7202', '-t', $publicPath]);
+        $this->process = new Process(['php', '-S', '127.0.0.1:7202', '-t', $publicPath], null, null, null, null);
 
         $this->process->start();
         $this->process->waitUntil(fn () => is_resource(@fsockopen('127.0.0.1', 7202)));
