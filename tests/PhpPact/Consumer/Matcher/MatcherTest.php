@@ -134,45 +134,49 @@ class MatcherTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testArrayLikeNegativeMin()
+    public function testConstrainedArrayLikeCountLessThanMin()
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Invalid minimum number of elements');
-        $this->matcher->arrayLike(['text'], -2, 9);
+        $this->expectExceptionMessage('constrainedArrayLike has a minimum of 2 but 1 elements where requested.' .
+        ' Make sure the count is greater than or equal to the min.');
+        $this->matcher->constrainedArrayLike('text', 2, 4, 1);
     }
 
     /**
      * @throws Exception
      */
-    public function testArrayLikeMinLargerThanMax()
+    public function testConstrainedArrayLikeCountLargerThanMax()
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Invalid minimum number of elements');
-        $this->matcher->arrayLike(['text'], 10, 1);
-    }
-
-    public function dataProviderForArrayLikeTest()
-    {
-        return [
-            [null, null, []],
-            [2, null, ['min' => 2]],
-            [null, 5, ['max' => 5]],
-            [3, 8, ['min' => 3, 'max' => 8]],
-        ];
+        $this->expectExceptionMessage('constrainedArrayLike has a maximum of 5 but 7 elements where requested.' .
+        ' Make sure the count is less than or equal to the max.');
+        $this->matcher->constrainedArrayLike('text', 3, 5, 7);
     }
 
     /**
-     * @dataProvider dataProviderForArrayLikeTest
+     * @dataProvider dataProviderForEachLikeTest
      */
-    public function testArrayLike(?int $min, ?int $max, array $expectedMinMax)
+    public function testConstrainedArrayLike(object|array $value)
     {
-        $values = ['test1', 'test2'];
+        $eachValueMatcher = [
+            'value1' => [
+                'value'             => 1,
+                'pact:matcher:type' => 'type',
+            ],
+            'value2' => 2,
+        ];
         $expected = \json_encode([
-            'value'             => $values,
+            'min'               => 2,
+            'max'               => 4,
             'pact:matcher:type' => 'type',
-        ] + $expectedMinMax);
+            'value' => [
+                $eachValueMatcher,
+                $eachValueMatcher,
+                $eachValueMatcher,
+            ],
+        ]);
 
-        $actual = \json_encode($this->matcher->arrayLike($values, $min, $max));
+        $actual = \json_encode($this->matcher->constrainedArrayLike($value, 2, 4, 3));
 
         $this->assertEquals($expected, $actual);
     }
