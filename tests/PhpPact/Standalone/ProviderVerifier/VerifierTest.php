@@ -22,7 +22,15 @@ class VerifierTest extends TestCase
         $this->process = new Process(['php', '-S', '127.0.0.1:7202', '-t', $publicPath], null, null, null, null);
 
         $this->process->start();
-        $this->process->waitUntil(fn () => is_resource(@fsockopen('127.0.0.1', 7202)));
+        $this->process->waitUntil(function (): bool {
+            $fp = @fsockopen('127.0.0.1', 7202);
+            $isOpen = is_resource($fp);
+            if ($isOpen) {
+                fclose($fp);
+            }
+
+            return $isOpen;
+        });
     }
 
     /**
