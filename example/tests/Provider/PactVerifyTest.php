@@ -25,7 +25,7 @@ class PactVerifyTest extends TestCase
     {
         $publicPath    =  __DIR__ . '/../../src/Provider/public/';
 
-        $this->process = new Process(['php', '-S', '127.0.0.1:7202', '-t', $publicPath], null, null, null, null);
+        $this->process = new Process(['php', '-S', '127.0.0.1:7202', '-t', $publicPath]);
 
         $this->process->start();
         $this->process->waitUntil(function (): bool {
