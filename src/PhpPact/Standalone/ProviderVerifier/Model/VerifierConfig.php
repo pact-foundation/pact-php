@@ -9,7 +9,6 @@ use PhpPact\Standalone\ProviderVerifier\Model\Config\ConsumerFilters;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ConsumerFiltersInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\FilterInfo;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\FilterInfoInterface;
-use PhpPact\Standalone\ProviderVerifier\Model\Config\PluginDirTrait;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderInfo;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderInfoInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderState;
@@ -22,7 +21,6 @@ use PhpPact\Standalone\ProviderVerifier\Model\Config\VerificationOptionsInterfac
 class VerifierConfig implements VerifierConfigInterface
 {
     use LogLevelTrait;
-    use PluginDirTrait;
 
     private CallingAppInterface $callingApp;
     private ProviderInfoInterface $providerInfo;
