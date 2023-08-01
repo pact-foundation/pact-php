@@ -100,7 +100,7 @@ class Matcher
      *
      * @return array<string, mixed>
      */
-    public function constrainedArrayLike(mixed $value, int $min = null, int $max = null, ?int $count = null): array
+    public function constrainedArrayLike(mixed $value, int $min, int $max, ?int $count = null): array
     {
         $elements = $count ?? $min;
         if ($count !== null) {
