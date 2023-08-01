@@ -27,8 +27,7 @@ class Verifier
             ->setVerificationOptions($config)
             ->setPublishOptions($config)
             ->setConsumerFilters($config)
-            ->setLogLevel($config)
-            ->setPluginDir($config);
+            ->setLogLevel($config);
     }
 
     private function newHandle(VerifierConfigInterface $config): self
@@ -146,15 +145,6 @@ class Verifier
     {
         if ($logLevel = $config->getLogLevel()) {
             $this->client->call('pactffi_init_with_log_level', $logLevel);
-        }
-
-        return $this;
-    }
-
-    private function setPluginDir(VerifierConfigInterface $config): self
-    {
-        if ($pluginDir = $config->getPluginDir()) {
-            \putenv("PACT_PLUGIN_DIR={$pluginDir}");
         }
 
         return $this;

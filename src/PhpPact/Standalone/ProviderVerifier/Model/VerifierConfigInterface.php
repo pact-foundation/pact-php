@@ -58,8 +58,4 @@ interface VerifierConfigInterface
     public function getLogLevel(): ?string;
 
     public function setLogLevel(string $logLevel): self;
-
-    public function getPluginDir(): ?string;
-
-    public function setPluginDir(?string $pluginDir): self;
 }
