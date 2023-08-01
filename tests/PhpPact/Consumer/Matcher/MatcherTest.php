@@ -134,17 +134,29 @@ class MatcherTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testAtLeastAndMostLikeInvalidMin()
+    public function testConstrainedArrayLikeCountLessThanMin()
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Invalid minimum number of elements');
-        $this->matcher->atLeastAndMostLike('text', 10, 1);
+        $this->expectExceptionMessage('constrainedArrayLike has a minimum of 2 but 1 elements where requested.' .
+        ' Make sure the count is greater than or equal to the min.');
+        $this->matcher->constrainedArrayLike('text', 2, 4, 1);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testConstrainedArrayLikeCountLargerThanMax()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('constrainedArrayLike has a maximum of 5 but 7 elements where requested.' .
+        ' Make sure the count is less than or equal to the max.');
+        $this->matcher->constrainedArrayLike('text', 3, 5, 7);
     }
 
     /**
      * @dataProvider dataProviderForEachLikeTest
      */
-    public function testAtLeastAndMostLike(object|array $value)
+    public function testConstrainedArrayLike(object|array $value)
     {
         $eachValueMatcher = [
             'value1' => [
@@ -154,16 +166,17 @@ class MatcherTest extends TestCase
             'value2' => 2,
         ];
         $expected = \json_encode([
+            'min'               => 2,
+            'max'               => 4,
+            'pact:matcher:type' => 'type',
             'value' => [
                 $eachValueMatcher,
                 $eachValueMatcher,
+                $eachValueMatcher,
             ],
-            'pact:matcher:type' => 'type',
-            'min'               => 2,
-            'max'               => 4,
         ]);
 
-        $actual = \json_encode($this->matcher->atLeastAndMostLike($value, 2, 4));
+        $actual = \json_encode($this->matcher->constrainedArrayLike($value, 2, 4, 3));
 
         $this->assertEquals($expected, $actual);
     }

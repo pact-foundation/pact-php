@@ -163,6 +163,7 @@ timestampRFC3339 | Regex match a timestamp using the RFC3339 format. | Value (De
 like | Match a value against its data type. | Value | $matcher->like(12)
 somethingLike | Alias to like matcher. | Value | $matcher->somethingLike(12)
 eachLike | Match on an object like the example. | Value, Min (Defaults to 1) | $matcher->eachLike(12)
+constrainedArrayLike | Behaves like the `eachLike` matcher, but also applies a minimum and maximum length validation on the length of the array. The optional `count` parameter controls the number of examples generated. | Value, Min, Max, count (Defaults to null) | $matcher->constrainedArrayLike('test', 1, 5, 3)
 boolean | Match against boolean true. | none | $matcher->boolean()
 integer | Match a value against integer. | Value (Defaults to 13) | $matcher->integer()
 decimal | Match a value against float. | Value (Defaults to 13.01) | $matcher->decimal()
