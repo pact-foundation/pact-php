@@ -3,7 +3,8 @@
 namespace PhpPact\Consumer\Model;
 
 use JsonException;
-use PhpPact\Consumer\Model\Interaction\ContentTypeTrait;
+use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Text;
 
 /**
  * Message metadata and contents to be posted to the Mock Server for PACT tests.
@@ -11,7 +12,6 @@ use PhpPact\Consumer\Model\Interaction\ContentTypeTrait;
 class Message
 {
     use ProviderStates;
-    use ContentTypeTrait;
 
     private string $description;
 
@@ -20,7 +20,7 @@ class Message
      */
     private array $metadata = [];
 
-    private ?string $contents = null;
+    private Text|Binary|null $contents = null;
 
     public function getDescription(): string
     {
@@ -60,7 +60,7 @@ class Message
         $this->metadata[$key] = $value;
     }
 
-    public function getContents(): ?string
+    public function getContents(): Text|Binary|null
     {
         return $this->contents;
     }
@@ -70,13 +70,12 @@ class Message
      */
     public function setContents(mixed $contents): self
     {
-        if (\is_string($contents) || \is_null($contents)) {
+        if (\is_string($contents)) {
+            $this->contents = new Text($contents, 'text/plain');
+        } elseif (\is_null($contents) || $contents instanceof Text || $contents instanceof Binary) {
             $this->contents = $contents;
         } else {
-            $this->contents = \json_encode($contents, JSON_THROW_ON_ERROR);
-            if (!isset($this->contentType)) {
-                $this->setContentType('application/json');
-            }
+            $this->contents = new Text(\json_encode($contents, JSON_THROW_ON_ERROR), 'application/json');
         }
 
         return $this;

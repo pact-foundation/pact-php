@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Consumer\Registry\Interaction\Contents;
+namespace PhpPact\Consumer\Registry\Interaction\Body;
 
 use PhpPact\Consumer\Registry\Interaction\Part\ResponsePartTrait;
 

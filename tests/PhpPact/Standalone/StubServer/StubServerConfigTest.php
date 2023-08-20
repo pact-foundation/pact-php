@@ -18,7 +18,7 @@ class StubServerConfigTest extends TestCase
         $providerStateHeaderName = 'header';
         $token                   = 'token';
         $user                    = 'user:password';
-        $dirs                    = [__DIR__ . '/../../../_resources'];
+        $dirs                    = ['/path/to/pacts'];
         $files                   = ['/path/to/pact.json'];
         $urls                    = ['http://example.com/path/to/file.json'];
         $consumerNames           = ['consumer-1', 'consumer-2'];

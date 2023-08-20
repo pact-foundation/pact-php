@@ -3,7 +3,6 @@
 namespace PhpPact\Consumer\Model;
 
 use PhpPact\Consumer\Model\Interaction\BodyTrait;
-use PhpPact\Consumer\Model\Interaction\ContentTypeTrait;
 use PhpPact\Consumer\Model\Interaction\HeadersTrait;
 use PhpPact\Consumer\Model\Interaction\StatusTrait;
 
@@ -14,6 +13,5 @@ class ProviderResponse
 {
     use HeadersTrait;
     use BodyTrait;
-    use ContentTypeTrait;
     use StatusTrait;
 }

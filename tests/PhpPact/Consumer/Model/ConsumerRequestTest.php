@@ -3,6 +3,7 @@
 namespace PhpPactTest\Consumer\Model;
 
 use PhpPact\Consumer\Matcher\Matcher;
+use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +25,11 @@ class ConsumerRequestTest extends TestCase
         $this->assertEquals(['Content-Type' => ['application/json']], $model->getHeaders());
         $this->assertEquals(['fruit' => ['apple', 'banana']], $model->getQuery());
         $this->assertEquals('/somepath', $model->getPath());
-        $this->assertEquals('{"currentCity":"Austin"}', $model->getBody());
+
+        $body = $model->getBody();
+        $this->assertInstanceOf(Text::class, $body);
+        $this->assertEquals('{"currentCity":"Austin"}', $body->getContents());
+        $this->assertEquals('application/json', $body->getContentType());
     }
 
     public function testSerializingWhenPathUsingMatcher()
@@ -45,6 +50,10 @@ class ConsumerRequestTest extends TestCase
         $this->assertEquals(['Content-Type' => ['application/json']], $model->getHeaders());
         $this->assertEquals(['food' => ['milk']], $model->getQuery());
         $this->assertEquals('{"value":"\/somepath\/474d610b-c6e3-45bd-9f70-529e7ad21df0\/status","regex":"\\\\\\/somepath\\\\\\/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}\\\\\\/status","pact:matcher:type":"regex"}', $model->getPath());
-        $this->assertEquals('{"status":"finished"}', $model->getBody());
+
+        $body = $model->getBody();
+        $this->assertInstanceOf(Text::class, $body);
+        $this->assertEquals('{"status":"finished"}', $body->getContents());
+        $this->assertEquals('application/json', $body->getContentType());
     }
 }

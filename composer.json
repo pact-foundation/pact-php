@@ -49,7 +49,11 @@
             "MessageConsumer\\": "example/message/consumer/src",
             "MessageConsumer\\Tests\\": "example/message/consumer/tests",
             "MessageProvider\\": "example/message/provider/src",
-            "MessageProvider\\Tests\\": "example/message/provider/tests"
+            "MessageProvider\\Tests\\": "example/message/provider/tests",
+            "BinaryConsumer\\": "example/binary/consumer/src",
+            "BinaryConsumer\\Tests\\": "example/binary/consumer/tests",
+            "BinaryProvider\\": "example/binary/provider/src",
+            "BinaryProvider\\Tests\\": "example/binary/provider/tests"
         }
     },
     "scripts": {

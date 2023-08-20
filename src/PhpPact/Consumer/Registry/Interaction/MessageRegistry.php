@@ -2,21 +2,23 @@
 
 namespace PhpPact\Consumer\Registry\Interaction;
 
+use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Consumer\Model\ProviderState;
-use PhpPact\Consumer\Registry\Interaction\Contents\ContentsRegistryInterface;
-use PhpPact\Consumer\Registry\Interaction\Contents\MessageContentsRegistry;
+use PhpPact\Consumer\Registry\Interaction\Body\BodyRegistryInterface;
+use PhpPact\Consumer\Registry\Interaction\Body\MessageContentsRegistry;
 use PhpPact\Consumer\Registry\Pact\PactRegistryInterface;
 use PhpPact\FFI\ClientInterface;
 
 class MessageRegistry extends AbstractRegistry implements MessageRegistryInterface
 {
-    private ContentsRegistryInterface $messageContentsRegistry;
+    private BodyRegistryInterface $messageContentsRegistry;
 
     public function __construct(
         ClientInterface $client,
         PactRegistryInterface $pactRegistry,
-        ?ContentsRegistryInterface $messageContentsRegistry = null
+        ?BodyRegistryInterface $messageContentsRegistry = null
     ) {
         parent::__construct($client, $pactRegistry);
         $this->messageContentsRegistry = $messageContentsRegistry ?? new MessageContentsRegistry($client, $this);
@@ -30,7 +32,7 @@ class MessageRegistry extends AbstractRegistry implements MessageRegistryInterfa
             ->given($message->getProviderStates())
             ->expectsToReceive($message->getDescription())
             ->withMetadata($message->getMetadata())
-            ->withContents($message->getContentType(), $message->getContents());
+            ->withContents($message->getContents());
     }
 
     protected function newInteraction(string $description): self
@@ -40,9 +42,11 @@ class MessageRegistry extends AbstractRegistry implements MessageRegistryInterfa
         return $this;
     }
 
-    private function withContents(?string $contentType = null, ?string $contents = null): self
+    private function withContents(Text|Binary|null $contents): self
     {
-        $this->messageContentsRegistry->withContents($contentType, $contents);
+        if ($contents) {
+            $this->messageContentsRegistry->withBody($contents);
+        }
 
         return $this;
     }
