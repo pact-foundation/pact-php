@@ -53,7 +53,11 @@
             "BinaryConsumer\\": "example/binary/consumer/src",
             "BinaryConsumer\\Tests\\": "example/binary/consumer/tests",
             "BinaryProvider\\": "example/binary/provider/src",
-            "BinaryProvider\\Tests\\": "example/binary/provider/tests"
+            "BinaryProvider\\Tests\\": "example/binary/provider/tests",
+            "MultipartConsumer\\": "example/multipart/consumer/src",
+            "MultipartConsumer\\Tests\\": "example/multipart/consumer/tests",
+            "MultipartProvider\\": "example/multipart/provider/src",
+            "MultipartProvider\\Tests\\": "example/multipart/provider/tests"
         }
     },
     "scripts": {

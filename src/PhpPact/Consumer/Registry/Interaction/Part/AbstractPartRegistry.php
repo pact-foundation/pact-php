@@ -3,6 +3,7 @@
 namespace PhpPact\Consumer\Registry\Interaction\Part;
 
 use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Registry\Interaction\Body\BodyRegistryInterface;
 use PhpPact\Consumer\Registry\Interaction\InteractionRegistryInterface;
@@ -17,7 +18,7 @@ abstract class AbstractPartRegistry implements PartRegistryInterface
     ) {
     }
 
-    public function withBody(Text|Binary|null $body): self
+    public function withBody(Text|Binary|Multipart|null $body): self
     {
         if ($body) {
             $this->bodyRegistry->withBody($body);
