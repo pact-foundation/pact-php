@@ -34,9 +34,9 @@ class HttpClientServiceTest extends TestCase
                 ],
             ])
             ->setBody(new Multipart([
-                new Part($fullNameTempFile = $this->createTempFile($fullName), 'full_name', 'text/plain'),
+                new Part(__DIR__ . '/../_resource/full_name.txt', 'full_name', 'text/plain'),
                 new Part(__DIR__ . '/../_resource/image.jpg', 'profile_image', in_array(php_uname('m'), ['AMD64', 'arm64']) ? 'application/octet-stream' : 'image/jpeg'),
-                new Part($personalNoteTempFile = $this->createTempFile($personalNote), 'personal_note', 'text/plain'),
+                new Part(__DIR__ . '/../_resource/note.txt', 'personal_note', 'text/plain'),
             ]));
 
         $response = new ProviderResponse();
@@ -68,28 +68,11 @@ class HttpClientServiceTest extends TestCase
         $userProfileResponse = $service->updateUserProfile();
         $verifyResult = $builder->verify();
 
-        unlink($fullNameTempFile);
-        unlink($personalNoteTempFile);
-
         $this->assertTrue($verifyResult);
         $this->assertEquals([
             'full_name' => $fullName,
             'profile_image' => $profileImageUrl,
             'personal_note' => $personalNote,
         ], \json_decode($userProfileResponse, true, 512, JSON_THROW_ON_ERROR));
-    }
-
-    private function createTempFile(string $contents): string
-    {
-        $path = tempnam(sys_get_temp_dir(), 'pact');
-        //$newPath = "$path.txt";
-        //rename($path, $newPath);
-        $newPath = $path;
-
-        $handle = fopen($newPath, 'w');
-        fwrite($handle, $contents);
-        fclose($handle);
-
-        return $newPath;
     }
 }

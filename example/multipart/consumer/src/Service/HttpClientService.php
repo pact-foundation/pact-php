@@ -27,9 +27,6 @@ class HttpClientService
                     'name' => 'full_name',
                     'contents' => 'Zoey Turcotte',
                     'filename' => 'full_name.txt',
-                    'headers' => [
-                        'Content-Type' => 'application/octet-stream',
-                    ],
                 ],
                 [
                     'name' => 'profile_image',
@@ -40,10 +37,6 @@ class HttpClientService
                     'name' => 'personal_note',
                     'contents' => 'testing',
                     'filename' => 'note.txt',
-                    'headers' => [
-                        'X-Foo' => 'this is a note',
-                        'Content-Type' => 'application/octet-stream',
-                    ],
                 ],
             ],
             'headers' => [
