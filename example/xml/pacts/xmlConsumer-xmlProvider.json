@@ -1,0 +1,122 @@
+{
+  "consumer": {
+    "name": "xmlConsumer"
+  },
+  "interactions": [
+    {
+      "description": "A get request to /movies",
+      "providerStates": [
+        {
+          "name": "Movies exist"
+        }
+      ],
+      "request": {
+        "headers": {
+          "Accept": "text/xml; charset=UTF8"
+        },
+        "method": "GET",
+        "path": "/movies"
+      },
+      "response": {
+        "body": "<?xml version='1.0'?><movies><movie><title>PHP: Behind the Parser</title><characters><character><name>Ms. Coder</name><actor>Onlivia Actora</actor></character><character><name/><actor/></character></characters><plot>So, this language. It's like, a programming language. Or is it a\nscripting language? All is revealed in this thrilling horror spoof\nof a documentary.</plot><great-lines><line>PHP solves all my web problems</line></great-lines><rating type='thumbs'>7</rating><rating type='stars'>5</rating></movie></movies>",
+        "headers": {
+          "Content-Type": "text/xml"
+        },
+        "matchingRules": {
+          "body": {
+            "$.movies.movie": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.characters.character": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.characters.character.actor.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.characters.character.name.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.great-lines.line": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.great-lines.line.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.plot.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.rating.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                },
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.title.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.7",
+      "mockserver": "1.2.3",
+      "models": "1.1.9"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "xmlProvider"
+  }
+}
