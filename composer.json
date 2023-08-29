@@ -32,7 +32,8 @@
         "friendsofphp/php-cs-fixer": "^3.0",
         "php-amqplib/php-amqplib": "^3.0",
         "phpstan/phpstan": "^1.9",
-        "phpunit/phpunit": ">=8.5.23 <10"
+        "phpunit/phpunit": ">=8.5.23 <10",
+        "tienvx/pact-php-xml": "dev-main"
     },
     "autoload": {
         "psr-4": {
@@ -53,7 +54,11 @@
             "BinaryConsumer\\": "example/binary/consumer/src",
             "BinaryConsumer\\Tests\\": "example/binary/consumer/tests",
             "BinaryProvider\\": "example/binary/provider/src",
-            "BinaryProvider\\Tests\\": "example/binary/provider/tests"
+            "BinaryProvider\\Tests\\": "example/binary/provider/tests",
+            "XmlConsumer\\": "example/xml/consumer/src",
+            "XmlConsumer\\Tests\\": "example/xml/consumer/tests",
+            "XmlProvider\\": "example/xml/provider/src",
+            "XmlProvider\\Tests\\": "example/xml/provider/tests"
         }
     },
     "scripts": {
