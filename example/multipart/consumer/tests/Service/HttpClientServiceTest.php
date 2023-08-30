@@ -35,7 +35,7 @@ class HttpClientServiceTest extends TestCase
             ])
             ->setBody(new Multipart([
                 new Part($fullNameTempFile = $this->createTempFile($fullName), 'full_name', 'text/plain'),
-                new Part(__DIR__ . '/../_resource/image.jpg', 'profile_image', 'image/jpeg'),
+                new Part(__DIR__ . '/../_resource/image.jpg', 'profile_image', in_array(php_uname('m'), ['AMD64', 'arm64']) ? 'application/octet-stream' : 'image/jpeg'),
                 new Part($personalNoteTempFile = $this->createTempFile($personalNote), 'personal_note', 'text/plain'),
             ]));
 
