@@ -25,11 +25,16 @@ class HttpClientService
             'multipart' => [
                 [
                     'name' => 'full_name',
-                    'contents' => 'Zoey Turcotte'
+                    'contents' => 'Zoey Turcotte',
+                    'filename' => 'full_name.txt',
+                    'headers' => [
+                        'Content-Type' => 'application/octet-stream',
+                    ],
                 ],
                 [
                     'name' => 'profile_image',
-                    'contents' => file_get_contents(__DIR__ . '/../_resource/image.jpg')
+                    'contents' => file_get_contents(__DIR__ . '/../_resource/image.jpg'),
+                    'filename' => 'image.jpg',
                 ],
                 [
                     'name' => 'personal_note',
