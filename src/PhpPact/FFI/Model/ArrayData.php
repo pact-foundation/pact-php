@@ -54,7 +54,7 @@ class ArrayData
 
     public function __destruct()
     {
-        for ($i=0; $i < $this->size; $i++) {
+        for ($i = 0; $i < $this->size; $i++) {
             FFI::free($this->items[$i]); // @phpstan-ignore-line
         }
     }

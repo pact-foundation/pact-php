@@ -10,8 +10,20 @@
     </report>
   </coverage>
   <testsuites>
-    <testsuite name="PhpPact Core Test Suite">
-      <directory>./tests/PhpPact</directory>
+    <testsuite name="PhpPact Core Tests">
+        <directory>./tests</directory>
+    </testsuite>
+    <testsuite name="PhpPact Json Consumer Example Tests">
+        <directory>./example/json/consumer/tests</directory>
+    </testsuite>
+    <testsuite name="PhpPact Json Provider Example Tests">
+        <directory>./example/json/provider/tests</directory>
+    </testsuite>
+    <testsuite name="PhpPact Message Consumer Example Tests">
+        <directory>./example/message/consumer/tests</directory>
+    </testsuite>
+    <testsuite name="PhpPact Message Provider Example Tests">
+        <directory>./example/message/provider/tests</directory>
     </testsuite>
   </testsuites>
   <logging>

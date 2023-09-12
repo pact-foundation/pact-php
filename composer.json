@@ -42,21 +42,14 @@
     "autoload-dev": {
         "psr-4": {
             "PhpPactTest\\": "tests/PhpPact",
-            "Consumer\\": [
-                "example/src/Consumer",
-                "example/tests/Consumer"
-            ],
-            "MessageConsumer\\": [
-                "example/src/MessageConsumer",
-                "example/tests/MessageConsumer"
-            ],
-            "MessageProvider\\": [
-                "example/src/MessageProvider",
-                "example/tests/MessageProvider"
-            ],
-            "Provider\\": [
-                "example/src/Provider"
-            ]
+            "JsonConsumer\\": "example/json/consumer/src",
+            "JsonConsumer\\Tests\\": "example/json/consumer/tests",
+            "JsonProvider\\": "example/json/provider/src",
+            "JsonProvider\\Tests\\": "example/json/provider/tests",
+            "MessageConsumer\\": "example/message/consumer/src",
+            "MessageConsumer\\Tests\\": "example/message/consumer/tests",
+            "MessageProvider\\": "example/message/provider/src",
+            "MessageProvider\\Tests\\": "example/message/provider/tests"
         }
     },
     "scripts": {
@@ -65,8 +58,8 @@
         "lint": "php-cs-fixer fix --dry-run",
         "fix": "php-cs-fixer fix",
         "test": [
-            "php -r \"array_map('unlink', glob('./example/output/*.json'));\"",
-            "phpunit --debug -c example/phpunit.all.xml"
+            "php -r \"array_map('unlink', glob('./example/*/pacts/*.json'));\"",
+            "phpunit --debug"
         ]
     },
     "extra": {
