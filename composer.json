@@ -58,7 +58,11 @@
             "XmlConsumer\\": "example/xml/consumer/src",
             "XmlConsumer\\Tests\\": "example/xml/consumer/tests",
             "XmlProvider\\": "example/xml/provider/src",
-            "XmlProvider\\Tests\\": "example/xml/provider/tests"
+            "XmlProvider\\Tests\\": "example/xml/provider/tests",
+            "MultipartConsumer\\": "example/multipart/consumer/src",
+            "MultipartConsumer\\Tests\\": "example/multipart/consumer/tests",
+            "MultipartProvider\\": "example/multipart/provider/src",
+            "MultipartProvider\\Tests\\": "example/multipart/provider/tests"
         }
     },
     "scripts": {
@@ -74,12 +78,12 @@
     "extra": {
         "downloads": {
             "pact-ffi-headers": {
-                "version": "0.4.7",
+                "version": "0.4.8",
                 "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/pact.h",
                 "path": "bin/pact-ffi-headers/pact.h"
             },
             "pact-ffi-lib": {
-                "version": "0.4.7",
+                "version": "0.4.8",
                 "variables": {
                     "{$prefix}": "PHP_OS_FAMILY === 'Windows' ? 'pact_ffi' : 'libpact_ffi'",
                     "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
