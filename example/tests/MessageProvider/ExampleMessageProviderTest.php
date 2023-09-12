@@ -19,7 +19,7 @@ class ExampleMessageProviderTest extends TestCase
         $callbacks                                         = [];
         $callbacks['an alligator named Mary exists']       = function () {
             $content       = new \stdClass();
-            $content->text ='Hello Mary';
+            $content->text = 'Hello Mary';
 
             $metadata          = [];
             $metadata['queue'] = 'myKey';
@@ -33,7 +33,7 @@ class ExampleMessageProviderTest extends TestCase
 
         $callbacks['footprints dressed in red'] = function () {
             $content       = new \stdClass();
-            $content->song ='And the wind whispers Mary';
+            $content->song = 'And the wind whispers Mary';
 
             $metadata          = [];
             $metadata['queue'] = 'myKey';
