@@ -56,11 +56,4 @@ abstract class AbstractMessageBuilder implements BuilderInterface
 
         return $this;
     }
-
-    public function withContentType(?string $contentType): self
-    {
-        $this->message->setContentType($contentType);
-
-        return $this;
-    }
 }

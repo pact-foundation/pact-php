@@ -2,7 +2,9 @@
 
 namespace PhpPact\Consumer\Registry\Interaction\Part;
 
-use PhpPact\Consumer\Registry\Interaction\Contents\ContentsRegistryInterface;
+use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Text;
+use PhpPact\Consumer\Registry\Interaction\Body\BodyRegistryInterface;
 use PhpPact\Consumer\Registry\Interaction\InteractionRegistryInterface;
 use PhpPact\FFI\ClientInterface;
 
@@ -11,13 +13,15 @@ abstract class AbstractPartRegistry implements PartRegistryInterface
     public function __construct(
         protected ClientInterface $client,
         protected InteractionRegistryInterface $interactionRegistry,
-        private ContentsRegistryInterface $contentsRegistry
+        private BodyRegistryInterface $bodyRegistry
     ) {
     }
 
-    public function withBody(?string $contentType = null, ?string $body = null): self
+    public function withBody(Text|Binary|null $body): self
     {
-        $this->contentsRegistry->withContents($contentType, $body);
+        if ($body) {
+            $this->bodyRegistry->withBody($body);
+        }
 
         return $this;
     }

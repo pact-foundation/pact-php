@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\Consumer\Model;
 
+use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Consumer\Model\ProviderState;
 use PHPUnit\Framework\TestCase;
@@ -29,6 +30,10 @@ class MessageTest extends TestCase
         static::assertEquals($providerStateName, $providerStates[0]->getName());
         static::assertEquals($providerStateParams, $providerStates[0]->getParams());
         static::assertSame($metadata, $subject->getMetadata());
-        static::assertSame($contents, $subject->getContents());
+
+        $messageContents = $subject->getContents();
+        $this->assertInstanceOf(Text::class, $messageContents);
+        $this->assertEquals($contents, $messageContents->getContents());
+        $this->assertEquals('text/plain', $messageContents->getContentType());
     }
 }

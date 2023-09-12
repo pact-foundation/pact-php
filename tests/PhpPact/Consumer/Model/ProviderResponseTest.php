@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\Consumer\Model;
 
+use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PHPUnit\Framework\TestCase;
 
@@ -19,6 +20,10 @@ class ProviderResponseTest extends TestCase
 
         $this->assertEquals(200, $model->getStatus());
         $this->assertEquals(['Content-Type' => ['application/json']], $model->getHeaders());
-        $this->assertEquals('{"currentCity":"Austin"}', $model->getBody());
+
+        $body = $model->getBody();
+        $this->assertInstanceOf(Text::class, $body);
+        $this->assertEquals('{"currentCity":"Austin"}', $body->getContents());
+        $this->assertEquals('application/json', $body->getContentType());
     }
 }

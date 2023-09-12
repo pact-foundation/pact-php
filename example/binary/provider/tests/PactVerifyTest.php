@@ -1,8 +1,7 @@
 <?php
 
-namespace JsonProvider\Tests;
+namespace BinaryConsumer\Tests;
 
-use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
 use PHPUnit\Framework\TestCase;
@@ -46,18 +45,15 @@ class PactVerifyTest extends TestCase
     {
         $config = new VerifierConfig();
         $config->getProviderInfo()
-            ->setName('jsonProvider') // Providers name to fetch.
+            ->setName('binaryProvider') // Providers name to fetch.
             ->setHost('localhost')
             ->setPort(7202);
-        $config->getProviderState()
-            ->setStateChangeUrl(new Uri('http://localhost:7202/pact-change-state'))
-        ;
         if ($level = \getenv('PACT_LOGLEVEL')) {
             $config->setLogLevel($level);
         }
 
         $verifier = new Verifier($config);
-        $verifier->addFile(__DIR__ . '/../../pacts/jsonConsumer-jsonProvider.json');
+        $verifier->addFile(__DIR__ . '/../../pacts/binaryConsumer-binaryProvider.json');
 
         $verifyResult = $verifier->verify();
 

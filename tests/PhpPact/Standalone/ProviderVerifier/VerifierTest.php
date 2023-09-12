@@ -55,7 +55,7 @@ class VerifierTest extends TestCase
         }
 
         $verifier = new Verifier($config);
-        $verifier->addDirectory(__DIR__ . '/../../../_resources');
+        $verifier->addFile(__DIR__ . '/../../../_resources/someconsumer-someprovider.json');
 
         $verifyResult = $verifier->verify();
 

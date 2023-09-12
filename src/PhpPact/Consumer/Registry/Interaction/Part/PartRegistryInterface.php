@@ -2,9 +2,12 @@
 
 namespace PhpPact\Consumer\Registry\Interaction\Part;
 
+use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Text;
+
 interface PartRegistryInterface
 {
-    public function withBody(?string $contentType = null, ?string $body = null): self;
+    public function withBody(Text|Binary|null $body): self;
 
     /**
      * @param array<string, string[]> $headers

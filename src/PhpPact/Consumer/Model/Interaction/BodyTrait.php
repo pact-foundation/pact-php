@@ -3,32 +3,29 @@
 namespace PhpPact\Consumer\Model\Interaction;
 
 use JsonException;
+use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Text;
 
 trait BodyTrait
 {
-    use ContentTypeTrait;
+    private Text|Binary|null $body = null;
 
-    private ?string $body = null;
-
-    public function getBody(): ?string
+    public function getBody(): Text|Binary|null
     {
         return $this->body;
     }
 
     /**
-     * @param array<mixed>|string|null $body
-     *
      * @throws JsonException
      */
-    public function setBody(array|string|null $body): self
+    public function setBody(mixed $body): self
     {
-        if (\is_string($body) || \is_null($body)) {
+        if (\is_string($body)) {
+            $this->body = new Text($body, 'text/plain');
+        } elseif (\is_null($body) || $body instanceof Text || $body instanceof Binary) {
             $this->body = $body;
         } else {
-            $this->body = \json_encode($body, JSON_THROW_ON_ERROR);
-            if (!isset($this->contentType)) {
-                $this->setContentType('application/json');
-            }
+            $this->body = new Text(\json_encode($body, JSON_THROW_ON_ERROR), 'application/json');
         }
 
         return $this;

@@ -23,10 +23,10 @@ class StringData
         return $this->size;
     }
 
-    public static function createFrom(string $value): ?self
+    public static function createFrom(string $value, bool $nullTerminated = true): self
     {
         $length = \strlen($value);
-        $size   = $length + 1;
+        $size   = $length + ($nullTerminated ? 1 : 0);
         $cData  = FFI::new("uint8_t[{$size}]");
         FFI::memcpy($cData, $value, $length);
 

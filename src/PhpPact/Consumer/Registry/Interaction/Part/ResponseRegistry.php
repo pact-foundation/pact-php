@@ -2,8 +2,8 @@
 
 namespace PhpPact\Consumer\Registry\Interaction\Part;
 
-use PhpPact\Consumer\Registry\Interaction\Contents\ContentsRegistryInterface;
-use PhpPact\Consumer\Registry\Interaction\Contents\ResponseBodyRegistry;
+use PhpPact\Consumer\Registry\Interaction\Body\BodyRegistryInterface;
+use PhpPact\Consumer\Registry\Interaction\Body\ResponseBodyRegistry;
 use PhpPact\Consumer\Registry\Interaction\InteractionRegistryInterface;
 use PhpPact\FFI\ClientInterface;
 
@@ -14,7 +14,7 @@ class ResponseRegistry extends AbstractPartRegistry implements ResponseRegistryI
     public function __construct(
         ClientInterface $client,
         InteractionRegistryInterface $interactionRegistry,
-        ?ContentsRegistryInterface $responseBodyRegistry = null
+        ?BodyRegistryInterface $responseBodyRegistry = null
     ) {
         parent::__construct($client, $interactionRegistry, $responseBodyRegistry ?? new ResponseBodyRegistry($client, $interactionRegistry));
     }

@@ -19,6 +19,12 @@
     <testsuite name="PhpPact Json Provider Example Tests">
         <directory>./example/json/provider/tests</directory>
     </testsuite>
+    <testsuite name="PhpPact Binary Consumer Example Tests">
+        <directory>./example/binary/consumer/tests</directory>
+    </testsuite>
+    <testsuite name="PhpPact Binary Provider Example Tests">
+        <directory>./example/binary/provider/tests</directory>
+    </testsuite>
     <testsuite name="PhpPact Message Consumer Example Tests">
         <directory>./example/message/consumer/tests</directory>
     </testsuite>

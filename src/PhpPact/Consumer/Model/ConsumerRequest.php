@@ -3,7 +3,6 @@
 namespace PhpPact\Consumer\Model;
 
 use PhpPact\Consumer\Model\Interaction\BodyTrait;
-use PhpPact\Consumer\Model\Interaction\ContentTypeTrait;
 use PhpPact\Consumer\Model\Interaction\HeadersTrait;
 use PhpPact\Consumer\Model\Interaction\MethodTrait;
 use PhpPact\Consumer\Model\Interaction\PathTrait;
@@ -16,7 +15,6 @@ class ConsumerRequest
 {
     use HeadersTrait;
     use BodyTrait;
-    use ContentTypeTrait;
     use MethodTrait;
     use PathTrait;
     use QueryTrait;
