@@ -3,7 +3,9 @@
 namespace PhpPact\Consumer\Model;
 
 use JsonException;
+use PhpPact\Consumer\Exception\BodyNotSupportedException;
 use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
 
 /**
@@ -74,6 +76,8 @@ class Message
             $this->contents = new Text($contents, 'text/plain');
         } elseif (\is_null($contents) || $contents instanceof Text || $contents instanceof Binary) {
             $this->contents = $contents;
+        } elseif ($contents instanceof Multipart) {
+            throw new BodyNotSupportedException('Message does not support multipart');
         } else {
             $this->contents = new Text(\json_encode($contents, JSON_THROW_ON_ERROR), 'application/json');
         }

@@ -1,0 +1,129 @@
+{
+  "consumer": {
+    "name": "multipartConsumer"
+  },
+  "interactions": [
+    {
+      "description": "A put request to /user-profile",
+      "providerStates": [
+        {
+          "name": "User exists"
+        }
+      ],
+      "request": {
+        "body": "LS1rdEptZVlIYmtUU2ExanhEDQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9ImZ1bGxfbmFtZSI7IGZpbGVuYW1lPSJwYWN0dmZhU1JiIg0KQ29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0NCg0KQ29sdGVuIFppZW1hbm4NCi0ta3RKbWVZSGJrVFNhMWp4RA0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJwcm9maWxlX2ltYWdlIjsgZmlsZW5hbWU9ImltYWdlLmpwZyINCkNvbnRlbnQtVHlwZTogaW1hZ2UvanBlZw0KDQr/2P/gABBKRklGAAEBAAABAAEAAP/bAEMAAwICAgICAwICAgMDAwMEBgQEBAQECAYGBQYJCAoKCQgJCQoMDwwKCw4LCQkNEQ0ODxAQERAKDBITEhATDxAQEP/AAAsIAAwADAEBEQD/xAAWAAEBAQAAAAAAAAAAAAAAAAAEAAX/xAAiEAACAQMDBQEAAAAAAAAAAAABAwIEERIABSEGEyIjQRT/2gAIAQEAAD8AUa1jdqVVShOmTKYY4qW1MC0syis3jITyjExBiBjYXHkDq209MlLCjqqe3HuEMp5TknGYsCR7QJA2BysOSR80euY9O3L3oOymKamrAkqWFjOEGFfERLtgyIAyvb7fnWAmoqnMqR+6tV26lsPRWOTGXmTfGEhEHn4AOBxr/9kNCi0ta3RKbWVZSGJrVFNhMWp4RA0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJwZXJzb25hbF9ub3RlIjsgZmlsZW5hbWU9InBhY3Q3OU1jT1QiDQpDb250ZW50LVR5cGU6IGFwcGxpY2F0aW9uL29jdGV0LXN0cmVhbQ0KDQp0ZXN0aW5nDQotLWt0Sm1lWUhia1RTYTFqeEQtLQ0K",
+        "headers": {
+          "Accept": "application/json",
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIXVCJ9",
+          "Content-Type": "multipart/form-data; boundary=ktJmeYHbkTSa1jxD"
+        },
+        "matchingRules": {
+          "body": {
+            "$.full_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "contentType",
+                  "value": "text/plain"
+                }
+              ]
+            },
+            "$.personal_note": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "contentType",
+                  "value": "text/plain"
+                }
+              ]
+            },
+            "$.profile_image": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "contentType",
+                  "value": "image/jpeg"
+                }
+              ]
+            }
+          },
+          "header": {
+            "$.Authorization[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "Content-Type": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "multipart/form-data;(\\s*charset=[^;]*;)?\\s*boundary=.*"
+                }
+              ]
+            }
+          }
+        },
+        "method": "POST",
+        "path": "/user-profile"
+      },
+      "response": {
+        "body": {
+          "full_name": "Colten Ziemann",
+          "personal_note": "testing",
+          "profile_image": "http://example.test/profile-image.jpg"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.full_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.personal_note": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.profile_image": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()!@:%_\\+.~#?&\\/\\/=]*)"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.8",
+      "mockserver": "1.2.4",
+      "models": "1.1.11"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "multipartProvider"
+  }
+}
