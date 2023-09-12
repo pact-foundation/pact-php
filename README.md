@@ -102,7 +102,7 @@ All of the following code will be used exclusively for the Consumer.
 
 Create a standard PHPUnit test case class and function.
 
-[Click here](/example/tests/Consumer/Service/ConsumerServiceHelloTest.php) to see the full sample file.
+[Click here](/example/json/consumer/tests/Service/ConsumerServiceHelloTest.php) to see the full sample file.
 
 ### Create Mock Request
 
@@ -381,7 +381,7 @@ to processing class.   Aside from changing default ports, this should be transpa
 Both the provider and consumer side make heavy use of lambda functions.
 
 ### Consumer Side Message Processing
-The examples provided are pretty basic.   See examples\tests\MessageConsumer.
+The examples provided are pretty basic.   See [example](/example/message/consumer/tests/ExampleMessageConsumerTest.php).
 1. Create the content and metadata (array)
 1. Annotate the MessageBuilder appropriate content and states
     1. Given = Provider State
@@ -425,7 +425,7 @@ Handle these requests on your provider:
    1. Return message's content in body
    2. Return message's metadata in header `PACT-MESSAGE-METADATA`
 
-[Click here](/example/src/Provider/public/index.php) to see the full sample file.
+[Click here](/example/message/provider/public/index.php) to see the full sample file.
 
 ## Usage for the optional `pact-stub-service`
 
