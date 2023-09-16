@@ -28,8 +28,8 @@ abstract class AbstractBodyRegistry implements BodyRegistryInterface
             Text::class => $this->client->call('pactffi_with_body', $this->interactionRegistry->getId(), $this->getPart(), $body->getContentType(), $body->getContents()),
             Multipart::class => array_reduce(
                 $body->getParts(),
-                function (bool $success, Part $part) {
-                    $result = $this->client->call('pactffi_with_multipart_file', $this->interactionRegistry->getId(), $this->getPart(), $part->getContentType(), $part->getPath(), $part->getName());
+                function (bool $success, Part $part) use ($body) {
+                    $result = $this->client->call('pactffi_with_multipart_file_v2', $this->interactionRegistry->getId(), $this->getPart(), $part->getContentType(), $part->getPath(), $part->getName(), $body->getBoundary());
                     if ($result->failed instanceof CData) {
                         throw new PartNotAddedException(FFI::string($result->failed));
                     }
