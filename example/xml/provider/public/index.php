@@ -1,47 +1,44 @@
 <?php
 
-use AaronDDM\XMLBuilder\Writer\XMLWriterService;
-use AaronDDM\XMLBuilder\XMLBuilder;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
 require __DIR__ . '/../../../../vendor/autoload.php';
 
-$xmlWriterService = new XMLWriterService();
-$xmlBuilder = new XMLBuilder($xmlWriterService);
-$xmlBuilder
-    ->createXMLArray()
-        ->start('movies')
-            ->start('movie')
-                ->add('title', 'PHP: Behind the Parser')
-                ->start('characters')
-                    ->start('character')
-                        ->add('name', 'Ms. Coder')
-                        ->add('actor', 'Onlivia Actora')
-                    ->end()
-                    ->start('character')
-                        ->add('name', 'Mr. Coder')
-                        ->add('actor', 'El Act&#211;r')
-                    ->end()
-                ->end()
-                ->add('plot', <<<PLOT
+$app = AppFactory::create();
+
+$app->get('/movies', function (Request $request, Response $response) {
+    $response->getBody()->write(
+        <<<XML
+        <?xml version='1.0' standalone='yes'?>
+        <movies>
+            <movie>
+                <title>PHP: Behind the Parser</title>
+                <characters>
+                    <character>
+                        <name>Ms. Coder</name>
+                        <actor>Onlivia Actora</actor>
+                    </character>
+                    <character>
+                        <name>Mr. Coder</name>
+                        <actor>El Act&#211;r</actor>
+                    </character>
+                </characters>
+                <plot>
                 So, this language. It's like, a programming language. Or is it a
                 scripting language? All is revealed in this thrilling horror spoof
                 of a documentary.
-                PLOT)
-                ->start('great-lines')
-                    ->add('line', 'PHP solves all my web problems')
-                ->end()
-                ->add('rating', 7, ['type' => 'thumbs'])
-                ->add('rating', 5, ['type' => 'stars'])
-            ->end()
-        ->end();
-
-$app = AppFactory::create();
-
-$app->get('/movies', function (Request $request, Response $response) use ($xmlBuilder) {
-    $response->getBody()->write($xmlBuilder->getXml());
+                </plot>
+                <great-lines>
+                    <line>PHP solves all my web problems</line>
+                </great-lines>
+                <rating type="thumbs">7</rating>
+                <rating type="stars">5</rating>
+            </movie>
+        </movies>
+        XML
+    );
 
     return $response->withHeader('Content-Type', 'text/xml');
 });

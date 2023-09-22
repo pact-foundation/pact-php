@@ -23,43 +23,74 @@ class HttpClientServiceTest extends TestCase
 
         $xmlBuilder = new XmlBuilder('1.0', 'UTF-8');
         $xmlBuilder
-            ->start('movies')
-                ->eachLike('movie')
-                    ->start('title')
-                        ->contentLike('PHP: Behind the Parser')
-                    ->end()
-                    ->start('characters')
-                        ->eachLike('character', [], new Options(examples: 2))
-                            ->start('name')
-                                ->contentLike('Ms. Coder')
-                            ->end()
-                            ->start('actor')
-                                ->contentLike('Onlivia Actora')
-                            ->end()
-                        ->end()
-                    ->end()
-                    ->start('plot')
-                        ->contentLike(
-                            <<<EOF
-                            So, this language. It's like, a programming language. Or is it a
-                            scripting language? All is revealed in this thrilling horror spoof
-                            of a documentary.
-                            EOF
-                        )
-                    ->end()
-                    ->start('great-lines')
-                        ->eachLike('line')
-                            ->contentLike('PHP solves all my web problems')
-                        ->end()
-                    ->end()
-                    ->start('rating', ['type' => 'thumbs'])
-                        ->contentLike(7)
-                    ->end()
-                    ->start('rating', ['type' => 'stars'])
-                        ->contentLike(5)
-                    ->end()
-                ->end()
-            ->end();
+            ->root(
+                $xmlBuilder->name('movies'),
+                $xmlBuilder->add(
+                    $xmlBuilder->eachLike(),
+                    $xmlBuilder->name('movie'),
+                    $xmlBuilder->add(
+                        $xmlBuilder->name('title'),
+                        $xmlBuilder->text(
+                            $xmlBuilder->contentLike('PHP: Behind the Parser'),
+                        ),
+                    ),
+                    $xmlBuilder->add(
+                        $xmlBuilder->name('characters'),
+                        $xmlBuilder->add(
+                            $xmlBuilder->eachLike(examples: 2),
+                            $xmlBuilder->name('character'),
+                            $xmlBuilder->add(
+                                $xmlBuilder->name('name'),
+                                $xmlBuilder->text(
+                                    $xmlBuilder->contentLike('Ms. Coder'),
+                                ),
+                            ),
+                            $xmlBuilder->add(
+                                $xmlBuilder->name('actor'),
+                                $xmlBuilder->text(
+                                    $xmlBuilder->contentLike('Onlivia Actora'),
+                                ),
+                            ),
+                        ),
+                    ),
+                    $xmlBuilder->add(
+                        $xmlBuilder->name('plot'),
+                        $xmlBuilder->text(
+                            $xmlBuilder->contentLike(
+                                <<<EOF
+                                So, this language. It's like, a programming language. Or is it a
+                                scripting language? All is revealed in this thrilling horror spoof
+                                of a documentary.
+                                EOF
+                            ),
+                        ),
+                    ),
+                    $xmlBuilder->add(
+                        $xmlBuilder->name('great-lines'),
+                        $xmlBuilder->add(
+                            $xmlBuilder->eachLike(),
+                            $xmlBuilder->name('line'),
+                            $xmlBuilder->text(
+                                $xmlBuilder->contentLike('PHP solves all my web problems'),
+                            ),
+                        ),
+                    ),
+                    $xmlBuilder->add(
+                        $xmlBuilder->name('rating'),
+                        $xmlBuilder->attribute('type', 'thumbs'),
+                        $xmlBuilder->text(
+                            $xmlBuilder->contentLike(7),
+                        ),
+                    ),
+                    $xmlBuilder->add(
+                        $xmlBuilder->name('rating'),
+                        $xmlBuilder->attribute('type', 'stars'),
+                        $xmlBuilder->text(
+                            $xmlBuilder->contentLike(5),
+                        ),
+                    ),
+                ),
+            );
 
         $response = new ProviderResponse();
         $response
