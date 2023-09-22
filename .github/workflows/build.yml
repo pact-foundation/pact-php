@@ -63,6 +63,7 @@ jobs:
           extensions: sockets, curl, zip, ffi
           php-version: ${{ matrix.php }}
           coverage: none
+          ini-values: ${{ matrix.operating-system == 'windows-latest' && 'opcache.enable=0 opcache.enable_cli=0' || '' }}
 
       - name: Composer install
         uses: ramsey/composer-install@v2
