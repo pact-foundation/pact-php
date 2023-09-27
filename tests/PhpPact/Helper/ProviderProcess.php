@@ -15,12 +15,8 @@ class ProviderProcess
 
     public function start(): void
     {
-        $this->process->start(function ($type, $buffer): void {
-            if (Process::ERR === $type) {
-                echo 'ERR > '.$buffer;
-            } else {
-                echo 'OUT > '.$buffer;
-            }
+        $this->process->start(function (string $type, string $buffer): void {
+            echo "\n$type > $buffer";
         });
         $this->process->waitUntil(function (): bool {
             $fp = @fsockopen('127.0.0.1', $this->port);
