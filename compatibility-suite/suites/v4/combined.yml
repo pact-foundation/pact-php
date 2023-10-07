@@ -1,0 +1,14 @@
+default:
+    suites:
+        v4_combined:
+            paths: [ '%paths.base%/compatibility-suite/pact-compatibility-suite/features/V4/v4.feature' ]
+
+            contexts:
+                - 'PhpPactTest\CompatibilitySuite\Context\Shared\Hook\SetUpContext'
+                - 'PhpPactTest\CompatibilitySuite\Context\V4\CombinedContext':
+                    - '@interaction_builder'
+                    - '@interactions_storage'
+                    - '@pact_writer'
+                    - '@message_pact_writer'
+
+            services: PhpPactTest\CompatibilitySuite\ServiceContainer\V4
