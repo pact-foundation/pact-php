@@ -443,7 +443,9 @@ $config = (new StubServerConfig())
 $stubServer = new StubServer($config);
 $stubServer->start();
 
-$service = new StubServerHttpService(new GuzzleClient(), $config);
+$client = new \GuzzleHttp\Client();
 
-echo $service->getJson($endpoint); // output: {"results":[{"name":"Games"}]}
+$response = $client->get($this->config->getBaseUri() . '/' . $endpoint);
+
+echo $response->getBody(); // output: {"results":[{"name":"Games"}]}
 ```

@@ -118,11 +118,12 @@ This migrates from a CLI driven process for the Pact Framework, to an FFI proces
 - Stub Server
 
   - No longer defaults to port 7201, picks free port at random.
-  - Endpoint now can be set by:
+  - `PhpPact\Standalone\StubService\Service\StubServerHttpService` is no longer available. Guzzle can be used to request to stub server directly:
 
   ```php
-  $service = new StubServerHttpService(new GuzzleClient(), $this->config);
-  $service->getJson($endpoint);
+  $client = new \GuzzleHttp\Client();
+  $response = $client->get($this->config->getBaseUri() . '/' . $endpoint);
+  echo $response->getBody();
   ```
 
 - Example Migrations to 10.x (Pull Request Diffs)
