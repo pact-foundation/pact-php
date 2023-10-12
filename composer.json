@@ -56,17 +56,14 @@
             "BinaryConsumer\\Tests\\": "example/binary/consumer/tests",
             "BinaryProvider\\": "example/binary/provider/src",
             "BinaryProvider\\Tests\\": "example/binary/provider/tests",
-<<<<<<< HEAD
             "MultipartConsumer\\": "example/multipart/consumer/src",
             "MultipartConsumer\\Tests\\": "example/multipart/consumer/tests",
             "MultipartProvider\\": "example/multipart/provider/src",
-            "MultipartProvider\\Tests\\": "example/multipart/provider/tests"
-=======
+            "MultipartProvider\\Tests\\": "example/multipart/provider/tests",
             "XmlConsumer\\": "example/xml/consumer/src",
             "XmlConsumer\\Tests\\": "example/xml/consumer/tests",
             "XmlProvider\\": "example/xml/provider/src",
             "XmlProvider\\Tests\\": "example/xml/provider/tests"
->>>>>>> 7ee934b (chore: add xml example)
         }
     },
     "scripts": {
