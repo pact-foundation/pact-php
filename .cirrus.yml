@@ -24,10 +24,10 @@ linux_arm64_task:
       - VERSION: 8.2
       - VERSION: 8.1
       - VERSION: 8.0
-  container:
+  arm_container:
     image: php:$VERSION
   pre_req_script: 
-      - apt update --yes && apt install --yes zip unzip git libffi-dev shared-mime-info
+      - apt update --yes && apt install --yes zip unzip git libffi-dev
       - curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
       - php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
       - docker-php-ext-install sockets
@@ -46,7 +46,7 @@ macos_arm64_task:
   macos_instance:
     image: ghcr.io/cirruslabs/macos-ventura-base:latest
   pre_req_script: 
-      - brew install php@$VERSION composer shared-mime-info
+      - brew install php@$VERSION composer
   version_check_script: 
       - php --version
   << : *BUILD_TEST_TASK_TEMPLATE

@@ -36,7 +36,7 @@ class HttpClientServiceTest extends TestCase
             ->setBody(new Multipart(
                 [
                     new Part(__DIR__ . '/../_resource/full_name.txt', 'full_name', 'text/plain'),
-                    new Part(__DIR__ . '/../_resource/image.jpg', 'profile_image', in_array(php_uname('m'), ['AMD64', 'arm64']) ? 'application/octet-stream' : 'image/jpeg'),
+                    new Part(__DIR__ . '/../_resource/image.jpg', 'profile_image', in_array(php_uname('m'), ['AMD64', 'arm64', 'aarch64']) ? 'application/octet-stream' : 'image/jpeg'),
                     new Part(__DIR__ . '/../_resource/note.txt', 'personal_note', 'text/plain'),
                 ],
                 'ktJmeYHbkTSa1jxD'
