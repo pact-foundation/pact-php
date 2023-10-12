@@ -7,7 +7,7 @@ class Multipart
     /**
      * @param array<Part> $parts
      */
-    public function __construct(private array $parts)
+    public function __construct(private array $parts, private string $boundary)
     {
         $this->setParts($parts);
     }
@@ -38,5 +38,10 @@ class Multipart
         $this->parts[] = $part;
 
         return $this;
+    }
+
+    public function getBoundary(): string
+    {
+        return $this->boundary;
     }
 }
