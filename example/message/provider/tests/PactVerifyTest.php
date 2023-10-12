@@ -6,32 +6,20 @@ use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
+use PhpPactTest\Helper\ProviderProcess;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Process\Process;
 
 class PactVerifyTest extends TestCase
 {
-    private Process $process;
+    private ProviderProcess $process;
 
     /**
      * Run the PHP build-in web server.
      */
     protected function setUp(): void
     {
-        $publicPath    =  __DIR__ . '/../public/';
-
-        $this->process = new Process(['php', '-S', '127.0.0.1:7202', '-t', $publicPath]);
-
+        $this->process = new ProviderProcess(__DIR__ . '/../public/');
         $this->process->start();
-        $this->process->waitUntil(function (): bool {
-            $fp = @fsockopen('127.0.0.1', 7202);
-            $isOpen = is_resource($fp);
-            if ($isOpen) {
-                fclose($fp);
-            }
-
-            return $isOpen;
-        });
     }
 
     /**

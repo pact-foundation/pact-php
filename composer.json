@@ -22,7 +22,7 @@
         "ext-json": "*",
         "composer/semver": "^1.4.0|^3.2.0",
         "symfony/process": "^4.4|^5.4|^6.0",
-        "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
+        "guzzlehttp/psr7": "^2.4.5",
         "tienvx/composer-downloads-plugin": "^1.2.0"
     },
     "require-dev": {
@@ -34,6 +34,7 @@
         "phpstan/phpstan": "^1.9",
         "phpunit/phpunit": ">=8.5.23 <10",
         "tienvx/pact-php-xml": "dev-main"
+        "guzzlehttp/guzzle": "^7.8"
     },
     "autoload": {
         "psr-4": {
@@ -78,12 +79,12 @@
     "extra": {
         "downloads": {
             "pact-ffi-headers": {
-                "version": "0.4.8",
+                "version": "0.4.9",
                 "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/pact.h",
                 "path": "bin/pact-ffi-headers/pact.h"
             },
             "pact-ffi-lib": {
-                "version": "0.4.8",
+                "version": "0.4.9",
                 "variables": {
                     "{$prefix}": "PHP_OS_FAMILY === 'Windows' ? 'pact_ffi' : 'libpact_ffi'",
                     "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
