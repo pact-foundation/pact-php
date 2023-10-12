@@ -50,7 +50,7 @@ class ExampleMessageConsumerTest extends TestCase
         $contents       = new stdClass();
         $contents->text = 'Hello Mary';
 
-        $metadata = ['queue'=>'wind cries', 'routing_key'=>'wind cries'];
+        $metadata = ['queue' => 'wind cries', 'routing_key' => 'wind cries'];
 
         $builder
             ->given('a message', ['foo'])
@@ -80,7 +80,7 @@ class ExampleMessageConsumerTest extends TestCase
         $contents       = new stdClass();
         $contents->song = 'And the wind whispers Mary';
 
-        $metadata = ['queue'=>'And the clowns have all gone to bed', 'routing_key'=>'And the clowns have all gone to bed'];
+        $metadata = ['queue' => 'And the clowns have all gone to bed', 'routing_key' => 'And the clowns have all gone to bed'];
 
         $builder
             ->given('You can hear happiness staggering on down the street')
