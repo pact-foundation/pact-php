@@ -1,0 +1,469 @@
+{
+  "consumer": {
+    "name": "matchersConsumer"
+  },
+  "interactions": [
+    {
+      "description": "A get request to /matchers",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "Get Matchers"
+        }
+      ],
+      "request": {
+        "headers": {
+          "Accept": [
+            "application/json"
+          ]
+        },
+        "matchingRules": {
+          "header": {},
+          "path": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "regex",
+                "regex": "^\\/matchers$"
+              }
+            ]
+          },
+          "query": {}
+        },
+        "method": "GET",
+        "path": "/matchers",
+        "query": {
+          "ignore": [
+            "statusCode"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "arrayContaining": [
+              "some text",
+              111,
+              "2fbd41cc-4bbc-44ea-a419-67f767691407"
+            ],
+            "atLeastLike": [
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "atMostLike": [
+              1
+            ],
+            "boolean": false,
+            "constrainedArrayLike": [
+              "item",
+              "item"
+            ],
+            "contentType": "text/html",
+            "date": "2015-05-16",
+            "dateISO8601": "2013-02-01",
+            "dateTimeISO8601": "2015-08-06T16:53:10+01:00",
+            "dateTimeWithMillisISO8601": "2015-08-06T16:53:10.123+01:00",
+            "datetime": "2000-10-31T01:30:00",
+            "decimal": 79.01,
+            "eachLike": [
+              "item"
+            ],
+            "email": "hello@pact.io",
+            "equal": "exact this value",
+            "hexadecimal": "F7A16",
+            "includes": "lazy dog",
+            "integer": 9,
+            "ipv4Address": "127.0.0.13",
+            "ipv6Address": "::ffff:192.0.2.128",
+            "like": {
+              "key": "value"
+            },
+            "likeBool": true,
+            "likeDecimal": 13.01,
+            "likeInt": 13,
+            "likeString": "some string",
+            "notEmpty": [
+              "1",
+              "2",
+              "3"
+            ],
+            "nullValue": null,
+            "number": 123,
+            "regex": "500 miles",
+            "semver": "10.0.0-alpha4",
+            "time": "23:59::58",
+            "timeISO8601": "T22:44:30.652Z",
+            "timestampRFC3339": "Mon, 31 Oct 2016 15:21:41 -0400",
+            "uuid": "52c9585e-f345-4964-aa28-a45c64b2b2eb"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.arrayContaining": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "arrayContains",
+                  "variants": [
+                    {
+                      "index": 0,
+                      "rules": {
+                        "$": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "type"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "index": 1,
+                      "rules": {
+                        "$": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "number"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "index": 2,
+                      "rules": {
+                        "$": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "regex",
+                              "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "$.atLeastLike": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 5
+                }
+              ]
+            },
+            "$.atMostLike": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type",
+                  "max": 3
+                }
+              ]
+            },
+            "$.boolean": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "boolean"
+                }
+              ]
+            },
+            "$.constrainedArrayLike": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type",
+                  "max": 4,
+                  "min": 2
+                }
+              ]
+            },
+            "$.contentType": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "contentType",
+                  "value": "text/html"
+                }
+              ]
+            },
+            "$.date": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "yyyy-MM-dd",
+                  "match": "date"
+                }
+              ]
+            },
+            "$.dateISO8601": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))?)$"
+                }
+              ]
+            },
+            "$.dateTimeISO8601": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?$"
+                }
+              ]
+            },
+            "$.dateTimeWithMillisISO8601": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d{3}([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?$"
+                }
+              ]
+            },
+            "$.datetime": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "YYYY-mm-DD'T'HH:mm:ss",
+                  "match": "datetime"
+                }
+              ]
+            },
+            "$.decimal": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.eachLike": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ]
+            },
+            "$.email": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$"
+                }
+              ]
+            },
+            "$.equal": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.hexadecimal": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-fA-F]+$"
+                }
+              ]
+            },
+            "$.includes": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "include",
+                  "value": "lazy dog"
+                }
+              ]
+            },
+            "$.integer": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.ipv4Address": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^(\\d{1,3}\\.)+\\d{1,3}$"
+                }
+              ]
+            },
+            "$.ipv6Address": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$"
+                }
+              ]
+            },
+            "$.like": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.likeBool": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.likeDecimal": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.likeInt": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.likeString": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.notEmpty": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "notEmpty"
+                }
+              ]
+            },
+            "$.nullValue": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "null"
+                }
+              ]
+            },
+            "$.number": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.regex": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^\\d+ (miles|kilometers)$"
+                }
+              ]
+            },
+            "$.semver": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "semver"
+                }
+              ]
+            },
+            "$.time": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "HH:mm::ss",
+                  "match": "time"
+                }
+              ]
+            },
+            "$.timeISO8601": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^(T\\d\\d:\\d\\d(:\\d\\d)?(\\.\\d+)?([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?)$"
+                }
+              ]
+            },
+            "$.timestampRFC3339": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\\s\\d{2}\\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\s\\d{4}\\s\\d{2}:\\d{2}:\\d{2}\\s(\\+|-)\\d{4}$"
+                }
+              ]
+            },
+            "$.uuid": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "transport": "http",
+      "type": "Synchronous/HTTP"
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.10",
+      "mockserver": "1.2.4",
+      "models": "1.1.11"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  },
+  "provider": {
+    "name": "matchersProvider"
+  }
+}
