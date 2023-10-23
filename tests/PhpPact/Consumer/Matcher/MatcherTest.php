@@ -211,6 +211,22 @@ class MatcherTest extends TestCase
     /**
      * @throws Exception
      */
+    public function testRegexMultiValues()
+    {
+        $expected = [
+            'value'             => [1, 23],
+            'regex'             => '\d+',
+            'pact:matcher:type' => 'regex',
+        ];
+
+        $actual = $this->matcher->regex([1, 23], '\d+');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @throws Exception
+     */
     public function testDateISO8601()
     {
         $expected = [

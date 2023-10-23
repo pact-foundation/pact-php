@@ -27,6 +27,9 @@ class MatchersTest extends TestCase
             ->setPath($this->matcher->regex('/matchers', '^\/matchers$'))
             ->setQuery([
                 'ignore' => 'statusCode',
+                'pages' => [
+                    json_encode($this->matcher->regex([1], '\d+')),
+                ],
             ])
             ->addHeader('Accept', 'application/json');
 

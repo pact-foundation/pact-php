@@ -124,16 +124,16 @@ class Matcher
     /**
      * Validate that a value will match a regex pattern.
      *
-     * @param string|null $value   example of what the expected data would be
+     * @param string|string[]|null $values   example of what the expected data would be
      * @param string $pattern valid Ruby regex pattern
      *
      * @return array<string, mixed>
      *
      * @throws Exception
      */
-    public function term(?string $value, string $pattern): array
+    public function term(string|array|null $values, string $pattern): array
     {
-        if (null === $value) {
+        if (null === $values) {
             return [
                 'regex'               => $pattern,
                 'pact:matcher:type'   => 'regex',
@@ -141,16 +141,18 @@ class Matcher
             ];
         }
 
-        $result = preg_match("/$pattern/", $value);
+        foreach ((array) $values as $value) {
+            $result = preg_match("/$pattern/", $value);
 
-        if ($result === false || $result === 0) {
-            $errorCode = preg_last_error();
+            if ($result === false || $result === 0) {
+                $errorCode = preg_last_error();
 
-            throw new Exception("The pattern {$pattern} is not valid for value {$value}. Failed with error code {$errorCode}.");
+                throw new Exception("The pattern {$pattern} is not valid for value {$value}. Failed with error code {$errorCode}.");
+            }
         }
 
         return [
-            'value'             => $value,
+            'value'             => $values,
             'regex'             => $pattern,
             'pact:matcher:type' => 'regex',
         ];
@@ -159,13 +161,15 @@ class Matcher
     /**
      * Alias for the term matcher.
      *
+     * @param string|string[]|null $values
+     *
      * @return array<string, mixed>
      *
      * @throws Exception
      */
-    public function regex(?string $value, string $pattern): array
+    public function regex(string|array|null $values, string $pattern): array
     {
-        return $this->term($value, $pattern);
+        return $this->term($values, $pattern);
     }
 
     /**

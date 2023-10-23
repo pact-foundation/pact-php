@@ -28,13 +28,26 @@
               }
             ]
           },
-          "query": {}
+          "query": {
+            "$.pages": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "\\d+"
+                }
+              ]
+            }
+          }
         },
         "method": "GET",
         "path": "/matchers",
         "query": {
           "ignore": [
             "statusCode"
+          ],
+          "pages": [
+            "1"
           ]
         }
       },
