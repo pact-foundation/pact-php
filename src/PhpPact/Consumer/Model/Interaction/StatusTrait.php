@@ -4,7 +4,7 @@ namespace PhpPact\Consumer\Model\Interaction;
 
 trait StatusTrait
 {
-    private int $status;
+    private int $status = 200;
 
     public function getStatus(): int
     {
