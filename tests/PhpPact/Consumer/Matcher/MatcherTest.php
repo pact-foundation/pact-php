@@ -19,10 +19,11 @@ class MatcherTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testLikeNoValue()
+    public function testLikeNull(): void
     {
-        $this->expectException(Exception::class);
-        $this->matcher->like(null);
+        $json = \json_encode($this->matcher->like(null));
+
+        $this->assertEquals('{"value":null,"pact:matcher:type":"type"}', $json);
     }
 
     /**

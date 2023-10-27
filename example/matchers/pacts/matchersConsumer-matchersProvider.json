@@ -84,6 +84,7 @@
             "likeBool": true,
             "likeDecimal": 13.01,
             "likeInt": 13,
+            "likeNull": null,
             "likeString": "some string",
             "notEmpty": [
               "1",
@@ -352,6 +353,14 @@
               ]
             },
             "$.likeInt": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.likeNull": {
               "combine": "AND",
               "matchers": [
                 {

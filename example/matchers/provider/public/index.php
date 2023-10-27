@@ -12,6 +12,7 @@ $app->addBodyParsingMiddleware();
 $app->get('/matchers', function (Request $request, Response $response) {
     $response->getBody()->write(\json_encode([
         'like' => ['key' => 'another value'],
+        'likeNull' => null,
         'eachLike' => ['item 1', 'item 2'],
         'atLeastLike' => [1, 2, 3, 4, 5, 6],
         'atMostLike' => [1, 2],
