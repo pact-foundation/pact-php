@@ -1,6 +1,6 @@
 <?php
 
-namespace JsonProvider\Tests;
+namespace XmlConsumer\Tests;
 
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;

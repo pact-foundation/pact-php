@@ -31,6 +31,12 @@
     <testsuite name="PhpPact Multipart Provider Example Tests">
         <directory>./example/multipart/provider/tests</directory>
     </testsuite>
+    <testsuite name="PhpPact Xml Consumer Example Tests">
+        <directory>./example/xml/consumer/tests</directory>
+    </testsuite>
+    <testsuite name="PhpPact Xml Provider Example Tests">
+        <directory>./example/xml/provider/tests</directory>
+    </testsuite>
     <testsuite name="PhpPact Message Consumer Example Tests">
         <directory>./example/message/consumer/tests</directory>
     </testsuite>
