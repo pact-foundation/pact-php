@@ -63,7 +63,10 @@
             "XmlConsumer\\": "example/xml/consumer/src",
             "XmlConsumer\\Tests\\": "example/xml/consumer/tests",
             "XmlProvider\\": "example/xml/provider/src",
-            "XmlProvider\\Tests\\": "example/xml/provider/tests"
+            "XmlProvider\\Tests\\": "example/xml/provider/tests",
+            "MatchersConsumer\\": "example/matchers/consumer/src",
+            "MatchersConsumer\\Tests\\": "example/matchers/consumer/tests",
+            "MatchersProvider\\Tests\\": "example/matchers/provider/tests"
         }
     },
     "scripts": {

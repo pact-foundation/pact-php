@@ -43,6 +43,12 @@
     <testsuite name="PhpPact Message Provider Example Tests">
         <directory>./example/message/provider/tests</directory>
     </testsuite>
+    <testsuite name="PhpPact Matchers Consumer Example Tests">
+        <directory>./example/matchers/consumer/tests</directory>
+    </testsuite>
+    <testsuite name="PhpPact Matchers Provider Example Tests">
+        <directory>./example/matchers/provider/tests</directory>
+    </testsuite>
   </testsuites>
   <logging>
     <junit outputFile="./test_results/reports/unit_test_results.xml"/>
