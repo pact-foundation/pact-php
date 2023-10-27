@@ -45,10 +45,6 @@ class Matcher
      */
     public function like(mixed $value): array
     {
-        if ($value === null) {
-            throw new Exception('Value must not be null.');
-        }
-
         return [
             'value'   => $value,
             'pact:matcher:type' => 'type',

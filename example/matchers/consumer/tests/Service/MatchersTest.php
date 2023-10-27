@@ -36,6 +36,7 @@ class MatchersTest extends TestCase
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
                 'like' => $this->matcher->like(['key' => 'value']),
+                'likeNull' => $this->matcher->like(null),
                 'eachLike' => $this->matcher->eachLike('item'),
                 'atLeastLike' => $this->matcher->atLeastLike(1, 5),
                 'atMostLike' => $this->matcher->atMostLike(1, 3),
@@ -98,6 +99,7 @@ class MatchersTest extends TestCase
         $this->assertTrue($verifyResult);
         $this->assertEquals([
             'like' => ['key' => 'value'],
+            'likeNull' => null,
             'eachLike' => ['item'],
             'atLeastLike' => [1, 1, 1, 1, 1],
             'atMostLike' => [1],
