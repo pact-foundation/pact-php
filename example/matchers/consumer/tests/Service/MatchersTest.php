@@ -67,9 +67,9 @@ class MatchersTest extends TestCase
                 'includes' => $this->matcher->includes('lazy dog'),
                 'number' => $this->matcher->number(123),
                 'arrayContaining' => $this->matcher->arrayContaining([
-                    $this->matcher->string('some text'),
-                    $this->matcher->number(111),
-                    $this->matcher->uuid('2fbd41cc-4bbc-44ea-a419-67f767691407'),
+                    'text' => $this->matcher->string('some text'),
+                    'number' => $this->matcher->number(111),
+                    'uuid' => $this->matcher->uuid('2fbd41cc-4bbc-44ea-a419-67f767691407'),
                 ]),
                 'notEmpty' => $this->matcher->notEmpty(['1','2','3']),
                 'semver' => $this->matcher->semver('10.0.0-alpha4'),

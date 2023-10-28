@@ -586,7 +586,7 @@ class Matcher
     {
         return [
             'pact:matcher:type' => 'arrayContains',
-            'variants'          => $variants,
+            'variants'          => array_values($variants),
         ];
     }
 
