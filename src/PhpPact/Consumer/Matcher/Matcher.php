@@ -643,7 +643,7 @@ class Matcher
     public function values(array $values): array
     {
         return [
-            'value'             => $values,
+            'value'             => array_values($values),
             'pact:matcher:type' => 'values',
         ];
     }

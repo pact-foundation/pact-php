@@ -48,6 +48,11 @@ $app->get('/matchers', function (Request $request, Response $response) {
         ],
         'notEmpty' => [111],
         'semver' => '0.27.1-beta2',
+        'values' => [
+            'a',
+            'bb',
+            'ccc',
+        ],
         'contentType' =>
             <<<HTML
             <!DOCTYPE html>
