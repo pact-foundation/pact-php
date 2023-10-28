@@ -853,4 +853,24 @@ class MatcherTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function testEachValue()
+    {
+        $values = [
+            'vehicle 1' => 'car',
+            'vehicle 2' => 'bike',
+            'vehicle 3' => 'motorbike'
+        ];
+        $rules = [
+            $this->matcher->regex('car', 'car|bike|motorbike'),
+        ];
+        $expected = [
+            'rules'             => $rules,
+            'value'             => $values,
+            'pact:matcher:type' => 'eachValue',
+        ];
+        $actual = $this->matcher->eachValue($values, $rules);
+
+        $this->assertEquals($expected, $actual);
+    }
 }

@@ -74,6 +74,10 @@ class MatchersTest extends TestCase
                 'notEmpty' => $this->matcher->notEmpty(['1','2','3']),
                 'semver' => $this->matcher->semver('10.0.0-alpha4'),
                 'contentType' => $this->matcher->contentType('text/html'),
+                'eachValue' => $this->matcher->eachValue(
+                    ['vehicle 1' => 'car'],
+                    [$this->matcher->regex(null, 'car|bike|motorbike')]
+                ),
             ]);
 
         $config = new MockServerConfig();
@@ -137,6 +141,9 @@ class MatchersTest extends TestCase
             'notEmpty' => ['1', '2', '3'],
             'semver' => '10.0.0-alpha4',
             'contentType' => 'text/html',
+            'eachValue' => [
+                'vehicle 1' => 'car',
+            ],
         ], $matchersResult);
     }
 }
