@@ -3,6 +3,7 @@
 namespace MatchersConsumer\Service;
 
 use GuzzleHttp\Client;
+use Psr\Http\Message\ResponseInterface;
 
 class HttpClientService
 {
@@ -16,13 +17,12 @@ class HttpClientService
         $this->baseUri    = $baseUri;
     }
 
-    public function getMatchers(): array
+    public function sendRequest(): ResponseInterface
     {
-        $response = $this->httpClient->get("{$this->baseUri}/matchers", [
+        return $this->httpClient->get("{$this->baseUri}/matchers", [
             'headers' => ['Accept' => 'application/json'],
-            'query' => 'ignore=statusCode&pages=2&pages=3&locales[]=fr-BE&locales[]=ru-RU',
+            'query' => 'pages=2&pages=3&locales[]=fr-BE&locales[]=ru-RU',
+            'http_errors' => false,
         ]);
-
-        return \json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
     }
 }

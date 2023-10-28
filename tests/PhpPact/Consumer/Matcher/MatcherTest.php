@@ -851,8 +851,11 @@ class MatcherTest extends TestCase
     public function testValidStatusCode()
     {
         $expected = [
-            'status'            => 'success',
-            'pact:matcher:type' => 'statusCode',
+            'pact:generator:type' => 'RandomInt',
+            'min'                 => 200,
+            'max'                 => 299,
+            'status'              => 'success',
+            'pact:matcher:type'   => 'statusCode',
         ];
         $actual = $this->matcher->statusCode(HttpStatus::SUCCESS);
 

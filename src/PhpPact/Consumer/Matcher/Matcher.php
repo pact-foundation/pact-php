@@ -625,14 +625,36 @@ class Matcher
      *
      * @return array<string, mixed>
      */
-    public function statusCode(string $status): array
+    public function statusCode(string $status, ?int $value = null): array
     {
         if (!in_array($status, HttpStatus::all())) {
             throw new Exception(sprintf("Status '%s' is not supported. Supported status are: %s", $status, implode(', ', HttpStatus::all())));
         }
 
+        if (null === $value) {
+            [$min, $max] = match($status) {
+                HttpStatus::INFORMATION => [100, 199],
+                HttpStatus::SUCCESS => [200, 299],
+                HttpStatus::REDIRECT => [300, 399],
+                HttpStatus::CLIENT_ERROR => [400, 499],
+                HttpStatus::SERVER_ERROR => [500, 599],
+                HttpStatus::NON_ERROR => [100, 399],
+                HttpStatus::ERROR => [400, 599],
+                default => [100, 199], // Can't happen, just to make PHPStan happy
+            };
+
+            return [
+                'pact:generator:type' => 'RandomInt',
+                'min'                 => $min,
+                'max'                 => $max,
+                'status'              => $status,
+                'pact:matcher:type'   => 'statusCode',
+            ];
+        }
+
         return [
-            'status'             => $status,
+            'value'             => $value,
+            'status'            => $status,
             'pact:matcher:type' => 'statusCode',
         ];
     }

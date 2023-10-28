@@ -52,9 +52,6 @@
         "method": "GET",
         "path": "/matchers",
         "query": {
-          "ignore": [
-            "statusCode"
-          ],
           "locales[]": [
             "en-US",
             "en-AU"
@@ -132,7 +129,6 @@
             "nullValue": null,
             "number": 123,
             "query": {
-              "ignore": "statusCode",
               "locales": [
                 "en-US",
                 "en-AU"
@@ -564,9 +560,20 @@
               ]
             }
           },
-          "header": {}
+          "header": {},
+          "status": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "statusCode",
+                  "status": "serverError"
+                }
+              ]
+            }
+          }
         },
-        "status": 200
+        "status": 512
       },
       "transport": "http",
       "type": "Synchronous/HTTP"
@@ -574,9 +581,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.10",
+      "ffi": "0.4.11",
       "mockserver": "1.2.4",
-      "models": "1.1.11"
+      "models": "1.1.12"
     },
     "pactSpecification": {
       "version": "4.0"

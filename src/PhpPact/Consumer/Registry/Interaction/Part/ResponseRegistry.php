@@ -19,9 +19,9 @@ class ResponseRegistry extends AbstractPartRegistry implements ResponseRegistryI
         parent::__construct($client, $interactionRegistry, $responseBodyRegistry ?? new ResponseBodyRegistry($client, $interactionRegistry));
     }
 
-    public function withResponse(int $status): self
+    public function withResponse(string $status): self
     {
-        $this->client->call('pactffi_response_status', $this->getInteractionId(), $status);
+        $this->client->call('pactffi_response_status_v2', $this->getInteractionId(), $status);
 
         return $this;
     }
