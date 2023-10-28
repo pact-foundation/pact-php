@@ -74,6 +74,10 @@ class MatchersTest extends TestCase
                 'notEmpty' => $this->matcher->notEmpty(['1','2','3']),
                 'semver' => $this->matcher->semver('10.0.0-alpha4'),
                 'contentType' => $this->matcher->contentType('text/html'),
+                'eachKey' => $this->matcher->eachKey(
+                    ['page 3' => 'example text'],
+                    [$this->matcher->regex(null, '^page \d+$')]
+                ),
             ]);
 
         $config = new MockServerConfig();
@@ -137,6 +141,9 @@ class MatchersTest extends TestCase
             'notEmpty' => ['1', '2', '3'],
             'semver' => '10.0.0-alpha4',
             'contentType' => 'text/html',
+            'eachKey' => [
+                'page 3' => 'example text',
+            ],
         ], $matchersResult);
     }
 }

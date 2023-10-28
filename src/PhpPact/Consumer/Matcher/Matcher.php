@@ -660,4 +660,21 @@ class Matcher
             'pact:matcher:type' => 'contentType',
         ];
     }
+
+    /**
+     * Allows defining matching rules to apply to the keys in a map
+     *
+     * @param array<string, mixed> $values
+     * @param array<mixed>         $rules
+     *
+     * @return array<string, mixed>
+     */
+    public function eachKey(array $values, array $rules): array
+    {
+        return [
+            'rules' =>             $rules,
+            'value'             => $values,
+            'pact:matcher:type' => 'eachKey',
+        ];
+    }
 }
