@@ -27,8 +27,11 @@ class MatchersTest extends TestCase
             ->setPath($this->matcher->regex('/matchers', '^\/matchers$'))
             ->setQuery([
                 'ignore' => 'statusCode',
-                'pages' => [
-                    json_encode($this->matcher->regex([1], '\d+')),
+                'pages' => [ // Consumer send multiple values, but provider receive single (last) value
+                    json_encode($this->matcher->regex([1, 22], '\d+')),
+                ],
+                'locales[]' => [ // Consumer send multiple values, provider receive all values
+                    json_encode($this->matcher->regex(['en-US', 'en-AU'], '^[a-z]{2}-[A-Z]{2}$')),
                 ],
             ])
             ->addHeader('Accept', 'application/json');
@@ -90,6 +93,11 @@ class MatchersTest extends TestCase
                     ['vehicle 1' => 'car'],
                     [$this->matcher->regex(null, 'car|bike|motorbike')]
                 ),
+                'query' => [
+                    'ignore' => 'statusCode',
+                    'pages' => '22',
+                    'locales' => ['en-US', 'en-AU'],
+                ],
             ]);
 
         $config = new MockServerConfig();
@@ -163,6 +171,11 @@ class MatchersTest extends TestCase
             ],
             'eachValue' => [
                 'vehicle 1' => 'car',
+            ],
+            'query' => [
+                'ignore' => 'statusCode',
+                'pages' => '22',
+                'locales' => ['en-US', 'en-AU'],
             ],
         ], $matchersResult);
     }
