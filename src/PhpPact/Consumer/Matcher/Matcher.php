@@ -662,6 +662,23 @@ class Matcher
     }
 
     /**
+     * Allows defining matching rules to apply to the keys in a map
+     *
+     * @param array<string, mixed> $values
+     * @param array<mixed>         $rules
+     *
+     * @return array<string, mixed>
+     */
+    public function eachKey(array $values, array $rules): array
+    {
+        return [
+            'rules'             => $rules,
+            'value'             => $values,
+            'pact:matcher:type' => 'eachKey',
+        ];
+    }
+
+    /**
      * Allows defining matching rules to apply to the values in a collection. For maps, delgates to the Values matcher.
      *
      * @param array<string, mixed> $values

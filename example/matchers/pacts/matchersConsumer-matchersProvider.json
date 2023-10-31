@@ -68,6 +68,9 @@
             "dateTimeWithMillisISO8601": "2015-08-06T16:53:10.123+01:00",
             "datetime": "2000-10-31T01:30:00",
             "decimal": 79.01,
+            "eachKey": {
+              "page 3": "example text"
+            },
             "eachLike": [
               "item"
             ],
@@ -263,6 +266,21 @@
               "matchers": [
                 {
                   "match": "decimal"
+                }
+              ]
+            },
+            "$.eachKey": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "eachKey",
+                  "rules": [
+                    {
+                      "match": "regex",
+                      "regex": "^page \\d+$"
+                    }
+                  ],
+                  "value": "{\"page 3\":\"example text\"}"
                 }
               ]
             },

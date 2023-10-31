@@ -65,6 +65,10 @@ $app->get('/matchers', function (Request $request, Response $response) {
             </body>
             </html>
             HTML,
+        'eachKey' => [
+            'page 1' => 'Hello',
+            'page 2' => 'World',
+        ],
         'eachValue' => [
             'item 1' => 'bike',
             'item 2' => 'motorbike',

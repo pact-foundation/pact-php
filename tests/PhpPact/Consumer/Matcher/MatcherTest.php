@@ -888,6 +888,25 @@ class MatcherTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testEachKey()
+    {
+        $values = [
+            'page 1' => 'Hello',
+            'page 2' => 'World',
+        ];
+        $rules = [
+            $this->matcher->regex('page 3', '^page \d+$'),
+        ];
+        $expected = [
+            'rules'             => $rules,
+            'value'             => $values,
+            'pact:matcher:type' => 'eachKey',
+        ];
+        $actual = $this->matcher->eachKey($values, $rules);
+
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testEachValue()
     {
         $values = [

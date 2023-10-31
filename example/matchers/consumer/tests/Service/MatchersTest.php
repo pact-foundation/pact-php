@@ -79,6 +79,10 @@ class MatchersTest extends TestCase
                     'c' => 'ccc',
                 ]),
                 'contentType' => $this->matcher->contentType('text/html'),
+                'eachKey' => $this->matcher->eachKey(
+                    ['page 3' => 'example text'],
+                    [$this->matcher->regex(null, '^page \d+$')]
+                ),
                 'eachValue' => $this->matcher->eachValue(
                     ['vehicle 1' => 'car'],
                     [$this->matcher->regex(null, 'car|bike|motorbike')]
@@ -151,6 +155,9 @@ class MatchersTest extends TestCase
                 'ccc',
             ],
             'contentType' => 'text/html',
+            'eachKey' => [
+                'page 3' => 'example text',
+            ],
             'eachValue' => [
                 'vehicle 1' => 'car',
             ],
