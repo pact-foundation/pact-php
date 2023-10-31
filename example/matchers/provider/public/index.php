@@ -65,6 +65,10 @@ $app->get('/matchers', function (Request $request, Response $response) {
             </body>
             </html>
             HTML,
+        'eachValue' => [
+            'item 1' => 'bike',
+            'item 2' => 'motorbike',
+        ],
     ]));
 
     return $response->withHeader('Content-Type', 'application/json');

@@ -79,6 +79,10 @@ class MatchersTest extends TestCase
                     'c' => 'ccc',
                 ]),
                 'contentType' => $this->matcher->contentType('text/html'),
+                'eachValue' => $this->matcher->eachValue(
+                    ['vehicle 1' => 'car'],
+                    [$this->matcher->regex(null, 'car|bike|motorbike')]
+                ),
             ]);
 
         $config = new MockServerConfig();
@@ -147,6 +151,9 @@ class MatchersTest extends TestCase
                 'ccc',
             ],
             'contentType' => 'text/html',
+            'eachValue' => [
+                'vehicle 1' => 'car',
+            ],
         ], $matchersResult);
     }
 }

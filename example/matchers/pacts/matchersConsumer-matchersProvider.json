@@ -71,6 +71,9 @@
             "eachLike": [
               "item"
             ],
+            "eachValue": {
+              "vehicle 1": "car"
+            },
             "email": "hello@pact.io",
             "equal": "exact this value",
             "hexadecimal": "F7A16",
@@ -269,6 +272,21 @@
                 {
                   "match": "type",
                   "min": 1
+                }
+              ]
+            },
+            "$.eachValue": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "eachValue",
+                  "rules": [
+                    {
+                      "match": "regex",
+                      "regex": "car|bike|motorbike"
+                    }
+                  ],
+                  "value": "{\"vehicle 1\":\"car\"}"
                 }
               ]
             },
