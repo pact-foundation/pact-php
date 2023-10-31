@@ -48,6 +48,11 @@ $app->get('/matchers', function (Request $request, Response $response) {
         ],
         'notEmpty' => [111],
         'semver' => '0.27.1-beta2',
+        'values' => [
+            'a',
+            'bb',
+            'ccc',
+        ],
         'contentType' =>
             <<<HTML
             <!DOCTYPE html>
@@ -63,6 +68,10 @@ $app->get('/matchers', function (Request $request, Response $response) {
         'eachKey' => [
             'page 1' => 'Hello',
             'page 2' => 'World',
+        ],
+        'eachValue' => [
+            'item 1' => 'bike',
+            'item 2' => 'motorbike',
         ],
     ]));
 

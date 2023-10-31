@@ -74,6 +74,9 @@
             "eachLike": [
               "item"
             ],
+            "eachValue": {
+              "vehicle 1": "car"
+            },
             "email": "hello@pact.io",
             "equal": "exact this value",
             "hexadecimal": "F7A16",
@@ -101,7 +104,12 @@
             "time": "23:59::58",
             "timeISO8601": "T22:44:30.652Z",
             "timestampRFC3339": "Mon, 31 Oct 2016 15:21:41 -0400",
-            "uuid": "52c9585e-f345-4964-aa28-a45c64b2b2eb"
+            "uuid": "52c9585e-f345-4964-aa28-a45c64b2b2eb",
+            "values": [
+              "a",
+              "bb",
+              "ccc"
+            ]
           },
           "contentType": "application/json",
           "encoded": false
@@ -282,6 +290,21 @@
                 {
                   "match": "type",
                   "min": 1
+                }
+              ]
+            },
+            "$.eachValue": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "eachValue",
+                  "rules": [
+                    {
+                      "match": "regex",
+                      "regex": "car|bike|motorbike"
+                    }
+                  ],
+                  "value": "{\"vehicle 1\":\"car\"}"
                 }
               ]
             },
@@ -468,6 +491,14 @@
                 {
                   "match": "regex",
                   "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.values": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "values"
                 }
               ]
             }

@@ -586,7 +586,7 @@ class Matcher
     {
         return [
             'pact:matcher:type' => 'arrayContains',
-            'variants'          => $variants,
+            'variants'          => array_values($variants),
         ];
     }
 
@@ -643,7 +643,7 @@ class Matcher
     public function values(array $values): array
     {
         return [
-            'value'             => $values,
+            'value'             => array_values($values),
             'pact:matcher:type' => 'values',
         ];
     }
@@ -672,9 +672,26 @@ class Matcher
     public function eachKey(array $values, array $rules): array
     {
         return [
-            'rules' =>             $rules,
+            'rules'             => $rules,
             'value'             => $values,
             'pact:matcher:type' => 'eachKey',
+        ];
+    }
+
+    /**
+     * Allows defining matching rules to apply to the values in a collection. For maps, delgates to the Values matcher.
+     *
+     * @param array<string, mixed> $values
+     * @param array<mixed>         $rules
+     *
+     * @return array<string, mixed>
+     */
+    public function eachValue(array $values, array $rules): array
+    {
+        return [
+            'rules'             => $rules,
+            'value'             => $values,
+            'pact:matcher:type' => 'eachValue',
         ];
     }
 }

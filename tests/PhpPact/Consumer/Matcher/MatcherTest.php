@@ -786,6 +786,23 @@ class MatcherTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testArrayContainingWithKeys()
+    {
+        $expected = [
+            'pact:matcher:type' => 'arrayContains',
+            'variants'          => [
+                'item 1',
+                'item 2'
+            ],
+        ];
+        $actual = $this->matcher->arrayContaining([
+            'key 1' => 'item 1',
+            'key 2' => 'item 2'
+        ]);
+
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testNotEmpty()
     {
         $expected = [
@@ -843,6 +860,23 @@ class MatcherTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testValuesWithKeys()
+    {
+        $expected = [
+            'pact:matcher:type' => 'values',
+            'value'             => [
+                'item 1',
+                'item 2'
+            ],
+        ];
+        $actual = $this->matcher->values([
+            'key 1' => 'item 1',
+            'key 2' => 'item 2'
+        ]);
+
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testContentType()
     {
         $expected = [
@@ -869,6 +903,26 @@ class MatcherTest extends TestCase
             'pact:matcher:type' => 'eachKey',
         ];
         $actual = $this->matcher->eachKey($values, $rules);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testEachValue()
+    {
+        $values = [
+            'vehicle 1' => 'car',
+            'vehicle 2' => 'bike',
+            'vehicle 3' => 'motorbike'
+        ];
+        $rules = [
+            $this->matcher->regex('car', 'car|bike|motorbike'),
+        ];
+        $expected = [
+            'rules'             => $rules,
+            'value'             => $values,
+            'pact:matcher:type' => 'eachValue',
+        ];
+        $actual = $this->matcher->eachValue($values, $rules);
 
         $this->assertEquals($expected, $actual);
     }
