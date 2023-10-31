@@ -73,6 +73,11 @@ class MatchersTest extends TestCase
                 ]),
                 'notEmpty' => $this->matcher->notEmpty(['1','2','3']),
                 'semver' => $this->matcher->semver('10.0.0-alpha4'),
+                'values' => $this->matcher->values([
+                    'a' => 'a',
+                    'b' => 'bb',
+                    'c' => 'ccc',
+                ]),
                 'contentType' => $this->matcher->contentType('text/html'),
             ]);
 
@@ -136,6 +141,11 @@ class MatchersTest extends TestCase
             ],
             'notEmpty' => ['1', '2', '3'],
             'semver' => '10.0.0-alpha4',
+            'values' => [
+                'a',
+                'bb',
+                'ccc',
+            ],
             'contentType' => 'text/html',
         ], $matchersResult);
     }
