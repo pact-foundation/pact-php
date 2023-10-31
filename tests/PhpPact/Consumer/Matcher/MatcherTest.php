@@ -786,6 +786,23 @@ class MatcherTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testArrayContainingWithKeys()
+    {
+        $expected = [
+            'pact:matcher:type' => 'arrayContains',
+            'variants'          => [
+                'item 1',
+                'item 2'
+            ],
+        ];
+        $actual = $this->matcher->arrayContaining([
+            'key 1' => 'item 1',
+            'key 2' => 'item 2'
+        ]);
+
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testNotEmpty()
     {
         $expected = [
