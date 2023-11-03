@@ -28,13 +28,40 @@
               }
             ]
           },
-          "query": {}
+          "query": {
+            "$.pages": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "\\d+"
+                }
+              ]
+            },
+            "$['locales[]']": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[a-z]{2}-[A-Z]{2}$"
+                }
+              ]
+            }
+          }
         },
         "method": "GET",
         "path": "/matchers",
         "query": {
           "ignore": [
             "statusCode"
+          ],
+          "locales[]": [
+            "en-US",
+            "en-AU"
+          ],
+          "pages": [
+            "1",
+            "22"
           ]
         }
       },
@@ -99,6 +126,14 @@
             ],
             "nullValue": null,
             "number": 123,
+            "query": {
+              "ignore": "statusCode",
+              "locales": [
+                "en-US",
+                "en-AU"
+              ],
+              "pages": "22"
+            },
             "regex": "500 miles",
             "semver": "10.0.0-alpha4",
             "time": "23:59::58",

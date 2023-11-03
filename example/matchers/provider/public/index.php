@@ -73,6 +73,7 @@ $app->get('/matchers', function (Request $request, Response $response) {
             'item 1' => 'bike',
             'item 2' => 'motorbike',
         ],
+        'query' => $request->getQueryParams(),
     ]));
 
     return $response->withHeader('Content-Type', 'application/json');

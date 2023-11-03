@@ -20,7 +20,7 @@ class HttpClientService
     {
         $response = $this->httpClient->get("{$this->baseUri}/matchers", [
             'headers' => ['Accept' => 'application/json'],
-            'query' => ['ignore' => 'statusCode'],
+            'query' => 'ignore=statusCode&pages=2&pages=3&locales[]=fr-BE&locales[]=ru-RU',
         ]);
 
         return \json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
