@@ -70,6 +70,11 @@ class MatchersTest extends TestCase
                 'datetime' => $this->matcher->datetime("YYYY-mm-DD'T'HH:mm:ss", '2000-10-31T01:30:00'),
                 'likeString' => $this->matcher->string('some string'),
                 'equal' => $this->matcher->equal('exact this value'),
+                'equalArray' => $this->matcher->equal([
+                    'a',
+                    'bb',
+                    'ccc',
+                ]),
                 'includes' => $this->matcher->includes('lazy dog'),
                 'number' => $this->matcher->number(123),
                 'arrayContaining' => $this->matcher->arrayContaining([
@@ -80,6 +85,11 @@ class MatchersTest extends TestCase
                 'notEmpty' => $this->matcher->notEmpty(['1','2','3']),
                 'semver' => $this->matcher->semver('10.0.0-alpha4'),
                 'values' => $this->matcher->values([
+                    'a',
+                    'bb',
+                    'ccc',
+                ]),
+                'valuesWithKeys' => $this->matcher->values([
                     'a' => 'a',
                     'b' => 'bb',
                     'c' => 'ccc',
@@ -151,6 +161,11 @@ class MatchersTest extends TestCase
             'datetime' => '2000-10-31T01:30:00',
             'likeString' => 'some string',
             'equal' => 'exact this value',
+            'equalArray' => [
+                'a',
+                'bb',
+                'ccc',
+            ],
             'includes' => 'lazy dog',
             'number' => 123,
             'arrayContaining' => [
@@ -164,6 +179,11 @@ class MatchersTest extends TestCase
                 'a',
                 'bb',
                 'ccc',
+            ],
+            'valuesWithKeys' => [
+                'a' => 'a',
+                'b' => 'bb',
+                'c' => 'ccc',
             ],
             'contentType' => 'text/html',
             'eachKey' => [
