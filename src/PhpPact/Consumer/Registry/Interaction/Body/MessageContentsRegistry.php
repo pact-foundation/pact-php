@@ -23,11 +23,10 @@ class MessageContentsRegistry implements BodyRegistryInterface
 
     public function withBody(Text|Binary|Multipart $body): void
     {
-        $success = match ($body::class) {
-            Binary::class => $this->client->call('pactffi_with_binary_file', $this->messageRegistry->getId(), $this->getPart(), $body->getContentType(), $body->getContents()->getValue(), $body->getContents()->getSize()),
-            Text::class => $this->client->call('pactffi_with_body', $this->messageRegistry->getId(), $this->getPart(), $body->getContentType(), $body->getContents()),
-            Multipart::class => throw new BodyNotSupportedException('Message does not support multipart'),
-            default => false,
+        $success = match (true) {
+            $body instanceof Binary => $this->client->call('pactffi_with_binary_file', $this->messageRegistry->getId(), $this->getPart(), $body->getContentType(), $body->getContents()->getValue(), $body->getContents()->getSize()),
+            $body instanceof Text => $this->client->call('pactffi_with_body', $this->messageRegistry->getId(), $this->getPart(), $body->getContentType(), $body->getContents()),
+            $body instanceof Multipart => throw new BodyNotSupportedException('Message does not support multipart'),
         };
         if (!$success) {
             throw new MessageContentsNotAddedException();

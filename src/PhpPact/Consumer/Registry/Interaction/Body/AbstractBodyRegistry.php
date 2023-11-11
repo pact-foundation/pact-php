@@ -23,10 +23,10 @@ abstract class AbstractBodyRegistry implements BodyRegistryInterface
 
     public function withBody(Text|Binary|Multipart $body): void
     {
-        $success = match ($body::class) {
-            Binary::class => $this->client->call('pactffi_with_binary_file', $this->interactionRegistry->getId(), $this->getPart(), $body->getContentType(), $body->getContents()->getValue(), $body->getContents()->getSize()),
-            Text::class => $this->client->call('pactffi_with_body', $this->interactionRegistry->getId(), $this->getPart(), $body->getContentType(), $body->getContents()),
-            Multipart::class => array_reduce(
+        $success = match (true) {
+            $body instanceof Binary => $this->client->call('pactffi_with_binary_file', $this->interactionRegistry->getId(), $this->getPart(), $body->getContentType(), $body->getContents()->getValue(), $body->getContents()->getSize()),
+            $body instanceof Text => $this->client->call('pactffi_with_body', $this->interactionRegistry->getId(), $this->getPart(), $body->getContentType(), $body->getContents()),
+            $body instanceof Multipart => array_reduce(
                 $body->getParts(),
                 function (bool $success, Part $part) use ($body) {
                     $result = $this->client->call('pactffi_with_multipart_file_v2', $this->interactionRegistry->getId(), $this->getPart(), $part->getContentType(), $part->getPath(), $part->getName(), $body->getBoundary());
@@ -38,7 +38,6 @@ abstract class AbstractBodyRegistry implements BodyRegistryInterface
                 },
                 true
             ),
-            default => false,
         };
         if (!$success) {
             throw new InteractionBodyNotAddedException();
