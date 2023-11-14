@@ -61,7 +61,7 @@ class MessageRegistry extends AbstractRegistry implements MessageRegistryInterfa
     /**
      * @param ProviderState[] $providerStates
      */
-    private function given(array $providerStates): self
+    protected function given(array $providerStates): self
     {
         foreach ($providerStates as $providerState) {
             $this->client->call('pactffi_message_given', $this->id, $providerState->getName());
