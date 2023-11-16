@@ -5,25 +5,31 @@
   "messages": [
     {
       "contents": {
-        "song": "And the wind whispers Mary"
-      },
-      "description": "footprints dressed in red",
-      "metadata": {
-        "contentType": "application/json",
-        "queue": "And the clowns have all gone to bed",
-        "routing_key": "And the clowns have all gone to bed"
-      },
-      "providerStates": [
-        {
-          "name": "You can hear happiness staggering on down the street"
-        }
-      ]
-    },
-    {
-      "contents": {
+        "number": null,
         "text": "Hello Mary"
       },
       "description": "an alligator named Mary exists",
+      "generators": {
+        "body": {
+          "$.number": {
+            "max": 10,
+            "min": 0,
+            "type": "RandomInt"
+          }
+        }
+      },
+      "matchingRules": {
+        "body": {
+          "$.number": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "integer"
+              }
+            ]
+          }
+        }
+      },
       "metadata": {
         "contentType": "application/json",
         "queue": "wind cries",
@@ -41,8 +47,8 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.9",
-      "models": "1.1.11"
+      "ffi": "0.4.10",
+      "models": "1.1.12"
     },
     "pactSpecification": {
       "version": "3.0.0"

@@ -4,19 +4,12 @@ namespace MessageConsumer;
 
 class ExampleMessageConsumer
 {
-    public function ProcessText(string $message): object
+    public function processMessage(string $message): void
     {
         $obj = \json_decode($message);
-        print ' [x] Processed ' . \print_r($obj->contents->text, true) . "\n";
-
-        return $obj;
-    }
-
-    public function ProcessSong(string $message): object
-    {
-        $obj = \json_decode($message);
-        print ' [x] Processed ' . \print_r($obj->contents->song, true) . "\n";
-
-        return $obj;
+        print " [x] Processing \n";
+        print ' [x] Text: ' . \print_r($obj->contents->text, true) . "\n";
+        print ' [x] Number: ' . \print_r($obj->contents->number, true) . "\n";
+        print " [x] Processed \n";
     }
 }
