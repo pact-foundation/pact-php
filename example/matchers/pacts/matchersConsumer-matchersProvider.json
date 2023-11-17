@@ -106,6 +106,11 @@
             },
             "email": "hello@pact.io",
             "equal": "exact this value",
+            "equalArray": [
+              "a",
+              "bb",
+              "ccc"
+            ],
             "hexadecimal": "F7A16",
             "includes": "lazy dog",
             "integer": 9,
@@ -144,7 +149,12 @@
               "a",
               "bb",
               "ccc"
-            ]
+            ],
+            "valuesWithKeys": {
+              "a": "a",
+              "b": "bb",
+              "c": "ccc"
+            }
           },
           "contentType": "application/json",
           "encoded": false
@@ -360,6 +370,14 @@
                 }
               ]
             },
+            "$.equalArray": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
             "$.hexadecimal": {
               "combine": "AND",
               "matchers": [
@@ -530,6 +548,14 @@
               ]
             },
             "$.values": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "values"
+                }
+              ]
+            },
+            "$.valuesWithKeys": {
               "combine": "AND",
               "matchers": [
                 {

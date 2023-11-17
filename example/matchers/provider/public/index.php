@@ -40,6 +40,11 @@ $app->get('/matchers', function (Request $request, Response $response) {
         'datetime' => '1997-07-16T19:20:30',
         'likeString' => 'another string',
         'equal' => 'exact this value',
+        'equalArray' => [
+            'a',
+            'bb',
+            'ccc',
+        ],
         'includes' => 'The quick brown fox jumps over the lazy dog',
         'number' => 112.3,
         'arrayContaining' => [
@@ -48,10 +53,17 @@ $app->get('/matchers', function (Request $request, Response $response) {
         ],
         'notEmpty' => [111],
         'semver' => '0.27.1-beta2',
-        'values' => [
+        'values' => [ // Missing ending values are OK, additional values are NOT OK
             'a',
             'bb',
-            'ccc',
+            //'ccc',
+            //'dddd',
+        ],
+        'valuesWithKeys' => [ // Missing keys are OK, additional keys are NOT OK
+            //'a' => 'a',
+            'b' => 'bb',
+            //'c' => 'ccc',
+            //'d' => 'dddd',
         ],
         'contentType' =>
             <<<HTML

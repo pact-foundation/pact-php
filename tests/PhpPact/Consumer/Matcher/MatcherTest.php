@@ -881,8 +881,8 @@ class MatcherTest extends TestCase
         $expected = [
             'pact:matcher:type' => 'values',
             'value'             => [
-                'item 1',
-                'item 2'
+                'key 1' => 'item 1',
+                'key 2' => 'item 2'
             ],
         ];
         $actual = $this->matcher->values([
