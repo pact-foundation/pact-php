@@ -9,13 +9,14 @@ use PhpPact\FFI\Model\ArrayData;
 use PhpPact\Standalone\ProviderVerifier\Model\Source\BrokerInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Source\UrlInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\VerifierLoggerInterface;
 
 class Verifier
 {
     protected ClientInterface $client;
     protected CData $handle;
 
-    public function __construct(VerifierConfigInterface $config)
+    public function __construct(VerifierConfigInterface $config, private ?VerifierLoggerInterface $logger = null)
     {
         $this->client = new Client();
         $this
@@ -207,6 +208,9 @@ class Verifier
     public function verify(): bool
     {
         $error = $this->client->call('pactffi_verifier_execute', $this->handle);
+        if ($this->logger) {
+            $this->logger->log($this->client->call('pactffi_verifier_json', $this->handle));
+        }
         $this->client->call('pactffi_verifier_shutdown', $this->handle);
 
         return !$error;
