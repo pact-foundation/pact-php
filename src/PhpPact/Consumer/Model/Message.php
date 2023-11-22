@@ -45,7 +45,7 @@ class Message
     }
 
     /**
-     * @param array<string, string> $metadata
+     * @param array<string, string|array<string, mixed>> $metadata
      */
     public function setMetadata(array $metadata): self
     {
@@ -57,9 +57,14 @@ class Message
         return $this;
     }
 
-    private function setMetadataValue(string $key, string $value): void
+    /**
+     * @param string|array<string, mixed> $value
+     *
+     * @throws JsonException
+     */
+    private function setMetadataValue(string $key, string|array $value): void
     {
-        $this->metadata[$key] = $value;
+        $this->metadata[$key] = is_string($value) ? $value : json_encode($value, JSON_THROW_ON_ERROR);
     }
 
     public function getContents(): Text|Binary|null

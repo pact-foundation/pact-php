@@ -16,6 +16,12 @@
             "min": 0,
             "type": "RandomInt"
           }
+        },
+        "metadata": {
+          "routing_key": {
+            "size": 10,
+            "type": "RandomString"
+          }
         }
       },
       "matchingRules": {
@@ -28,12 +34,22 @@
               }
             ]
           }
+        },
+        "metadata": {
+          "routing_key": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          }
         }
       },
       "metadata": {
         "contentType": "application/json",
         "queue": "wind cries",
-        "routing_key": "wind cries"
+        "routing_key": "some string"
       },
       "providerStates": [
         {
@@ -47,7 +63,7 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.10",
+      "ffi": "0.4.11",
       "models": "1.1.12"
     },
     "pactSpecification": {

@@ -45,7 +45,7 @@ class ExampleMessageConsumerTest extends TestCase
         $contents->text = 'Hello Mary';
         $contents->number = $this->matcher->integerV3();
 
-        $metadata = ['queue' => 'wind cries', 'routing_key' => 'wind cries'];
+        $metadata = ['queue' => 'wind cries', 'routing_key' => $this->matcher->string()];
 
         $builder
             ->given('a message', ['foo' => 'bar'])

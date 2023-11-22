@@ -79,7 +79,7 @@ class MessageRegistry extends AbstractRegistry implements MessageRegistryInterfa
     private function withMetadata(array $metadata): self
     {
         foreach ($metadata as $key => $value) {
-            $this->client->call('pactffi_message_with_metadata', $this->id, (string) $key, (string) $value);
+            $this->client->call('pactffi_message_with_metadata_v2', $this->id, (string) $key, (string) $value);
         }
 
         return $this;
