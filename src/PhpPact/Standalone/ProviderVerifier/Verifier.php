@@ -6,17 +6,17 @@ use FFI\CData;
 use PhpPact\FFI\Client;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\FFI\Model\ArrayData;
+use PhpPact\Service\LoggerInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Source\BrokerInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Source\UrlInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
-use PhpPact\Standalone\ProviderVerifier\Model\VerifierLoggerInterface;
 
 class Verifier
 {
     protected ClientInterface $client;
     protected CData $handle;
 
-    public function __construct(VerifierConfigInterface $config, private ?VerifierLoggerInterface $logger = null)
+    public function __construct(VerifierConfigInterface $config, private ?LoggerInterface $logger = null)
     {
         $this->client = new Client();
         $this

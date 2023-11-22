@@ -2,11 +2,13 @@
 
 namespace PhpPact\Consumer\Service;
 
+use FFI;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Exception\MockServerNotStartedException;
 use PhpPact\Consumer\Exception\MockServerNotWrotePactFileException;
 use PhpPact\Consumer\Registry\Pact\PactRegistryInterface;
 use PhpPact\FFI\ClientInterface;
+use PhpPact\Service\LoggerInterface;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 
 class MockServer implements MockServerInterface
@@ -14,7 +16,8 @@ class MockServer implements MockServerInterface
     public function __construct(
         private ClientInterface $client,
         private PactRegistryInterface $pactRegistry,
-        private MockServerConfigInterface $config
+        private MockServerConfigInterface $config,
+        private ?LoggerInterface $logger = null
     ) {
     }
 
@@ -37,17 +40,19 @@ class MockServer implements MockServerInterface
 
     public function verify(): bool
     {
-        $matched = $this->client->call('pactffi_mock_server_matched', $this->config->getPort());
-
         try {
+            $matched = $this->isMatched();
+
             if ($matched) {
                 $this->writePact();
+            } elseif ($this->logger) {
+                $this->logger->log($this->getMismatches());
             }
+
+            return $matched;
         } finally {
             $this->cleanUp();
         }
-
-        return $matched;
     }
 
     protected function getTransport(): string
@@ -77,5 +82,17 @@ class MockServer implements MockServerInterface
     {
         $this->client->call('pactffi_cleanup_mock_server', $this->config->getPort());
         $this->pactRegistry->deletePact();
+    }
+
+    private function isMatched(): bool
+    {
+        return $this->client->call('pactffi_mock_server_matched', $this->config->getPort());
+    }
+
+    private function getMismatches(): string
+    {
+        $cData = $this->client->call('pactffi_mock_server_mismatches', $this->config->getPort());
+
+        return FFI::string($cData);
     }
 }
