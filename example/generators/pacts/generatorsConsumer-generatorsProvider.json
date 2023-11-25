@@ -1,0 +1,260 @@
+{
+  "consumer": {
+    "name": "generatorsConsumer"
+  },
+  "interactions": [
+    {
+      "description": "A get request to /generators",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "Get Generators"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "id": 13
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "generators": {
+          "body": {
+            "$.id": {
+              "expression": "${id}",
+              "type": "ProviderState"
+            }
+          }
+        },
+        "headers": {
+          "Accept": [
+            "application/json"
+          ],
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "GET",
+        "path": "/generators"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "boolean": null,
+            "date": null,
+            "datetime": null,
+            "decimal": null,
+            "hexadecimal": null,
+            "integer": null,
+            "number": null,
+            "regex": null,
+            "requestId": 222,
+            "string": "some string",
+            "time": null,
+            "uuid": null
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "generators": {
+          "body": {
+            "$.boolean": {
+              "type": "RandomBoolean"
+            },
+            "$.date": {
+              "format": "yyyy-MM-dd",
+              "type": "Date"
+            },
+            "$.datetime": {
+              "format": "YYYY-MM-D'T'HH:mm:ss",
+              "type": "DateTime"
+            },
+            "$.decimal": {
+              "digits": 10,
+              "type": "RandomDecimal"
+            },
+            "$.hexadecimal": {
+              "digits": 10,
+              "type": "RandomHexadecimal"
+            },
+            "$.integer": {
+              "max": 10,
+              "min": 0,
+              "type": "RandomInt"
+            },
+            "$.number": {
+              "max": 10,
+              "min": 0,
+              "type": "RandomInt"
+            },
+            "$.regex": {
+              "regex": "\\d+ (miles|kilometers)",
+              "type": "Regex"
+            },
+            "$.string": {
+              "size": 10,
+              "type": "RandomString"
+            },
+            "$.time": {
+              "format": "HH:mm::ss",
+              "type": "Time"
+            },
+            "$.uuid": {
+              "type": "Uuid"
+            }
+          },
+          "status": {
+            "max": 499,
+            "min": 400,
+            "type": "RandomInt"
+          }
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.boolean": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "boolean"
+                }
+              ]
+            },
+            "$.date": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "yyyy-MM-dd",
+                  "match": "date"
+                }
+              ]
+            },
+            "$.datetime": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "YYYY-MM-D'T'HH:mm:ss",
+                  "match": "datetime"
+                }
+              ]
+            },
+            "$.decimal": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.hexadecimal": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-fA-F]+$"
+                }
+              ]
+            },
+            "$.integer": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.number": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.regex": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "\\d+ (miles|kilometers)"
+                }
+              ]
+            },
+            "$.string": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.time": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "HH:mm::ss",
+                  "match": "time"
+                }
+              ]
+            },
+            "$.uuid": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "statusCode",
+                  "status": "clientError"
+                }
+              ]
+            }
+          }
+        },
+        "status": 0
+      },
+      "transport": "http",
+      "type": "Synchronous/HTTP"
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.11",
+      "mockserver": "1.2.4",
+      "models": "1.1.12"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  },
+  "provider": {
+    "name": "generatorsProvider"
+  }
+}
