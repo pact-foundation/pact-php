@@ -14,7 +14,7 @@ class HttpClientServiceTest extends TestCase
 {
     public function testGetImageContent()
     {
-        $imageContent = file_get_contents(__DIR__ . '/../_resource/image.jpg');
+        $path = __DIR__ . '/../_resource/image.jpg';
 
         $request = new ConsumerRequest();
         $request
@@ -26,7 +26,7 @@ class HttpClientServiceTest extends TestCase
         $response
             ->setStatus(200)
             ->addHeader('Content-Type', 'image/jpeg')
-            ->setBody(new Binary($imageContent, in_array(php_uname('m'), ['AMD64', 'arm64', 'aarch64']) ? 'application/octet-stream' : 'image/jpeg'));
+            ->setBody(new Binary($path, in_array(php_uname('m'), ['AMD64', 'arm64', 'aarch64']) ? 'application/octet-stream' : 'image/jpeg'));
 
         $config = new MockServerConfig();
         $config
@@ -48,6 +48,6 @@ class HttpClientServiceTest extends TestCase
         $verifyResult = $builder->verify();
 
         $this->assertTrue($verifyResult);
-        $this->assertEquals($imageContent, $imageContentResult);
+        $this->assertEquals(file_get_contents($path), $imageContentResult);
     }
 }

@@ -34,7 +34,8 @@
               ]
             }
           },
-          "header": {}
+          "header": {},
+          "status": {}
         },
         "status": 200
       }
@@ -42,9 +43,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.9",
+      "ffi": "0.4.11",
       "mockserver": "1.2.4",
-      "models": "1.1.11"
+      "models": "1.1.12"
     },
     "pactSpecification": {
       "version": "3.0.0"

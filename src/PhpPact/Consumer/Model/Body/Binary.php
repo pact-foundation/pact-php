@@ -2,29 +2,41 @@
 
 namespace PhpPact\Consumer\Model\Body;
 
+use PhpPact\Consumer\Exception\BinaryFileNotExistException;
+use PhpPact\Consumer\Exception\BinaryFileReadException;
 use PhpPact\FFI\Model\StringData;
 
 class Binary
 {
     use ContentTypeTrait;
 
-    private StringData $contents;
-
-    public function __construct(string $contents, string $contentType)
+    public function __construct(private string $path, string $contentType)
     {
-        $this->setContents(StringData::createFrom($contents, false));
         $this->setContentType($contentType);
     }
 
-    public function getContents(): StringData
+    public function getPath(): string
     {
-        return $this->contents;
+        return $this->path;
     }
 
-    public function setContents(StringData $contents): self
+    public function setPath(string $path): self
     {
-        $this->contents = $contents;
+        $this->path = $path;
 
         return $this;
+    }
+
+    public function createBinaryData(): StringData
+    {
+        if (!file_exists($this->getPath())) {
+            throw new BinaryFileNotExistException(sprintf('File %s does not exist', $this->getPath()));
+        }
+        $contents = file_get_contents($this->getPath());
+        if (false === $contents) {
+            throw new BinaryFileReadException(sprintf('File %s can not be read', $this->getPath()));
+        }
+
+        return StringData::createFrom($contents, false);
     }
 }
