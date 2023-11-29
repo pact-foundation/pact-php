@@ -27,7 +27,7 @@ class StringData
     {
         $length = \strlen($value);
         $size   = $length + ($nullTerminated ? 1 : 0);
-        $cData  = FFI::new("uint8_t[{$size}]");
+        $cData  = FFI::new("uint8_t[{$size}]", false);
         FFI::memcpy($cData, $value, $length);
 
         return new self($cData, $size);
