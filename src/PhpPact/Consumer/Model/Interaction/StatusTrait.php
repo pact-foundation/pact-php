@@ -2,18 +2,25 @@
 
 namespace PhpPact\Consumer\Model\Interaction;
 
+use JsonException;
+
 trait StatusTrait
 {
-    private int $status = 200;
+    private string $status = '200';
 
-    public function getStatus(): int
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): self
+    /**
+     * @param int|array<string, mixed> $status
+     *
+     * @throws JsonException
+     */
+    public function setStatus(int|array $status): self
     {
-        $this->status = $status;
+        $this->status = is_array($status) ? json_encode($status, JSON_THROW_ON_ERROR) : (string) $status;
 
         return $this;
     }

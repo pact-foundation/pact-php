@@ -88,7 +88,9 @@ $app->get('/matchers', function (Request $request, Response $response) {
         'query' => $request->getQueryParams(),
     ]));
 
-    return $response->withHeader('Content-Type', 'application/json');
+    return $response
+        ->withHeader('Content-Type', 'application/json')
+        ->withStatus(503);
 });
 
 $app->post('/pact-change-state', function (Request $request, Response $response) {

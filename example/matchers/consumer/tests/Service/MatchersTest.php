@@ -4,6 +4,7 @@ namespace MatchersConsumer\Tests\Service;
 
 use MatchersConsumer\Service\HttpClientService;
 use PhpPact\Consumer\InteractionBuilder;
+use PhpPact\Consumer\Matcher\HttpStatus;
 use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
@@ -26,7 +27,6 @@ class MatchersTest extends TestCase
             ->setMethod('GET')
             ->setPath($this->matcher->regex('/matchers', '^\/matchers$'))
             ->setQuery([
-                'ignore' => 'statusCode',
                 'pages' => [ // Consumer send multiple values, but provider receive single (last) value
                     json_encode($this->matcher->regex([1, 22], '\d+')),
                 ],
@@ -38,7 +38,7 @@ class MatchersTest extends TestCase
 
         $response = new ProviderResponse();
         $response
-            ->setStatus(200)
+            ->setStatus($this->matcher->statusCode(HttpStatus::SERVER_ERROR, 512))
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
                 'like' => $this->matcher->like(['key' => 'value']),
@@ -104,7 +104,6 @@ class MatchersTest extends TestCase
                     [$this->matcher->regex(null, 'car|bike|motorbike')]
                 ),
                 'query' => [
-                    'ignore' => 'statusCode',
                     'pages' => '22',
                     'locales' => ['en-US', 'en-AU'],
                 ],
@@ -127,10 +126,14 @@ class MatchersTest extends TestCase
             ->willRespondWith($response);
 
         $service = new HttpClientService($config->getBaseUri());
-        $matchersResult = $service->getMatchers();
+        $response = $service->sendRequest();
         $verifyResult = $builder->verify();
 
+        $statusCode = $response->getStatusCode();
+        $body = \json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+
         $this->assertTrue($verifyResult);
+        $this->assertSame(512, $statusCode);
         $this->assertEquals([
             'like' => ['key' => 'value'],
             'likeNull' => null,
@@ -193,10 +196,9 @@ class MatchersTest extends TestCase
                 'vehicle 1' => 'car',
             ],
             'query' => [
-                'ignore' => 'statusCode',
                 'pages' => '22',
                 'locales' => ['en-US', 'en-AU'],
             ],
-        ], $matchersResult);
+        ], $body);
     }
 }
