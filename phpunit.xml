@@ -49,6 +49,12 @@
     <testsuite name="PhpPact Matchers Provider Example Tests">
         <directory>./example/matchers/provider/tests</directory>
     </testsuite>
+    <testsuite name="PhpPact Generators Consumer Example Tests">
+        <directory>./example/generators/consumer/tests</directory>
+    </testsuite>
+    <testsuite name="PhpPact Generators Provider Example Tests">
+        <directory>./example/generators/provider/tests</directory>
+    </testsuite>
   </testsuites>
   <logging>
     <junit outputFile="./test_results/reports/unit_test_results.xml"/>
