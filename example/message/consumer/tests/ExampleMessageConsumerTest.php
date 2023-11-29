@@ -6,6 +6,7 @@ use Exception;
 use MessageConsumer\ExampleMessageConsumer;
 use PhpPact\Consumer\MessageBuilder;
 use PhpPact\Config\PactConfigInterface;
+use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Standalone\PactMessage\PactMessageConfig;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -13,6 +14,7 @@ use stdClass;
 class ExampleMessageConsumerTest extends TestCase
 {
     private static PactConfigInterface $config;
+    private Matcher $matcher;
 
     public static function setUpBeforeClass(): void
     {
@@ -27,6 +29,11 @@ class ExampleMessageConsumerTest extends TestCase
         }
     }
 
+    public function setUp(): void
+    {
+        $this->matcher = new Matcher();
+    }
+
     /**
      * @throws Exception
      */
@@ -36,6 +43,7 @@ class ExampleMessageConsumerTest extends TestCase
 
         $contents       = new stdClass();
         $contents->text = 'Hello Mary';
+        $contents->number = $this->matcher->integerV3();
 
         $metadata = ['queue' => 'wind cries', 'routing_key' => 'wind cries'];
 
@@ -47,35 +55,7 @@ class ExampleMessageConsumerTest extends TestCase
 
         // established mechanism to this via callbacks
         $consumerMessage = new ExampleMessageConsumer();
-        $callback        = [$consumerMessage, 'ProcessText'];
-        $builder->setCallback($callback);
-
-        $verifyResult = $builder->verify();
-
-        $this->assertTrue($verifyResult);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testProcessSong()
-    {
-        $builder    = new MessageBuilder(self::$config);
-
-        $contents       = new stdClass();
-        $contents->song = 'And the wind whispers Mary';
-
-        $metadata = ['queue' => 'And the clowns have all gone to bed', 'routing_key' => 'And the clowns have all gone to bed'];
-
-        $builder
-            ->given('You can hear happiness staggering on down the street')
-            ->expectsToReceive('footprints dressed in red')
-            ->withMetadata($metadata)
-            ->withContent($contents);
-
-        // established mechanism to this via callbacks
-        $consumerMessage = new ExampleMessageConsumer();
-        $callback        = [$consumerMessage, 'ProcessSong'];
+        $callback        = [$consumerMessage, 'processMessage'];
         $builder->setCallback($callback);
 
         $verifyResult = $builder->verify();
