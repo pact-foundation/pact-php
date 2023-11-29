@@ -6,11 +6,8 @@ class Text
 {
     use ContentTypeTrait;
 
-    private string $contents;
-
-    public function __construct(string $contents, string $contentType)
+    public function __construct(private string $contents, string $contentType)
     {
-        $this->setContents($contents);
         $this->setContentType($contentType);
     }
 
