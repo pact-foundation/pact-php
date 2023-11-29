@@ -4,7 +4,7 @@ namespace PhpPact\Consumer\Model\Body;
 
 use PhpPact\Consumer\Exception\BinaryFileNotExistException;
 use PhpPact\Consumer\Exception\BinaryFileReadException;
-use PhpPact\FFI\Model\StringData;
+use PhpPact\FFI\Model\BinaryData;
 
 class Binary
 {
@@ -27,7 +27,7 @@ class Binary
         return $this;
     }
 
-    public function createBinaryData(): StringData
+    public function createBinaryData(): BinaryData
     {
         if (!file_exists($this->getPath())) {
             throw new BinaryFileNotExistException(sprintf('File %s does not exist', $this->getPath()));
@@ -37,6 +37,6 @@ class Binary
             throw new BinaryFileReadException(sprintf('File %s can not be read', $this->getPath()));
         }
 
-        return StringData::createFrom($contents, false);
+        return BinaryData::createFrom($contents);
     }
 }
