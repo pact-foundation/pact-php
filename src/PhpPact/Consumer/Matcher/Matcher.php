@@ -466,7 +466,7 @@ class Matcher
     /**
      * @return array<string, mixed>
      */
-    public function time(string $format = 'HH:mm::ss', ?string $value = null): array
+    public function time(string $format = 'HH:mm:ss', ?string $value = null): array
     {
         if (null === $value) {
             return [
@@ -486,7 +486,7 @@ class Matcher
     /**
      * @return array<string, mixed>
      */
-    public function datetime(string $format = "YYYY-mm-DD'T'HH:mm:ss", ?string $value = null): array
+    public function datetime(string $format = "yyyy-MM-dd'T'HH:mm:ss", ?string $value = null): array
     {
         if (null === $value) {
             return [

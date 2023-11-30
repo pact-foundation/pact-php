@@ -661,9 +661,9 @@ class MatcherTest extends TestCase
         $expected = [
             'value'             => '21:45::31',
             'pact:matcher:type' => 'time',
-            'format'            => 'HH:mm::ss',
+            'format'            => 'HH:mm:ss',
         ];
-        $actual = $this->matcher->time('HH:mm::ss', '21:45::31');
+        $actual = $this->matcher->time('HH:mm:ss', '21:45::31');
 
         $this->assertEquals($expected, $actual);
     }
@@ -673,7 +673,7 @@ class MatcherTest extends TestCase
         $expected = [
             'pact:generator:type' => 'Time',
             'pact:matcher:type'   => 'time',
-            'format'              => 'HH:mm::ss',
+            'format'              => 'HH:mm:ss',
         ];
         $actual = $this->matcher->time();
 
@@ -685,9 +685,9 @@ class MatcherTest extends TestCase
         $expected = [
             'value'             => '2015-08-06T16:53:10',
             'pact:matcher:type' => 'datetime',
-            'format'            => "YYYY-mm-DD'T'HH:mm:ss",
+            'format'            => "yyyy-MM-dd'T'HH:mm:ss",
         ];
-        $actual = $this->matcher->datetime("YYYY-mm-DD'T'HH:mm:ss", '2015-08-06T16:53:10');
+        $actual = $this->matcher->datetime("yyyy-MM-dd'T'HH:mm:ss", '2015-08-06T16:53:10');
 
         $this->assertEquals($expected, $actual);
     }
@@ -697,7 +697,7 @@ class MatcherTest extends TestCase
         $expected = [
             'pact:generator:type' => 'DateTime',
             'pact:matcher:type'   => 'datetime',
-            'format'              => "YYYY-mm-DD'T'HH:mm:ss",
+            'format'              => "yyyy-MM-dd'T'HH:mm:ss",
         ];
         $actual = $this->matcher->datetime();
 

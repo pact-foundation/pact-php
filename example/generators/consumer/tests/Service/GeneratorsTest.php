@@ -44,8 +44,8 @@ class GeneratorsTest extends TestCase
                 'hexadecimal' => $this->matcher->hexadecimal(null),
                 'uuid' => $this->matcher->uuid(null),
                 'date' => $this->matcher->date('yyyy-MM-dd', null),
-                'time' => $this->matcher->time('HH:mm::ss', null),
-                'datetime' => $this->matcher->datetime("YYYY-MM-D'T'HH:mm:ss", null),
+                'time' => $this->matcher->time('HH:mm:ss', null),
+                'datetime' => $this->matcher->datetime("yyyy-MM-dd'T'HH:mm:ss", null),
                 'string' => $this->matcher->string(null),
                 'number' => $this->matcher->number(null),
                 'requestId' => 222,
@@ -89,8 +89,8 @@ class GeneratorsTest extends TestCase
         $this->assertRegExp('/' . Matcher::HEX_FORMAT . '/', $body['hexadecimal']);
         $this->assertRegExp('/' . Matcher::UUID_V4_FORMAT . '/', $body['uuid']);
         $this->assertTrue($this->validateDateTime($body['date'], 'Y-m-d'));
-        $this->assertTrue($this->validateDateTime($body['time'], 'H:i::s'));
-        $this->assertTrue($this->validateDateTime($body['datetime'], "Y-m-z\TH:i:s"));
+        $this->assertTrue($this->validateDateTime($body['time'], 'H:i:s'));
+        $this->assertTrue($this->validateDateTime($body['datetime'], "Y-m-d\TH:i:s"));
         $this->assertIsString($body['string']);
         $this->assertIsNumeric($body['number']);
         $this->assertSame(222, $body['requestId']);

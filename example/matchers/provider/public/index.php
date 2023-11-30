@@ -36,7 +36,7 @@ $app->get('/matchers', function (Request $request, Response $response) {
         'email' => 'pact@example.com',
         'nullValue' => null,
         'date' => '1997-12-11',
-        'time' => '11:01::02',
+        'time' => '11:01:02',
         'datetime' => '1997-07-16T19:20:30',
         'likeString' => 'another string',
         'equal' => 'exact this value',
