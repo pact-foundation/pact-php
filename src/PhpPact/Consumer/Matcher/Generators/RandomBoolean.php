@@ -9,12 +9,9 @@ use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
  */
 class RandomBoolean implements GeneratorInterface
 {
-    /**
-     * @return array<string, string>
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): object
     {
-        return [
+        return (object) [
             'pact:generator:type' => 'RandomBoolean',
         ];
     }

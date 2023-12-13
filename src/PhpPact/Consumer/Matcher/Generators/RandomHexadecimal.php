@@ -13,12 +13,9 @@ class RandomHexadecimal implements GeneratorInterface
     {
     }
 
-    /**
-     * @return array<string, string|int>
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): object
     {
-        return [
+        return (object) [
             'digits'              => $this->digits,
             'pact:generator:type' => 'RandomHexadecimal',
         ];

@@ -15,12 +15,9 @@ class ProviderState implements GeneratorInterface
     {
     }
 
-    /**
-     * @return array<string, string>
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): object
     {
-        return [
+        return (object) [
             'expression'          => $this->expression,
             'pact:generator:type' => 'ProviderState',
         ];

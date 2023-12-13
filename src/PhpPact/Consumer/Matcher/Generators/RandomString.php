@@ -13,12 +13,9 @@ class RandomString implements GeneratorInterface
     {
     }
 
-    /**
-     * @return array<string, string|int>
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): object
     {
-        return [
+        return (object) [
             'size'                => $this->size,
             'pact:generator:type' => 'RandomString',
         ];

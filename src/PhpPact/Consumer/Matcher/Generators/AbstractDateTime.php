@@ -10,10 +10,7 @@ abstract class AbstractDateTime implements GeneratorInterface
     {
     }
 
-    /**
-     * @return array<string, string>
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): object
     {
         $data = ['pact:generator:type' => $this->getType()];
 
@@ -25,7 +22,7 @@ abstract class AbstractDateTime implements GeneratorInterface
             $data['expression'] = $this->expression;
         }
 
-        return $data;
+        return (object) $data;
     }
 
     abstract protected function getType(): string;

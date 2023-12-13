@@ -13,12 +13,9 @@ class Regex implements GeneratorInterface
     {
     }
 
-    /**
-     * @return array<string, string>
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): object
     {
-        return [
+        return (object) [
             'regex'               => $this->regex,
             'pact:generator:type' => 'Regex',
         ];

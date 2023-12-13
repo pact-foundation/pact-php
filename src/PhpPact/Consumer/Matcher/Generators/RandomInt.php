@@ -13,12 +13,9 @@ class RandomInt implements GeneratorInterface
     {
     }
 
-    /**
-     * @return array<string, string|int>
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): object
     {
-        return [
+        return (object) [
             'min'                 => $this->min,
             'max'                 => $this->max,
             'pact:generator:type' => 'RandomInt',

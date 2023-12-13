@@ -34,10 +34,7 @@ class Uuid implements GeneratorInterface
         }
     }
 
-    /**
-     * @return array<string, string>
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): object
     {
         $data = ['pact:generator:type' => 'Uuid'];
 
@@ -45,6 +42,6 @@ class Uuid implements GeneratorInterface
             $data['format'] = $this->format;
         }
 
-        return $data;
+        return (object) $data;
     }
 }
