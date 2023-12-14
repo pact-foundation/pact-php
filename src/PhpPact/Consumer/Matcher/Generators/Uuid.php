@@ -2,7 +2,6 @@
 
 namespace PhpPact\Consumer\Matcher\Generators;
 
-use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
 use PhpPact\Consumer\Matcher\Exception\InvalidUuidFormatException;
 
 /**
@@ -13,7 +12,7 @@ use PhpPact\Consumer\Matcher\Exception\InvalidUuidFormatException;
  * - upper-case-hyphenated (e.g 936DA01F-9ABD-4D9D-80C7-02AF85C822A8)
  * - URN (e.g. urn:uuid:936da01f-9abd-4d9d-80c7-02af85c822a8)
  */
-class Uuid implements GeneratorInterface
+class Uuid extends AbstractGenerator
 {
     public const SIMPLE_FORMAT = 'simple';
     public const LOWER_CASE_HYPHENATED_FORMAT = 'lower-case-hyphenated';
@@ -34,17 +33,18 @@ class Uuid implements GeneratorInterface
         }
     }
 
+    public function getType(): string
+    {
+        return 'Uuid';
+    }
+
     /**
      * @return array<string, string>
      */
-    public function jsonSerialize(): array
+    protected function getAttributesData(): array
     {
-        $data = ['pact:generator:type' => 'Uuid'];
-
-        if ($this->format !== null) {
-            $data['format'] = $this->format;
-        }
-
-        return $data;
+        return $this->format !== null ? [
+            'format' => $this->format,
+        ] : [];
     }
 }

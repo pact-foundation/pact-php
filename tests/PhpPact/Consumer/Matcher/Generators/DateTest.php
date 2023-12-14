@@ -7,15 +7,23 @@ use PHPUnit\Framework\TestCase;
 
 class DateTest extends TestCase
 {
-    /**
-     * @testWith [null,         null,     "{\"pact:generator:type\":\"Date\"}"]
-     *           ["yyyy-MM-dd", null,     "{\"pact:generator:type\":\"Date\",\"format\":\"yyyy-MM-dd\"}"]
-     *           [null,         "+1 day", "{\"pact:generator:type\":\"Date\",\"expression\":\"+1 day\"}"]
-     *           ["yyyy-MM-dd", "+1 day", "{\"pact:generator:type\":\"Date\",\"format\":\"yyyy-MM-dd\",\"expression\":\"+1 day\"}"]
-     */
-    public function testSerialize(?string $format, ?string $expression, string $json): void
+    public function testType(): void
     {
-        $date = new Date($format, $expression);
-        $this->assertSame($json, json_encode($date));
+        $generator = new Date();
+        $this->assertSame('Date', $generator->getType());
+    }
+
+    /**
+     * @testWith [null,         null,     []]
+     *           ["yyyy-MM-dd", null,     {"format":"yyyy-MM-dd"}]
+     *           [null,         "+1 day", {"expression":"+1 day"}]
+     *           ["yyyy-MM-dd", "+1 day", {"format":"yyyy-MM-dd","expression":"+1 day"}]
+     */
+    public function testAttributes(?string $format, ?string $expression, array $data): void
+    {
+        $generator = new Date($format, $expression);
+        $attributes = $generator->getAttributes();
+        $this->assertSame($generator, $attributes->getParent());
+        $this->assertSame($data, $attributes->getData());
     }
 }

@@ -2,25 +2,27 @@
 
 namespace PhpPact\Consumer\Matcher\Generators;
 
-use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
-
 /**
  * Generates a random big decimal value with the provided number of digits
  */
-class RandomDecimal implements GeneratorInterface
+class RandomDecimal extends AbstractGenerator
 {
     public function __construct(private int $digits = 10)
     {
     }
 
+    public function getType(): string
+    {
+        return 'RandomDecimal';
+    }
+
     /**
-     * @return array<string, string|int>
+     * @return array<string, int>
      */
-    public function jsonSerialize(): array
+    protected function getAttributesData(): array
     {
         return [
-            'digits'              => $this->digits,
-            'pact:generator:type' => 'RandomDecimal',
+            'digits' => $this->digits,
         ];
     }
 }

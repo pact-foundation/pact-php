@@ -2,25 +2,27 @@
 
 namespace PhpPact\Consumer\Matcher\Generators;
 
-use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
-
 /**
  * Generates a random hexadecimal value of the given number of digits
  */
-class RandomHexadecimal implements GeneratorInterface
+class RandomHexadecimal extends AbstractGenerator
 {
     public function __construct(private int $digits = 10)
     {
     }
 
+    public function getType(): string
+    {
+        return 'RandomHexadecimal';
+    }
+
     /**
-     * @return array<string, string|int>
+     * @return array<string, int>
      */
-    public function jsonSerialize(): array
+    protected function getAttributesData(): array
     {
         return [
-            'digits'              => $this->digits,
-            'pact:generator:type' => 'RandomHexadecimal',
+            'digits' => $this->digits,
         ];
     }
 }

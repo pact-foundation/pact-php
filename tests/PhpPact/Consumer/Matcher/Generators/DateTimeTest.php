@@ -7,15 +7,23 @@ use PHPUnit\Framework\TestCase;
 
 class DateTimeTest extends TestCase
 {
-    /**
-     * @testWith [null,                    null,     "{\"pact:generator:type\":\"DateTime\"}"]
-     *           ["yyyy-MM-dd'T'HH:mm:ss", null,     "{\"pact:generator:type\":\"DateTime\",\"format\":\"yyyy-MM-dd'T'HH:mm:ss\"}"]
-     *           [null,                    "+1 day", "{\"pact:generator:type\":\"DateTime\",\"expression\":\"+1 day\"}"]
-     *           ["yyyy-MM-dd'T'HH:mm:ss", "+1 day", "{\"pact:generator:type\":\"DateTime\",\"format\":\"yyyy-MM-dd'T'HH:mm:ss\",\"expression\":\"+1 day\"}"]
-     */
-    public function testSerialize(?string $format, ?string $expression, string $json): void
+    public function testType(): void
     {
-        $dateTime = new DateTime($format, $expression);
-        $this->assertSame($json, json_encode($dateTime));
+        $generator = new DateTime();
+        $this->assertSame('DateTime', $generator->getType());
+    }
+
+    /**
+     * @testWith [null,                    null,     []]
+     *           ["yyyy-MM-dd'T'HH:mm:ss", null,     {"format":"yyyy-MM-dd'T'HH:mm:ss"}]
+     *           [null,                    "+1 day", {"expression":"+1 day"}]
+     *           ["yyyy-MM-dd'T'HH:mm:ss", "+1 day", {"format":"yyyy-MM-dd'T'HH:mm:ss","expression":"+1 day"}]
+     */
+    public function testAttributes(?string $format, ?string $expression, array $data): void
+    {
+        $generator = new DateTime($format, $expression);
+        $attributes = $generator->getAttributes();
+        $this->assertSame($generator, $attributes->getParent());
+        $this->assertSame($data, $attributes->getData());
     }
 }

@@ -2,20 +2,21 @@
 
 namespace PhpPact\Consumer\Matcher\Generators;
 
-use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
-
 /**
  * Generates a random boolean value
  */
-class RandomBoolean implements GeneratorInterface
+class RandomBoolean extends AbstractGenerator
 {
+    public function getType(): string
+    {
+        return 'RandomBoolean';
+    }
+
     /**
      * @return array<string, string>
      */
-    public function jsonSerialize(): array
+    protected function getAttributesData(): array
     {
-        return [
-            'pact:generator:type' => 'RandomBoolean',
-        ];
+        return [];
     }
 }

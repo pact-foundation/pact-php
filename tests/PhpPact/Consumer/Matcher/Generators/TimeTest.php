@@ -7,15 +7,23 @@ use PHPUnit\Framework\TestCase;
 
 class TimeTest extends TestCase
 {
-    /**
-     * @testWith [null,       null,      "{\"pact:generator:type\":\"Time\"}"]
-     *           ["HH:mm:ss", null,      "{\"pact:generator:type\":\"Time\",\"format\":\"HH:mm:ss\"}"]
-     *           [null,       "+1 hour", "{\"pact:generator:type\":\"Time\",\"expression\":\"+1 hour\"}"]
-     *           ["HH:mm:ss", "+1 hour", "{\"pact:generator:type\":\"Time\",\"format\":\"HH:mm:ss\",\"expression\":\"+1 hour\"}"]
-     */
-    public function testSerialize(?string $format, ?string $expression, string $json): void
+    public function testType(): void
     {
-        $time = new Time($format, $expression);
-        $this->assertSame($json, json_encode($time));
+        $generator = new Time();
+        $this->assertSame('Time', $generator->getType());
+    }
+
+    /**
+     * @testWith [null,       null,      []]
+     *           ["HH:mm:ss", null,      {"format":"HH:mm:ss"}]
+     *           [null,       "+1 hour", {"expression":"+1 hour"}]
+     *           ["HH:mm:ss", "+1 hour", {"format":"HH:mm:ss","expression":"+1 hour"}]
+     */
+    public function testAttributes(?string $format, ?string $expression, array $data): void
+    {
+        $generator = new Time($format, $expression);
+        $attributes = $generator->getAttributes();
+        $this->assertSame($generator, $attributes->getParent());
+        $this->assertSame($data, $attributes->getData());
     }
 }

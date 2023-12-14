@@ -2,27 +2,29 @@
 
 namespace PhpPact\Consumer\Matcher\Generators;
 
-use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
-
 /**
  * Generates a value that is looked up from the provider state context using the given expression
  *
  * Example expression: /products/${id}
  */
-class ProviderState implements GeneratorInterface
+class ProviderState extends AbstractGenerator
 {
     public function __construct(private string $expression)
     {
     }
 
+    public function getType(): string
+    {
+        return 'ProviderState';
+    }
+
     /**
      * @return array<string, string>
      */
-    public function jsonSerialize(): array
+    protected function getAttributesData(): array
     {
         return [
-            'expression'          => $this->expression,
-            'pact:generator:type' => 'ProviderState',
+            'expression' => $this->expression,
         ];
     }
 }
