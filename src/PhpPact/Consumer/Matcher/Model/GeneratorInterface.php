@@ -2,8 +2,9 @@
 
 namespace PhpPact\Consumer\Matcher\Model;
 
-use JsonSerializable;
-
-interface GeneratorInterface extends JsonSerializable
+interface GeneratorInterface
 {
+    public function getType(): string;
+
+    public function getAttributes(): Attributes;
 }

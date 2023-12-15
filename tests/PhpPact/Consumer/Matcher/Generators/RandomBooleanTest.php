@@ -3,16 +3,27 @@
 namespace PhpPactTest\Consumer\Matcher\Generators;
 
 use PhpPact\Consumer\Matcher\Generators\RandomBoolean;
+use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
 use PHPUnit\Framework\TestCase;
 
 class RandomBooleanTest extends TestCase
 {
-    public function testSerialize(): void
+    private GeneratorInterface $generator;
+
+    protected function setUp(): void
     {
-        $boolean = new RandomBoolean();
-        $this->assertSame(
-            '{"pact:generator:type":"RandomBoolean"}',
-            json_encode($boolean)
-        );
+        $this->generator = new RandomBoolean();
+    }
+
+    public function testType(): void
+    {
+        $this->assertSame('RandomBoolean', $this->generator->getType());
+    }
+
+    public function testAttributes(): void
+    {
+        $attributes = $this->generator->getAttributes();
+        $this->assertSame($this->generator, $attributes->getParent());
+        $this->assertSame([], $attributes->getData());
     }
 }
