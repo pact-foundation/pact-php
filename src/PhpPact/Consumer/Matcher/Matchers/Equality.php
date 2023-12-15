@@ -16,9 +16,12 @@ class Equality implements MatcherInterface
     {
     }
 
-    public function jsonSerialize(): object
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
     {
-        return (object) [
+        return [
             'pact:matcher:type' => $this->getType(),
             'value'             => $this->value
         ];
