@@ -66,8 +66,8 @@ class MatchersTest extends TestCase
                 'email' => $this->matcher->email(),
                 'nullValue' => $this->matcher->nullValue(),
                 'date' => $this->matcher->date('yyyy-MM-dd', '2015-05-16'),
-                'time' => $this->matcher->time('HH:mm::ss', '23:59::58'),
-                'datetime' => $this->matcher->datetime("YYYY-mm-DD'T'HH:mm:ss", '2000-10-31T01:30:00'),
+                'time' => $this->matcher->time('HH:mm:ss', '23:59::58'),
+                'datetime' => $this->matcher->datetime("yyyy-MM-dd'T'HH:mm:ss", '2000-10-31T01:30:00'),
                 'likeString' => $this->matcher->string('some string'),
                 'equal' => $this->matcher->equal('exact this value'),
                 'equalArray' => $this->matcher->equal([

@@ -297,7 +297,7 @@
               "combine": "AND",
               "matchers": [
                 {
-                  "format": "YYYY-mm-DD'T'HH:mm:ss",
+                  "format": "yyyy-MM-dd'T'HH:mm:ss",
                   "match": "datetime"
                 }
               ]
@@ -511,7 +511,7 @@
               "combine": "AND",
               "matchers": [
                 {
-                  "format": "HH:mm::ss",
+                  "format": "HH:mm:ss",
                   "match": "time"
                 }
               ]

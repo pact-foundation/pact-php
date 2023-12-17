@@ -19,7 +19,7 @@ $app->get('/generators', function (Request $request, Response $response) {
         'hexadecimal' => '20AC',
         'uuid' => 'e9d2f3a5-6ecc-4bff-8935-84bb6141325a',
         'date' => '1997-12-11',
-        'time' => '11:01::02',
+        'time' => '11:01:02',
         'datetime' => '1997-07-16T19:20:30',
         'string' => 'another string',
         'number' => 112.3,
