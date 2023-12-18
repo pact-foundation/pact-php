@@ -29,7 +29,7 @@ class GeneratorsTest extends TestCase
             ->setPath('/generators')
             ->addHeader('Accept', 'application/json')
             ->setBody([
-                'id' => $this->matcher->fromProviderState($this->matcher->integer(), '${id}')
+                'id' => $this->matcher->fromProviderState($this->matcher->integerV3(), '${id}')
             ]);
 
         $response = new ProviderResponse();

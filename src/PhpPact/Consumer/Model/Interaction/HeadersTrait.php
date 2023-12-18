@@ -2,6 +2,9 @@
 
 namespace PhpPact\Consumer\Model\Interaction;
 
+use JsonException;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+
 trait HeadersTrait
 {
     /**
@@ -31,13 +34,15 @@ trait HeadersTrait
     }
 
     /**
-     * @param string[]|string $value
+     * @param MatcherInterface|MatcherInterface[]|string[]|string $value
+     *
+     * @throws JsonException
      */
-    public function addHeader(string $header, array|string $value): self
+    public function addHeader(string $header, array|string|MatcherInterface $value): self
     {
         $this->headers[$header] = [];
         if (is_array($value)) {
-            array_walk($value, fn (string $value) => $this->addHeaderValue($header, $value));
+            array_walk($value, fn (string|MatcherInterface $value) => $this->addHeaderValue($header, $value));
         } else {
             $this->addHeaderValue($header, $value);
         }
@@ -45,8 +50,11 @@ trait HeadersTrait
         return $this;
     }
 
-    private function addHeaderValue(string $header, string $value): void
+    /**
+     * @throws JsonException
+     */
+    private function addHeaderValue(string $header, string|MatcherInterface $value): void
     {
-        $this->headers[$header][] = $value;
+        $this->headers[$header][] = is_string($value) ? $value : json_encode($value, JSON_THROW_ON_ERROR);
     }
 }

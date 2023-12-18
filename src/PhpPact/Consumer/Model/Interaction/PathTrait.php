@@ -3,6 +3,7 @@
 namespace PhpPact\Consumer\Model\Interaction;
 
 use JsonException;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 
 trait PathTrait
 {
@@ -14,13 +15,11 @@ trait PathTrait
     }
 
     /**
-     * @param string|array<string, mixed> $path
-     *
      * @throws JsonException
      */
-    public function setPath(array|string $path): self
+    public function setPath(MatcherInterface|string $path): self
     {
-        $this->path = is_array($path) ? json_encode($path, JSON_THROW_ON_ERROR) : $path;
+        $this->path = is_string($path) ? $path : json_encode($path, JSON_THROW_ON_ERROR);
 
         return $this;
     }
