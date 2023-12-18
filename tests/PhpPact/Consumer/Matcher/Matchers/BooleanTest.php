@@ -3,12 +3,18 @@
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Matchers\Boolean;
+use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
 
 class BooleanTest extends GeneratorAwareMatcherTestCase
 {
-    protected function setUp(): void
+    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
     {
-        $this->matcher = new Boolean();
+        return new Boolean();
+    }
+
+    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
+    {
+        return new Boolean(false);
     }
 
     /**
@@ -18,7 +24,7 @@ class BooleanTest extends GeneratorAwareMatcherTestCase
      */
     public function testSerialize(?bool $value, string $json): void
     {
-        $this->matcher = new Boolean($value);
-        $this->assertSame($json, json_encode($this->matcher));
+        $matcher = new Boolean($value);
+        $this->assertSame($json, json_encode($matcher));
     }
 }

@@ -3,12 +3,18 @@
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Matchers\Decimal;
+use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
 
 class DecimalTest extends GeneratorAwareMatcherTestCase
 {
-    protected function setUp(): void
+    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
     {
-        $this->matcher = new Decimal();
+        return new Decimal();
+    }
+
+    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
+    {
+        return new Decimal(15.68);
     }
 
     /**
@@ -17,7 +23,7 @@ class DecimalTest extends GeneratorAwareMatcherTestCase
      */
     public function testSerialize(?float $value, string $json): void
     {
-        $this->matcher = new Decimal($value);
-        $this->assertSame($json, json_encode($this->matcher));
+        $matcher = new Decimal($value);
+        $this->assertSame($json, json_encode($matcher));
     }
 }

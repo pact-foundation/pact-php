@@ -2,13 +2,19 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
 use PhpPact\Consumer\Matcher\Matchers\Semver;
 
 class SemverTest extends GeneratorAwareMatcherTestCase
 {
-    protected function setUp(): void
+    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
     {
-        $this->matcher = new Semver();
+        return new Semver();
+    }
+
+    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
+    {
+        return new Semver('10.21.0-rc.1');
     }
 
     /**
@@ -17,7 +23,7 @@ class SemverTest extends GeneratorAwareMatcherTestCase
      */
     public function testSerialize(?string $value, string $json): void
     {
-        $this->matcher = new Semver($value);
-        $this->assertSame($json, json_encode($this->matcher));
+        $matcher = new Semver($value);
+        $this->assertSame($json, json_encode($matcher));
     }
 }

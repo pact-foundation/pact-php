@@ -2,6 +2,7 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Exception\GeneratorNotRequiredException;
 use PhpPact\Consumer\Matcher\Exception\GeneratorRequiredException;
 use PhpPact\Consumer\Matcher\Model\Attributes;
 use PhpPact\Consumer\Matcher\Model\GeneratorAwareInterface;
@@ -37,6 +38,8 @@ abstract class GeneratorAwareMatcher implements MatcherInterface, GeneratorAware
             }
 
             return $data + ['pact:generator:type' => $this->generator->getType()] + $this->getMergedAttributes()->getData();
+        } elseif ($this->generator) {
+            throw new GeneratorNotRequiredException(sprintf("Generator '%s' is not required for matcher '%s' when example value is set", $this->generator->getType(), $this->getType()));
         }
 
         return $data + $this->getAttributes()->getData() + ['value' => $this->getValue()];

@@ -3,12 +3,18 @@
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Matchers\Date;
+use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
 
 class DateTest extends GeneratorAwareMatcherTestCase
 {
-    protected function setUp(): void
+    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
     {
-        $this->matcher = new Date();
+        return new Date();
+    }
+
+    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
+    {
+        return new Date('yyyy-MM-dd', '2001-09-17');
     }
 
     /**
@@ -18,7 +24,7 @@ class DateTest extends GeneratorAwareMatcherTestCase
     public function testSerialize(?string $value, string $json): void
     {
         $format = 'yyyy-MM-dd';
-        $this->matcher = new Date($format, $value);
-        $this->assertSame($json, json_encode($this->matcher));
+        $matcher = new Date($format, $value);
+        $this->assertSame($json, json_encode($matcher));
     }
 }
