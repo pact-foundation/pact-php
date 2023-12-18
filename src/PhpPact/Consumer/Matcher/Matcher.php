@@ -2,10 +2,37 @@
 
 namespace PhpPact\Consumer\Matcher;
 
-use Exception;
-
-use function preg_last_error;
-use function preg_match;
+use PhpPact\Consumer\Matcher\Exception\MatcherException;
+use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
+use PhpPact\Consumer\Matcher\Generators\ProviderState;
+use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
+use PhpPact\Consumer\Matcher\Generators\Uuid;
+use PhpPact\Consumer\Matcher\Matchers\ArrayContains;
+use PhpPact\Consumer\Matcher\Matchers\Boolean;
+use PhpPact\Consumer\Matcher\Matchers\ContentType;
+use PhpPact\Consumer\Matcher\Matchers\Date;
+use PhpPact\Consumer\Matcher\Matchers\DateTime;
+use PhpPact\Consumer\Matcher\Matchers\Decimal;
+use PhpPact\Consumer\Matcher\Matchers\EachKey;
+use PhpPact\Consumer\Matcher\Matchers\EachValue;
+use PhpPact\Consumer\Matcher\Matchers\Equality;
+use PhpPact\Consumer\Matcher\Matchers\Includes;
+use PhpPact\Consumer\Matcher\Matchers\Integer;
+use PhpPact\Consumer\Matcher\Matchers\MaxType;
+use PhpPact\Consumer\Matcher\Matchers\MinMaxType;
+use PhpPact\Consumer\Matcher\Matchers\MinType;
+use PhpPact\Consumer\Matcher\Matchers\NotEmpty;
+use PhpPact\Consumer\Matcher\Matchers\NullValue;
+use PhpPact\Consumer\Matcher\Matchers\Number;
+use PhpPact\Consumer\Matcher\Matchers\Regex;
+use PhpPact\Consumer\Matcher\Matchers\Semver;
+use PhpPact\Consumer\Matcher\Matchers\StatusCode;
+use PhpPact\Consumer\Matcher\Matchers\StringValue;
+use PhpPact\Consumer\Matcher\Matchers\Time;
+use PhpPact\Consumer\Matcher\Matchers\Type;
+use PhpPact\Consumer\Matcher\Matchers\Values;
+use PhpPact\Consumer\Matcher\Model\GeneratorAwareInterface;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 
 /**
  * Matcher implementation. Builds the Pact FFI specification json for interaction publishing.
@@ -26,37 +53,24 @@ class Matcher
 
     /**
      * Alias for the `like()` function.
-     *
-     * @throws Exception
-     *
-     * @return array<string, mixed>
      */
-    public function somethingLike(mixed $value): array
+    public function somethingLike(mixed $value): Type
     {
         return $this->like($value);
     }
 
     /**
-     * @param mixed $value example of what the expected data would be
-     *
-     * @throws Exception
-     *
-     * @return array<string, mixed>
+     * This executes a type based match against the values, that is, they are equal if they are the same type.
      */
-    public function like(mixed $value): array
+    public function like(mixed $value): Type
     {
-        return [
-            'value'   => $value,
-            'pact:matcher:type' => 'type',
-        ];
+        return new Type($value);
     }
 
     /**
      * Expect an array of similar data as the value passed in.
-     *
-     * @return array<string, mixed>
      */
-    public function eachLike(mixed $value): array
+    public function eachLike(mixed $value): MinType
     {
         return $this->atLeastLike($value, 1);
     }
@@ -64,28 +78,15 @@ class Matcher
     /**
      * @param mixed $value example of what the expected data would be
      * @param int   $min   minimum number of objects to verify against
-     *
-     * @return array<string, mixed>
      */
-    public function atLeastLike(mixed $value, int $min): array
+    public function atLeastLike(mixed $value, int $min): MinType
     {
-        return [
-            'value' => array_fill(0, $min, $value),
-            'pact:matcher:type' => 'type',
-            'min' => $min,
-        ];
+        return new MinType(array_fill(0, $min, $value), $min);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function atMostLike(mixed $value, int $max): array
+    public function atMostLike(mixed $value, int $max): MaxType
     {
-        return [
-            'value' => [$value],
-            'pact:matcher:type' => 'type',
-            'max' => $max,
-        ];
+        return new MaxType([$value], $max);
     }
 
     /**
@@ -94,68 +95,38 @@ class Matcher
      * @param int      $max   maximum number of objects to verify against
      * @param int|null $count number of examples to generate, defaults to one
      *
-     * @return array<string, mixed>
+     * @throws MatcherException
      */
-    public function constrainedArrayLike(mixed $value, int $min, int $max, ?int $count = null): array
+    public function constrainedArrayLike(mixed $value, int $min, int $max, ?int $count = null): MinMaxType
     {
         $elements = $count ?? $min;
         if ($count !== null) {
             if ($count < $min) {
-                throw new Exception(
+                throw new MatcherException(
                     "constrainedArrayLike has a minimum of {$min} but {$count} elements where requested." .
                     ' Make sure the count is greater than or equal to the min.'
                 );
             } elseif ($count > $max) {
-                throw new Exception(
+                throw new MatcherException(
                     "constrainedArrayLike has a maximum of {$max} but {$count} elements where requested." .
                     ' Make sure the count is less than or equal to the max.'
                 );
             }
         }
 
-        return [
-            'min' => $min,
-            'max' => $max,
-            'pact:matcher:type' => 'type',
-            'value' => array_fill(0, $elements, $value),
-        ];
+        return new MinMaxType(array_fill(0, $elements, $value), $min, $max);
     }
 
     /**
-     * Validate that a value will match a regex pattern.
+     * Validate that values will match a regex pattern.
      *
-     * @param string|string[]|null $values   example of what the expected data would be
-     * @param string $pattern valid Ruby regex pattern
+     * @param string|string[]|null $values
      *
-     * @return array<string, mixed>
-     *
-     * @throws Exception
+     * @throws MatcherException
      */
-    public function term(string|array|null $values, string $pattern): array
+    public function term(string|array|null $values, string $pattern): Regex
     {
-        if (null === $values) {
-            return [
-                'regex'               => $pattern,
-                'pact:matcher:type'   => 'regex',
-                'pact:generator:type' => 'Regex',
-            ];
-        }
-
-        foreach ((array) $values as $value) {
-            $result = preg_match("/$pattern/", $value);
-
-            if ($result === false || $result === 0) {
-                $errorCode = preg_last_error();
-
-                throw new Exception("The pattern {$pattern} is not valid for value {$value}. Failed with error code {$errorCode}.");
-            }
-        }
-
-        return [
-            'value'             => $values,
-            'regex'             => $pattern,
-            'pact:matcher:type' => 'regex',
-        ];
+        return new Regex($pattern, $values);
     }
 
     /**
@@ -163,11 +134,9 @@ class Matcher
      *
      * @param string|string[]|null $values
      *
-     * @return array<string, mixed>
-     *
-     * @throws Exception
+     * @throws MatcherException
      */
-    public function regex(string|array|null $values, string $pattern): array
+    public function regex(string|array|null $values, string $pattern): Regex
     {
         return $this->term($values, $pattern);
     }
@@ -177,11 +146,9 @@ class Matcher
      *
      * @param string $value valid ISO8601 date, example: 2010-01-01
      *
-     * @throws Exception
-     *
-     * @return array<string, mixed>
+     * @throws MatcherException
      */
-    public function dateISO8601(string $value = '2013-02-01'): array
+    public function dateISO8601(string $value = '2013-02-01'): Regex
     {
         return $this->term($value, self::ISO8601_DATE_FORMAT);
     }
@@ -191,11 +158,9 @@ class Matcher
      *
      * @param string $value
      *
-     * @return array<string, mixed>
-     *
-     * @throws Exception
+     * @throws MatcherException
      */
-    public function timeISO8601(string $value = 'T22:44:30.652Z'): array
+    public function timeISO8601(string $value = 'T22:44:30.652Z'): Regex
     {
         return $this->term($value, self::ISO8601_TIME_FORMAT);
     }
@@ -205,11 +170,9 @@ class Matcher
      *
      * @param string $value
      *
-     * @return array<string, mixed>
-     *
-     * @throws Exception
+     * @throws MatcherException
      */
-    public function dateTimeISO8601(string $value = '2015-08-06T16:53:10+01:00'): array
+    public function dateTimeISO8601(string $value = '2015-08-06T16:53:10+01:00'): Regex
     {
         return $this->term($value, self::ISO8601_DATETIME_FORMAT);
     }
@@ -219,11 +182,9 @@ class Matcher
      *
      * @param string $value
      *
-     * @return array<string, mixed>
-     *
-     * @throws Exception
+     * @throws MatcherException
      */
-    public function dateTimeWithMillisISO8601(string $value = '2015-08-06T16:53:10.123+01:00'): array
+    public function dateTimeWithMillisISO8601(string $value = '2015-08-06T16:53:10.123+01:00'): Regex
     {
         return $this->term($value, self::ISO8601_DATETIME_WITH_MILLIS_FORMAT);
     }
@@ -233,157 +194,82 @@ class Matcher
      *
      * @param string $value
      *
-     * @return array<string, mixed>
-     *
-     * @throws Exception
+     * @throws MatcherException
      */
-    public function timestampRFC3339(string $value = 'Mon, 31 Oct 2016 15:21:41 -0400'): array
+    public function timestampRFC3339(string $value = 'Mon, 31 Oct 2016 15:21:41 -0400'): Regex
     {
         return $this->term($value, self::RFC3339_TIMESTAMP_FORMAT);
     }
 
-    /**
-     * @return array<string, mixed>
-     *
-     * @throws Exception
-     */
-    public function boolean(): array
+    public function boolean(): Type
     {
         return $this->like(true);
     }
 
-    /**
-     * @return array<string, mixed>
-     *
-     * @throws Exception
-     */
-    public function integer(int $int = 13): array
+    public function integer(int $int = 13): Type
     {
         return $this->like($int);
     }
 
-    /**
-     * @return array<string, mixed>
-     *
-     * @throws Exception
-     */
-    public function decimal(float $float = 13.01): array
+    public function decimal(float $float = 13.01): Type
     {
         return $this->like($float);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function booleanV3(?bool $value = null): array
+    public function booleanV3(?bool $value = null): Boolean
     {
-        if (null === $value) {
-            return [
-                'pact:generator:type' => 'RandomBoolean',
-                'pact:matcher:type'   => 'boolean',
-            ];
-        }
+        return new Boolean($value);
+    }
 
-        return [
-            'value'             => $value,
-            'pact:matcher:type' => 'boolean',
-        ];
+    public function integerV3(?int $value = null): Integer
+    {
+        return new Integer($value);
+    }
+
+    public function decimalV3(?float $value = null): Decimal
+    {
+        return new Decimal($value);
     }
 
     /**
-     * @return array<string, mixed>
+     * @throws MatcherException
      */
-    public function integerV3(?int $value = null): array
+    public function hexadecimal(?string $value = null): Regex
     {
+        $matcher = new Regex(self::HEX_FORMAT, $value);
+
         if (null === $value) {
-            return [
-                'pact:generator:type' => 'RandomInt',
-                'pact:matcher:type'   => 'integer',
-            ];
+            $matcher->setGenerator(new RandomHexadecimal());
         }
 
-        return [
-            'value'             => $value,
-            'pact:matcher:type' => 'integer',
-        ];
+        return $matcher;
     }
 
     /**
-     * @return array<string, mixed>
+     * @throws MatcherException
      */
-    public function decimalV3(?float $value = null): array
+    public function uuid(?string $value = null): Regex
     {
+        $matcher = new Regex(self::UUID_V4_FORMAT, $value);
+
         if (null === $value) {
-            return [
-                'pact:generator:type' => 'RandomDecimal',
-                'pact:matcher:type'   => 'decimal',
-            ];
+            $matcher->setGenerator(new Uuid());
         }
 
-        return [
-            'value'             => $value,
-            'pact:matcher:type' => 'decimal',
-        ];
+        return $matcher;
     }
 
-    /**
-     * @return array<string, mixed>
-     *
-     * @throws Exception
-     */
-    public function hexadecimal(?string $value = null): array
-    {
-        if (null === $value) {
-            return [
-                'pact:generator:type' => 'RandomHexadecimal',
-            ] + $this->term(null, self::HEX_FORMAT);
-        }
-
-        return $this->term($value, self::HEX_FORMAT);
-    }
-
-    /**
-     * @return array<string, mixed>
-     *
-     * @throws Exception
-     */
-    public function uuid(?string $value = null): array
-    {
-        if (null === $value) {
-            return [
-                'pact:generator:type' => 'Uuid',
-            ] + $this->term(null, self::UUID_V4_FORMAT);
-        }
-
-        return $this->term($value, self::UUID_V4_FORMAT);
-    }
-
-    /**
-     * @return array<string, mixed>
-     *
-     * @throws Exception
-     */
-    public function ipv4Address(?string $ip = '127.0.0.13'): array
+    public function ipv4Address(?string $ip = '127.0.0.13'): Regex
     {
         return $this->term($ip, self::IPV4_FORMAT);
     }
 
-    /**
-     * @return array<string, mixed>
-     *
-     * @throws Exception
-     */
-    public function ipv6Address(?string $ip = '::ffff:192.0.2.128'): array
+    public function ipv6Address(?string $ip = '::ffff:192.0.2.128'): Regex
     {
         return $this->term($ip, self::IPV6_FORMAT);
     }
 
-    /**
-     * @return array<string, mixed>
-     *
-     * @throws Exception
-     */
-    public function email(?string $email = 'hello@pact.io'): array
+    public function email(?string $email = 'hello@pact.io'): Regex
     {
         return $this->term($email, self::EMAIL_FORMAT);
     }
@@ -391,149 +277,93 @@ class Matcher
     /**
      * Value that must be null. This will only match the JSON Null value. For other content types, it will
      * match if the attribute is missing.
+     */
+    public function nullValue(): NullValue
+    {
+        return new NullValue();
+    }
+
+    /**
+     * Matches the string representation of a value against the date format.
      *
-     * @return array<string, string>
+     * NOTE: Java's datetime format is used, not PHP's datetime format
+     * For Java one, see https://www.digitalocean.com/community/tutorials/java-simpledateformat-java-date-format#patterns
+     * For PHP one, see https://www.php.net/manual/en/datetime.format.php#refsect1-datetime.format-parameters
      */
-    public function nullValue(): array
+    public function date(string $format = 'yyyy-MM-dd', ?string $value = null): Date
     {
-        return [
-            'pact:matcher:type' => 'null',
-        ];
+        return new Date($format, $value);
     }
 
     /**
-     * @return array<string, mixed>
-     */
-    public function date(string $format = 'yyyy-MM-dd', ?string $value = null): array
-    {
-        if (null === $value) {
-            return [
-                'pact:generator:type' => 'Date',
-                'pact:matcher:type'   => 'date',
-                'format'              => $format,
-            ];
-        }
-
-        return [
-            'value'             => $value,
-            'pact:matcher:type' => 'date',
-            'format'            => $format,
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function time(string $format = 'HH:mm:ss', ?string $value = null): array
-    {
-        if (null === $value) {
-            return [
-                'pact:generator:type' => 'Time',
-                'pact:matcher:type'   => 'time',
-                'format'              => $format,
-            ];
-        }
-
-        return [
-            'value'             => $value,
-            'pact:matcher:type' => 'time',
-            'format'            => $format,
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function datetime(string $format = "yyyy-MM-dd'T'HH:mm:ss", ?string $value = null): array
-    {
-        if (null === $value) {
-            return [
-                'pact:generator:type' => 'DateTime',
-                'pact:matcher:type'   => 'datetime',
-                'format'              => $format,
-            ];
-        }
-
-        return [
-            'value'             => $value,
-            'pact:matcher:type' => 'datetime',
-            'format'            => $format,
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function string(?string $value = null): array
-    {
-        if (null === $value) {
-            return [
-                'pact:generator:type' => 'RandomString',
-            ] + $this->like('some string'); // No matcher for string?
-        }
-
-        return $this->like($value); // No matcher for string?
-    }
-
-    /**
-     * @param array<string, mixed> $macher
+     * Matches the string representation of a value against the time format.
      *
-     * @return array<string, mixed>
+     * NOTE: Java's datetime format is used, not PHP's datetime format
+     * For Java one, see https://www.digitalocean.com/community/tutorials/java-simpledateformat-java-date-format#patterns
+     * For PHP one, see https://www.php.net/manual/en/datetime.format.php#refsect1-datetime.format-parameters
      */
-    public function fromProviderState(array $macher, string $expression): array
+    public function time(string $format = 'HH:mm:ss', ?string $value = null): Time
     {
-        return $macher + [
-            'pact:generator:type' => 'ProviderState',
-            'expression'          => $expression,
-        ];
+        return new Time($format, $value);
+    }
+
+    /**
+     * Matches the string representation of a value against the datetime format.
+     *
+     * NOTE: Java's datetime format is used, not PHP's datetime format
+     * For Java one, see https://www.digitalocean.com/community/tutorials/java-simpledateformat-java-date-format#patterns
+     * For PHP one, see https://www.php.net/manual/en/datetime.format.php#refsect1-datetime.format-parameters
+     */
+    public function datetime(string $format = "yyyy-MM-dd'T'HH:mm:ss", ?string $value = null): DateTime
+    {
+        return new DateTime($format, $value);
+    }
+
+    public function string(?string $value = null): StringValue
+    {
+        return new StringValue($value);
+    }
+
+    /**
+     * Generates a value that is looked up from the provider state context using the given expression
+     *
+     * @throws MatcherNotSupportedException
+     */
+    public function fromProviderState(MatcherInterface $matcher, string $expression): MatcherInterface
+    {
+        if (!$matcher instanceof GeneratorAwareInterface) {
+            throw new MatcherNotSupportedException(sprintf("Matcher '%s' must be generator aware", $matcher->getType()));
+        }
+
+        $matcher->setGenerator(new ProviderState($expression));
+
+        return $matcher;
     }
 
     /**
      * Value that must be equal to the example. This is mainly used to reset the matching rules which cascade.
-     *
-     * @return array<string, mixed>
      */
-    public function equal(mixed $value): array
+    public function equal(mixed $value): Equality
     {
-        return [
-            'pact:matcher:type' => 'equality',
-            'value'             => $value,
-        ];
+        return new Equality($value);
     }
 
     /**
      * Value that must include the example value as a substring.
-     *
-     * @return array<string, mixed>
      */
-    public function includes(string $value): array
+    public function includes(string $value): Includes
     {
-        return [
-            'pact:matcher:type' => 'include',
-            'value'             => $value,
-        ];
+        return new Includes($value);
     }
 
     /**
      * Value must be a number
      *
      * @param int|float|null $value Example value. If omitted a random integer value will be generated.
-     *
-     * @return array<string, mixed>
      */
-    public function number(int|float|null $value = null): array
+    public function number(int|float|null $value = null): Number
     {
-        if (null === $value) {
-            return [
-                'pact:generator:type' => 'RandomInt',
-                'pact:matcher:type'   => 'number',
-            ];
-        }
-
-        return [
-            'value'             => $value,
-            'pact:matcher:type' => 'number',
-        ];
+        return new Number($value);
     }
 
     /**
@@ -541,108 +371,52 @@ class Matcher
      * occurs once in the array. Variants may be objects containing matching rules.
      *
      * @param array<mixed> $variants
-     *
-     * @return array<string, mixed>
      */
-    public function arrayContaining(array $variants): array
+    public function arrayContaining(array $variants): ArrayContains
     {
-        return [
-            'pact:matcher:type' => 'arrayContains',
-            'variants'          => array_values($variants),
-        ];
+        return new ArrayContains($variants);
     }
 
     /**
      * Value must be present and not empty (not null or the empty string or empty array or empty object)
-     *
-     * @return array<string, mixed>
      */
-    public function notEmpty(mixed $value): array
+    public function notEmpty(mixed $value): NotEmpty
     {
-        return [
-            'value'             => $value,
-            'pact:matcher:type' => 'notEmpty',
-        ];
+        return new NotEmpty($value);
     }
 
     /**
      * Value must be valid based on the semver specification
-     *
-     * @return array<string, mixed>
      */
-    public function semver(string $value): array
+    public function semver(string $value): Semver
     {
-        return [
-            'value'             => $value,
-            'pact:matcher:type' => 'semver',
-        ];
+        return new Semver($value);
     }
 
     /**
      * Matches the response status code.
-     *
-     * @return array<string, mixed>
      */
-    public function statusCode(string $status, ?int $value = null): array
+    public function statusCode(string $status, ?int $value = null): StatusCode
     {
-        if (!in_array($status, HttpStatus::all())) {
-            throw new Exception(sprintf("Status '%s' is not supported. Supported status are: %s", $status, implode(', ', HttpStatus::all())));
-        }
-
-        if (null === $value) {
-            [$min, $max] = match($status) {
-                HttpStatus::INFORMATION => [100, 199],
-                HttpStatus::SUCCESS => [200, 299],
-                HttpStatus::REDIRECT => [300, 399],
-                HttpStatus::CLIENT_ERROR => [400, 499],
-                HttpStatus::SERVER_ERROR => [500, 599],
-                HttpStatus::NON_ERROR => [100, 399],
-                HttpStatus::ERROR => [400, 599],
-                default => [100, 199], // Can't happen, just to make PHPStan happy
-            };
-
-            return [
-                'pact:generator:type' => 'RandomInt',
-                'min'                 => $min,
-                'max'                 => $max,
-                'status'              => $status,
-                'pact:matcher:type'   => 'statusCode',
-            ];
-        }
-
-        return [
-            'value'             => $value,
-            'status'            => $status,
-            'pact:matcher:type' => 'statusCode',
-        ];
+        return new StatusCode($status, $value);
     }
 
     /**
      * Match the values in a map, ignoring the keys
      *
      * @param array<mixed> $values
-     *
-     * @return array<string, mixed>
      */
-    public function values(array $values): array
+    public function values(array $values): Values
     {
-        return [
-            'value'             => $values,
-            'pact:matcher:type' => 'values',
-        ];
+        return new Values($values);
     }
 
     /**
      * Match binary data by its content type (magic file check)
-     *
-     * @return array<string, mixed>
      */
-    public function contentType(string $contentType): array
+    public function contentType(string $contentType): ContentType
     {
-        return [
-            'value'             => $contentType,
-            'pact:matcher:type' => 'contentType',
-        ];
+        return new ContentType($contentType);
     }
 
     /**
@@ -650,16 +424,10 @@ class Matcher
      *
      * @param array<string, mixed> $values
      * @param array<mixed>         $rules
-     *
-     * @return array<string, mixed>
      */
-    public function eachKey(array $values, array $rules): array
+    public function eachKey(array $values, array $rules): EachKey
     {
-        return [
-            'rules'             => $rules,
-            'value'             => $values,
-            'pact:matcher:type' => 'eachKey',
-        ];
+        return new EachKey($values, $rules);
     }
 
     /**
@@ -667,15 +435,9 @@ class Matcher
      *
      * @param array<string, mixed> $values
      * @param array<mixed>         $rules
-     *
-     * @return array<string, mixed>
      */
-    public function eachValue(array $values, array $rules): array
+    public function eachValue(array $values, array $rules): EachValue
     {
-        return [
-            'rules'             => $rules,
-            'value'             => $values,
-            'pact:matcher:type' => 'eachValue',
-        ];
+        return new EachValue($values, $rules);
     }
 }

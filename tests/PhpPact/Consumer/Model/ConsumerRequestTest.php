@@ -49,7 +49,7 @@ class ConsumerRequestTest extends TestCase
         $this->assertEquals('PATCH', $model->getMethod());
         $this->assertEquals(['Content-Type' => ['application/json']], $model->getHeaders());
         $this->assertEquals(['food' => ['milk']], $model->getQuery());
-        $this->assertEquals('{"value":"\/somepath\/474d610b-c6e3-45bd-9f70-529e7ad21df0\/status","regex":"\\\\\\/somepath\\\\\\/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}\\\\\\/status","pact:matcher:type":"regex"}', $model->getPath());
+        $this->assertJsonStringEqualsJsonString('{"value":"\/somepath\/474d610b-c6e3-45bd-9f70-529e7ad21df0\/status","regex":"\\\\\\/somepath\\\\\\/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}\\\\\\/status","pact:matcher:type":"regex"}', $model->getPath());
 
         $body = $model->getBody();
         $this->assertInstanceOf(Text::class, $body);

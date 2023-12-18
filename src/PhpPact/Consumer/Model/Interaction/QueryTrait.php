@@ -2,6 +2,9 @@
 
 namespace PhpPact\Consumer\Model\Interaction;
 
+use JsonException;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+
 trait QueryTrait
 {
     /**
@@ -31,13 +34,15 @@ trait QueryTrait
     }
 
     /**
-     * @param string|string[] $value
+     * @param MatcherInterface|MatcherInterface[]|string|string[] $value
+     *
+     * @throws JsonException
      */
-    public function addQueryParameter(string $key, array|string $value): self
+    public function addQueryParameter(string $key, array|string|MatcherInterface $value): self
     {
         $this->query[$key] = [];
         if (is_array($value)) {
-            array_walk($value, fn (string $value) => $this->addQueryParameterValue($key, $value));
+            array_walk($value, fn (string|MatcherInterface $value) => $this->addQueryParameterValue($key, $value));
         } else {
             $this->addQueryParameterValue($key, $value);
         }
@@ -45,8 +50,11 @@ trait QueryTrait
         return $this;
     }
 
-    private function addQueryParameterValue(string $key, string $value): void
+    /**
+     * @throws JsonException
+     */
+    private function addQueryParameterValue(string $key, string|MatcherInterface $value): void
     {
-        $this->query[$key][] = $value;
+        $this->query[$key][] = is_string($value) ? $value : json_encode($value, JSON_THROW_ON_ERROR);
     }
 }

@@ -4,6 +4,7 @@ namespace PhpPact\Consumer\Model;
 
 use JsonException;
 use PhpPact\Consumer\Exception\BodyNotSupportedException;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PhpPact\Consumer\Model\Body\Binary;
 use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
@@ -45,7 +46,7 @@ class Message
     }
 
     /**
-     * @param array<string, string|array<string, mixed>> $metadata
+     * @param array<string, string|MatcherInterface> $metadata
      */
     public function setMetadata(array $metadata): self
     {
@@ -58,11 +59,9 @@ class Message
     }
 
     /**
-     * @param string|array<string, mixed> $value
-     *
      * @throws JsonException
      */
-    private function setMetadataValue(string $key, string|array $value): void
+    private function setMetadataValue(string $key, string|MatcherInterface $value): void
     {
         $this->metadata[$key] = is_string($value) ? $value : json_encode($value, JSON_THROW_ON_ERROR);
     }
