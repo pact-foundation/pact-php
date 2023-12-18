@@ -363,7 +363,7 @@ class Matcher
      *
      * @throws Exception
      */
-    public function ipv4Address(string $ip = '127.0.0.13'): array
+    public function ipv4Address(?string $ip = '127.0.0.13'): array
     {
         return $this->term($ip, self::IPV4_FORMAT);
     }
@@ -373,7 +373,7 @@ class Matcher
      *
      * @throws Exception
      */
-    public function ipv6Address(string $ip = '::ffff:192.0.2.128'): array
+    public function ipv6Address(?string $ip = '::ffff:192.0.2.128'): array
     {
         return $this->term($ip, self::IPV6_FORMAT);
     }
@@ -383,51 +383,9 @@ class Matcher
      *
      * @throws Exception
      */
-    public function email(string $email = 'hello@pact.io'): array
+    public function email(?string $email = 'hello@pact.io'): array
     {
         return $this->term($email, self::EMAIL_FORMAT);
-    }
-
-    /**
-     * @return array<string, mixed>
-     *
-     * @throws Exception
-     */
-    public function ipv4AddressV3(?string $ip = null): array
-    {
-        if (null === $ip) {
-            return $this->term(null, self::IPV4_FORMAT);
-        }
-
-        return $this->ipv4Address($ip);
-    }
-
-    /**
-     * @return array<string, mixed>
-     *
-     * @throws Exception
-     */
-    public function ipv6AddressV3(?string $ip = null): array
-    {
-        if (null === $ip) {
-            return $this->term(null, self::IPV6_FORMAT);
-        }
-
-        return $this->ipv6Address($ip);
-    }
-
-    /**
-     * @return array<string, mixed>
-     *
-     * @throws Exception
-     */
-    public function emailV3(?string $email = null): array
-    {
-        if (null === $email) {
-            return $this->term(null, self::EMAIL_FORMAT);
-        }
-
-        return $this->email($email);
     }
 
     /**

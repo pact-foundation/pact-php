@@ -554,72 +554,42 @@ class MatcherTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testIpv4AddressV3()
-    {
-        $expected = $this->matcher->ipv4Address();
-        $actual = $this->matcher->ipv4AddressV3('127.0.0.13');
-        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testIpv6AddressV3()
-    {
-        $expected = $this->matcher->ipv6Address();
-        $actual = $this->matcher->ipv6AddressV3('::ffff:192.0.2.128');
-        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testEmailV3()
-    {
-        $expected = $this->matcher->email();
-        $actual = $this->matcher->emailV3('hello@pact.io');
-        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testRandomIpv4AddressV3()
+    public function testRandomIpv4Address()
     {
         $expected = [
             'regex'               => '^(\\d{1,3}\\.)+\\d{1,3}$',
             'pact:matcher:type'   => 'regex',
             'pact:generator:type' => 'Regex',
         ];
-        $actual = $this->matcher->ipv4AddressV3();
+        $actual = $this->matcher->ipv4Address(null);
         $this->assertEquals($expected, $actual);
     }
 
     /**
      * @throws Exception
      */
-    public function testRandomIpv6AddressV3()
+    public function testRandomIpv6Address()
     {
         $expected = [
             'regex'               => '^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$',
             'pact:matcher:type'   => 'regex',
             'pact:generator:type' => 'Regex',
         ];
-        $actual = $this->matcher->ipv6AddressV3();
+        $actual = $this->matcher->ipv6Address(null);
         $this->assertEquals($expected, $actual);
     }
 
     /**
      * @throws Exception
      */
-    public function testRandomEmailV3()
+    public function testRandomEmail()
     {
         $expected = [
             'regex'               => '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$',
             'pact:matcher:type'   => 'regex',
             'pact:generator:type' => 'Regex',
         ];
-        $actual = $this->matcher->emailV3();
+        $actual = $this->matcher->email(null);
         $this->assertEquals($expected, $actual);
     }
 
