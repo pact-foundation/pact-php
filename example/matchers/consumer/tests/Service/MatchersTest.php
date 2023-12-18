@@ -20,7 +20,7 @@ class MatchersTest extends TestCase
         $this->matcher = new Matcher();
     }
 
-    public function testGetMatchers()
+    public function testGetMatchers(): void
     {
         $request = new ConsumerRequest();
         $request

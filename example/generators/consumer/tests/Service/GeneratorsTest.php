@@ -21,7 +21,7 @@ class GeneratorsTest extends TestCase
         $this->matcher = new Matcher();
     }
 
-    public function testGetMatchers()
+    public function testGetGenerators(): void
     {
         $request = new ConsumerRequest();
         $request
