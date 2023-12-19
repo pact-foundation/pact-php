@@ -65,6 +65,7 @@
             "requestId": 222,
             "string": "some string",
             "time": null,
+            "url": null,
             "uuid": null
           },
           "contentType": "application/json",
@@ -112,6 +113,11 @@
             "$.time": {
               "format": "HH:mm:ss",
               "type": "Time"
+            },
+            "$.url": {
+              "example": "http://localhost/users/1234/posts/latest",
+              "regex": ".*(\\/users\\/\\d+\\/posts\\/latest)$",
+              "type": "MockServerURL"
             },
             "$.uuid": {
               "type": "Uuid"
@@ -212,6 +218,15 @@
                 {
                   "format": "HH:mm:ss",
                   "match": "time"
+                }
+              ]
+            },
+            "$.url": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": ".*(\\/users\\/\\d+\\/posts\\/latest)$"
                 }
               ]
             },

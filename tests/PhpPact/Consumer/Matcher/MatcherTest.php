@@ -4,6 +4,7 @@ namespace PhpPactTest\Consumer\Matcher;
 
 use PhpPact\Consumer\Matcher\Exception\MatcherException;
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
+use PhpPact\Consumer\Matcher\Generators\MockServerURL;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
 use PhpPact\Consumer\Matcher\Generators\Uuid;
@@ -376,5 +377,20 @@ class MatcherTest extends TestCase
             $this->matcher->regex('car', 'car|bike|motorbike'),
         ];
         $this->assertInstanceOf(EachValue::class, $this->matcher->eachValue($values, $rules));
+    }
+
+    /**
+     * @testWith [true, true]
+     *           [false, false]
+     */
+    public function testUrl(bool $useMockServerBasePath, bool $hasGenerator): void
+    {
+        $url = $this->matcher->url('http://localhost:1234/path', '.*(/path)$', $useMockServerBasePath);
+        $this->assertInstanceOf(Regex::class, $url);
+        if ($hasGenerator) {
+            $this->assertSame(MockServerURL::class, get_class($url->getGenerator()));
+        } else {
+            $this->assertNull($url->getGenerator());
+        }
     }
 }

@@ -103,6 +103,7 @@ class MatchersTest extends TestCase
                     ['vehicle 1' => 'car'],
                     [$this->matcher->regex(null, 'car|bike|motorbike')]
                 ),
+                'url' => $this->matcher->url('http://localhost:8080/users/1234/posts/latest', '.*(\\/users\\/\\d+\\/posts\\/latest)$', false),
                 'query' => [
                     'pages' => '22',
                     'locales' => ['en-US', 'en-AU'],
@@ -195,6 +196,7 @@ class MatchersTest extends TestCase
             'eachValue' => [
                 'vehicle 1' => 'car',
             ],
+            'url' => 'http://localhost:8080/users/1234/posts/latest',
             'query' => [
                 'pages' => '22',
                 'locales' => ['en-US', 'en-AU'],

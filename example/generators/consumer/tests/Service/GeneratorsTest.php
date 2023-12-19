@@ -48,6 +48,7 @@ class GeneratorsTest extends TestCase
                 'datetime' => $this->matcher->datetime("yyyy-MM-dd'T'HH:mm:ss", null),
                 'string' => $this->matcher->string(null),
                 'number' => $this->matcher->number(null),
+                'url' => $this->matcher->url('http://localhost/users/1234/posts/latest', '.*(\\/users\\/\\d+\\/posts\\/latest)$'),
                 'requestId' => 222,
             ]);
 
@@ -93,6 +94,8 @@ class GeneratorsTest extends TestCase
         $this->assertTrue($this->validateDateTime($body['datetime'], "Y-m-d\TH:i:s"));
         $this->assertIsString($body['string']);
         $this->assertIsNumeric($body['number']);
+        $this->assertNotSame('http://localhost/users/1234/posts/latest', $body['url']);
+        $this->assertRegExp('/.*(\\/users\\/\\d+\\/posts\\/latest)$/', $body['url']);
         $this->assertSame(222, $body['requestId']);
     }
 
