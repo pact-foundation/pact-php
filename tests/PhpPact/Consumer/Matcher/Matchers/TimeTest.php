@@ -2,13 +2,19 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
 use PhpPact\Consumer\Matcher\Matchers\Time;
 
 class TimeTest extends GeneratorAwareMatcherTestCase
 {
-    protected function setUp(): void
+    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
     {
-        $this->matcher = new Time();
+        return new Time();
+    }
+
+    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
+    {
+        return new Time('HH:mm', '21:15');
     }
 
     /**
@@ -18,7 +24,7 @@ class TimeTest extends GeneratorAwareMatcherTestCase
     public function testSerialize(?string $value, string $json): void
     {
         $format = 'HH:mm:ss';
-        $this->matcher = new Time($format, $value);
-        $this->assertSame($json, json_encode($this->matcher));
+        $matcher = new Time($format, $value);
+        $this->assertSame($json, json_encode($matcher));
     }
 }

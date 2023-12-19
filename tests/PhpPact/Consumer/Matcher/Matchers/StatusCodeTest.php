@@ -3,13 +3,19 @@
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidHttpStatusException;
+use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
 use PhpPact\Consumer\Matcher\Matchers\StatusCode;
 
 class StatusCodeTest extends GeneratorAwareMatcherTestCase
 {
-    protected function setUp(): void
+    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
     {
-        $this->matcher = new StatusCode('info');
+        return new StatusCode('info');
+    }
+
+    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
+    {
+        return new StatusCode('error', 404);
     }
 
     /**
@@ -29,7 +35,7 @@ class StatusCodeTest extends GeneratorAwareMatcherTestCase
             $this->expectException(InvalidHttpStatusException::class);
             $this->expectExceptionMessage("Status 'invalid' is not supported. Supported status are: info, success, redirect, clientError, serverError, nonError, error");
         }
-        $this->matcher = new StatusCode($status, $value);
-        $this->assertSame($json, json_encode($this->matcher));
+        $matcher = new StatusCode($status, $value);
+        $this->assertSame($json, json_encode($matcher));
     }
 }

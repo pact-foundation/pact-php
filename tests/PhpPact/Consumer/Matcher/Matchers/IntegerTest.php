@@ -2,13 +2,19 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
 use PhpPact\Consumer\Matcher\Matchers\Integer;
 
 class IntegerTest extends GeneratorAwareMatcherTestCase
 {
-    protected function setUp(): void
+    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
     {
-        $this->matcher = new Integer();
+        return new Integer();
+    }
+
+    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
+    {
+        return new Integer(189);
     }
 
     /**
@@ -17,7 +23,7 @@ class IntegerTest extends GeneratorAwareMatcherTestCase
      */
     public function testSerialize(?int $value, string $json): void
     {
-        $this->matcher = new Integer($value);
-        $this->assertSame($json, json_encode($this->matcher));
+        $matcher = new Integer($value);
+        $this->assertSame($json, json_encode($matcher));
     }
 }
