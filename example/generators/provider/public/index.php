@@ -23,6 +23,7 @@ $app->get('/generators', function (Request $request, Response $response) {
         'datetime' => '1997-07-16T19:20:30',
         'string' => 'another string',
         'number' => 112.3,
+        'url' => 'https://www.example.com/users/1234/posts/latest',
         'requestId' => $body['id'],
     ]));
 

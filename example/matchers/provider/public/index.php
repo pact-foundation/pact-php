@@ -85,6 +85,7 @@ $app->get('/matchers', function (Request $request, Response $response) {
             'item 1' => 'bike',
             'item 2' => 'motorbike',
         ],
+        'url' => 'https://www.example.com/users/1234/posts/latest',
         'query' => $request->getQueryParams(),
     ]));
 

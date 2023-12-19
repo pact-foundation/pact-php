@@ -4,6 +4,7 @@ namespace PhpPact\Consumer\Matcher;
 
 use PhpPact\Consumer\Matcher\Exception\MatcherException;
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
+use PhpPact\Consumer\Matcher\Generators\MockServerURL;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
 use PhpPact\Consumer\Matcher\Generators\Uuid;
@@ -439,5 +440,19 @@ class Matcher
     public function eachValue(array $values, array $rules): EachValue
     {
         return new EachValue($values, $rules);
+    }
+
+    /**
+     * @throws MatcherException
+     */
+    public function url(string $url, string $regex, bool $useMockServerBasePath = true): Regex
+    {
+        $matcher = new Regex($regex, $useMockServerBasePath ? null : $url);
+
+        if ($useMockServerBasePath) {
+            $matcher->setGenerator(new MockServerURL($regex, $url));
+        }
+
+        return $matcher;
     }
 }
