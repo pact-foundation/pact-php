@@ -75,7 +75,6 @@
         }
     },
     "scripts": {
-        "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
         "static-code-analysis": "phpstan",
         "lint": "php-cs-fixer fix --dry-run",
         "fix": "php-cs-fixer fix",
