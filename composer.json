@@ -34,7 +34,8 @@
         "phpstan/phpstan": "^1.9",
         "phpunit/phpunit": ">=8.5.23 <10",
         "guzzlehttp/guzzle": "^7.8",
-        "tienvx/pact-php-xml": "^0.1"
+        "tienvx/pact-php-xml": "^0.1",
+        "behat/behat": "^3.13"
     },
     "autoload": {
         "psr-4": {
@@ -44,6 +45,7 @@
     "autoload-dev": {
         "psr-4": {
             "PhpPactTest\\": "tests/PhpPact",
+            "PhpPactTest\\CompatibilitySuite\\": "compatibility-suite/tests",
             "JsonConsumer\\": "example/json/consumer/src",
             "JsonConsumer\\Tests\\": "example/json/consumer/tests",
             "JsonProvider\\": "example/json/provider/src",
@@ -80,7 +82,8 @@
         "test": [
             "php -r \"array_map('unlink', glob('./example/*/pacts/*.json'));\"",
             "phpunit --debug"
-        ]
+        ],
+        "check-compatibility": "behat"
     },
     "extra": {
         "downloads": {
