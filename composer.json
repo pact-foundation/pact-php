@@ -35,7 +35,8 @@
         "phpunit/phpunit": ">=8.5.23 <10",
         "guzzlehttp/guzzle": "^7.8",
         "tienvx/pact-php-xml": "^0.1",
-        "behat/behat": "^3.13"
+        "behat/behat": "^3.13",
+        "galbar/jsonpath": "^3.0"
     },
     "autoload": {
         "psr-4": {

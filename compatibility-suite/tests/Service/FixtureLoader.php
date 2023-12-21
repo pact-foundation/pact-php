@@ -3,9 +3,9 @@
 namespace PhpPactTest\CompatibilitySuite\Service;
 
 use JsonException;
-use PhpPact\Consumer\Exception\FixtureNotFoundException;
-use PhpPact\Consumer\Exception\InvalidJsonFixtureException;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
+use PhpPactTest\CompatibilitySuite\Exception\FixtureNotFoundException;
+use PhpPactTest\CompatibilitySuite\Exception\InvalidJsonFixtureException;
 
 class FixtureLoader implements FixtureLoaderInterface
 {

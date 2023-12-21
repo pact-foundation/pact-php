@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\Consumer\Exception;
+namespace PhpPactTest\CompatibilitySuite\Exception;
 
 class FixtureNotFoundException extends CompatibilitySuiteException
 {

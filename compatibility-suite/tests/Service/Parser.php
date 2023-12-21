@@ -2,10 +2,10 @@
 
 namespace PhpPactTest\CompatibilitySuite\Service;
 
-use Exception;
 use PhpPact\Consumer\Model\Body\Binary;
 use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
+use PhpPactTest\CompatibilitySuite\Exception\InvalidXmlFixtureException;
 use PhpPactTest\CompatibilitySuite\Model\Xml;
 
 final class Parser implements ParserInterface
@@ -68,7 +68,7 @@ final class Parser implements ParserInterface
             if (str_ends_with($fileName, '-body.xml')) {
                 $body = simplexml_load_string($contents);
                 if (!$body) {
-                    throw new Exception(sprintf("could not read fixture '%s'", $fileName));
+                    throw new InvalidXmlFixtureException(sprintf("could not read fixture '%s'", $fileName));
                 }
                 $contentType = (string) $body->contentType ?? 'text/plain';
                 $contents = $body->contents ?? '';
