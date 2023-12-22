@@ -1,4 +1,4 @@
-name: pact-php
+name: Pact-PHP Code Analysis & Test
 
 on:
   push: 

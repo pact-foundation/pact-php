@@ -1,0 +1,3 @@
+imports:
+    - 'compatibility-suite/suites/v1/http/consumer.yml'
+    - 'compatibility-suite/suites/v1/http/provider.yml'

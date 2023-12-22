@@ -1,0 +1,23 @@
+default:
+    suites:
+        v1_http_consumer:
+            paths: [ '%paths.base%/compatibility-suite/pact-compatibility-suite/features/V1/http_consumer.feature' ]
+
+            contexts:
+                - 'PhpPactTest\CompatibilitySuite\Context\Shared\Hook\SetUpContext'
+                - 'PhpPactTest\CompatibilitySuite\Context\Shared\InteractionsContext':
+                    - '@interactions_storage'
+                    - '@request_matching_rule_builder'
+                    - '@response_matching_rule_builder'
+                    - '@matching_rules_storage'
+                - 'PhpPactTest\CompatibilitySuite\Context\Shared\Transform\InteractionsContext':
+                    - '@interaction_builder'
+                    - '@matching_rules_storage'
+                - 'PhpPactTest\CompatibilitySuite\Context\V1\Http\ConsumerContext':
+                    - '@server'
+                    - '@request_builder'
+                    - '@client'
+                    - '@interactions_storage'
+                    - '@fixture_loader'
+
+            services: PhpPactTest\CompatibilitySuite\ServiceContainer\V1
