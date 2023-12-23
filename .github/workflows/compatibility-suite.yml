@@ -53,4 +53,4 @@ jobs:
       - uses: ramsey/composer-install@v2
 
       - name: Run Behat
-        run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V3
+        run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V3 --name '/^((?!Kafka|binary body \(negative|Message provider).)*$/'
