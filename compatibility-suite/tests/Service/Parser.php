@@ -119,4 +119,33 @@ final class Parser implements ParserInterface
             []
         );
     }
+
+    public function parseMetadataTable(array $rows): array
+    {
+        $metadata = [];
+        foreach ($rows as $row) {
+            $metadata[$row['key']] = str_starts_with($row['value'], 'JSON: ') ? substr($row['value'], 6) : $row['value'];
+        }
+
+        return $metadata;
+    }
+
+    public function parseMetadataValue(string $value): string
+    {
+        $value = str_starts_with($value, 'JSON: ') ? substr($value, 6) : $value;
+        $value = str_replace('\"', '"', $value);
+
+        return $value;
+    }
+
+    public function parseMetadataMultiValues(string $items): array
+    {
+        $metadata = [];
+        foreach (explode(';', $items) as $item) {
+            [$key, $value] = explode('=', trim($item));
+            $metadata[$key] = str_starts_with($value, 'JSON: ') ? substr($value, 6) : $value;
+        }
+
+        return $metadata;
+    }
 }

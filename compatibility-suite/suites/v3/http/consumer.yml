@@ -1,0 +1,13 @@
+default:
+    suites:
+        v3_http_consumer:
+            paths: [ '%paths.base%/compatibility-suite/pact-compatibility-suite/features/V3/http_consumer.feature' ]
+
+            contexts:
+                - 'PhpPactTest\CompatibilitySuite\Context\Shared\Hook\SetUpContext'
+                - 'PhpPactTest\CompatibilitySuite\Context\V3\Http\ConsumerContext':
+                    - '@interaction_builder'
+                    - '@pact_writer'
+                    - '@interactions_storage'
+
+            services: PhpPactTest\CompatibilitySuite\ServiceContainer\V3
