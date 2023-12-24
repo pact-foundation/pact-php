@@ -6,6 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeStepScope;
 use Behat\Gherkin\Node\TableNode;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\FixtureLoaderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
@@ -18,6 +19,7 @@ final class ProviderContext implements Context
 {
     private int $id = 1;
     private array $ids = [];
+    private PactPath $pactPath;
 
     public function __construct(
         private ServerInterface $server,
@@ -28,6 +30,7 @@ final class ProviderContext implements Context
         private ParserInterface $parser,
         private FixtureLoaderInterface $fixtureLoader
     ) {
+        $this->pactPath = new PactPath();
     }
 
     /**
@@ -77,8 +80,8 @@ final class ProviderContext implements Context
      */
     public function aPactFileForIsToBeVerified(string $name, string $fixture): void
     {
-        $this->pactWriter->write($name, $fixture, "c-$name");
-        $this->providerVerifier->addSource($this->pactWriter->getPactPath());
+        $this->pactWriter->write($name, $fixture, $this->pactPath);
+        $this->providerVerifier->addSource($this->pactPath);
     }
 
     /**
@@ -87,9 +90,9 @@ final class ProviderContext implements Context
     public function aPactFileForIsToBeVerifiedWithProviderState(string $name, string $fixture, string $state): void
     {
         $this->aPactFileForIsToBeVerified($name, $fixture);
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         $pact['messages'][0]['providerState'] = $state;
-        file_put_contents($this->pactWriter->getPactPath(), json_encode($pact));
+        file_put_contents($this->pactPath, json_encode($pact));
     }
 
     /**
@@ -125,11 +128,10 @@ final class ProviderContext implements Context
      */
     public function aPactFileForIsToBeVerifiedWithTheFollowingMetadata(string $name, string $fixture, TableNode $table): void
     {
-        $this->pactWriter->write($name, $fixture);
-        $this->providerVerifier->addSource($this->pactWriter->getPactPath());
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $this->aPactFileForIsToBeVerified($name, $fixture);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         $pact['messages'][0]['metaData'] = $this->parser->parseMetadataTable($table->getHash());
-        file_put_contents($this->pactWriter->getPactPath(), json_encode($pact));
+        file_put_contents($this->pactPath, json_encode($pact));
     }
 
     /**
@@ -156,11 +158,11 @@ final class ProviderContext implements Context
             }
         }
         $this->aPactFileForIsToBeVerified($name, $body);
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         if (isset($metadata)) {
             $pact['messages'][0]['metadata'] = array_merge($pact['messages'][0]['metadata'], $this->parser->parseMetadataMultiValues($metadata));
         }
         $pact['messages'][0]['matchingRules'] = $matchingRules;
-        file_put_contents($this->pactWriter->getPactPath(), json_encode($pact));
+        file_put_contents($this->pactPath, json_encode($pact));
     }
 }

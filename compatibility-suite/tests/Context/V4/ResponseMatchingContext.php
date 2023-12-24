@@ -5,6 +5,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
@@ -42,8 +43,9 @@ final class ResponseMatchingContext implements Context
         $this->storage->add(InteractionsStorageInterface::SERVER_DOMAIN, $this->id, $interaction);
         $this->storage->add(InteractionsStorageInterface::PACT_WRITER_DOMAIN, $this->id, $interaction);
         $this->responseMatchingRuleBuilder->build($interaction->getResponse(), $row['matching rules']);
-        $this->pactWriter->write($this->id);
-        $this->providerVerifier->addSource($this->pactWriter->getPactPath());
+        $pactPath = new PactPath();
+        $this->pactWriter->write($this->id, $pactPath);
+        $this->providerVerifier->addSource($pactPath);
     }
 
     /**

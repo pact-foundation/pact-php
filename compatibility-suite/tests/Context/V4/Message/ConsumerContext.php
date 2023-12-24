@@ -4,14 +4,18 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4\Message;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
 use PHPUnit\Framework\Assert;
 
 final class ConsumerContext implements Context
 {
+    private PactPath $pactPath;
+
     public function __construct(
         private MessagePactWriterInterface $pactWriter
     ) {
+        $this->pactPath = new PactPath();
     }
 
     /**
@@ -26,7 +30,7 @@ final class ConsumerContext implements Context
      */
     public function thePactFileForTheTestIsGenerated(): void
     {
-        $this->pactWriter->write('a message', '');
+        $this->pactWriter->write('a message', '', $this->pactPath);
     }
 
     /**
@@ -34,7 +38,7 @@ final class ConsumerContext implements Context
      */
     public function theFirstInteractionInThePactFileWillHaveATypeOf(string $type): void
     {
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         Assert::assertSame($type, $pact['interactions'][0]['type']);
     }
 
@@ -67,7 +71,7 @@ final class ConsumerContext implements Context
      */
     public function theFirstInteractionInThePactFileWillHave(string $name, string $value): void
     {
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         Assert::assertSame($value, $pact['interactions'][0][$name]);
     }
 }

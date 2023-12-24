@@ -4,7 +4,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4;
 
 use Behat\Behat\Context\Context;
 use PhpPact\Config\PactConfigInterface;
-use PhpPact\Consumer\Model\Interaction;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
@@ -14,6 +14,7 @@ use PHPUnit\Framework\Assert;
 final class CombinedContext implements Context
 {
     private int $id = 1;
+    private PactPath $pactPath;
 
     public function __construct(
         private InteractionBuilderInterface $builder,
@@ -21,6 +22,7 @@ final class CombinedContext implements Context
         private PactWriterInterface $pactWriter,
         private MessagePactWriterInterface $messagePactWriter,
     ) {
+        $this->pactPath = new PactPath();
     }
 
     /**
@@ -48,8 +50,8 @@ final class CombinedContext implements Context
      */
     public function thePactFileForTheTestIsGenerated(): void
     {
-        $this->pactWriter->write($this->id, 'c', 'p', PactConfigInterface::MODE_MERGE);
-        $this->messagePactWriter->write('message interaction', '', 'c', 'p', PactConfigInterface::MODE_MERGE);
+        $this->pactWriter->write($this->id, $this->pactPath, PactConfigInterface::MODE_MERGE);
+        $this->messagePactWriter->write('message interaction', '', $this->pactPath, PactConfigInterface::MODE_MERGE);
     }
 
     /**
@@ -57,7 +59,7 @@ final class CombinedContext implements Context
      */
     public function thereWillBeAnInteractionInThePactFileWithATypeOf(string $type): void
     {
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         $types = array_map(fn (array $interaction) => $interaction['type'], $pact['interactions']);
         Assert::assertContains($type, $types);
     }

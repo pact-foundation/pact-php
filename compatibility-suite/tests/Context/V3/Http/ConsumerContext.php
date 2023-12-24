@@ -5,6 +5,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V3\Http;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use PhpPact\Consumer\Model\Interaction;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
@@ -14,12 +15,14 @@ final class ConsumerContext implements Context
 {
     private Interaction $interaction;
     private int $id = 1;
+    private PactPath $pactPath;
 
     public function __construct(
         private InteractionBuilderInterface $builder,
         private PactWriterInterface $pactWriter,
         private InteractionsStorageInterface $storage,
     ) {
+        $this->pactPath = new PactPath();
     }
 
     /**
@@ -48,7 +51,7 @@ final class ConsumerContext implements Context
      */
     public function thePactFileForTheTestIsGenerated(): void
     {
-        $this->pactWriter->write($this->id);
+        $this->pactWriter->write($this->id, $this->pactPath);
     }
 
     /**
@@ -56,7 +59,7 @@ final class ConsumerContext implements Context
      */
     public function theInteractionInThePactFileWillContainProviderStates(int $states): void
     {
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         Assert::assertCount($states, $pact['interactions'][0]['providerStates']);
     }
 
@@ -65,7 +68,7 @@ final class ConsumerContext implements Context
      */
     public function theInteractionInThePactFileWillContainProviderState(string $name): void
     {
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         Assert::assertNotEmpty(array_filter(
             $pact['interactions'][0]['providerStates'],
             fn (array $providerState) => $providerState['name'] === $name
@@ -90,7 +93,7 @@ final class ConsumerContext implements Context
         $rows = $table->getHash();
         $row = reset($rows);
         $params = json_decode($row['parameters'], true);
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         Assert::assertNotEmpty(array_filter(
             $pact['interactions'][0]['providerStates'],
             fn (array $providerState) => $providerState['name'] === $name && $providerState['params'] === $params

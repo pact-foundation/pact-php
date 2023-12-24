@@ -10,6 +10,7 @@ use PhpPact\Consumer\MessageBuilder;
 use PhpPact\Standalone\PactMessage\PactMessageConfig;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
 use PhpPactTest\CompatibilitySuite\Model\Message;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\BodyStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\BodyValidatorInterface;
 use PhpPactTest\CompatibilitySuite\Service\FixtureLoaderInterface;
@@ -23,7 +24,7 @@ final class ConsumerContext implements Context
     private object|null $receivedMessage;
     private bool $verifyResult;
     private array $pact;
-    private string $pactPath;
+    private PactPath $pactPath;
 
     public function __construct(
         private string $specificationVersion,
@@ -33,15 +34,12 @@ final class ConsumerContext implements Context
         private BodyStorageInterface $bodyStorage,
         private FixtureLoaderInterface $fixtureLoader
     ) {
-        $consumer = sprintf('compatibility-suite_message-consumer_specification-%s_c', $specificationVersion);
-        $provider = 'p';
-        $pactDir = Path::PACTS_PATH;
-        $this->pactPath = "$pactDir/$consumer-$provider.json";
+        $this->pactPath = new PactPath(sprintf('message_consumer_specification_%s', $specificationVersion));
         $config = new PactMessageConfig();
         $config
-            ->setConsumer($consumer)
-            ->setProvider($provider)
-            ->setPactDir($pactDir)
+            ->setConsumer($this->pactPath->getConsumer())
+            ->setProvider($this->pactPath->getProvider())
+            ->setPactDir(Path::PACTS_PATH)
             ->setPactSpecificationVersion($specificationVersion)
             ->setPactFileWriteMode(PactConfigInterface::MODE_OVERWRITE);
         $this->builder = new MessageBuilder($config);

@@ -3,12 +3,12 @@
 namespace PhpPactTest\CompatibilitySuite\Service;
 
 use GuzzleHttp\Client;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 
 final class PactBroker implements PactBrokerInterface
 {
     private Client $client;
-    private string $consumer;
-    private string $provider = 'p';
+    private PactPath $pactPath;
 
     public function __construct(private string $specificationVersion)
     {
@@ -17,9 +17,9 @@ final class PactBroker implements PactBrokerInterface
 
     public function publish(int $id): void
     {
-        $this->consumer = "c-$id";
-        $this->client->put("http://localhost:9292/pacts/provider/$this->provider/consumer/$this->consumer/version/1.0.0", [
-            'body' => file_get_contents(__DIR__."/../../pacts/$this->consumer-$this->provider.json"),
+        $this->pactPath = new PactPath("c-$id");
+        $this->client->put("http://localhost:9292/pacts/provider/{$this->pactPath->getProvider()}/consumer/{$this->pactPath->getConsumer()}/version/1.0.0", [
+            'body' => file_get_contents($this->pactPath),
             'headers' => ['Content-Type' => 'application/json'],
         ]);
     }
@@ -52,6 +52,6 @@ final class PactBroker implements PactBrokerInterface
 
     public function getMatrix(): array
     {
-        return json_decode(file_get_contents("http://localhost:9292/matrix.json?q[][pacticipant]=$this->consumer&q[][pacticipant]=$this->provider"), true);
+        return json_decode(file_get_contents("http://localhost:9292/matrix.json?q[][pacticipant]={$this->pactPath->getConsumer()}&q[][pacticipant]={$this->pactPath->getProvider()}"), true);
     }
 }

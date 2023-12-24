@@ -5,6 +5,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V3;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use GuzzleHttp\Psr7\Uri;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\BodyStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\GeneratorServerInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
@@ -17,6 +18,7 @@ use PHPUnit\Framework\Assert;
 final class RequestGeneratorsContext implements Context
 {
     private int $id = 1;
+    private PactPath $pactPath;
 
     public function __construct(
         private InteractionBuilderInterface $builder,
@@ -27,6 +29,7 @@ final class RequestGeneratorsContext implements Context
         private ProviderVerifierInterface $providerVerifier,
         private BodyStorageInterface $bodyStorage,
     ) {
+        $this->pactPath = new PactPath();
     }
 
     /**
@@ -52,9 +55,9 @@ final class RequestGeneratorsContext implements Context
     public function theRequestIsPreparedForUse(): void
     {
         $this->generatorServer->start();
-        $this->pactWriter->write($this->id);
+        $this->pactWriter->write($this->id, $this->pactPath);
         $this->providerVerifier->getConfig()->getProviderInfo()->setPort($this->generatorServer->getPort());
-        $this->providerVerifier->addSource($this->pactWriter->getPactPath());
+        $this->providerVerifier->addSource($this->pactPath);
         $this->providerVerifier->verify();
         $this->generatorServer->stop();
         $this->bodyStorage->setBody($this->generatorServer->getBody());
@@ -74,7 +77,7 @@ final class RequestGeneratorsContext implements Context
     public function theRequestIsPreparedForUseWithAProviderStateContext(TableNode $table): void
     {
         $this->generatorServer->start();
-        $this->pactWriter->write($this->id);
+        $this->pactWriter->write($this->id, $this->pactPath);
         $port = $this->generatorServer->getPort();
         $this->providerVerifier->getConfig()->getProviderInfo()->setPort($port);
         $params = json_decode($table->getRow(0)[0], true);
@@ -83,7 +86,7 @@ final class RequestGeneratorsContext implements Context
                 ->getProviderState()
                     ->setStateChangeUrl(new Uri("http://localhost:$port/return-provider-state-values?" . http_build_query($params)))
                     ->setStateChangeTeardown(false);
-        $this->providerVerifier->addSource($this->pactWriter->getPactPath());
+        $this->providerVerifier->addSource($this->pactPath);
         $this->providerVerifier->verify();
         $this->generatorServer->stop();
         $this->bodyStorage->setBody($this->generatorServer->getBody());
