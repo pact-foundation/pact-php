@@ -18,15 +18,8 @@ class PactPath
         return $this->consumer;
     }
 
-    public function getProvider(): string
-    {
-        return self::PROVIDER;
-    }
-
     public function __toString(): string
     {
-        $pactDir = Path::PACTS_PATH;
-
-        return "$pactDir/$this->consumer-{$this->getProvider()}.json";
+        return sprintf("%s/%s-%s.json", Path::PACTS_PATH, $this->consumer, self::PROVIDER);
     }
 }

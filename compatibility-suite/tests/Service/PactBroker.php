@@ -18,7 +18,7 @@ final class PactBroker implements PactBrokerInterface
     public function publish(int $id): void
     {
         $this->pactPath = new PactPath("c-$id");
-        $this->client->put("http://localhost:9292/pacts/provider/{$this->pactPath->getProvider()}/consumer/{$this->pactPath->getConsumer()}/version/1.0.0", [
+        $this->client->put(sprintf('http://localhost:9292/pacts/provider/%s/consumer/%s/version/1.0.0', PactPath::PROVIDER, $this->pactPath->getConsumer()), [
             'body' => file_get_contents($this->pactPath),
             'headers' => ['Content-Type' => 'application/json'],
         ]);
@@ -52,6 +52,6 @@ final class PactBroker implements PactBrokerInterface
 
     public function getMatrix(): array
     {
-        return json_decode(file_get_contents("http://localhost:9292/matrix.json?q[][pacticipant]={$this->pactPath->getConsumer()}&q[][pacticipant]={$this->pactPath->getProvider()}"), true);
+        return json_decode(file_get_contents(sprintf('http://localhost:9292/matrix.json?q[][pacticipant]=%s&q[][pacticipant]=%s', $this->pactPath->getConsumer(), PactPath::PROVIDER)), true);
     }
 }

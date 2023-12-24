@@ -22,7 +22,7 @@ class MessagePactWriter implements MessagePactWriterInterface
         $config = new MockServerConfig();
         $config
             ->setConsumer($pactPath->getConsumer())
-            ->setProvider($pactPath->getProvider())
+            ->setProvider(PactPath::PROVIDER)
             ->setPactDir(Path::PACTS_PATH)
             ->setPactSpecificationVersion($this->specificationVersion)
             ->setPactFileWriteMode($mode);

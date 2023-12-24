@@ -38,7 +38,7 @@ final class ConsumerContext implements Context
         $config = new PactMessageConfig();
         $config
             ->setConsumer($this->pactPath->getConsumer())
-            ->setProvider($this->pactPath->getProvider())
+            ->setProvider(PactPath::PROVIDER)
             ->setPactDir(Path::PACTS_PATH)
             ->setPactSpecificationVersion($specificationVersion)
             ->setPactFileWriteMode(PactConfigInterface::MODE_OVERWRITE);
