@@ -36,7 +36,8 @@
         "guzzlehttp/guzzle": "^7.8",
         "tienvx/pact-php-xml": "^0.1",
         "behat/behat": "^3.13",
-        "galbar/jsonpath": "^3.0"
+        "galbar/jsonpath": "^3.0",
+        "ramsey/uuid": "^4.7"
     },
     "autoload": {
         "psr-4": {

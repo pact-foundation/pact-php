@@ -13,4 +13,10 @@ interface ParserInterface
     public function parseBody(string $body, ?string $contentType = null): Text|Binary|Multipart|null;
 
     public function parseQueryString(string $query): array;
+
+    public function parseMetadataTable(array $rows): array;
+
+    public function parseMetadataValue(string $value): string;
+
+    public function parseMetadataMultiValues(string $values): array;
 }
