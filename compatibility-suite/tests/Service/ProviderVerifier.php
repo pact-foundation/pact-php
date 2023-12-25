@@ -7,6 +7,7 @@ use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
 use PhpPactTest\CompatibilitySuite\Model\Logger;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Model\VerifyResult;
 
 final class ProviderVerifier implements ProviderVerifierInterface
@@ -21,7 +22,7 @@ final class ProviderVerifier implements ProviderVerifierInterface
         $this->config = new VerifierConfig();
         $this->config
             ->getProviderInfo()
-                ->setName('p')
+                ->setName(PactPath::PROVIDER)
                 ->setHost('localhost');
     }
 

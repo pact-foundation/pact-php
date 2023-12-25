@@ -3,10 +3,9 @@
 namespace PhpPactTest\CompatibilitySuite\Service;
 
 use PhpPact\Config\PactConfigInterface;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 
 interface PactWriterInterface
 {
-    public function write(int $id, string $consumer = 'c', string $provider = 'p', string $mode = PactConfigInterface::MODE_OVERWRITE): void;
-
-    public function getPactPath(): string;
+    public function write(int $id, PactPath $pactPath, string $mode = PactConfigInterface::MODE_OVERWRITE): void;
 }

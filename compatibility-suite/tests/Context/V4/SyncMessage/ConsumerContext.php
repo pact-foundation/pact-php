@@ -6,6 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
 use PhpPact\Consumer\Model\Message;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\SyncMessagePactWriterInterface;
 use PHPUnit\Framework\Assert;
 
@@ -13,10 +14,12 @@ final class ConsumerContext implements Context
 {
     private Message $message;
     private array $pact;
+    private PactPath $pactPath;
 
     public function __construct(
         private SyncMessagePactWriterInterface $pactWriter,
     ) {
+        $this->pactPath = new PactPath();
     }
 
     /**
@@ -33,7 +36,7 @@ final class ConsumerContext implements Context
      */
     public function thePactFileForTheTestIsGenerated(): void
     {
-        $this->pactWriter->write($this->message);
+        $this->pactWriter->write($this->message, $this->pactPath);
     }
 
     /**
@@ -41,7 +44,7 @@ final class ConsumerContext implements Context
      */
     public function theFirstInteractionInThePactFileWillHaveATypeOf(string $type): void
     {
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         Assert::assertSame($type, $pact['interactions'][0]['type']);
     }
 
@@ -74,7 +77,7 @@ final class ConsumerContext implements Context
      */
     public function theFirstInteractionInThePactFileWillHave(string $name, string $value): void
     {
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         Assert::assertSame($value, $pact['interactions'][0][$name]);
     }
 
@@ -107,8 +110,8 @@ final class ConsumerContext implements Context
      */
     public function aPactFileForTheMessageInteractionWillHaveBeenWritten(): void
     {
-        Assert::assertTrue(file_exists($this->pactWriter->getPactPath()));
-        $this->pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        Assert::assertTrue(file_exists($this->pactPath));
+        $this->pact = json_decode(file_get_contents($this->pactPath), true);
     }
 
     /**

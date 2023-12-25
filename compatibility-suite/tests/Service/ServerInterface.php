@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\CompatibilitySuite\Service;
 
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Model\VerifyResult;
 use Psr\Http\Message\UriInterface;
 
@@ -15,7 +16,7 @@ interface ServerInterface
 
     public function getVerifyResult(): VerifyResult;
 
-    public function getPactPath(): string;
+    public function getPactPath(): PactPath;
 
     public function getPort(): int;
 }

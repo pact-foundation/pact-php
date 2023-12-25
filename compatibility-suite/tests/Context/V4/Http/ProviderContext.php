@@ -5,16 +5,20 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4\Http;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
 use PHPUnit\Framework\Assert;
 
 final class ProviderContext implements Context
 {
+    private PactPath $pactPath;
+
     public function __construct(
         private PactWriterInterface $pactWriter,
         private ProviderVerifierInterface $providerVerifier,
     ) {
+        $this->pactPath = new PactPath();
     }
 
     /**
@@ -22,11 +26,11 @@ final class ProviderContext implements Context
      */
     public function aPactFileForInteractionIsToBeVerifiedButIsMarkedPending(int $id): void
     {
-        $this->pactWriter->write($id);
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $this->pactWriter->write($id, $this->pactPath);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         $pact['interactions'][0]['pending'] = true;
-        file_put_contents($this->pactWriter->getPactPath(), json_encode($pact));
-        $this->providerVerifier->addSource($this->pactWriter->getPactPath());
+        file_put_contents($this->pactPath, json_encode($pact));
+        $this->providerVerifier->addSource($this->pactPath);
     }
 
     /**
@@ -81,11 +85,11 @@ final class ProviderContext implements Context
                     break;
             }
         }
-        $this->pactWriter->write($id);
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $this->pactWriter->write($id, $this->pactPath);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         $pact['interactions'][0]['comments'] = $comments;
-        file_put_contents($this->pactWriter->getPactPath(), json_encode($pact));
-        $this->providerVerifier->addSource($this->pactWriter->getPactPath());
+        file_put_contents($this->pactPath, json_encode($pact));
+        $this->providerVerifier->addSource($this->pactPath);
     }
 
     /**

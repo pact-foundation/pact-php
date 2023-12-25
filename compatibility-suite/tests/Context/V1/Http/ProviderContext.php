@@ -8,6 +8,7 @@ use Behat\Gherkin\Node\TableNode;
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\PublishOptions;
 use PhpPact\Standalone\ProviderVerifier\Model\Source\Broker;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactBrokerInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
@@ -41,8 +42,9 @@ final class ProviderContext implements Context
      */
     public function aPactFileForInteractionIsToBeVerified(int $id): void
     {
-        $this->pactWriter->write($id, "c-$id");
-        $this->providerVerifier->addSource($this->pactWriter->getPactPath());
+        $pactPath = new PactPath("c-$id");
+        $this->pactWriter->write($id, $pactPath);
+        $this->providerVerifier->addSource($pactPath);
     }
 
     /**
@@ -59,7 +61,8 @@ final class ProviderContext implements Context
      */
     public function aPactFileForInteractionIsToBeVerifiedFromAPactBroker(int $id): void
     {
-        $this->pactWriter->write($id, "c-$id");
+        $pactPath = new PactPath("c-$id");
+        $this->pactWriter->write($id, $pactPath);
         $this->pactBroker->publish($id);
         $broker = new Broker();
         $broker->setUrl(new Uri('http:/localhost:9292'));
@@ -107,11 +110,12 @@ final class ProviderContext implements Context
      */
     public function aPactFileForInteractionIsToBeVerifiedWithAProviderStateDefined(int $id, string $state): void
     {
-        $this->pactWriter->write($id, "c-$id");
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $pactPath = new PactPath("c-$id");
+        $this->pactWriter->write($id, $pactPath);
+        $pact = json_decode(file_get_contents($pactPath), true);
         $pact['interactions'][0]['providerStates'][] = ['name' => $state];
-        file_put_contents($this->pactWriter->getPactPath(), json_encode($pact));
-        $this->providerVerifier->addSource($this->pactWriter->getPactPath());
+        file_put_contents($pactPath, json_encode($pact));
+        $this->providerVerifier->addSource($pactPath);
     }
 
     /**

@@ -6,6 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
@@ -16,6 +17,7 @@ use PHPUnit\Framework\Assert;
 final class ProviderContext implements Context
 {
     private int $id = 1;
+    private PactPath $pactPath;
 
     public function __construct(
         private ServerInterface $server,
@@ -24,6 +26,7 @@ final class ProviderContext implements Context
         private MessagePactWriterInterface $pactWriter,
         private ProviderVerifierInterface $providerVerifier,
     ) {
+        $this->pactPath = new PactPath();
     }
 
     /**
@@ -58,11 +61,11 @@ final class ProviderContext implements Context
      */
     public function aPactFileForIsToBeVerifiedButIsMarkedPending(string $name, string $fixture): void
     {
-        $this->pactWriter->write($name, $fixture);
-        $this->providerVerifier->addSource($this->pactWriter->getPactPath());
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $this->pactWriter->write($name, $fixture, $this->pactPath);
+        $this->providerVerifier->addSource($this->pactPath);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         $pact['interactions'][0]['pending'] = true;
-        file_put_contents($this->pactWriter->getPactPath(), json_encode($pact));
+        file_put_contents($this->pactPath, json_encode($pact));
     }
 
     /**
@@ -86,11 +89,11 @@ final class ProviderContext implements Context
                     break;
             }
         }
-        $this->pactWriter->write($name, $fixture);
-        $this->providerVerifier->addSource($this->pactWriter->getPactPath());
-        $pact = json_decode(file_get_contents($this->pactWriter->getPactPath()), true);
+        $this->pactWriter->write($name, $fixture, $this->pactPath);
+        $this->providerVerifier->addSource($this->pactPath);
+        $pact = json_decode(file_get_contents($this->pactPath), true);
         $pact['interactions'][0]['comments'] = $comments;
-        file_put_contents($this->pactWriter->getPactPath(), json_encode($pact));
+        file_put_contents($this->pactPath, json_encode($pact));
     }
 
     /**

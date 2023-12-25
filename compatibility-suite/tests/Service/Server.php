@@ -15,6 +15,7 @@ use PhpPact\Standalone\MockService\MockServerConfig;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
 use PhpPactTest\CompatibilitySuite\Model\Logger;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Model\VerifyResult;
 use Psr\Http\Message\UriInterface;
 
@@ -26,21 +27,18 @@ final class Server implements ServerInterface
     private MockServerInterface $mockServer;
     private VerifyResult $verifyResult;
     private Logger $logger;
-    private string $pactPath;
+    private PactPath $pactPath;
 
     public function __construct(
         string $specificationVersion,
         private InteractionsStorageInterface $storage
     ) {
-        $consumer = sprintf('compatibility-suite_server_specification-%s_c', $specificationVersion);
-        $provider = 'p';
-        $pactDir = Path::PACTS_PATH;
-        $this->pactPath = "$pactDir/$consumer-$provider.json";
+        $this->pactPath = new PactPath(sprintf('server_specification_%s', $specificationVersion));
         $this->config = new MockServerConfig();
         $this->config
-            ->setConsumer($consumer)
-            ->setProvider($provider)
-            ->setPactDir($pactDir)
+            ->setConsumer($this->pactPath->getConsumer())
+            ->setProvider(PactPath::PROVIDER)
+            ->setPactDir(Path::PACTS_PATH)
             ->setPactSpecificationVersion($specificationVersion)
             ->setPactFileWriteMode(PactConfigInterface::MODE_OVERWRITE);
 
@@ -83,7 +81,7 @@ final class Server implements ServerInterface
         return $this->verifyResult;
     }
 
-    public function getPactPath(): string
+    public function getPactPath(): PactPath
     {
         return $this->pactPath;
     }

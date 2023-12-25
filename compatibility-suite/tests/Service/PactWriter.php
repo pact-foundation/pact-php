@@ -9,26 +9,23 @@ use PhpPact\Consumer\Registry\Pact\PactRegistry;
 use PhpPact\FFI\Client;
 use PhpPact\Standalone\MockService\MockServerConfig;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
+use PhpPactTest\CompatibilitySuite\Model\PactPath;
 
 class PactWriter implements PactWriterInterface
 {
-    private string $pactPath;
-
     public function __construct(
         private InteractionsStorageInterface $storage,
         private string $specificationVersion,
     ) {
     }
 
-    public function write(int $id, string $consumer = 'c', string $provider = 'p', string $mode = PactConfigInterface::MODE_OVERWRITE): void
+    public function write(int $id, PactPath $pactPath, string $mode = PactConfigInterface::MODE_OVERWRITE): void
     {
-        $pactDir = Path::PACTS_PATH;
-        $this->pactPath = "$pactDir/$consumer-$provider.json";
         $config = new MockServerConfig();
         $config
-            ->setConsumer($consumer)
-            ->setProvider($provider)
-            ->setPactDir($pactDir)
+            ->setConsumer($pactPath->getConsumer())
+            ->setProvider(PactPath::PROVIDER)
+            ->setPactDir(Path::PACTS_PATH)
             ->setPactSpecificationVersion($this->specificationVersion)
             ->setPactFileWriteMode($mode);
         $client = new Client();
@@ -41,10 +38,5 @@ class PactWriter implements PactWriterInterface
         $interactionRegistry->registerInteraction($interaction);
         $pactDriver->writePact();
         $pactDriver->cleanUp();
-    }
-
-    public function getPactPath(): string
-    {
-        return $this->pactPath;
     }
 }
