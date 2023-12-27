@@ -2,7 +2,7 @@
 
 namespace XmlConsumer\Tests\Service;
 
-use Tienvx\PactPhpXml\XmlBuilder;
+use PhpPact\Xml\XmlBuilder;
 use XmlConsumer\Service\HttpClientService;
 use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Model\ConsumerRequest;
