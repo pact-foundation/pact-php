@@ -9,6 +9,8 @@ use PhpPact\Consumer\Matcher\Generators\RandomString;
  */
 class StringValue extends GeneratorAwareMatcher
 {
+    public const DEFAULT_VALUE = 'some string';
+
     public function __construct(private ?string $value = null)
     {
         if ($value === null) {
@@ -28,7 +30,7 @@ class StringValue extends GeneratorAwareMatcher
     {
         $data = [
             'pact:matcher:type' => $this->getType(),
-            'value' => $this->getValue() ?? 'some string',
+            'value' => $this->getValue() ?? self::DEFAULT_VALUE,
         ];
 
         if ($this->getGenerator()) {

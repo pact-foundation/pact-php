@@ -7,6 +7,7 @@ use GeneratorsConsumer\Service\HttpClientService;
 use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Matcher\HttpStatus;
 use PhpPact\Consumer\Matcher\Matcher;
+use PhpPact\Consumer\Matcher\Matchers\StringValue;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Standalone\MockService\MockServerConfig;
@@ -93,6 +94,7 @@ class GeneratorsTest extends TestCase
         $this->assertTrue($this->validateDateTime($body['time'], 'H:i:s'));
         $this->assertTrue($this->validateDateTime($body['datetime'], "Y-m-d\TH:i:s"));
         $this->assertIsString($body['string']);
+        $this->assertNotSame(StringValue::DEFAULT_VALUE, $body['string']);
         $this->assertIsNumeric($body['number']);
         $this->assertNotSame('http://localhost/users/1234/posts/latest', $body['url']);
         $this->assertRegExp('/.*(\\/users\\/\\d+\\/posts\\/latest)$/', $body['url']);
