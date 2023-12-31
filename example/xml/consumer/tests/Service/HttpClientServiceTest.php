@@ -24,69 +24,54 @@ class HttpClientServiceTest extends TestCase
         $xmlBuilder
             ->root(
                 $xmlBuilder->name('movies'),
-                $xmlBuilder->add(
-                    $xmlBuilder->eachLike(),
+                $xmlBuilder->eachLike(
+                    $xmlBuilder->examples(1),
                     $xmlBuilder->name('movie'),
                     $xmlBuilder->add(
                         $xmlBuilder->name('title'),
-                        $xmlBuilder->text(
-                            $xmlBuilder->contentLike('PHP: Behind the Parser'),
-                        ),
+                        $xmlBuilder->contentLike('PHP: Behind the Parser'),
                     ),
                     $xmlBuilder->add(
                         $xmlBuilder->name('characters'),
-                        $xmlBuilder->add(
-                            $xmlBuilder->eachLike(examples: 2),
+                        $xmlBuilder->eachLike(
+                            $xmlBuilder->examples(2),
                             $xmlBuilder->name('character'),
                             $xmlBuilder->add(
                                 $xmlBuilder->name('name'),
-                                $xmlBuilder->text(
-                                    $xmlBuilder->contentLike('Ms. Coder'),
-                                ),
+                                $xmlBuilder->contentLike('Ms. Coder'),
                             ),
                             $xmlBuilder->add(
                                 $xmlBuilder->name('actor'),
-                                $xmlBuilder->text(
-                                    $xmlBuilder->contentLike('Onlivia Actora'),
-                                ),
+                                $xmlBuilder->contentLike('Onlivia Actora'),
                             ),
                         ),
                     ),
                     $xmlBuilder->add(
                         $xmlBuilder->name('plot'),
-                        $xmlBuilder->text(
-                            $xmlBuilder->contentLike(
-                                <<<EOF
-                                So, this language. It's like, a programming language. Or is it a
-                                scripting language? All is revealed in this thrilling horror spoof
-                                of a documentary.
-                                EOF
-                            ),
+                        $xmlBuilder->contentLike(
+                            <<<EOF
+                            So, this language. It's like, a programming language. Or is it a
+                            scripting language? All is revealed in this thrilling horror spoof
+                            of a documentary.
+                            EOF
                         ),
                     ),
                     $xmlBuilder->add(
                         $xmlBuilder->name('great-lines'),
-                        $xmlBuilder->add(
-                            $xmlBuilder->eachLike(),
+                        $xmlBuilder->eachLike(
                             $xmlBuilder->name('line'),
-                            $xmlBuilder->text(
-                                $xmlBuilder->contentLike('PHP solves all my web problems'),
-                            ),
+                            $xmlBuilder->contentLike('PHP solves all my web problems'),
                         ),
                     ),
                     $xmlBuilder->add(
                         $xmlBuilder->name('rating'),
                         $xmlBuilder->attribute('type', 'thumbs'),
-                        $xmlBuilder->text(
-                            $xmlBuilder->contentLike(7),
-                        ),
+                        $xmlBuilder->contentLike(7),
                     ),
                     $xmlBuilder->add(
                         $xmlBuilder->name('rating'),
                         $xmlBuilder->attribute('type', 'stars'),
-                        $xmlBuilder->text(
-                            $xmlBuilder->contentLike(5),
-                        ),
+                        $xmlBuilder->contentLike(5),
                     ),
                 ),
             );
@@ -96,7 +81,7 @@ class HttpClientServiceTest extends TestCase
             ->setStatus(200)
             ->addHeader('Content-Type', 'text/xml')
             ->setBody(
-                json_encode($xmlBuilder->getArray())
+                json_encode($xmlBuilder)
             );
 
         $config = new MockServerConfig();

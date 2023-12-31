@@ -2,9 +2,10 @@
 
 namespace PhpPact\Xml\Model\Builder;
 
-use PhpPact\Xml\Model\Matcher\Matcher;
+use PhpPact\Consumer\Matcher\Formatters\XmlElementFormatter;
+use PhpPact\Consumer\Matcher\Matchers\Type;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PhpPact\Xml\XmlElement;
-use PhpPact\Xml\XmlText;
 
 trait ElementTrait
 {
@@ -13,6 +14,11 @@ trait ElementTrait
     public function root(callable ...$options): void
     {
         $this->root = new XmlElement(...$options);
+    }
+
+    public function examples(int $examples): callable
+    {
+        return fn (XmlElement $element) => $element->setExamples($examples);
     }
 
     public function add(callable ...$options): callable
@@ -25,30 +31,18 @@ trait ElementTrait
         return fn (XmlElement $element) => $element->setName($name);
     }
 
-    public function text(callable ...$options): callable
-    {
-        return fn (XmlElement $element) => $element->setText(new XmlText(...$options));
-    }
-
-    public function attribute(string $name, mixed $value): callable
+    public function attribute(string $name, string|float|int|bool|MatcherInterface $value): callable
     {
         return fn (XmlElement $element) => $element->addAttribute($name, $value);
     }
 
-    public function eachLike(int $min = 1, ?int $max = null, int $examples = 1): callable
+    public function eachLike(callable ...$options): callable
     {
-        return function (XmlElement $element) use ($min, $max, $examples): void {
-            $options = [
-                'min' => $min,
-                'examples' => $examples,
-            ];
-            if (isset($max)) {
-                $options['max'] = $max;
-            }
-            $element->setMatcher(new Matcher(
-                fn (Matcher $matcher) => $matcher->setType('type'),
-                fn (Matcher $matcher) => $matcher->setOptions($options),
-            ));
+        return function (XmlElement $element) use ($options): void {
+            $child = new XmlElement(...$options);
+            $matcher = new Type($child);
+            $matcher->setFormatter(new XmlElementFormatter());
+            $element->addChild($matcher);
         };
     }
 }

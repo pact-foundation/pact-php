@@ -2,17 +2,14 @@
 
 namespace PhpPact\Xml;
 
+use JsonSerializable;
 use PhpPact\Xml\Model\Builder\ElementTrait;
-use PhpPact\Xml\Model\Builder\GeneratorTrait;
-use PhpPact\Xml\Model\Builder\MatcherTrait;
 use PhpPact\Xml\Model\Builder\TextTrait;
 
-class XmlBuilder
+class XmlBuilder implements JsonSerializable
 {
     use ElementTrait;
     use TextTrait;
-    use MatcherTrait;
-    use GeneratorTrait;
 
     public function __construct(private string $version, private string $charset)
     {
@@ -21,12 +18,12 @@ class XmlBuilder
     /**
      * @return array<string, mixed>
      */
-    public function getArray(): array
+    public function jsonSerialize(): array
     {
         return [
             'version' => $this->version,
             'charset' => $this->charset,
-            'root' => $this->root->getArray(),
+            'root' => $this->root,
         ];
     }
 }

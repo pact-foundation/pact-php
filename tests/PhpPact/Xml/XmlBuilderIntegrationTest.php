@@ -26,8 +26,8 @@ class XmlBuilderIntegrationTest extends TestCase
                 $this->builder->name('ns1:projects'),
                 $this->builder->attribute('id', '1234'),
                 $this->builder->attribute('xmlns:ns1', 'http://some.namespace/and/more/stuff'),
-                $this->builder->add(
-                    $this->builder->eachLike(examples: 2),
+                $this->builder->eachLike(
+                    $this->builder->examples(2),
                     $this->builder->name('ns1:project'),
                     $this->builder->attribute('id', $this->matcher->integerV3(1)),
                     $this->builder->attribute('type', 'activity'),
@@ -35,8 +35,8 @@ class XmlBuilderIntegrationTest extends TestCase
                     $this->builder->attribute('due', $this->matcher->datetime("yyyy-MM-dd'T'HH:mm:ss.SZ", '2016-02-11T09:46:56.023Z')),
                     $this->builder->add(
                         $this->builder->name('ns1:tasks'),
-                        $this->builder->add(
-                            $this->builder->eachLike(examples: 5),
+                        $this->builder->eachLike(
+                            $this->builder->examples(5),
                             $this->builder->name('ns1:task'),
                             $this->builder->attribute('id', $this->matcher->integerV3(1)),
                             $this->builder->attribute('name', $this->matcher->string('Task 1')),
@@ -53,6 +53,7 @@ class XmlBuilderIntegrationTest extends TestCase
                 'name' => 'ns1:projects',
                 'children' => [
                     [
+                        'pact:matcher:type' => 'type',
                         'value' => [
                             'name' => 'ns1:project',
                             'children' => [
@@ -60,6 +61,7 @@ class XmlBuilderIntegrationTest extends TestCase
                                     'name' => 'ns1:tasks',
                                     'children' => [
                                         [
+                                            'pact:matcher:type' => 'type',
                                             'value' => [
                                                 'name' => 'ns1:task',
                                                 'children' => [],
@@ -79,8 +81,6 @@ class XmlBuilderIntegrationTest extends TestCase
                                                     ],
                                                 ],
                                             ],
-                                            'pact:matcher:type' => 'type',
-                                            'min' => 1,
                                             'examples' => 5,
                                         ],
                                     ],
@@ -104,8 +104,6 @@ class XmlBuilderIntegrationTest extends TestCase
                                 ],
                             ],
                         ],
-                        'pact:matcher:type' => 'type',
-                        'min' => 1,
                         'examples' => 2,
                     ],
                 ],
@@ -116,7 +114,7 @@ class XmlBuilderIntegrationTest extends TestCase
             ],
         ];
 
-        $this->assertSame(json_encode($expectedArray), json_encode($this->builder->getArray()));
+        $this->assertSame(json_encode($expectedArray), json_encode($this->builder));
     }
 
     public function testBuildWithMatchersOnContent(): void
@@ -124,69 +122,53 @@ class XmlBuilderIntegrationTest extends TestCase
         $this->builder
             ->root(
                 $this->builder->name('movies'),
-                $this->builder->add(
-                    $this->builder->eachLike(),
+                $this->builder->eachLike(
                     $this->builder->name('movie'),
                     $this->builder->add(
                         $this->builder->name('title'),
-                        $this->builder->text(
-                            $this->builder->contentLike('PHP: Behind the Parser'),
-                        ),
+                        $this->builder->contentLike('PHP: Behind the Parser'),
                     ),
                     $this->builder->add(
                         $this->builder->name('characters'),
-                        $this->builder->add(
-                            $this->builder->eachLike(examples: 2),
+                        $this->builder->eachLike(
+                            $this->builder->examples(2),
                             $this->builder->name('character'),
                             $this->builder->add(
                                 $this->builder->name('name'),
-                                $this->builder->text(
-                                    $this->builder->contentLike('Ms. Coder'),
-                                ),
+                                $this->builder->contentLike('Ms. Coder'),
                             ),
                             $this->builder->add(
                                 $this->builder->name('actor'),
-                                $this->builder->text(
-                                    $this->builder->contentLike('Onlivia Actora'),
-                                ),
+                                $this->builder->contentLike('Onlivia Actora'),
                             ),
                         ),
                     ),
                     $this->builder->add(
                         $this->builder->name('plot'),
-                        $this->builder->text(
-                            $this->builder->contentLike(
-                                $plot = <<<EOF
-                                So, this language. It's like, a programming language. Or is it a
-                                scripting language? All is revealed in this thrilling horror spoof
-                                of a documentary.
-                                EOF
-                            ),
+                        $this->builder->contentLike(
+                            $plot = <<<EOF
+                            So, this language. It's like, a programming language. Or is it a
+                            scripting language? All is revealed in this thrilling horror spoof
+                            of a documentary.
+                            EOF
                         ),
                     ),
                     $this->builder->add(
                         $this->builder->name('great-lines'),
-                        $this->builder->add(
-                            $this->builder->eachLike(),
+                        $this->builder->eachLike(
                             $this->builder->name('line'),
-                            $this->builder->text(
-                                $this->builder->contentLike('PHP solves all my web problems'),
-                            ),
+                            $this->builder->contentLike('PHP solves all my web problems'),
                         ),
                     ),
                     $this->builder->add(
                         $this->builder->name('rating'),
                         $this->builder->attribute('type', 'thumbs'),
-                        $this->builder->text(
-                            $this->builder->contentLike(7),
-                        ),
+                        $this->builder->contentLike(7),
                     ),
                     $this->builder->add(
                         $this->builder->name('rating'),
                         $this->builder->attribute('type', 'stars'),
-                        $this->builder->text(
-                            $this->builder->contentLike(5),
-                        ),
+                        $this->builder->contentLike(5),
                     ),
                 ),
             );
@@ -198,6 +180,7 @@ class XmlBuilderIntegrationTest extends TestCase
                 'name' => 'movies',
                 'children' => [
                     [
+                        'pact:matcher:type' => 'type',
                         'value' => [
                             'name' => 'movie',
                             'children' => [
@@ -217,6 +200,7 @@ class XmlBuilderIntegrationTest extends TestCase
                                     'name' => 'characters',
                                     'children' => [
                                         [
+                                            'pact:matcher:type' => 'type',
                                             'value' => [
                                                 'name' => 'character',
                                                 'children' => [
@@ -251,8 +235,6 @@ class XmlBuilderIntegrationTest extends TestCase
                                                 ],
                                                 'attributes' => [],
                                             ],
-                                            'pact:matcher:type' => 'type',
-                                            'min' => 1,
                                             'examples' => 2,
                                         ],
                                     ],
@@ -274,6 +256,7 @@ class XmlBuilderIntegrationTest extends TestCase
                                     'name' => 'great-lines',
                                     'children' => [
                                         [
+                                            'pact:matcher:type' => 'type',
                                             'value' => [
                                                 'name' => 'line',
                                                 'children' => [
@@ -288,9 +271,6 @@ class XmlBuilderIntegrationTest extends TestCase
                                                 ],
                                                 'attributes' => [],
                                             ],
-                                            'pact:matcher:type' => 'type',
-                                            'min' => 1,
-                                            'examples' => 1,
                                         ],
                                     ],
                                     'attributes' => [],
@@ -322,15 +302,12 @@ class XmlBuilderIntegrationTest extends TestCase
                             ],
                             'attributes' => [],
                         ],
-                        'pact:matcher:type' => 'type',
-                        'min' => 1,
-                        'examples' => 1,
                     ],
                 ],
                 'attributes' => [],
             ],
         ];
 
-        $this->assertSame(json_encode($expectedArray), json_encode($this->builder->getArray()));
+        $this->assertSame(json_encode($expectedArray), json_encode($this->builder));
     }
 }
