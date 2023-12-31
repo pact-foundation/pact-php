@@ -2,25 +2,33 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+use PhpPact\Consumer\Matcher\Formatters\MinimalFormatter;
 
 /**
  * Match if the value is a null value (this is content specific, for JSON will match a JSON null)
  */
-class NullValue implements MatcherInterface
+class NullValue extends AbstractMatcher
 {
-    /**
-     * @return array<string, string>
-     */
-    public function jsonSerialize(): array
+    public function __construct()
     {
-        return [
-            'pact:matcher:type' => $this->getType(),
-        ];
+        $this->setFormatter(new MinimalFormatter());
     }
 
     public function getType(): string
     {
         return 'null';
+    }
+
+    protected function getAttributesData(): array
+    {
+        return [];
+    }
+
+    /**
+     * @todo Change return type to `null`
+     */
+    protected function getValue(): mixed
+    {
+        return null;
     }
 }

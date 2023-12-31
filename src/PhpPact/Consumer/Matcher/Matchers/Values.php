@@ -2,29 +2,30 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Model\MatcherInterface;
-
 /**
  * Match the values in a map, ignoring the keys
  */
-class Values implements MatcherInterface
+class Values extends AbstractMatcher
 {
     /**
      * @param array<mixed> $values
      */
     public function __construct(private array $values)
     {
+        parent::__construct();
+    }
+
+    protected function getAttributesData(): array
+    {
+        return [];
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<mixed>
      */
-    public function jsonSerialize(): array
+    protected function getValue(): array
     {
-        return [
-            'pact:matcher:type' => $this->getType(),
-            'value'             => $this->values,
-        ];
+        return $this->values;
     }
 
     public function getType(): string

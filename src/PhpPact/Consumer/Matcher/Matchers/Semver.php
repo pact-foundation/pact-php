@@ -14,6 +14,7 @@ class Semver extends GeneratorAwareMatcher
         if ($value === null) {
             $this->setGenerator(new Regex('\d+\.\d+\.\d+'));
         }
+        parent::__construct();
     }
 
     public function getType(): string

@@ -2,6 +2,7 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Formatters\ValueRequiredFormatter;
 use PhpPact\Consumer\Matcher\Generators\RandomString;
 
 /**
@@ -16,6 +17,7 @@ class StringValue extends GeneratorAwareMatcher
         if ($value === null) {
             $this->setGenerator(new RandomString());
         }
+        $this->setFormatter(new ValueRequiredFormatter());
     }
 
     public function getType(): string
@@ -28,16 +30,7 @@ class StringValue extends GeneratorAwareMatcher
      */
     public function jsonSerialize(): array
     {
-        $data = [
-            'pact:matcher:type' => $this->getType(),
-            'value' => $this->getValue() ?? self::DEFAULT_VALUE,
-        ];
-
-        if ($this->getGenerator()) {
-            return $data + ['pact:generator:type' => $this->getGenerator()->getType()] + $this->getMergedAttributes()->getData();
-        }
-
-        return $data;
+        return $this->getFormatter()->format($this, $this->getGenerator(), $this->getValue());
     }
 
     protected function getAttributesData(): array
@@ -45,8 +38,8 @@ class StringValue extends GeneratorAwareMatcher
         return [];
     }
 
-    protected function getValue(): ?string
+    protected function getValue(): string
     {
-        return $this->value;
+        return $this->value ?? self::DEFAULT_VALUE;
     }
 }

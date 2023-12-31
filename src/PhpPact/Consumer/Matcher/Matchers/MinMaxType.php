@@ -2,13 +2,11 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Model\MatcherInterface;
-
 /**
  * This executes a type based match against the values, that is, they are equal if they are the same type.
  * In addition, if the values represent a collection, the length of the actual value is compared against the minimum and maximum.
  */
-class MinMaxType implements MatcherInterface
+class MinMaxType extends AbstractMatcher
 {
     /**
      * @param array<mixed> $values
@@ -18,19 +16,26 @@ class MinMaxType implements MatcherInterface
         private int $min,
         private int $max,
     ) {
+        parent::__construct();
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, int>
      */
-    public function jsonSerialize(): array
+    protected function getAttributesData(): array
     {
         return [
-            'pact:matcher:type' => $this->getType(),
-            'min'               => $this->min,
-            'max'               => $this->max,
-            'value'             => array_values($this->values),
+            'min' => $this->min,
+            'max' => $this->max,
         ];
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    protected function getValue(): array
+    {
+        return array_values($this->values);
     }
 
     public function getType(): string

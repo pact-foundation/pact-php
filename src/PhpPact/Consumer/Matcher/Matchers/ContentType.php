@@ -2,26 +2,24 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Model\MatcherInterface;
-
 /**
  * Match binary data by its content type (magic file check)
  */
-class ContentType implements MatcherInterface
+class ContentType extends AbstractMatcher
 {
     public function __construct(private string $contentType)
     {
+        parent::__construct();
     }
 
-    /**
-     * @return array<string, string>
-     */
-    public function jsonSerialize(): array
+    protected function getAttributesData(): array
     {
-        return [
-            'value'             => $this->contentType,
-            'pact:matcher:type' => $this->getType(),
-        ];
+        return [];
+    }
+
+    protected function getValue(): string
+    {
+        return $this->contentType;
     }
 
     public function getType(): string

@@ -20,6 +20,7 @@ class Regex extends GeneratorAwareMatcher
         if ($values === null) {
             $this->setGenerator(new RegexGenerator($this->regex));
         }
+        parent::__construct();
     }
 
     /**

@@ -2,26 +2,24 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Model\MatcherInterface;
-
 /**
  * This checks if the string representation of a value contains the substring.
  */
-class Includes implements MatcherInterface
+class Includes extends AbstractMatcher
 {
     public function __construct(private string $value)
     {
+        parent::__construct();
     }
 
-    /**
-     * @return array<string, string>
-     */
-    public function jsonSerialize(): array
+    protected function getAttributesData(): array
     {
-        return [
-            'pact:matcher:type' => $this->getType(),
-            'value'             => $this->value,
-        ];
+        return [];
+    }
+
+    protected function getValue(): string
+    {
+        return $this->value;
     }
 
     public function getType(): string

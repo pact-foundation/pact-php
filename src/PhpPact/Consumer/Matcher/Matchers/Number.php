@@ -14,6 +14,7 @@ class Number extends GeneratorAwareMatcher
         if ($value === null) {
             $this->setGenerator(new RandomInt());
         }
+        parent::__construct();
     }
 
     public function getType(): string

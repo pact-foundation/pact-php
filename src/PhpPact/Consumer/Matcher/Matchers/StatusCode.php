@@ -31,6 +31,7 @@ class StatusCode extends GeneratorAwareMatcher
 
             $this->setGenerator(new RandomInt($min, $max));
         }
+        parent::__construct();
     }
 
     public function getType(): string

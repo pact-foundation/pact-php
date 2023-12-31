@@ -2,29 +2,35 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+use PhpPact\Consumer\Matcher\Formatters\MinimalFormatter;
 
 /**
  * Checks if all the variants are present in an array.
  */
-class ArrayContains implements MatcherInterface
+class ArrayContains extends AbstractMatcher
 {
     /**
      * @param array<mixed> $variants
      */
     public function __construct(private array $variants)
     {
+        $this->setFormatter(new MinimalFormatter());
     }
 
     /**
      * @return array<string, mixed>
      */
-    public function jsonSerialize(): array
+    protected function getAttributesData(): array
     {
-        return [
-            'pact:matcher:type' => $this->getType(),
-            'variants' => array_values($this->variants),
-        ];
+        return ['variants' => array_values($this->variants)];
+    }
+
+    /**
+     * @todo Change return type to `null`
+     */
+    protected function getValue(): mixed
+    {
+        return null;
     }
 
     public function getType(): string

@@ -14,6 +14,7 @@ class Decimal extends GeneratorAwareMatcher
         if ($value === null) {
             $this->setGenerator(new RandomDecimal());
         }
+        parent::__construct();
     }
 
     public function getType(): string

@@ -2,29 +2,30 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Model\MatcherInterface;
-
 /**
  * Value must be present and not empty (not null or the empty string)
  */
-class NotEmpty implements MatcherInterface
+class NotEmpty extends AbstractMatcher
 {
     /**
      * @param object|array<mixed>|string|float|int|bool $value
      */
     public function __construct(private object|array|string|float|int|bool $value)
     {
+        parent::__construct();
+    }
+
+    protected function getAttributesData(): array
+    {
+        return [];
     }
 
     /**
-     * @return array<string, mixed>
+     * @return object|array<mixed>|string|float|int|bool
      */
-    public function jsonSerialize(): array
+    protected function getValue(): object|array|string|float|int|bool
     {
-        return [
-            'pact:matcher:type' => $this->getType(),
-            'value'             => $this->value,
-        ];
+        return $this->value;
     }
 
     public function getType(): string
