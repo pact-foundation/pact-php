@@ -21,6 +21,6 @@ class StringValueTest extends TestCase
     public function testSerialize(?string $value, string $json): void
     {
         $this->matcher = new StringValue($value);
-        $this->assertSame($json, json_encode($this->matcher));
+        $this->assertJsonStringEqualsJsonString($json, json_encode($this->matcher));
     }
 }

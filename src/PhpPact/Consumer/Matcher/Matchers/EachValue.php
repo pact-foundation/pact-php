@@ -7,7 +7,7 @@ use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 /**
  * Allows defining matching rules to apply to the values in a collection. For maps, delgates to the Values matcher.
  */
-class EachValue implements MatcherInterface
+class EachValue extends AbstractMatcher
 {
     /**
      * @param array<mixed>|object $value
@@ -15,18 +15,23 @@ class EachValue implements MatcherInterface
      */
     public function __construct(private object|array $value, private array $rules)
     {
+        parent::__construct();
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, MatcherInterface[]>
      */
-    public function jsonSerialize(): array
+    protected function getAttributesData(): array
     {
-        return [
-            'pact:matcher:type' => $this->getType(),
-            'value'             => $this->value,
-            'rules'             => array_map(fn (MatcherInterface $rule) => $rule, $this->rules),
-        ];
+        return ['rules' => array_map(fn (MatcherInterface $rule) => $rule, $this->rules)];
+    }
+
+    /**
+     * @return array<mixed>|object
+     */
+    protected function getValue(): object|array
+    {
+        return $this->value;
     }
 
     public function getType(): string

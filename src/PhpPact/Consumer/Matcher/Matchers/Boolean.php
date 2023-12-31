@@ -14,6 +14,7 @@ class Boolean extends GeneratorAwareMatcher
         if ($value === null) {
             $this->setGenerator(new RandomBoolean());
         }
+        parent::__construct();
     }
 
     public function getType(): string

@@ -23,7 +23,7 @@ class EachKeyTest extends TestCase
             new Regex('\w{3}'),
         ];
         $eachKey = new EachKey($value, $rules);
-        $this->assertSame(
+        $this->assertJsonStringEqualsJsonString(
             '{"pact:matcher:type":"eachKey","value":{"abc":123,"def":111,"ghi":{"test":"value"}},"rules":[{"pact:matcher:type":"type","value":"string"},{"pact:matcher:type":"regex","pact:generator:type":"Regex","regex":"\\\\w{3}"}]}',
             json_encode($eachKey)
         );

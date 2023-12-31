@@ -10,7 +10,7 @@ class ContentTypeTest extends TestCase
     public function testSerialize(): void
     {
         $contentType = new ContentType('text/csv');
-        $this->assertSame(
+        $this->assertJsonStringEqualsJsonString(
             '{"value":"text\/csv","pact:matcher:type":"contentType"}',
             json_encode($contentType)
         );

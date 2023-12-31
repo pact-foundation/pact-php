@@ -2,29 +2,30 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Model\MatcherInterface;
-
 /**
  * This is the default matcher, and relies on the equals operator
  */
-class Equality implements MatcherInterface
+class Equality extends AbstractMatcher
 {
     /**
      * @param object|array<mixed>|string|float|int|bool|null $value
      */
     public function __construct(private object|array|string|float|int|bool|null $value)
     {
+        parent::__construct();
+    }
+
+    protected function getAttributesData(): array
+    {
+        return [];
     }
 
     /**
-     * @return array<string, mixed>
+     * @return object|array<mixed>|string|float|int|bool|null
      */
-    public function jsonSerialize(): array
+    protected function getValue(): object|array|string|float|int|bool|null
     {
-        return [
-            'pact:matcher:type' => $this->getType(),
-            'value'             => $this->value
-        ];
+        return $this->value;
     }
 
     public function getType(): string
