@@ -20,7 +20,7 @@ class HttpClientService
     public function getMovies(): string
     {
         $response = $this->httpClient->get(new Uri("{$this->baseUri}/movies"), [
-            'headers' => ['Accept' => 'text/xml; charset=UTF8']
+            'headers' => ['Accept' => 'application/xml']
         ]);
 
         return $response->getBody();

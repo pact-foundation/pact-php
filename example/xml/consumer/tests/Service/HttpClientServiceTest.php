@@ -2,6 +2,7 @@
 
 namespace XmlConsumer\Tests\Service;
 
+use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Xml\XmlBuilder;
 use XmlConsumer\Service\HttpClientService;
 use PhpPact\Consumer\InteractionBuilder;
@@ -14,11 +15,13 @@ class HttpClientServiceTest extends TestCase
 {
     public function testGetMovies()
     {
+        $matcher = new Matcher();
+
         $request = new ConsumerRequest();
         $request
             ->setMethod('GET')
             ->setPath('/movies')
-            ->addHeader('Accept', 'text/xml; charset=UTF8');
+            ->addHeader('Accept', $matcher->regex('application/xml', 'application\/.*xml'));
 
         $xmlBuilder = new XmlBuilder('1.0', 'UTF-8');
         $xmlBuilder
@@ -29,7 +32,7 @@ class HttpClientServiceTest extends TestCase
                     $xmlBuilder->name('movie'),
                     $xmlBuilder->add(
                         $xmlBuilder->name('title'),
-                        $xmlBuilder->contentLike('PHP: Behind the Parser'),
+                        $xmlBuilder->contentLike('Big Buck Bunny'),
                     ),
                     $xmlBuilder->add(
                         $xmlBuilder->name('characters'),
@@ -38,21 +41,20 @@ class HttpClientServiceTest extends TestCase
                             $xmlBuilder->name('character'),
                             $xmlBuilder->add(
                                 $xmlBuilder->name('name'),
-                                $xmlBuilder->contentLike('Ms. Coder'),
+                                $xmlBuilder->contentLike('Big Buck Bunny'),
                             ),
                             $xmlBuilder->add(
                                 $xmlBuilder->name('actor'),
-                                $xmlBuilder->contentLike('Onlivia Actora'),
+                                $xmlBuilder->contentLike('Jan Morgenstern'),
                             ),
                         ),
                     ),
                     $xmlBuilder->add(
                         $xmlBuilder->name('plot'),
                         $xmlBuilder->contentLike(
-                            <<<EOF
-                            So, this language. It's like, a programming language. Or is it a
-                            scripting language? All is revealed in this thrilling horror spoof
-                            of a documentary.
+                            $plot = <<<EOF
+                            The plot follows a day in the life of Big Buck Bunny, during which time he meets three bullying rodents: the leader, Frank the flying squirrel, and his sidekicks Rinky the red squirrel and Gimera the chinchilla.
+                            The rodents amuse themselves by harassing helpless creatures of the forest by throwing fruits, nuts, and rocks at them.
                             EOF
                         ),
                     ),
@@ -60,26 +62,26 @@ class HttpClientServiceTest extends TestCase
                         $xmlBuilder->name('great-lines'),
                         $xmlBuilder->eachLike(
                             $xmlBuilder->name('line'),
-                            $xmlBuilder->contentLike('PHP solves all my web problems'),
+                            $xmlBuilder->contentLike('Open source movie'),
                         ),
                     ),
                     $xmlBuilder->add(
                         $xmlBuilder->name('rating'),
-                        $xmlBuilder->attribute('type', 'thumbs'),
-                        $xmlBuilder->contentLike(7),
+                        $xmlBuilder->attribute('type', $matcher->regex('stars', 'stars|thumbs')),
+                        $xmlBuilder->contentLike(6),
                     ),
-                    $xmlBuilder->add(
-                        $xmlBuilder->name('rating'),
-                        $xmlBuilder->attribute('type', 'stars'),
-                        $xmlBuilder->contentLike(5),
-                    ),
+                    // TODO: implement XML generators
+                    // $xmlBuilder->add(
+                    //     $xmlBuilder->name('release-date'),
+                    //     $xmlBuilder->content($matcher->date('dd-MM-yyyy')),
+                    // ),
                 ),
             );
 
         $response = new ProviderResponse();
         $response
             ->setStatus(200)
-            ->addHeader('Content-Type', 'text/xml')
+            ->addHeader('Content-Type', $matcher->regex('application/xml', 'application\/.*xml'))
             ->setBody(
                 json_encode($xmlBuilder)
             );
@@ -100,10 +102,23 @@ class HttpClientServiceTest extends TestCase
             ->willRespondWith($response);
 
         $service = new HttpClientService($config->getBaseUri());
-        $moviesResult = new \SimpleXMLElement($service->getMovies());
+        $movies = new \SimpleXMLElement($service->getMovies());
         $verifyResult = $builder->verify();
 
         $this->assertTrue($verifyResult);
-        $this->assertCount(1, $moviesResult);
+        $this->assertCount(1, $movies->movie);
+        $this->assertEquals('Big Buck Bunny', $movies->movie[0]->title);
+        // TODO: investigate why mock server replace "\r\n" by "\n" on Windows
+        $this->assertEquals(str_replace("\r\n", "\n", $plot), $movies->movie[0]->plot);
+        $this->assertCount(1, $movies->movie[0]->{'great-lines'}->line);
+        $this->assertEquals('Open source movie', $movies->movie[0]->{'great-lines'}->line[0]);
+        $this->assertEquals('6', $movies->movie[0]->rating);
+        $this->assertCount(2, $movies->movie[0]->characters->character);
+        $this->assertEquals('Big Buck Bunny', $movies->movie[0]->characters->character[0]->name);
+        $this->assertEquals('Jan Morgenstern', $movies->movie[0]->characters->character[0]->actor);
+        // TODO: implement XML generators
+        $this->assertEquals('', $movies->movie[0]->characters->character[1]->name);
+        $this->assertEquals('', $movies->movie[0]->characters->character[1]->actor);
+        //$this->assertEquals('', $movies->movie[0]->{'release-date'}[0]);
     }
 }
