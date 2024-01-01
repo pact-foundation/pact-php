@@ -40,7 +40,7 @@ $app->get('/movies', function (Request $request, Response $response) {
         XML
     );
 
-    return $response->withHeader('Content-Type', 'text/xml');
+    return $response->withHeader('Content-Type', 'application/movies+xml');
 });
 
 $app->post('/pact-change-state', function (Request $request, Response $response) {

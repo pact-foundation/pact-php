@@ -12,15 +12,28 @@
       ],
       "request": {
         "headers": {
-          "Accept": "text/xml; charset=UTF8"
+          "Accept": "application/xml"
+        },
+        "matchingRules": {
+          "header": {
+            "$.Accept[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application\\/.*xml"
+                }
+              ]
+            }
+          }
         },
         "method": "GET",
         "path": "/movies"
       },
       "response": {
-        "body": "<?xml version='1.0'?><movies><movie><title>PHP: Behind the Parser</title><characters><character><name>Ms. Coder</name><actor>Onlivia Actora</actor></character><character><name/><actor/></character></characters><plot>So, this language. It's like, a programming language. Or is it a\nscripting language? All is revealed in this thrilling horror spoof\nof a documentary.</plot><great-lines><line>PHP solves all my web problems</line></great-lines><rating type='thumbs'>7</rating><rating type='stars'>5</rating></movie></movies>",
+        "body": "<?xml version='1.0'?><movies><movie><title>Big Buck Bunny</title><characters><character><name>Big Buck Bunny</name><actor>Jan Morgenstern</actor></character><character><name/><actor/></character></characters><plot>The plot follows a day in the life of Big Buck Bunny, during which time he meets three bullying rodents: the leader, Frank the flying squirrel, and his sidekicks Rinky the red squirrel and Gimera the chinchilla.\nThe rodents amuse themselves by harassing helpless creatures of the forest by throwing fruits, nuts, and rocks at them.</plot><great-lines><line>Open source movie</line></great-lines><rating type='stars'>6</rating></movie></movies>",
         "headers": {
-          "Content-Type": "text/xml"
+          "Content-Type": "application/xml"
         },
         "matchingRules": {
           "body": {
@@ -85,9 +98,15 @@
               "matchers": [
                 {
                   "match": "type"
-                },
+                }
+              ]
+            },
+            "$.movies.movie.rating['@type']": {
+              "combine": "AND",
+              "matchers": [
                 {
-                  "match": "type"
+                  "match": "regex",
+                  "regex": "stars|thumbs"
                 }
               ]
             },
@@ -100,7 +119,17 @@
               ]
             }
           },
-          "header": {},
+          "header": {
+            "$['Content-Type'][0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application\\/.*xml"
+                }
+              ]
+            }
+          },
           "status": {}
         },
         "status": 200
