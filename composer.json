@@ -74,6 +74,10 @@
             "GeneratorsConsumer\\": "example/generators/consumer/src",
             "GeneratorsConsumer\\Tests\\": "example/generators/consumer/tests",
             "GeneratorsProvider\\Tests\\": "example/generators/provider/tests",
+            "CsvConsumer\\": "example/csv/consumer/src",
+            "CsvConsumer\\Tests\\": "example/csv/consumer/tests",
+            "CsvProvider\\": "example/csv/provider/src",
+            "CsvProvider\\Tests\\": "example/csv/provider/tests",
             "": [
                 "example/protobuf-sync-message/library/src"
             ],
