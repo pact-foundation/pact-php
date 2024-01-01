@@ -2,12 +2,30 @@
 
 namespace PhpPactTest\Xml;
 
+use PhpPact\Xml\Exception\InvalidXmlElementException;
 use PHPUnit\Framework\TestCase;
 use PhpPact\Xml\XmlBuilder;
 
 class XmlBuilderTest extends TestCase
 {
-    public function testGetArray(): void
+    public function testJsonSerializeInvalidXmlElement(): void
+    {
+        $this->expectException(InvalidXmlElementException::class);
+        $this->expectExceptionMessage("Xml element's name is required");
+
+        $builder = new XmlBuilder('1.0', 'UTF-8');
+
+        $builder
+            ->root(
+                $builder->name('Root'),
+                $builder->add(),
+            )
+        ;
+
+        json_encode($builder);
+    }
+
+    public function testJsonSerialize(): void
     {
         $builder = new XmlBuilder('1.0', 'UTF-8');
 
@@ -16,9 +34,7 @@ class XmlBuilderTest extends TestCase
                 $builder->name('Root'),
                 $builder->add(
                     $builder->name('First Child Second Element'),
-                    $builder->text(
-                        $builder->contentLike('Example Test')
-                    )
+                    $builder->contentLike('Example Test')
                 ),
                 $builder->add(
                     $builder->name('Second Parent'),
@@ -28,14 +44,11 @@ class XmlBuilderTest extends TestCase
                     ),
                     $builder->add(
                         $builder->name('Second child 2'),
-                        $builder->text(
-                            $builder->content('Test')
-                        )
+                        $builder->content('Test')
                     ),
                     $builder->add(
                         $builder->name('Third Parent'),
-                        $builder->add(
-                            $builder->eachLike(),
+                        $builder->eachLike(
                             $builder->name('Child')
                         )
                     ),
@@ -79,14 +92,12 @@ class XmlBuilderTest extends TestCase
                                 'name' => 'ThirdParent',
                                 'children' => [
                                     [
+                                        'pact:matcher:type' => 'type',
                                         'value' => [
                                             'name' => 'Child',
                                             'children' => [],
                                             'attributes' => [],
                                         ],
-                                        'pact:matcher:type' => 'type',
-                                        'min' => 1,
-                                        'examples' => 1,
                                     ],
                                 ],
                                 'attributes' => [],
@@ -104,7 +115,6 @@ class XmlBuilderTest extends TestCase
             ],
         ];
 
-
-        $this->assertSame(json_encode($expectedArray), json_encode($builder->getArray()));
+        $this->assertSame(json_encode($expectedArray), json_encode($builder));
     }
 }

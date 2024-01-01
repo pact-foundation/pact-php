@@ -2,34 +2,26 @@
 
 namespace PhpPact\Xml\Model\Builder;
 
-use PhpPact\Xml\Model\Matcher\Generator;
-use PhpPact\Xml\Model\Matcher\Matcher;
+use PhpPact\Consumer\Matcher\Formatters\XmlContentFormatter;
+use PhpPact\Consumer\Matcher\Matchers\Type;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+use PhpPact\Xml\XmlElement;
 use PhpPact\Xml\XmlText;
 
 trait TextTrait
 {
-    public function content(string|int|float $content): callable
+    public function content(string|float|int|bool|null|MatcherInterface $content): callable
     {
-        return fn (XmlText $text) => $text->setContent($content);
+        return fn (XmlElement $element) => $element->setText(new XmlText($content));
     }
 
-    public function matcher(callable ...$options): callable
+    public function contentLike(string|float|int|bool|null $content): callable
     {
-        return fn (XmlText $text) => $text->setMatcher(new Matcher(...$options));
-    }
-
-    public function generator(callable ...$options): callable
-    {
-        return fn (XmlText $text) => $text->setGenerator(new Generator(...$options));
-    }
-
-    public function contentLike(string|int|float $content): callable
-    {
-        return function (XmlText $text) use ($content): void {
-            $text->setContent($content);
-            $text->setMatcher(new Matcher(
-                fn (Matcher $matcher) => $matcher->setType('type')
-            ));
+        return function (XmlElement $element) use ($content): void {
+            $matcher = new Type($content);
+            $matcher->setFormatter(new XmlContentFormatter());
+            $text = new XmlText($matcher);
+            $element->setText($text);
         };
     }
 }

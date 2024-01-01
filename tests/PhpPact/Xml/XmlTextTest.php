@@ -2,54 +2,37 @@
 
 namespace PhpPactTest\Xml;
 
+use PhpPact\Consumer\Matcher\Formatters\XmlContentFormatter;
+use PhpPact\Consumer\Matcher\Generators\RandomInt;
+use PhpPact\Consumer\Matcher\Matchers\Integer;
 use PHPUnit\Framework\TestCase;
-use PhpPact\Xml\Model\Matcher\Generator;
-use PhpPact\Xml\Model\Matcher\Matcher;
 use PhpPact\Xml\XmlText;
 
 class XmlTextTest extends TestCase
 {
-    private XmlText $text;
-
-    public function setUp(): void
+    /**
+     * @testWith ["example text"]
+     *           [1.23]
+     *           [481]
+     *           [false]
+     *           [true]
+     *           [null]
+     */
+    public function testJsonSerializePredefinedTypes(mixed $content): void
     {
-        $this->text = new XmlText();
-        $this->text->setContent('testing');
+        $text = new XmlText($content);
+        $this->assertSame(json_encode(['content' => $content]), json_encode($text));
     }
 
-    public function testGetMatcherArray(): void
+    public function testJsonSerializeMatcher(): void
     {
-        $this->text->setMatcher(new Matcher(
-            fn (Matcher $matcher) => $matcher->setType('include'),
-            fn (Matcher $matcher) => $matcher->setOptions(['value' => "te"]),
-        ));
-
+        $matcher = new Integer();
+        $matcher->setGenerator(new RandomInt(2, 8));
+        $matcher->setFormatter(new XmlContentFormatter());
+        $text = new XmlText($matcher);
         $this->assertSame(
             json_encode([
-                'content' => 'testing',
-                'matcher' => [
-                    'pact:matcher:type' => 'include',
-                    'value' => 'te',
-                ]
-            ]),
-            json_encode($this->text->getArray())
-        );
-    }
-
-    public function testGetGeneratorArray(): void
-    {
-        $this->text->setContent(7);
-        $this->text->setMatcher(new Matcher(
-            fn (Matcher $matcher) => $matcher->setType('integer'),
-        ));
-        $this->text->setGenerator(new Generator(
-            fn (Generator $generator) => $generator->setType('RandomInt'),
-            fn (Generator $generator) => $generator->setOptions(['min' => 2, 'max' => 8]),
-        ));
-
-        $this->assertSame(
-            json_encode([
-                'content' => 7,
+                'content' => null,
                 'matcher' => [
                     'pact:matcher:type' => 'integer',
                     'min' => 2,
@@ -57,17 +40,7 @@ class XmlTextTest extends TestCase
                 ],
                 'pact:generator:type' => 'RandomInt'
             ]),
-            json_encode($this->text->getArray())
-        );
-    }
-
-    public function testGetBaseArray(): void
-    {
-        $this->assertSame(
-            json_encode([
-                'content' => 'testing',
-            ]),
-            json_encode($this->text->getArray())
+            json_encode($text)
         );
     }
 }

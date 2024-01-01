@@ -2,9 +2,8 @@
 
 namespace PhpPactTest\Xml;
 
+use PhpPact\Xml\XmlText;
 use PHPUnit\Framework\TestCase;
-use PhpPact\Xml\Model\Matcher\Generator;
-use PhpPact\Xml\Model\Matcher\Matcher;
 use PhpPact\Xml\XmlElement;
 
 class XmlElementTest extends TestCase
@@ -13,74 +12,61 @@ class XmlElementTest extends TestCase
 
     public function setUp(): void
     {
-        $this->element = new XmlElement();
-        $this->element->setName('Child');
-        $this->element->addAttribute('myAttr', 'attr-value');
+        $child = new XmlElement(
+            fn (XmlElement $element) => $element->setName('Child'),
+        );
+        $this->element = new XmlElement(
+            fn (XmlElement $element) => $element->setName('Parent'),
+            fn (XmlElement $element) => $element->addAttribute('myAttr', 'attr-value'),
+            fn (XmlElement $element) => $element->setExamples(7),
+            fn (XmlElement $element) => $element->addChild($child),
+        );
     }
 
-    public function testGetMatcherArray(): void
+    public function testJsonSerializeWithoutText(): void
     {
-        $this->element->setMatcher(new Matcher(
-            fn (Matcher $matcher) => $matcher->setType('type'),
-            fn (Matcher $matcher) => $matcher->setOptions(['examples' => 7]),
-        ));
-
         $this->assertSame(
             json_encode([
-                'value' => [
-                    'name' => 'Child',
-                    'children' => [],
-                    'attributes' => [
-                        'myAttr' => 'attr-value',
+                'name' => 'Parent',
+                'children' => [
+                    [
+                        'name' => 'Child',
+                        'children' => [],
+                        'attributes' => [],
                     ],
                 ],
-                'pact:matcher:type' => 'type',
-                'examples' => 7,
-            ]),
-            json_encode($this->element->getArray())
-        );
-    }
-
-    public function testGetGeneratorArray(): void
-    {
-        $this->element->setMatcher(new Matcher(
-            fn (Matcher $matcher) => $matcher->setType('type'),
-            fn (Matcher $matcher) => $matcher->setOptions(['examples' => 7]),
-        ));
-        $this->element->setGenerator(new Generator(
-            fn (Generator $generator) => $generator->setType('Uuid'),
-            fn (Generator $generator) => $generator->setOptions(['format' => 'simple']),
-        ));
-
-        $this->assertSame(
-            json_encode([
-                'value' => [
-                    'name' => 'Child',
-                    'children' => [],
-                    'attributes' => [
-                        'myAttr' => 'attr-value',
-                    ]
-                ],
-                'pact:matcher:type' => 'type',
-                'examples' => 7,
-                'pact:generator:type' => 'Uuid',
-                'format' => 'simple',
-            ]),
-            json_encode($this->element->getArray())
-        );
-    }
-
-    public function testGetBaseArray(): void
-    {
-        $this->assertSame(
-            json_encode([
-                'name' => 'Child',
-                'children' => [],
                 'attributes' => [
                     'myAttr' => 'attr-value',
-                ]
+                ],
+                'examples' => 7,
             ]),
-            json_encode($this->element->getArray())
+            json_encode($this->element)
+        );
+    }
+
+    public function testJsonSerializeWithText(): void
+    {
+        $this->element->setText(new XmlText('Inner text'));
+
+        $this->assertSame(
+            json_encode([
+                'name' => 'Parent',
+                'children' => [
+                    [
+                        'name' => 'Child',
+                        'children' => [],
+                        'attributes' => [],
+                    ],
+                    [
+                        'content' => 'Inner text',
+                    ],
+                ],
+                'attributes' => [
+                    'myAttr' => 'attr-value',
+                ],
+                'examples' => 7,
+            ]),
+            json_encode($this->element)
         );
     }
 }

@@ -2,32 +2,34 @@
 
 namespace PhpPact\Xml;
 
-use PhpPact\Xml\Model\Matcher\Generator;
-use PhpPact\Xml\Model\Matcher\Matcher;
+use JsonSerializable;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+use PhpPact\Xml\Exception\InvalidXmlElementException;
 
-class XmlElement
+class XmlElement implements JsonSerializable
 {
     private string $name;
 
     /**
-     * @var XmlElement[]
+     * @var array<XmlElement|MatcherInterface>
      */
     private array $children = [];
 
     /**
-     * @var array<string, mixed>
+     * @var array<string, string|float|int|bool|MatcherInterface>
      */
     private array $attributes = [];
 
     private ?XmlText $text = null;
 
-    private ?Matcher $matcher = null;
-
-    private ?Generator $generator = null;
+    private ?int $examples = null;
 
     public function __construct(callable ...$options)
     {
         array_walk($options, fn (callable $option) => $option($this));
+        if (!isset($this->name)) {
+            throw new InvalidXmlElementException("Xml element's name is required");
+        }
     }
 
     public function setName(string $name): self
@@ -37,7 +39,7 @@ class XmlElement
         return $this;
     }
 
-    public function addChild(self $child): self
+    public function addChild(self|MatcherInterface $child): self
     {
         $this->children[] = $child;
 
@@ -51,21 +53,7 @@ class XmlElement
         return $this;
     }
 
-    public function setMatcher(?Matcher $matcher): self
-    {
-        $this->matcher = $matcher;
-
-        return $this;
-    }
-
-    public function setGenerator(?Generator $generator): self
-    {
-        $this->generator = $generator;
-
-        return $this;
-    }
-
-    public function addAttribute(string $name, mixed $value): self
+    public function addAttribute(string $name, string|float|int|bool|MatcherInterface $value): self
     {
         $this->attributes[$name] = $value;
 
@@ -75,39 +63,34 @@ class XmlElement
     /**
      * @return array<string, mixed>
      */
-    public function getArray(): array
+    public function jsonSerialize(): array
     {
-        if ($this->matcher) {
-            $result = [
-                'value' => $this->getBaseArray(),
-            ];
-            $result += $this->matcher->getArray();
+        $result = [
+            'name' => $this->name,
+            'children' => $this->children,
+            'attributes' => $this->attributes,
+        ];
 
-            if ($this->generator) {
-                $result += $this->generator->getArray();
-            }
-        } else {
-            $result = $this->getBaseArray();
+        if (null !== $this->examples) {
+            $result['examples'] = $this->examples;
+        }
+
+        if ($this->text) {
+            $result['children'][] = $this->text;
         }
 
         return $result;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function getBaseArray(): array
+    public function setExamples(?int $examples): self
     {
-        $result = [
-            'name' => $this->name,
-            'children' => array_map(fn (XmlElement $element) => $element->getArray(), $this->children),
-            'attributes' => $this->attributes
-        ];
+        $this->examples = $examples;
 
-        if ($this->text) {
-            $result['children'][] = $this->text->getArray();
-        }
+        return $this;
+    }
 
-        return $result;
+    public function getExamples(): ?int
+    {
+        return $this->examples;
     }
 }
