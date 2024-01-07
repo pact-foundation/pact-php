@@ -1,10 +1,10 @@
 <?php
 
-namespace PhpPact\SyncMessage\Exception;
+namespace PhpPact\Plugin\Exception;
 
 use Exception;
 
-class InteractionContentNotAddedException extends Exception
+class PluginBodyNotAddedException extends Exception
 {
     public function __construct(int $code)
     {
