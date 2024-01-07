@@ -1,9 +1,9 @@
 <?php
 
-namespace PhpPact\SyncMessage\Driver\Pact;
+namespace PhpPact\Plugin\Driver\Pact;
 
 use PhpPact\Consumer\Driver\Pact\PactDriver;
-use PhpPact\SyncMessage\Exception\PluginNotSupportedBySpecificationException;
+use PhpPact\Plugin\Exception\PluginNotSupportedBySpecificationException;
 
 abstract class AbstractPluginPactDriver extends PactDriver
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPact\SyncMessage\Exception;
+namespace PhpPact\Plugin\Exception;
 
 use Exception;
 
