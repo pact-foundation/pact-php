@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package library;
+
+message Person {
+  string id = 1;
+  Name name = 2;
+}
+
+message Name {
+  string given = 1;
+  string surname = 2;
+}

@@ -61,6 +61,12 @@
     <testsuite name="PhpPact Protobuf Sync Message Provider Example Tests">
         <directory>./example/protobuf-sync-message/provider/tests</directory>
     </testsuite>
+    <testsuite name="PhpPact Protobuf Async Message Consumer Example Tests">
+        <directory>./example/protobuf-async-message/consumer/tests</directory>
+    </testsuite>
+    <testsuite name="PhpPact Protobuf Async Message Provider Example Tests">
+        <directory>./example/protobuf-async-message/provider/tests</directory>
+    </testsuite>
   </testsuites>
   <logging>
     <junit outputFile="./test_results/reports/unit_test_results.xml"/>
