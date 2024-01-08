@@ -1,0 +1,11 @@
+version: "2.7"
+
+server:
+  command: "php worker.php"
+
+grpc:
+  listen: "tcp://127.0.0.1:9001"
+  proto:
+    - "../library/proto/area_calculator.proto"
+  pool:
+    num_workers: 1

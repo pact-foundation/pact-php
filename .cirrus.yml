@@ -14,6 +14,8 @@ BUILD_TEST_TASK_TEMPLATE: &BUILD_TEST_TASK_TEMPLATE
       - composer run lint
   static_analysis_script:
       - composer run static-code-analysis
+  generate_library_script:
+      - composer gen-lib
   test_script:
       - composer test
 
@@ -26,12 +28,16 @@ linux_arm64_task:
       - VERSION: 8.0
   arm_container:
     image: php:$VERSION
+    cpu: 4
+    memory: 12G
   pre_req_script: 
-      - apt update --yes && apt install --yes zip unzip git libffi-dev
+      - apt update --yes && apt install --yes zip unzip git libffi-dev protobuf-compiler
       - curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
       - php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
       - docker-php-ext-install sockets
       - docker-php-ext-install ffi
+      - MAKEFLAGS=" -j4" pecl install grpc
+      - echo 'extension=grpc.so' >> /usr/local/etc/php/conf.d/grpc.ini
   version_check_script: 
       - php --version
   << : *BUILD_TEST_TASK_TEMPLATE
@@ -46,7 +52,8 @@ macos_arm64_task:
   macos_instance:
     image: ghcr.io/cirruslabs/macos-ventura-base:latest
   pre_req_script: 
-      - brew install php@$VERSION composer
+      - brew install php@$VERSION composer protobuf
+      - MAKEFLAGS=" -j4" pecl install grpc
   version_check_script: 
       - php --version
   << : *BUILD_TEST_TASK_TEMPLATE

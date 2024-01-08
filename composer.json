@@ -36,7 +36,8 @@
         "guzzlehttp/guzzle": "^7.8",
         "behat/behat": "^3.13",
         "galbar/jsonpath": "^3.0",
-        "ramsey/uuid": "^4.7"
+        "ramsey/uuid": "^4.7",
+        "pact-foundation/example-protobuf-sync-message-provider": "@dev"
     },
     "autoload": {
         "psr-4": {
@@ -72,7 +73,14 @@
             "MatchersProvider\\Tests\\": "example/matchers/provider/tests",
             "GeneratorsConsumer\\": "example/generators/consumer/src",
             "GeneratorsConsumer\\Tests\\": "example/generators/consumer/tests",
-            "GeneratorsProvider\\Tests\\": "example/generators/provider/tests"
+            "GeneratorsProvider\\Tests\\": "example/generators/provider/tests",
+            "": [
+                "example/protobuf-sync-message/library/src"
+            ],
+            "ProtobufSyncMessageConsumer\\": "example/protobuf-sync-message/consumer/src",
+            "ProtobufSyncMessageConsumer\\Tests\\": "example/protobuf-sync-message/consumer/tests",
+            "ProtobufSyncMessageProvider\\": "example/protobuf-sync-message/provider/src",
+            "ProtobufSyncMessageProvider\\Tests\\": "example/protobuf-sync-message/provider/tests"
         }
     },
     "scripts": {
@@ -82,6 +90,9 @@
         "test": [
             "php -r \"array_map('unlink', glob('./example/*/pacts/*.json'));\"",
             "phpunit --debug"
+        ],
+        "gen-lib": [
+            "protoc --php_out=example/protobuf-sync-message/library/src example/protobuf-sync-message/library/proto/area_calculator.proto"
         ],
         "check-compatibility": "behat"
     },
@@ -120,5 +131,11 @@
         "allow-plugins": {
             "tienvx/composer-downloads-plugin": true
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "example/protobuf-sync-message/provider"
+        }
+    ]
 }

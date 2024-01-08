@@ -1,0 +1,30 @@
+{
+    "name": "pact-foundation/example-protobuf-sync-message-provider",
+    "require": {
+        "grpc/grpc": "^1.57",
+        "spiral/roadrunner-grpc": "^2.0",
+        "tienvx/composer-downloads-plugin": "^1.2"
+    },
+    "require-dev": {
+        "ext-grpc": "*"
+    },
+    "extra": {
+        "downloads": {
+            "rr": {
+                "version": "2023.3.9",
+                "variables": {
+                    "{$os}": "strtolower(PHP_OS_FAMILY)",
+                    "{$architecture}": "in_array(php_uname('m'), ['x86_64', 'AMD64']) ? 'amd64' : 'arm64'",
+                    "{$extension}": "(PHP_OS_FAMILY === 'Windows' || (PHP_OS_FAMILY === 'Darwin' && php_uname('m') === 'x86_64')) ? 'zip' : 'tar.gz'"
+                },
+                "url": "https://github.com/roadrunner-server/roadrunner/releases/download/v{$version}/roadrunner-{$version}-{$os}-{$architecture}.{$extension}",
+                "path": "bin/roadrunner"
+            }
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "tienvx/composer-downloads-plugin": true
+        }
+    }
+}
