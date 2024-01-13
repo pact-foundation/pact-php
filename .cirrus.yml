@@ -27,17 +27,9 @@ linux_arm64_task:
       - VERSION: 8.1
       - VERSION: 8.0
   arm_container:
-    image: php:$VERSION
-    cpu: 4
-    memory: 12G
-  pre_req_script: 
-      - apt update --yes && apt install --yes zip unzip git libffi-dev protobuf-compiler
-      - curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
-      - php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
-      - docker-php-ext-install sockets
-      - docker-php-ext-install ffi
-      - MAKEFLAGS=" -j4" pecl install grpc
-      - echo 'extension=grpc.so' >> /usr/local/etc/php/conf.d/grpc.ini
+    dockerfile: .cirrus/linux_arm64/Dockerfile
+    docker_arguments:
+      VERSION: $VERSION
   version_check_script: 
       - php --version
   << : *BUILD_TEST_TASK_TEMPLATE
