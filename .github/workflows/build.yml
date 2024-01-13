@@ -60,15 +60,33 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          extensions: sockets, curl, zip, ffi
+          extensions: ${{ matrix.operating-system == 'windows-latest' && matrix.php == '8.2' && 'sockets, curl, zip, ffi' || 'sockets, curl, zip, ffi, grpc' }}
           php-version: ${{ matrix.php }}
           coverage: none
           ini-values: ${{ matrix.operating-system == 'windows-latest' && 'opcache.enable=0 opcache.enable_cli=0' || '' }}
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install gRPC Extension (for PHP 8.2 on Windows)
+        run: |
+          cd C:\tools\php
+          Invoke-WebRequest -Uri https://phpdev.toolsforresearch.com/php-8.2.7-nts-Win32-vs16-x64-grpc-protobuf.zip -OutFile php8.2.zip
+          unzip php8.2.zip ext/php_grpc.dll
+          rm php8.2.zip
+          echo "extension=php_grpc.dll" >> php.ini
+        if: ${{ matrix.operating-system == 'windows-latest' && matrix.php == '8.2' }}
+        shell: pwsh
 
       - name: Composer install
         uses: ramsey/composer-install@v2
         with:
           dependency-versions: ${{ matrix.dependencies }}
+
+      - name: Generate Library
+        run: composer gen-lib
 
       - name: Composer test
         run: composer test

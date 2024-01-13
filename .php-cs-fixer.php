@@ -5,6 +5,7 @@ $finder->files()
     ->in(__DIR__ . '/tests')
     ->in(__DIR__ . '/example')
     ->in(__DIR__ . '/compatibility-suite/tests')
+    ->exclude('library/src')
     ->name('*.php');
 
 $config = new PhpCsFixer\Config();
