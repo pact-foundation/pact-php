@@ -5,6 +5,9 @@
         "spiral/roadrunner-grpc": "^2.0",
         "tienvx/composer-downloads-plugin": "^1.2"
     },
+    "require-dev": {
+        "ext-grpc": "*"
+    },
     "suggest": {
         "ext-grpc": "If you want to use gRPC then you must install and use this"
     },
