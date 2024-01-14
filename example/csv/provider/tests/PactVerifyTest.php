@@ -1,6 +1,6 @@
 <?php
 
-namespace XmlProvider\Tests;
+namespace CsvProvider\Tests;
 
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
@@ -29,25 +29,22 @@ class PactVerifyTest extends TestCase
         $this->process->stop();
     }
 
-    /**
-     * This test will run after the web server is started.
-     */
-    public function testPactVerifyConsumer()
+    public function testPactVerifyConsumer(): void
     {
         $config = new VerifierConfig();
         $config->getProviderInfo()
-            ->setName('xmlProvider') // Providers name to fetch.
+            ->setName('csvProvider')
             ->setHost('localhost')
             ->setPort(7202);
         $config->getProviderState()
             ->setStateChangeUrl(new Uri('http://localhost:7202/pact-change-state'))
         ;
-        if ($level = \getenv('PACT_LOGLEVEL')) {
-            $config->setLogLevel($level);
+        if ($logLevel = \getenv('PACT_LOGLEVEL')) {
+            $config->setLogLevel($logLevel);
         }
 
         $verifier = new Verifier($config);
-        $verifier->addFile(__DIR__ . '/../../pacts/xmlConsumer-xmlProvider.json');
+        $verifier->addFile(__DIR__ . '/../../pacts/csvConsumer-csvProvider.json');
 
         $verifyResult = $verifier->verify();
 

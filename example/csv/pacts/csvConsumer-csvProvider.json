@@ -1,0 +1,108 @@
+{
+  "consumer": {
+    "name": "csvConsumer"
+  },
+  "interactions": [
+    {
+      "description": "request for a report.csv",
+      "interactionMarkup": {
+        "markup": "# Data\n\n|Name|100|2000-01-01|\n",
+        "markupType": "COMMON_MARK"
+      },
+      "pending": false,
+      "pluginConfiguration": {
+        "csv": {
+          "csvHeaders": false
+        }
+      },
+      "providerStates": [
+        {
+          "name": "report.csv file exist"
+        }
+      ],
+      "request": {
+        "headers": {
+          "Accept": [
+            "text/csv"
+          ]
+        },
+        "method": "GET",
+        "path": "/report.csv"
+      },
+      "response": {
+        "body": {
+          "content": "Name,100,2000-01-01\n",
+          "contentType": "text/csv;charset=utf-8",
+          "contentTypeHint": "DEFAULT",
+          "encoded": false
+        },
+        "generators": {
+          "body": {
+            "column:3": {
+              "format": "yyyy-MM-dd",
+              "type": "DateTime"
+            }
+          }
+        },
+        "headers": {
+          "content-type": [
+            "text/csv"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "column:1": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "column:2": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "column:3": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "yyyy-MM-dd",
+                  "match": "datetime"
+                }
+              ]
+            }
+          },
+          "status": {}
+        },
+        "status": 200
+      },
+      "transport": "http",
+      "type": "Synchronous/HTTP"
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.11",
+      "mockserver": "1.2.4",
+      "models": "1.1.12"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    },
+    "plugins": [
+      {
+        "configuration": {},
+        "name": "csv",
+        "version": "0.0.3"
+      }
+    ]
+  },
+  "provider": {
+    "name": "csvProvider"
+  }
+}
