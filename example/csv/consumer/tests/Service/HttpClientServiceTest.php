@@ -4,6 +4,8 @@ namespace CsvConsumer\Tests\Service;
 
 use CsvConsumer\Service\HttpClientService;
 use PhpPact\Consumer\InteractionBuilder;
+use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
+use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
@@ -15,6 +17,8 @@ class HttpClientServiceTest extends TestCase
 {
     public function testGetCsvFile(): void
     {
+        $matcher = new Matcher(new PluginFormatter());
+
         $request = new ConsumerRequest();
         $request
             ->setMethod('GET')
@@ -28,9 +32,9 @@ class HttpClientServiceTest extends TestCase
             ->setBody(new Text(
                 json_encode([
                     'csvHeaders' => false,
-                    'column:1' => "matching(type,'Name')",
-                    'column:2' => 'matching(number,100)',
-                    'column:3' => "matching(datetime, 'yyyy-MM-dd','2000-01-01')",
+                    'column:1' => $matcher->like('Name'),
+                    'column:2' => $matcher->number(100),
+                    'column:3' => $matcher->datetime('yyyy-MM-dd', '2000-01-01'),
                 ]),
                 'text/csv'
             ))

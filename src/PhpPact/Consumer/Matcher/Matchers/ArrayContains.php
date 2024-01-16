@@ -28,7 +28,7 @@ class ArrayContains extends AbstractMatcher
     /**
      * @todo Change return type to `null`
      */
-    protected function getValue(): mixed
+    public function getValue(): mixed
     {
         return null;
     }

@@ -23,7 +23,7 @@ class Equality extends AbstractMatcher
     /**
      * @return object|array<mixed>|string|float|int|bool|null
      */
-    protected function getValue(): object|array|string|float|int|bool|null
+    public function getValue(): object|array|string|float|int|bool|null
     {
         return $this->value;
     }

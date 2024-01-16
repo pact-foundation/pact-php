@@ -47,7 +47,7 @@ class StatusCode extends GeneratorAwareMatcher
         return ['status' => $this->status];
     }
 
-    protected function getValue(): ?int
+    public function getValue(): ?int
     {
         return $this->value;
     }

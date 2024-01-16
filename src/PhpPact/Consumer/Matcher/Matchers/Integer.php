@@ -27,7 +27,7 @@ class Integer extends GeneratorAwareMatcher
         return [];
     }
 
-    protected function getValue(): ?int
+    public function getValue(): ?int
     {
         return $this->value;
     }

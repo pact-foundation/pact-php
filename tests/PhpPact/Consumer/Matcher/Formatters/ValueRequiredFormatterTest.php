@@ -17,9 +17,10 @@ class ValueRequiredFormatterTest extends TestCase
      */
     public function testFormat(bool $hasGenerator, ?string $value, array $result): void
     {
-        $matcher = new Date('yyyy-MM-dd', 5);
+        $matcher = new Date('yyyy-MM-dd', $value);
         $generator = $hasGenerator ? new RandomString(10) : null;
+        $matcher->setGenerator($generator);
         $formatter = new ValueRequiredFormatter();
-        $this->assertSame($result, $formatter->format($matcher, $generator, $value));
+        $this->assertSame($result, $formatter->format($matcher));
     }
 }

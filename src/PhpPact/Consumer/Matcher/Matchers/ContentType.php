@@ -17,7 +17,7 @@ class ContentType extends AbstractMatcher
         return [];
     }
 
-    protected function getValue(): string
+    public function getValue(): string
     {
         return $this->contentType;
     }

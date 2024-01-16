@@ -23,7 +23,7 @@ class Values extends AbstractMatcher
     /**
      * @return array<mixed>
      */
-    protected function getValue(): array
+    public function getValue(): array
     {
         return $this->values;
     }

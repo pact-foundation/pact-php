@@ -27,7 +27,7 @@ class Number extends GeneratorAwareMatcher
         return [];
     }
 
-    protected function getValue(): int|float|null
+    public function getValue(): int|float|null
     {
         return $this->value;
     }
