@@ -90,3 +90,5 @@ jobs:
 
       - name: Composer test
         run: composer test
+        env:
+          PACT_DO_NOT_TRACK: true

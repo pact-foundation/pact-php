@@ -3,7 +3,7 @@ name: Pact-PHP Compatibility Suite
 on: [push, pull_request]
 
 env:
-  pact_do_not_track: true
+  PACT_DO_NOT_TRACK: true
 
 jobs:
   v1:
