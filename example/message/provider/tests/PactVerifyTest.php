@@ -6,25 +6,19 @@ use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
-use PhpPactTest\Helper\ProviderProcess;
+use PhpPactTest\Helper\PhpProcess;
 use PHPUnit\Framework\TestCase;
 
 class PactVerifyTest extends TestCase
 {
-    private ProviderProcess $process;
+    private PhpProcess $process;
 
-    /**
-     * Run the PHP build-in web server.
-     */
     protected function setUp(): void
     {
-        $this->process = new ProviderProcess(__DIR__ . '/../public/');
+        $this->process = new PhpProcess(__DIR__ . '/../public/');
         $this->process->start();
     }
 
-    /**
-     * Stop the web server process once complete.
-     */
     protected function tearDown(): void
     {
         $this->process->stop();
@@ -39,14 +33,14 @@ class PactVerifyTest extends TestCase
         $config->getProviderInfo()
             ->setName('messageProvider') // Providers name to fetch.
             ->setHost('localhost')
-            ->setPort(7202);
+            ->setPort($this->process->getPort());
         $config->getProviderState()
-            ->setStateChangeUrl(new Uri('http://localhost:7202/pact-change-state'))
+            ->setStateChangeUrl(new Uri(sprintf('http://localhost:%d/pact-change-state', $this->process->getPort())))
         ;
         $config->addProviderTransport(
             (new ProviderTransport())
                 ->setProtocol(ProviderTransport::MESSAGE_PROTOCOL)
-                ->setPort(7202)
+                ->setPort($this->process->getPort())
                 ->setPath('/pact-messages')
                 ->setScheme('http')
         );

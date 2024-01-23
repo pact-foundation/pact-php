@@ -3,12 +3,11 @@
 namespace PhpPactTest\CompatibilitySuite\Service;
 
 use PhpPactTest\CompatibilitySuite\Constant\Path;
-use PhpPactTest\Helper\ProviderProcess;
+use PhpPactTest\Helper\PhpProcess;
 
 final class GeneratorServer implements GeneratorServerInterface
 {
-    private int $port = 0;
-    private ProviderProcess $process;
+    private PhpProcess $process;
     private string $bodyFile = Path::PUBLIC_PATH . '/generators/body.json';
     private string $pathFile = Path::PUBLIC_PATH . '/generators/path.txt';
     private string $headersFile = Path::PUBLIC_PATH . '/generators/headers.json';
@@ -19,22 +18,18 @@ final class GeneratorServer implements GeneratorServerInterface
         foreach ([$this->bodyFile, $this->pathFile, $this->headersFile, $this->queryParamsFile] as $file) {
             @unlink($file);
         }
-        $socket = \socket_create_listen($this->port);
-        \socket_getsockname($socket, $addr, $this->port);
-        \socket_close($socket);
-        $this->process = new ProviderProcess(Path::PUBLIC_PATH . '/generators/', $this->port);
+        $this->process = new PhpProcess(Path::PUBLIC_PATH . '/generators/');
         $this->process->start();
     }
 
     public function stop(): void
     {
-        $this->port = 0;
         $this->process->stop();
     }
 
     public function getPort(): int
     {
-        return $this->port;
+        return $this->process->getPort();
     }
 
     public function getBody(): string
