@@ -28,9 +28,9 @@ final class ProviderContext implements Context
     public function aPactFileForInteractionIsToBeVerifiedWithTheFollowingProviderStatesDefined(int $id, TableNode $table): void
     {
         $this->pactWriter->write($id, $this->pactPath);
-        $pact = json_decode(file_get_contents($this->pactPath), true);
+        $pact = json_decode(file_get_contents($this->pactPath));
         $rows = $table->getHash();
-        $pact['interactions'][0]['providerStates'] = array_map(fn (array $row): array => ['name' => $row['State Name'], 'params' => json_decode($row['Parameters'] ?? '{}', true)], $rows);
+        $pact->interactions[0]->providerStates = array_map(fn (array $row): array => ['name' => $row['State Name'], 'params' => json_decode($row['Parameters'] ?? '{}', true)], $rows);
         file_put_contents($this->pactPath, json_encode($pact));
         $this->providerVerifier->addSource($this->pactPath);
     }

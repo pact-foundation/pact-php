@@ -29,21 +29,21 @@
             ]
           },
           "query": {
-            "$.pages": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "regex",
-                  "regex": "\\d+"
-                }
-              ]
-            },
-            "$['locales[]']": {
+            "locales[]": {
               "combine": "AND",
               "matchers": [
                 {
                   "match": "regex",
                   "regex": "^[a-z]{2}-[A-Z]{2}$"
+                }
+              ]
+            },
+            "pages": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "\\d+"
                 }
               ]
             }
@@ -591,9 +591,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.11",
+      "ffi": "0.4.13",
       "mockserver": "1.2.4",
-      "models": "1.1.12"
+      "models": "1.1.16"
     },
     "pactSpecification": {
       "version": "4.0"

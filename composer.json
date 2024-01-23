@@ -108,12 +108,12 @@
     "extra": {
         "downloads": {
             "pact-ffi-headers": {
-                "version": "0.4.11",
+                "version": "0.4.13",
                 "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/pact.h",
                 "path": "bin/pact-ffi-headers/pact.h"
             },
             "pact-ffi-lib": {
-                "version": "0.4.11",
+                "version": "0.4.13",
                 "variables": {
                     "{$prefix}": "PHP_OS_FAMILY === 'Windows' ? 'pact_ffi' : 'libpact_ffi'",
                     "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
