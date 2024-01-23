@@ -23,7 +23,7 @@ class NotEmpty extends AbstractMatcher
     /**
      * @return object|array<mixed>|string|float|int|bool
      */
-    protected function getValue(): object|array|string|float|int|bool
+    public function getValue(): object|array|string|float|int|bool
     {
         return $this->value;
     }

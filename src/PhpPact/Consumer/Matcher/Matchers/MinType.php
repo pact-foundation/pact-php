@@ -18,14 +18,6 @@ class MinType extends AbstractMatcher
         parent::__construct();
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
-    {
-        return $this->getFormatter()->format($this, null, array_values($this->values));
-    }
-
     public function getType(): string
     {
         return 'type';
@@ -42,7 +34,7 @@ class MinType extends AbstractMatcher
     /**
      * @return array<int, mixed>
      */
-    protected function getValue(): array
+    public function getValue(): array
     {
         return array_values($this->values);
     }

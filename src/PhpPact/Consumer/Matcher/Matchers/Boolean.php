@@ -27,7 +27,7 @@ class Boolean extends GeneratorAwareMatcher
         return [];
     }
 
-    protected function getValue(): ?bool
+    public function getValue(): ?bool
     {
         return $this->value;
     }

@@ -26,11 +26,11 @@ class StringValue extends GeneratorAwareMatcher
     }
 
     /**
-     * @return array<string, mixed>
+     * @return string|array<string, mixed>
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): string|array
     {
-        return $this->getFormatter()->format($this, $this->getGenerator(), $this->getValue());
+        return $this->getFormatter()->format($this);
     }
 
     protected function getAttributesData(): array
@@ -38,7 +38,7 @@ class StringValue extends GeneratorAwareMatcher
         return [];
     }
 
-    protected function getValue(): string
+    public function getValue(): string
     {
         return $this->value ?? self::DEFAULT_VALUE;
     }

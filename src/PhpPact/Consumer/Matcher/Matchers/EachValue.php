@@ -29,7 +29,7 @@ class EachValue extends AbstractMatcher
     /**
      * @return array<mixed>|object
      */
-    protected function getValue(): object|array
+    public function getValue(): object|array
     {
         return $this->value;
     }
@@ -37,5 +37,13 @@ class EachValue extends AbstractMatcher
     public function getType(): string
     {
         return 'eachValue';
+    }
+
+    /**
+     * @return MatcherInterface[]
+     */
+    public function getRules(): array
+    {
+        return $this->rules;
     }
 }

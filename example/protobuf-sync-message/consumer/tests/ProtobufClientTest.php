@@ -2,6 +2,8 @@
 
 namespace ProtobufSyncMessageConsumer\Tests;
 
+use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
+use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Plugins\Protobuf\Factory\ProtobufSyncMessageDriverFactory;
 use PhpPact\Standalone\MockService\MockServerConfig;
@@ -15,6 +17,7 @@ class ProtobufClientTest extends TestCase
 {
     public function testCalculateArea(): void
     {
+        $matcher = new Matcher(new PluginFormatter());
         $protoPath = __DIR__ . '/../../library/proto/area_calculator.proto';
 
         $config = new MockServerConfig();
@@ -38,12 +41,12 @@ class ProtobufClientTest extends TestCase
 
                     'request' => [
                         'rectangle' => [
-                            'length' => 'matching(number, 3)',
-                            'width' => 'matching(number, 4)',
+                            'length' => $matcher->number(3),
+                            'width' => $matcher->number(4),
                         ],
                     ],
                     'response' => [
-                        'value' => 'matching(number, 12)',
+                        'value' => $matcher->number(12),
                     ]
                 ]),
                 'application/grpc'

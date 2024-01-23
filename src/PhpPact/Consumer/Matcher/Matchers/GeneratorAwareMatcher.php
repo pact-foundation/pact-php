@@ -22,20 +22,18 @@ abstract class GeneratorAwareMatcher extends AbstractMatcher implements Generato
     }
 
     /**
-     * @return array<string, mixed>
+     * @return string|array<string, mixed>
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): string|array
     {
         if (null === $this->getValue()) {
             if (!$this->generator) {
                 throw new GeneratorRequiredException(sprintf("Generator is required for matcher '%s' when example value is not set", $this->getType()));
             }
-
-            return $this->getFormatter()->format($this, $this->generator, null);
         } elseif ($this->generator) {
             throw new GeneratorNotRequiredException(sprintf("Generator '%s' is not required for matcher '%s' when example value is set", $this->generator->getType(), $this->getType()));
         }
 
-        return $this->getFormatter()->format($this, $this->generator, $this->getValue());
+        return $this->getFormatter()->format($this);
     }
 }

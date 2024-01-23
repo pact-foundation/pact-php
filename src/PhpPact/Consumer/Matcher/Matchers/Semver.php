@@ -27,7 +27,7 @@ class Semver extends GeneratorAwareMatcher
         return [];
     }
 
-    protected function getValue(): ?string
+    public function getValue(): ?string
     {
         return $this->value;
     }

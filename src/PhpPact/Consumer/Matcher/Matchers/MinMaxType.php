@@ -33,7 +33,7 @@ class MinMaxType extends AbstractMatcher
     /**
      * @return array<int, mixed>
      */
-    protected function getValue(): array
+    public function getValue(): array
     {
         return array_values($this->values);
     }

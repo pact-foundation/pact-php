@@ -5,7 +5,7 @@ namespace PhpPact\Consumer\Matcher\Model;
 interface FormatterInterface
 {
     /**
-     * @return array<string, mixed>
+     * @return string|array<string, mixed>
      */
-    public function format(MatcherInterface $matcher, ?GeneratorInterface $generator, mixed $value): array;
+    public function format(MatcherInterface $matcher): string|array;
 }

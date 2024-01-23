@@ -9,6 +9,11 @@ abstract class AbstractDateTime extends GeneratorAwareMatcher
         parent::__construct();
     }
 
+    public function getFormat(): string
+    {
+        return $this->format;
+    }
+
     /**
      * @return array<string, string>
      */
@@ -17,7 +22,7 @@ abstract class AbstractDateTime extends GeneratorAwareMatcher
         return ['format' => $this->format];
     }
 
-    protected function getValue(): ?string
+    public function getValue(): ?string
     {
         return $this->value;
     }

@@ -24,9 +24,9 @@ class Regex extends GeneratorAwareMatcher
     }
 
     /**
-     * @return array<string, mixed>
+     * @return string|array<string, mixed>
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): string|array
     {
         if (null !== $this->values) {
             $this->validateRegex();
@@ -56,7 +56,7 @@ class Regex extends GeneratorAwareMatcher
     /**
      * @return string|string[]|null
      */
-    protected function getValue(): string|array|null
+    public function getValue(): string|array|null
     {
         return $this->values;
     }
@@ -67,5 +67,10 @@ class Regex extends GeneratorAwareMatcher
     protected function getAttributesData(): array
     {
         return ['regex' => $this->regex];
+    }
+
+    public function getRegex(): string
+    {
+        return $this->regex;
     }
 }

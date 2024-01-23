@@ -4,6 +4,8 @@ namespace PhpPactTest\Consumer\Matcher;
 
 use PhpPact\Consumer\Matcher\Exception\MatcherException;
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
+use PhpPact\Consumer\Matcher\Formatters\MinimalFormatter;
+use PhpPact\Consumer\Matcher\Formatters\ValueOptionalFormatter;
 use PhpPact\Consumer\Matcher\Generators\MockServerURL;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
@@ -21,6 +23,7 @@ use PhpPact\Consumer\Matcher\Matchers\EachValue;
 use PhpPact\Consumer\Matcher\Matchers\Equality;
 use PhpPact\Consumer\Matcher\Matchers\Includes;
 use PhpPact\Consumer\Matcher\Matchers\Integer;
+use PhpPact\Consumer\Matcher\Matchers\MatchingField;
 use PhpPact\Consumer\Matcher\Matchers\MaxType;
 use PhpPact\Consumer\Matcher\Matchers\MinMaxType;
 use PhpPact\Consumer\Matcher\Matchers\MinType;
@@ -298,6 +301,7 @@ class MatcherTest extends TestCase
     public function testFromProviderState(): void
     {
         $uuid = $this->matcher->uuid();
+        $this->assertInstanceOf(Regex::class, $uuid);
         $this->assertSame(Uuid::class, get_class($uuid->getGenerator()));
         $this->assertSame($uuid, $this->matcher->fromProviderState($uuid, '${id}'));
         $this->assertSame(ProviderState::class, get_class($uuid->getGenerator()));
@@ -392,5 +396,19 @@ class MatcherTest extends TestCase
         } else {
             $this->assertNull($url->getGenerator());
         }
+    }
+
+    public function testMatchingField(): void
+    {
+        $this->assertInstanceOf(MatchingField::class, $this->matcher->matchingField('address'));
+    }
+
+    public function testWithFormatter(): void
+    {
+        $uuid = $this->matcher->uuid();
+        $this->assertInstanceOf(ValueOptionalFormatter::class, $uuid->getFormatter());
+        $matcher = new Matcher($formatter = new MinimalFormatter());
+        $uuid = $matcher->uuid();
+        $this->assertSame($formatter, $uuid->getFormatter());
     }
 }

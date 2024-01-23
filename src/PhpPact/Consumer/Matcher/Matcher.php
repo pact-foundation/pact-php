@@ -19,6 +19,7 @@ use PhpPact\Consumer\Matcher\Matchers\EachValue;
 use PhpPact\Consumer\Matcher\Matchers\Equality;
 use PhpPact\Consumer\Matcher\Matchers\Includes;
 use PhpPact\Consumer\Matcher\Matchers\Integer;
+use PhpPact\Consumer\Matcher\Matchers\MatchingField;
 use PhpPact\Consumer\Matcher\Matchers\MaxType;
 use PhpPact\Consumer\Matcher\Matchers\MinMaxType;
 use PhpPact\Consumer\Matcher\Matchers\MinType;
@@ -32,6 +33,8 @@ use PhpPact\Consumer\Matcher\Matchers\StringValue;
 use PhpPact\Consumer\Matcher\Matchers\Time;
 use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Consumer\Matcher\Matchers\Values;
+use PhpPact\Consumer\Matcher\Model\FormatterAwareInterface;
+use PhpPact\Consumer\Matcher\Model\FormatterInterface;
 use PhpPact\Consumer\Matcher\Model\GeneratorAwareInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 
@@ -52,10 +55,14 @@ class Matcher
     public const IPV6_FORMAT                         = '^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$';
     public const HEX_FORMAT                          = '^[0-9a-fA-F]+$';
 
+    public function __construct(private ?FormatterInterface $formatter = null)
+    {
+    }
+
     /**
      * Alias for the `like()` function.
      */
-    public function somethingLike(mixed $value): Type
+    public function somethingLike(mixed $value): MatcherInterface
     {
         return $this->like($value);
     }
@@ -63,15 +70,15 @@ class Matcher
     /**
      * This executes a type based match against the values, that is, they are equal if they are the same type.
      */
-    public function like(mixed $value): Type
+    public function like(mixed $value): MatcherInterface
     {
-        return new Type($value);
+        return $this->withFormatter(new Type($value));
     }
 
     /**
      * Expect an array of similar data as the value passed in.
      */
-    public function eachLike(mixed $value): MinType
+    public function eachLike(mixed $value): MatcherInterface
     {
         return $this->atLeastLike($value, 1);
     }
@@ -80,14 +87,14 @@ class Matcher
      * @param mixed $value example of what the expected data would be
      * @param int   $min   minimum number of objects to verify against
      */
-    public function atLeastLike(mixed $value, int $min): MinType
+    public function atLeastLike(mixed $value, int $min): MatcherInterface
     {
-        return new MinType(array_fill(0, $min, $value), $min);
+        return $this->withFormatter(new MinType(array_fill(0, $min, $value), $min));
     }
 
-    public function atMostLike(mixed $value, int $max): MaxType
+    public function atMostLike(mixed $value, int $max): MatcherInterface
     {
-        return new MaxType([$value], $max);
+        return $this->withFormatter(new MaxType([$value], $max));
     }
 
     /**
@@ -98,7 +105,7 @@ class Matcher
      *
      * @throws MatcherException
      */
-    public function constrainedArrayLike(mixed $value, int $min, int $max, ?int $count = null): MinMaxType
+    public function constrainedArrayLike(mixed $value, int $min, int $max, ?int $count = null): MatcherInterface
     {
         $elements = $count ?? $min;
         if ($count !== null) {
@@ -115,7 +122,7 @@ class Matcher
             }
         }
 
-        return new MinMaxType(array_fill(0, $elements, $value), $min, $max);
+        return $this->withFormatter(new MinMaxType(array_fill(0, $elements, $value), $min, $max));
     }
 
     /**
@@ -125,9 +132,9 @@ class Matcher
      *
      * @throws MatcherException
      */
-    public function term(string|array|null $values, string $pattern): Regex
+    public function term(string|array|null $values, string $pattern): MatcherInterface
     {
-        return new Regex($pattern, $values);
+        return $this->withFormatter(new Regex($pattern, $values));
     }
 
     /**
@@ -137,7 +144,7 @@ class Matcher
      *
      * @throws MatcherException
      */
-    public function regex(string|array|null $values, string $pattern): Regex
+    public function regex(string|array|null $values, string $pattern): MatcherInterface
     {
         return $this->term($values, $pattern);
     }
@@ -149,7 +156,7 @@ class Matcher
      *
      * @throws MatcherException
      */
-    public function dateISO8601(string $value = '2013-02-01'): Regex
+    public function dateISO8601(string $value = '2013-02-01'): MatcherInterface
     {
         return $this->term($value, self::ISO8601_DATE_FORMAT);
     }
@@ -161,7 +168,7 @@ class Matcher
      *
      * @throws MatcherException
      */
-    public function timeISO8601(string $value = 'T22:44:30.652Z'): Regex
+    public function timeISO8601(string $value = 'T22:44:30.652Z'): MatcherInterface
     {
         return $this->term($value, self::ISO8601_TIME_FORMAT);
     }
@@ -173,7 +180,7 @@ class Matcher
      *
      * @throws MatcherException
      */
-    public function dateTimeISO8601(string $value = '2015-08-06T16:53:10+01:00'): Regex
+    public function dateTimeISO8601(string $value = '2015-08-06T16:53:10+01:00'): MatcherInterface
     {
         return $this->term($value, self::ISO8601_DATETIME_FORMAT);
     }
@@ -185,7 +192,7 @@ class Matcher
      *
      * @throws MatcherException
      */
-    public function dateTimeWithMillisISO8601(string $value = '2015-08-06T16:53:10.123+01:00'): Regex
+    public function dateTimeWithMillisISO8601(string $value = '2015-08-06T16:53:10.123+01:00'): MatcherInterface
     {
         return $this->term($value, self::ISO8601_DATETIME_WITH_MILLIS_FORMAT);
     }
@@ -197,45 +204,45 @@ class Matcher
      *
      * @throws MatcherException
      */
-    public function timestampRFC3339(string $value = 'Mon, 31 Oct 2016 15:21:41 -0400'): Regex
+    public function timestampRFC3339(string $value = 'Mon, 31 Oct 2016 15:21:41 -0400'): MatcherInterface
     {
         return $this->term($value, self::RFC3339_TIMESTAMP_FORMAT);
     }
 
-    public function boolean(): Type
+    public function boolean(): MatcherInterface
     {
         return $this->like(true);
     }
 
-    public function integer(int $int = 13): Type
+    public function integer(int $int = 13): MatcherInterface
     {
         return $this->like($int);
     }
 
-    public function decimal(float $float = 13.01): Type
+    public function decimal(float $float = 13.01): MatcherInterface
     {
         return $this->like($float);
     }
 
-    public function booleanV3(?bool $value = null): Boolean
+    public function booleanV3(?bool $value = null): MatcherInterface
     {
-        return new Boolean($value);
+        return $this->withFormatter(new Boolean($value));
     }
 
-    public function integerV3(?int $value = null): Integer
+    public function integerV3(?int $value = null): MatcherInterface
     {
-        return new Integer($value);
+        return $this->withFormatter(new Integer($value));
     }
 
-    public function decimalV3(?float $value = null): Decimal
+    public function decimalV3(?float $value = null): MatcherInterface
     {
-        return new Decimal($value);
+        return $this->withFormatter(new Decimal($value));
     }
 
     /**
      * @throws MatcherException
      */
-    public function hexadecimal(?string $value = null): Regex
+    public function hexadecimal(?string $value = null): MatcherInterface
     {
         $matcher = new Regex(self::HEX_FORMAT, $value);
 
@@ -243,13 +250,13 @@ class Matcher
             $matcher->setGenerator(new RandomHexadecimal());
         }
 
-        return $matcher;
+        return $this->withFormatter($matcher);
     }
 
     /**
      * @throws MatcherException
      */
-    public function uuid(?string $value = null): Regex
+    public function uuid(?string $value = null): MatcherInterface
     {
         $matcher = new Regex(self::UUID_V4_FORMAT, $value);
 
@@ -257,20 +264,20 @@ class Matcher
             $matcher->setGenerator(new Uuid());
         }
 
-        return $matcher;
+        return $this->withFormatter($matcher);
     }
 
-    public function ipv4Address(?string $ip = '127.0.0.13'): Regex
+    public function ipv4Address(?string $ip = '127.0.0.13'): MatcherInterface
     {
         return $this->term($ip, self::IPV4_FORMAT);
     }
 
-    public function ipv6Address(?string $ip = '::ffff:192.0.2.128'): Regex
+    public function ipv6Address(?string $ip = '::ffff:192.0.2.128'): MatcherInterface
     {
         return $this->term($ip, self::IPV6_FORMAT);
     }
 
-    public function email(?string $email = 'hello@pact.io'): Regex
+    public function email(?string $email = 'hello@pact.io'): MatcherInterface
     {
         return $this->term($email, self::EMAIL_FORMAT);
     }
@@ -279,9 +286,9 @@ class Matcher
      * Value that must be null. This will only match the JSON Null value. For other content types, it will
      * match if the attribute is missing.
      */
-    public function nullValue(): NullValue
+    public function nullValue(): MatcherInterface
     {
-        return new NullValue();
+        return $this->withFormatter(new NullValue());
     }
 
     /**
@@ -291,9 +298,9 @@ class Matcher
      * For Java one, see https://www.digitalocean.com/community/tutorials/java-simpledateformat-java-date-format#patterns
      * For PHP one, see https://www.php.net/manual/en/datetime.format.php#refsect1-datetime.format-parameters
      */
-    public function date(string $format = 'yyyy-MM-dd', ?string $value = null): Date
+    public function date(string $format = 'yyyy-MM-dd', ?string $value = null): MatcherInterface
     {
-        return new Date($format, $value);
+        return $this->withFormatter(new Date($format, $value));
     }
 
     /**
@@ -303,9 +310,9 @@ class Matcher
      * For Java one, see https://www.digitalocean.com/community/tutorials/java-simpledateformat-java-date-format#patterns
      * For PHP one, see https://www.php.net/manual/en/datetime.format.php#refsect1-datetime.format-parameters
      */
-    public function time(string $format = 'HH:mm:ss', ?string $value = null): Time
+    public function time(string $format = 'HH:mm:ss', ?string $value = null): MatcherInterface
     {
-        return new Time($format, $value);
+        return $this->withFormatter(new Time($format, $value));
     }
 
     /**
@@ -315,14 +322,14 @@ class Matcher
      * For Java one, see https://www.digitalocean.com/community/tutorials/java-simpledateformat-java-date-format#patterns
      * For PHP one, see https://www.php.net/manual/en/datetime.format.php#refsect1-datetime.format-parameters
      */
-    public function datetime(string $format = "yyyy-MM-dd'T'HH:mm:ss", ?string $value = null): DateTime
+    public function datetime(string $format = "yyyy-MM-dd'T'HH:mm:ss", ?string $value = null): MatcherInterface
     {
-        return new DateTime($format, $value);
+        return $this->withFormatter(new DateTime($format, $value));
     }
 
-    public function string(?string $value = null): StringValue
+    public function string(?string $value = null): MatcherInterface
     {
-        return new StringValue($value);
+        return $this->withFormatter(new StringValue($value));
     }
 
     /**
@@ -344,17 +351,17 @@ class Matcher
     /**
      * Value that must be equal to the example. This is mainly used to reset the matching rules which cascade.
      */
-    public function equal(mixed $value): Equality
+    public function equal(mixed $value): MatcherInterface
     {
-        return new Equality($value);
+        return $this->withFormatter(new Equality($value));
     }
 
     /**
      * Value that must include the example value as a substring.
      */
-    public function includes(string $value): Includes
+    public function includes(string $value): MatcherInterface
     {
-        return new Includes($value);
+        return $this->withFormatter(new Includes($value));
     }
 
     /**
@@ -362,9 +369,9 @@ class Matcher
      *
      * @param int|float|null $value Example value. If omitted a random integer value will be generated.
      */
-    public function number(int|float|null $value = null): Number
+    public function number(int|float|null $value = null): MatcherInterface
     {
-        return new Number($value);
+        return $this->withFormatter(new Number($value));
     }
 
     /**
@@ -373,33 +380,33 @@ class Matcher
      *
      * @param array<mixed> $variants
      */
-    public function arrayContaining(array $variants): ArrayContains
+    public function arrayContaining(array $variants): MatcherInterface
     {
-        return new ArrayContains($variants);
+        return $this->withFormatter(new ArrayContains($variants));
     }
 
     /**
      * Value must be present and not empty (not null or the empty string or empty array or empty object)
      */
-    public function notEmpty(mixed $value): NotEmpty
+    public function notEmpty(mixed $value): MatcherInterface
     {
-        return new NotEmpty($value);
+        return $this->withFormatter(new NotEmpty($value));
     }
 
     /**
      * Value must be valid based on the semver specification
      */
-    public function semver(string $value): Semver
+    public function semver(string $value): MatcherInterface
     {
-        return new Semver($value);
+        return $this->withFormatter(new Semver($value));
     }
 
     /**
      * Matches the response status code.
      */
-    public function statusCode(string $status, ?int $value = null): StatusCode
+    public function statusCode(string $status, ?int $value = null): MatcherInterface
     {
-        return new StatusCode($status, $value);
+        return $this->withFormatter(new StatusCode($status, $value));
     }
 
     /**
@@ -407,17 +414,17 @@ class Matcher
      *
      * @param array<mixed> $values
      */
-    public function values(array $values): Values
+    public function values(array $values): MatcherInterface
     {
-        return new Values($values);
+        return $this->withFormatter(new Values($values));
     }
 
     /**
      * Match binary data by its content type (magic file check)
      */
-    public function contentType(string $contentType): ContentType
+    public function contentType(string $contentType): MatcherInterface
     {
-        return new ContentType($contentType);
+        return $this->withFormatter(new ContentType($contentType));
     }
 
     /**
@@ -426,9 +433,9 @@ class Matcher
      * @param array<string, mixed> $values
      * @param array<mixed>         $rules
      */
-    public function eachKey(array $values, array $rules): EachKey
+    public function eachKey(array $values, array $rules): MatcherInterface
     {
-        return new EachKey($values, $rules);
+        return $this->withFormatter(new EachKey($values, $rules));
     }
 
     /**
@@ -437,20 +444,37 @@ class Matcher
      * @param array<string, mixed> $values
      * @param array<mixed>         $rules
      */
-    public function eachValue(array $values, array $rules): EachValue
+    public function eachValue(array $values, array $rules): MatcherInterface
     {
-        return new EachValue($values, $rules);
+        return $this->withFormatter(new EachValue($values, $rules));
     }
 
     /**
      * @throws MatcherException
      */
-    public function url(string $url, string $regex, bool $useMockServerBasePath = true): Regex
+    public function url(string $url, string $regex, bool $useMockServerBasePath = true): MatcherInterface
     {
         $matcher = new Regex($regex, $useMockServerBasePath ? null : $url);
 
         if ($useMockServerBasePath) {
             $matcher->setGenerator(new MockServerURL($regex, $url));
+        }
+
+        return $this->withFormatter($matcher);
+    }
+
+    /**
+     * Generates a value that is looked up from the provider state context using the given expression
+     */
+    public function matchingField(string $fieldName): MatcherInterface
+    {
+        return $this->withFormatter(new MatchingField($fieldName));
+    }
+
+    private function withFormatter(MatcherInterface $matcher): MatcherInterface
+    {
+        if ($matcher instanceof FormatterAwareInterface && $this->formatter) {
+            $matcher->setFormatter($this->formatter);
         }
 
         return $matcher;

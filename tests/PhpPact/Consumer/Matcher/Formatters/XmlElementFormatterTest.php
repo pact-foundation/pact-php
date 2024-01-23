@@ -3,10 +3,8 @@
 namespace PhpPactTest\Consumer\Matcher\Formatters;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
-use PhpPact\Consumer\Matcher\Formatters\XmlContentFormatter;
 use PhpPact\Consumer\Matcher\Formatters\XmlElementFormatter;
 use PhpPact\Consumer\Matcher\Generators\RandomString;
-use PhpPact\Consumer\Matcher\Matchers\Date;
 use PhpPact\Consumer\Matcher\Matchers\StringValue;
 use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Xml\XmlElement;
@@ -18,8 +16,10 @@ class XmlElementFormatterTest extends TestCase
     {
         $this->expectException(InvalidValueException::class);
         $this->expectExceptionMessage('Value must be xml element');
+        $matcher = new StringValue('example value');
+        $matcher->setGenerator(new RandomString());
         $formatter = new XmlElementFormatter();
-        $formatter->format(new StringValue(), new RandomString(), 'example value');
+        $formatter->format($matcher);
     }
 
     /**
@@ -34,6 +34,6 @@ class XmlElementFormatterTest extends TestCase
         );
         $matcher = new Type($value);
         $formatter = new XmlElementFormatter();
-        $this->assertSame(json_encode($result), json_encode($formatter->format($matcher, null, $value)));
+        $this->assertSame(json_encode($result), json_encode($formatter->format($matcher)));
     }
 }
