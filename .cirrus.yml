@@ -22,6 +22,7 @@ BUILD_TEST_TASK_TEMPLATE: &BUILD_TEST_TASK_TEMPLATE
 linux_arm64_task:  
   env:
     COMPOSER_ALLOW_SUPERUSER: 1
+    PACT_DO_NOT_TRACK: true
     matrix:
       - VERSION: 8.2
       - VERSION: 8.1
@@ -37,6 +38,7 @@ linux_arm64_task:
 macos_arm64_task:
 # https://www.markhesketh.com/switching-multiple-php-versions-on-macos/
   env:
+    PACT_DO_NOT_TRACK: true
     matrix:
       - VERSION: 8.2
       - VERSION: 8.1
