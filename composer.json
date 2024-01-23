@@ -79,12 +79,16 @@
             "CsvProvider\\": "example/csv/provider/src",
             "CsvProvider\\Tests\\": "example/csv/provider/tests",
             "": [
-                "example/protobuf-sync-message/library/src"
+                "example/protobuf-sync-message/library/src",
+                "example/protobuf-async-message/library/src"
             ],
             "ProtobufSyncMessageConsumer\\": "example/protobuf-sync-message/consumer/src",
             "ProtobufSyncMessageConsumer\\Tests\\": "example/protobuf-sync-message/consumer/tests",
             "ProtobufSyncMessageProvider\\": "example/protobuf-sync-message/provider/src",
-            "ProtobufSyncMessageProvider\\Tests\\": "example/protobuf-sync-message/provider/tests"
+            "ProtobufSyncMessageProvider\\Tests\\": "example/protobuf-sync-message/provider/tests",
+            "ProtobufAsyncMessageConsumer\\": "example/protobuf-async-message/consumer/src",
+            "ProtobufAsyncMessageConsumer\\Tests\\": "example/protobuf-async-message/consumer/tests",
+            "ProtobufAsyncMessageProvider\\Tests\\": "example/protobuf-async-message/provider/tests"
         }
     },
     "scripts": {
@@ -96,7 +100,8 @@
             "phpunit --debug"
         ],
         "gen-lib": [
-            "protoc --php_out=example/protobuf-sync-message/library/src example/protobuf-sync-message/library/proto/area_calculator.proto"
+            "protoc --php_out=example/protobuf-sync-message/library/src example/protobuf-sync-message/library/proto/area_calculator.proto",
+            "protoc --php_out=example/protobuf-async-message/library/src example/protobuf-async-message/library/proto/say_hello.proto"
         ],
         "check-compatibility": "behat"
     },
