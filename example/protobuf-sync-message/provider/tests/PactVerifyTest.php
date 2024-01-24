@@ -1,26 +1,20 @@
 <?php
 
-namespace ProtobufSyncMessageProvder\Tests;
+namespace ProtobufSyncMessageProvider\Tests;
 
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Process\Process;
 
 class PactVerifyTest extends TestCase
 {
-    private Process $process;
+    private RoadRunnerProcess $process;
 
     protected function setUp(): void
     {
-        $this->process = new Process([__DIR__ . '/../bin/roadrunner/rr', 'serve', '-w', __DIR__ . '/..']);
-        $this->process->setTimeout(120);
-
-        $this->process->start(function (string $type, string $buffer): void {
-            echo "\n$type > $buffer";
-        });
-        $this->process->waitUntil(fn () => is_resource(@fsockopen('127.0.0.1', 9001)));
+        $this->process = new RoadRunnerProcess();
+        $this->process->start();
     }
 
     protected function tearDown(): void
@@ -38,7 +32,7 @@ class PactVerifyTest extends TestCase
         $providerTransport
             ->setProtocol('grpc')
             ->setScheme('tcp')
-            ->setPort(9001)
+            ->setPort($this->process->getPort())
             ->setPath('/')
         ;
         $config->addProviderTransport($providerTransport);

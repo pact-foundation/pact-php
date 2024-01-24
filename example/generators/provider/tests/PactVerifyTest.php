@@ -5,16 +5,16 @@ namespace GeneratorsProvider\Tests;
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
-use PhpPactTest\Helper\ProviderProcess;
+use PhpPactTest\Helper\PhpProcess;
 use PHPUnit\Framework\TestCase;
 
 class PactVerifyTest extends TestCase
 {
-    private ProviderProcess $process;
+    private PhpProcess $process;
 
     protected function setUp(): void
     {
-        $this->process = new ProviderProcess(__DIR__ . '/../public/');
+        $this->process = new PhpProcess(__DIR__ . '/../public/');
         $this->process->start();
     }
 
@@ -29,9 +29,9 @@ class PactVerifyTest extends TestCase
         $config->getProviderInfo()
             ->setName('generatorsProvider')
             ->setHost('localhost')
-            ->setPort(7202);
+            ->setPort($this->process->getPort());
         $config->getProviderState()
-            ->setStateChangeUrl(new Uri('http://localhost:7202/pact-change-state'))
+            ->setStateChangeUrl(new Uri(sprintf('http://localhost:%d/pact-change-state', $this->process->getPort())))
         ;
         if ($level = \getenv('PACT_LOGLEVEL')) {
             $config->setLogLevel($level);

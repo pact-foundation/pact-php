@@ -4,25 +4,19 @@ namespace PhpPactTest\Standalone\ProviderVerifier;
 
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
-use PhpPactTest\Helper\ProviderProcess;
+use PhpPactTest\Helper\PhpProcess;
 use PHPUnit\Framework\TestCase;
 
 class VerifierTest extends TestCase
 {
-    private ProviderProcess $process;
+    private PhpProcess $process;
 
-    /**
-     * Run the PHP build-in web server.
-     */
     protected function setUp(): void
     {
-        $this->process = new ProviderProcess(__DIR__ . '/../../../_public/');
+        $this->process = new PhpProcess(__DIR__ . '/../../../_public/');
         $this->process->start();
     }
 
-    /**
-     * Stop the web server process once complete.
-     */
     protected function tearDown(): void
     {
         $this->process->stop();
@@ -34,7 +28,7 @@ class VerifierTest extends TestCase
         $config->getProviderInfo()
             ->setName('someProvider')
             ->setHost('localhost')
-            ->setPort(7202)
+            ->setPort($this->process->getPort())
             ->setScheme('http')
             ->setPath('/');
         if ($level = \getenv('PACT_LOGLEVEL')) {
