@@ -5,7 +5,4 @@
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
-    <php>
-        <env name="PACT_LOGLEVEL" value="DEBUG"/>
-    </php>
 </phpunit>

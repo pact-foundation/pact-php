@@ -80,6 +80,5 @@
   <php>
     <env name="PACT_CONSUMER_NAME" value="someConsumer"/>
     <env name="PACT_PROVIDER_NAME" value="someProvider"/>
-    <env name="PACT_LOGLEVEL" value="DEBUG"/>
   </php>
 </phpunit>

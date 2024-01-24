@@ -92,3 +92,4 @@ jobs:
         run: composer test
         env:
           PACT_DO_NOT_TRACK: true
+          PACT_LOGLEVEL: debug

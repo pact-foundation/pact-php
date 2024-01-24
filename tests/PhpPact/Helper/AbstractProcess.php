@@ -19,9 +19,12 @@ abstract class AbstractProcess
         if ($this->process->isRunning()) {
             return;
         }
-        $this->process->start(function (string $type, string $buffer): void {
-            echo "\n$type > $buffer";
-        });
+        if (\getenv('PACT_LOGLEVEL')) {
+            $callback = function (string $type, string $buffer): void {
+                echo "\n$type > $buffer";
+            };
+        }
+        $this->process->start($callback ?? null);
         $this->process->waitUntil(function (): bool {
             $fp = @fsockopen('127.0.0.1', $this->getPort());
             $isOpen = \is_resource($fp);
