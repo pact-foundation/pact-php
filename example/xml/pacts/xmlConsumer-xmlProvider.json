@@ -16,7 +16,7 @@
         },
         "matchingRules": {
           "header": {
-            "$.Accept[0]": {
+            "Accept": {
               "combine": "AND",
               "matchers": [
                 {
@@ -120,7 +120,7 @@
             }
           },
           "header": {
-            "$['Content-Type'][0]": {
+            "Content-Type": {
               "combine": "AND",
               "matchers": [
                 {
@@ -138,9 +138,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.11",
+      "ffi": "0.4.13",
       "mockserver": "1.2.4",
-      "models": "1.1.12"
+      "models": "1.1.16"
     },
     "pactSpecification": {
       "version": "3.0.0"
