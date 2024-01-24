@@ -48,7 +48,7 @@
             }
           },
           "header": {
-            "$.Authorization[0]": {
+            "Authorization": {
               "combine": "AND",
               "matchers": [
                 {
@@ -107,7 +107,8 @@
               ]
             }
           },
-          "header": {}
+          "header": {},
+          "status": {}
         },
         "status": 200
       }
@@ -115,9 +116,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.9",
+      "ffi": "0.4.13",
       "mockserver": "1.2.4",
-      "models": "1.1.11"
+      "models": "1.1.16"
     },
     "pactSpecification": {
       "version": "3.0.0"
