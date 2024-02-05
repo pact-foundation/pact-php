@@ -36,14 +36,14 @@ class ArrayData
 
         $items = FFI::new("char*[{$size}]");
         if ($items === null) {
-            return throw new CDataNotCreatedException();
+            throw new CDataNotCreatedException();
         }
         foreach ($values as $index => $value) {
             $length = \strlen($value);
             $itemSize = $length + 1;
             $item = FFI::new("char[{$itemSize}]", false);
             if ($item === null) {
-                return throw new CDataNotCreatedException();
+                throw new CDataNotCreatedException();
             }
             FFI::memcpy($item, $value, $length);
             $items[$index] = $item; // @phpstan-ignore-line
