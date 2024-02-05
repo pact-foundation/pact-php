@@ -2,8 +2,6 @@
 
 namespace PhpPact\FFI\Exception;
 
-use Exception;
-
-class HeaderNotReadException extends Exception
+class HeaderNotReadException extends FFIException
 {
 }
