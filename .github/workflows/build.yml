@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        operating-system: [ ubuntu-latest, macos-latest, windows-latest ]
+        operating-system: [ ubuntu-latest, windows-latest, macos-12, macos-14 ]
         php: [ '8.0', '8.1', '8.2' ]
         dependencies: [ 'lowest', 'locked' ]
     timeout-minutes: 5
