@@ -2,8 +2,6 @@
 
 namespace PhpPact\FFI\Exception;
 
-use Exception;
-
-class CDataNotCreatedException extends Exception
+class CDataNotCreatedException extends FFIException
 {
 }
