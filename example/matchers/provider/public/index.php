@@ -53,18 +53,6 @@ $app->get('/matchers', function (Request $request, Response $response) {
         ],
         'notEmpty' => [111],
         'semver' => '0.27.1-beta2',
-        'values' => [ // Missing ending values are OK, additional values are NOT OK
-            'a',
-            'bb',
-            //'ccc',
-            //'dddd',
-        ],
-        'valuesWithKeys' => [ // Missing keys are OK, additional keys are NOT OK
-            //'a' => 'a',
-            'b' => 'bb',
-            //'c' => 'ccc',
-            //'d' => 'dddd',
-        ],
         'contentType' =>
             <<<HTML
             <!DOCTYPE html>

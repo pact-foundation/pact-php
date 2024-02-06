@@ -4,6 +4,8 @@ namespace PhpPact\Consumer\Matcher\Matchers;
 
 /**
  * Match the values in a map, ignoring the keys
+ *
+ * @deprecated use EachKey or EachValue
  */
 class Values extends AbstractMatcher
 {

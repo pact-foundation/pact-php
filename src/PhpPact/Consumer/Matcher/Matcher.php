@@ -412,6 +412,8 @@ class Matcher
     /**
      * Match the values in a map, ignoring the keys
      *
+     * @deprecated use eachKey or eachValue
+     *
      * @param array<mixed> $values
      */
     public function values(array $values): MatcherInterface
