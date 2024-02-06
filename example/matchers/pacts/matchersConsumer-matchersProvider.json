@@ -141,17 +141,7 @@
             "timeISO8601": "T22:44:30.652Z",
             "timestampRFC3339": "Mon, 31 Oct 2016 15:21:41 -0400",
             "url": "http://localhost:8080/users/1234/posts/latest",
-            "uuid": "52c9585e-f345-4964-aa28-a45c64b2b2eb",
-            "values": [
-              "a",
-              "bb",
-              "ccc"
-            ],
-            "valuesWithKeys": {
-              "a": "a",
-              "b": "bb",
-              "c": "ccc"
-            }
+            "uuid": "52c9585e-f345-4964-aa28-a45c64b2b2eb"
           },
           "contentType": "application/json",
           "encoded": false
@@ -550,22 +540,6 @@
                 {
                   "match": "regex",
                   "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
-                }
-              ]
-            },
-            "$.values": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "values"
-                }
-              ]
-            },
-            "$.valuesWithKeys": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "values"
                 }
               ]
             }

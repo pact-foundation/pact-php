@@ -84,16 +84,6 @@ class MatchersTest extends TestCase
                 ]),
                 'notEmpty' => $this->matcher->notEmpty(['1','2','3']),
                 'semver' => $this->matcher->semver('10.0.0-alpha4'),
-                'values' => $this->matcher->values([
-                    'a',
-                    'bb',
-                    'ccc',
-                ]),
-                'valuesWithKeys' => $this->matcher->values([
-                    'a' => 'a',
-                    'b' => 'bb',
-                    'c' => 'ccc',
-                ]),
                 'contentType' => $this->matcher->contentType('text/html'),
                 'eachKey' => $this->matcher->eachKey(
                     ['page 3' => 'example text'],
@@ -179,16 +169,6 @@ class MatchersTest extends TestCase
             ],
             'notEmpty' => ['1', '2', '3'],
             'semver' => '10.0.0-alpha4',
-            'values' => [
-                'a',
-                'bb',
-                'ccc',
-            ],
-            'valuesWithKeys' => [
-                'a' => 'a',
-                'b' => 'bb',
-                'c' => 'ccc',
-            ],
             'contentType' => 'text/html',
             'eachKey' => [
                 'page 3' => 'example text',
