@@ -4,6 +4,7 @@ namespace PhpPact\FFI\Model;
 
 use FFI\CData;
 use FFI;
+use PhpPact\FFI\Exception\CDataNotCreatedException;
 use PhpPact\FFI\Exception\EmptyBinaryFileNotSupportedException;
 
 class BinaryData
@@ -32,6 +33,9 @@ class BinaryData
 
         $length = \strlen($contents);
         $cData  = FFI::new("uint8_t[{$length}]", false);
+        if ($cData === null) {
+            throw new CDataNotCreatedException();
+        }
         FFI::memcpy($cData, $contents, $length);
 
         return new self($cData, $length);
