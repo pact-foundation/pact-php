@@ -27,12 +27,8 @@ class MatchersTest extends TestCase
             ->setMethod('GET')
             ->setPath($this->matcher->regex('/matchers', '^\/matchers$'))
             ->setQuery([
-                'pages' => [ // Consumer send multiple values, but provider receive single (last) value
-                    json_encode($this->matcher->regex([1, 22], '\d+')),
-                ],
-                'locales[]' => [ // Consumer send multiple values, provider receive all values
-                    json_encode($this->matcher->regex(['en-US', 'en-AU'], '^[a-z]{2}-[A-Z]{2}$')),
-                ],
+                'pages' => $this->matcher->regex([1, 22], '\d+'), // arrayContains, eachKey, eachValue matchers are not working with query
+                'locales[]' => $this->matcher->regex(['en-US', 'en-AU'], '^[a-z]{2}-[A-Z]{2}$'), // Use `locales[]` instead of `locales` syntax if provider use PHP language
             ])
             ->addHeader('Accept', 'application/json');
 
