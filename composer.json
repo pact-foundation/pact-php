@@ -79,7 +79,7 @@
     "extra": {
         "downloads": {
             "pact-ruby-standalone": {
-                "version": "2.0.3",
+                "version": "2.4.0",
                 "variables": {
                     "{$os}": "PHP_OS_FAMILY === 'Windows' ? 'windows' : (PHP_OS === 'Darwin' ? 'osx' : 'linux')",
                     "{$architecture}": "strtolower(php_uname('m')) === 'arm64' || strtolower(php_uname('m')) === 'aarch64' ? '-arm64' : (strtolower(php_uname('m')) === 'x86' && PHP_OS_FAMILY === 'Windows' ? '-x86' : '-x86_64')",
