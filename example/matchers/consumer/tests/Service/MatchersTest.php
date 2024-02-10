@@ -34,12 +34,14 @@ class MatchersTest extends TestCase
                     json_encode($this->matcher->regex(['en-US', 'en-AU'], '^[a-z]{2}-[A-Z]{2}$')),
                 ],
             ])
-            ->addHeader('Accept', 'application/json');
+            ->addHeader('Accept', 'application/json')
+            ->addHeader('Theme', $this->matcher->regex('dark', 'light|dark')); // arrayContains, eachKey, eachValue matchers are not working with headers
 
         $response = new ProviderResponse();
         $response
             ->setStatus($this->matcher->statusCode(HttpStatus::SERVER_ERROR, 512))
             ->addHeader('Content-Type', 'application/json')
+            ->addHeader('X-Powered-By', $this->matcher->string('PHP'))
             ->setBody([
                 'like' => $this->matcher->like(['key' => 'value']),
                 'likeNull' => $this->matcher->like(null),

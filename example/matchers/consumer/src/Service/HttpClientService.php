@@ -20,7 +20,7 @@ class HttpClientService
     public function sendRequest(): ResponseInterface
     {
         return $this->httpClient->get("{$this->baseUri}/matchers", [
-            'headers' => ['Accept' => 'application/json'],
+            'headers' => ['Accept' => 'application/json', 'Theme' => 'light'],
             'query' => 'pages=2&pages=3&locales[]=fr-BE&locales[]=ru-RU',
             'http_errors' => false,
         ]);

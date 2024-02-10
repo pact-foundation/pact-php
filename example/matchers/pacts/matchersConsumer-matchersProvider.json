@@ -15,10 +15,23 @@
         "headers": {
           "Accept": [
             "application/json"
+          ],
+          "Theme": [
+            "dark"
           ]
         },
         "matchingRules": {
-          "header": {},
+          "header": {
+            "Theme": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "light|dark"
+                }
+              ]
+            }
+          },
           "path": {
             "combine": "AND",
             "matchers": [
@@ -149,6 +162,9 @@
         "headers": {
           "Content-Type": [
             "application/json"
+          ],
+          "X-Powered-By": [
+            "PHP"
           ]
         },
         "matchingRules": {
@@ -544,7 +560,16 @@
               ]
             }
           },
-          "header": {},
+          "header": {
+            "X-Powered-By": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
           "status": {
             "$": {
               "combine": "AND",

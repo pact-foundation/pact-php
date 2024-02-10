@@ -79,7 +79,12 @@ $app->get('/matchers', function (Request $request, Response $response) {
 
     return $response
         ->withHeader('Content-Type', 'application/json')
-        ->withStatus(503);
+        ->withStatus(503)
+        ->withHeader('X-Powered-By', [
+            'PHP',
+            'Nginx',
+            'Slim',
+        ]);
 });
 
 $app->post('/pact-change-state', function (Request $request, Response $response) {
