@@ -28,7 +28,8 @@ class Broker
                 [
                     'can-i-deploy',
                     '--pacticipant=\'' . $this->config->getPacticipant().'\'',
-                    '--version=' . $this->config->getVersion()
+                    '--version=' . $this->config->getVersion(),
+                    '--output=json',
                 ],
                 $this->getArguments()
             )
