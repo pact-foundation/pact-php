@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "ext-json": "*",
         "composer/semver": "^1.4.0|^3.2.0",
         "symfony/process": "^4.4|^5.4|^6.0",
