@@ -40,18 +40,18 @@ jobs:
         run: composer run static-code-analysis
 
   test:
-    runs-on: ${{ matrix.operating-system }}
+    runs-on: ${{ matrix.os }}
     needs:
       - php-cs
     strategy:
       fail-fast: false
       matrix:
-        operating-system: [ ubuntu-latest, windows-latest, macos-12, macos-14 ]
+        os: [ ubuntu-22.04, windows-2022, macos-12, macos-14 ]
         php: [ '8.1', '8.2', '8.3' ]
         dependencies: [ 'lowest', 'locked' ]
     timeout-minutes: 5
 
-    name: PHP ${{ matrix.php }} on ${{ matrix.operating-system }} with ${{ matrix.dependencies }} dependencies
+    name: PHP ${{ matrix.php }} ${{ matrix.os }} ${{ matrix.dependencies }}
 
     steps:
       - uses: actions/checkout@v3
@@ -60,23 +60,35 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          extensions: ${{ matrix.operating-system == 'windows-latest' && contains('["8.2","8.3"]', matrix.php) && 'sockets, curl, zip, ffi' || 'sockets, curl, zip, ffi, grpc' }}
+          extensions: 'sockets, curl, zip, ffi'
           php-version: ${{ matrix.php }}
           coverage: none
-          ini-values: ${{ matrix.operating-system == 'windows-latest' && 'opcache.enable=0 opcache.enable_cli=0' || '' }}
+          ini-values: ${{ matrix.os == 'windows-2022' && 'opcache.enable=0 opcache.enable_cli=0' || '' }}
 
       - name: Install Protoc
         uses: arduino/setup-protoc@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install gRPC Extension (for PHP 8.2 & 8.3 on Windows)
+      - name: Install gRPC Extension
         run: |
-          cd C:\tools\php
-          Invoke-WebRequest -Uri https://github.com/tienvx/build-php-grpc-extension/releases/download/builds/grpc_windows-2022_php-${{ matrix.php }}.dll -OutFile ext\php_grpc.dll
-          echo "extension=php_grpc.dll" >> php.ini
-        if: ${{ matrix.operating-system == 'windows-latest' && contains('["8.2","8.3"]', matrix.php) }}
-        shell: pwsh
+          if ! [ -x "$(command -v php-config)" ]
+          then
+            ext_dir='C:\tools\php\ext'
+            ini_path='C:\tools\php\php.ini'
+            sudo=
+            lib_name=php_grpc.dll
+            ext=dll
+          else
+            ext_dir=$(php-config --extension-dir)
+            ini_path=$(php-config --ini-dir)/grpc.ini
+            sudo=sudo
+            lib_name=grpc.so
+            ext=so
+          fi
+          $sudo curl -L -o $ext_dir/$lib_name https://github.com/tienvx/build-php-grpc-extension/releases/download/builds/grpc_${{ matrix.os }}_php-${{ matrix.php }}.$ext
+          echo "extension=$lib_name" | $sudo tee -a $ini_path
+        shell: bash
 
       - name: Composer install
         uses: ramsey/composer-install@v2
