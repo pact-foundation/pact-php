@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./vendor/autoload.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage processUncoveredFiles="true">
-    <include>
-      <directory suffix=".php">./src/PhpPact</directory>
-    </include>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./vendor/autoload.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" cacheDirectory=".phpunit.cache">
+  <coverage>
     <report>
       <clover outputFile="./test_results/reports/test_coverage_results.xml"/>
       <html outputDirectory="./test_results/coverage/" lowUpperBound="70"/>
@@ -11,67 +8,67 @@
   </coverage>
   <testsuites>
     <testsuite name="PhpPact Core Tests">
-        <directory>./tests</directory>
+      <directory>./tests</directory>
     </testsuite>
     <testsuite name="PhpPact Json Consumer Example Tests">
-        <directory>./example/json/consumer/tests</directory>
+      <directory>./example/json/consumer/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Json Provider Example Tests">
-        <directory>./example/json/provider/tests</directory>
+      <directory>./example/json/provider/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Binary Consumer Example Tests">
-        <directory>./example/binary/consumer/tests</directory>
+      <directory>./example/binary/consumer/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Binary Provider Example Tests">
-        <directory>./example/binary/provider/tests</directory>
+      <directory>./example/binary/provider/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Multipart Consumer Example Tests">
-        <directory>./example/multipart/consumer/tests</directory>
+      <directory>./example/multipart/consumer/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Multipart Provider Example Tests">
-        <directory>./example/multipart/provider/tests</directory>
+      <directory>./example/multipart/provider/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Xml Consumer Example Tests">
-        <directory>./example/xml/consumer/tests</directory>
+      <directory>./example/xml/consumer/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Xml Provider Example Tests">
-        <directory>./example/xml/provider/tests</directory>
+      <directory>./example/xml/provider/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Message Consumer Example Tests">
-        <directory>./example/message/consumer/tests</directory>
+      <directory>./example/message/consumer/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Message Provider Example Tests">
-        <directory>./example/message/provider/tests</directory>
+      <directory>./example/message/provider/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Matchers Consumer Example Tests">
-        <directory>./example/matchers/consumer/tests</directory>
+      <directory>./example/matchers/consumer/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Matchers Provider Example Tests">
-        <directory>./example/matchers/provider/tests</directory>
+      <directory>./example/matchers/provider/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Generators Consumer Example Tests">
-        <directory>./example/generators/consumer/tests</directory>
+      <directory>./example/generators/consumer/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Generators Provider Example Tests">
-        <directory>./example/generators/provider/tests</directory>
+      <directory>./example/generators/provider/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Csv Consumer Example Tests">
-        <directory>./example/csv/consumer/tests</directory>
+      <directory>./example/csv/consumer/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Csv Provider Example Tests">
-        <directory>./example/csv/provider/tests</directory>
+      <directory>./example/csv/provider/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Protobuf Sync Message Consumer Example Tests">
-        <directory>./example/protobuf-sync-message/consumer/tests</directory>
+      <directory>./example/protobuf-sync-message/consumer/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Protobuf Sync Message Provider Example Tests">
-        <directory>./example/protobuf-sync-message/provider/tests</directory>
+      <directory>./example/protobuf-sync-message/provider/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Protobuf Async Message Consumer Example Tests">
-        <directory>./example/protobuf-async-message/consumer/tests</directory>
+      <directory>./example/protobuf-async-message/consumer/tests</directory>
     </testsuite>
     <testsuite name="PhpPact Protobuf Async Message Provider Example Tests">
-        <directory>./example/protobuf-async-message/provider/tests</directory>
+      <directory>./example/protobuf-async-message/provider/tests</directory>
     </testsuite>
   </testsuites>
   <logging>
@@ -82,4 +79,9 @@
     <env name="PACT_PROVIDER_NAME" value="someProvider"/>
     <env name="PACT_LOGLEVEL" value="DEBUG"/>
   </php>
+  <source>
+    <include>
+      <directory suffix=".php">./src/PhpPact</directory>
+    </include>
+  </source>
 </phpunit>
