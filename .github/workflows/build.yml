@@ -62,7 +62,7 @@ jobs:
         with:
           extensions: ${{ matrix.operating-system == 'windows-latest' && contains('["8.2","8.3"]', matrix.php) && 'sockets, curl, zip, ffi' || 'sockets, curl, zip, ffi, grpc' }}
           php-version: ${{ matrix.php }}
-          coverage: none
+          coverage: pcov
           ini-values: ${{ matrix.operating-system == 'windows-latest' && 'opcache.enable=0 opcache.enable_cli=0' || '' }}
 
       - name: Install Protoc
