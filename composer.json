@@ -33,7 +33,7 @@
         "friendsofphp/php-cs-fixer": "^3.0",
         "php-amqplib/php-amqplib": "^3.0",
         "phpstan/phpstan": "^1.9",
-        "phpunit/phpunit": "^10|^11",
+        "phpunit/phpunit": "^10.5.6|^11",
         "guzzlehttp/guzzle": "^7.8",
         "behat/behat": "^3.13",
         "galbar/jsonpath": "^3.0",
