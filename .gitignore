@@ -258,3 +258,4 @@ vendor/*
 test_results
 pact
 example/output/*
+.phpunit.cache/
