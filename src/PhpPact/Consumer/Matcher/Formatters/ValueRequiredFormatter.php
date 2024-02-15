@@ -11,6 +11,8 @@ class ValueRequiredFormatter extends ValueOptionalFormatter
      */
     public function format(MatcherInterface $matcher): array
     {
-        return parent::format($matcher) + ['value' => $matcher->getValue()];
+        return [
+            ...parent::format($matcher),
+            'value' => $matcher->getValue()];
     }
 }

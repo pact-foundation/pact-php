@@ -14,6 +14,7 @@ class MinimalFormatter implements FormatterInterface
     {
         return [
             'pact:matcher:type' => $matcher->getType(),
-        ] + $matcher->getAttributes()->getData();
+            ...$matcher->getAttributes()->getData(),
+        ];
     }
 }
