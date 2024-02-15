@@ -14,7 +14,7 @@
     "extra": {
         "downloads": {
             "rr": {
-                "version": "2023.3.9",
+                "version": "2023.3.10",
                 "variables": {
                     "{$os}": "strtolower(PHP_OS_FAMILY)",
                     "{$architecture}": "in_array(php_uname('m'), ['x86_64', 'AMD64']) ? 'amd64' : 'arm64'",
