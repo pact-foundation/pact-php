@@ -99,7 +99,7 @@
         "fix": "php-cs-fixer fix",
         "test": [
             "php -r \"array_map('unlink', glob('./example/*/pacts/*.json'));\"",
-            "phpunit --verbose --no-coverage"
+            "phpunit --no-coverage"
         ],
         "gen-lib": [
             "protoc --php_out=example/protobuf-sync-message/library/src example/protobuf-sync-message/library/proto/area_calculator.proto",
