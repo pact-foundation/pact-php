@@ -96,7 +96,10 @@
         "static-code-analysis": "phpstan",
         "lint": "php-cs-fixer fix --dry-run",
         "fix": "php-cs-fixer fix",
-        "clean-up-pacts": "php -r \"array_map('unlink', glob('./example/*/pacts/*.json'));\"",
+        "test": [
+            "php -r \"array_map('unlink', glob('./example/*/pacts/*.json'));\"",
+            "phpunit --debug"
+        ],
         "gen-lib": [
             "protoc --php_out=example/protobuf-sync-message/library/src example/protobuf-sync-message/library/proto/area_calculator.proto",
             "protoc --php_out=example/protobuf-async-message/library/src example/protobuf-async-message/library/proto/say_hello.proto"

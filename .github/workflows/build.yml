@@ -86,7 +86,7 @@ jobs:
       - name: Generate Library
         run: composer gen-lib
 
-      - name: Run Tests
-        run: vendor/bin/phpunit --debug
+      - name: Composer test
+        run: composer test
         env:
           PACT_DO_NOT_TRACK: true
