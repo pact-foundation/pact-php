@@ -84,12 +84,12 @@ class GeneratorsTest extends TestCase
                 $this->lessThanOrEqual(499)
             )
         );
-        $this->assertRegExp('/^' . $regexWithoutAnchors . '$/', $body['regex']);
+        $this->assertMatchesRegularExpression('/^' . $regexWithoutAnchors . '$/', $body['regex']);
         $this->assertIsBool($body['boolean']);
         $this->assertIsInt($body['integer']);
         $this->assertIsFloat($body['decimal'] + 0);
-        $this->assertRegExp('/' . Matcher::HEX_FORMAT . '/', $body['hexadecimal']);
-        $this->assertRegExp('/' . Matcher::UUID_V4_FORMAT . '/', $body['uuid']);
+        $this->assertMatchesRegularExpression('/' . Matcher::HEX_FORMAT . '/', $body['hexadecimal']);
+        $this->assertMatchesRegularExpression('/' . Matcher::UUID_V4_FORMAT . '/', $body['uuid']);
         $this->assertTrue($this->validateDateTime($body['date'], 'Y-m-d'));
         $this->assertTrue($this->validateDateTime($body['time'], 'H:i:s'));
         $this->assertTrue($this->validateDateTime($body['datetime'], "Y-m-d\TH:i:s"));
@@ -97,7 +97,7 @@ class GeneratorsTest extends TestCase
         $this->assertNotSame(StringValue::DEFAULT_VALUE, $body['string']);
         $this->assertIsNumeric($body['number']);
         $this->assertNotSame('http://localhost/users/1234/posts/latest', $body['url']);
-        $this->assertRegExp('/.*(\\/users\\/\\d+\\/posts\\/latest)$/', $body['url']);
+        $this->assertMatchesRegularExpression('/.*(\\/users\\/\\d+\\/posts\\/latest)$/', $body['url']);
         $this->assertSame(222, $body['requestId']);
     }
 

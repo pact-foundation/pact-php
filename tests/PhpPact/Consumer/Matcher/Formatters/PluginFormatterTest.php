@@ -64,7 +64,7 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    public function invalidRulesProvider(): array
+    public static function invalidRulesProvider(): array
     {
         return [
             [new EachKey(["doesn't matter"], [])],
@@ -84,7 +84,7 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    public function invalidValueProvider(): array
+    public static function invalidValueProvider(): array
     {
         return [
             [new Type((object)['key' => 'value']), 'object'],
@@ -105,7 +105,7 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    public function notSupportedMatcherProvider(): array
+    public static function notSupportedMatcherProvider(): array
     {
         return [
             [new Values([1, 2, 3])],
@@ -122,7 +122,7 @@ class PluginFormatterTest extends TestCase
         $this->assertSame($json, json_encode($this->formatter->format($matcher)));
     }
 
-    public function matcherProvider(): array
+    public static function matcherProvider(): array
     {
         return [
             [new MatchingField('product'), '"matching($\'product\')"'],

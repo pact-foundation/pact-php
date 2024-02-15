@@ -46,7 +46,7 @@ abstract class GeneratorAwareMatcherTestCase extends TestCase
     /**
      * @return GeneratorInterface[]
      */
-    public function generatorProvider(): array
+    public static function generatorProvider(): array
     {
         return [
             [new Date()],

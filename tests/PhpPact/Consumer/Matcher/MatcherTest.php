@@ -120,7 +120,7 @@ class MatcherTest extends TestCase
     /**
      * @return string[]
      */
-    public function dataProviderForTimeTest(): array
+    public static function dataProviderForTimeTest(): array
     {
         return [
             ['T22:44:30.652Z'],
@@ -147,7 +147,7 @@ class MatcherTest extends TestCase
     /**
      * @return string[]
      */
-    public function dataProviderForDateTimeTest(): array
+    public static function dataProviderForDateTimeTest(): array
     {
         return [
             ['2015-08-06T16:53:10+01:00'],
@@ -172,7 +172,7 @@ class MatcherTest extends TestCase
     /**
      * @return string[]
      */
-    public function dataProviderForDateTimeWithMillisTest(): array
+    public static function dataProviderForDateTimeWithMillisTest(): array
     {
         return [
             ['2015-08-06T16:53:10.123+01:00'],

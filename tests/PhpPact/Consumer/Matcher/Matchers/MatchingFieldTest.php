@@ -40,7 +40,7 @@ class MatchingFieldTest extends TestCase
         json_encode($matcher);
     }
 
-    public function formatterProvider(): array
+    public static function formatterProvider(): array
     {
         return [
             [MinimalFormatter::class],
