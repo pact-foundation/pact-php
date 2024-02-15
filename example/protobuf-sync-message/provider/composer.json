@@ -2,7 +2,7 @@
     "name": "pact-foundation/example-protobuf-sync-message-provider",
     "require": {
         "grpc/grpc": "^1.57",
-        "spiral/roadrunner-grpc": "^2.0",
+        "spiral/roadrunner-grpc": "^3.2",
         "tienvx/composer-downloads-plugin": "^1.2"
     },
     "require-dev": {
