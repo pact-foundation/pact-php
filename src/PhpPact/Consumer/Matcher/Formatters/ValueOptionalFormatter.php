@@ -20,9 +20,17 @@ class ValueOptionalFormatter implements FormatterInterface
         $generator = $matcher instanceof GeneratorAwareInterface ? $matcher->getGenerator() : null;
 
         if ($generator) {
-            return $data + ['pact:generator:type' => $generator->getType()] + $attributes->merge($generator->getAttributes())->getData();
+            return [
+                ...$data,
+                'pact:generator:type' => $generator->getType(),
+                ...$attributes->merge($generator->getAttributes())->getData(),
+            ];
         }
 
-        return $data + $attributes->getData() + ['value' => $matcher->getValue()];
+        return [
+            ...$data,
+            ...$attributes->getData(),
+            'value' => $matcher->getValue(),
+        ];
     }
 }

@@ -18,7 +18,8 @@ class XmlContentFormatter extends ValueOptionalFormatter
             'content' => $matcher->getValue(),
             'matcher' => [
                 'pact:matcher:type' => $matcher->getType(),
-            ] + $matcher->getAttributes()->merge($generator ? $generator->getAttributes() : new Attributes($matcher))->getData(),
+                ...$matcher->getAttributes()->merge($generator ? $generator->getAttributes() : new Attributes($matcher))->getData(),
+            ],
         ];
 
         if ($generator) {
