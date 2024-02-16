@@ -10,6 +10,8 @@ class Binary
 {
     use ContentTypeTrait;
 
+    private ?BinaryData $data = null;
+
     public function __construct(private string $path, string $contentType)
     {
         $this->setContentType($contentType);
@@ -27,7 +29,16 @@ class Binary
         return $this;
     }
 
-    public function createBinaryData(): BinaryData
+    public function getData(): BinaryData
+    {
+        if (!$this->data) {
+            $this->data = $this->createBinaryData();
+        }
+
+        return $this->data;
+    }
+
+    private function createBinaryData(): BinaryData
     {
         if (!file_exists($this->getPath())) {
             throw new BinaryFileNotExistException(sprintf('File %s does not exist', $this->getPath()));
@@ -38,5 +49,10 @@ class Binary
         }
 
         return BinaryData::createFrom($contents);
+    }
+
+    public function __destruct()
+    {
+        $this->data = null;
     }
 }
