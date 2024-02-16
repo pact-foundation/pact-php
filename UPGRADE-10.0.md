@@ -98,11 +98,9 @@ This migrates from a CLI driven process for the Pact Framework, to an FFI proces
            // we need to set the provider branch here for PactBrokerWithDynamicConfiguration
            // as $publishOptions->setProviderBranch value set above isn't used.
            $broker->setProviderBranch(exec('git rev-parse --abbrev-ref HEAD'));
-           // NOTE - this needs to be a boolean, not a string value, otherwise it doesn't pass through the selector.
-           // Maybe a pact-php or pact-rust thing
            $selectors = (new ConsumerVersionSelectors())
-               ->addSelector(' { "mainBranch" : true } ')
-               ->addSelector(' { "deployedOrReleased" : true } ');
+               ->addSelector(new Selector(mainBranch: true))
+               ->addSelector(new Selector(deployedOrReleased: true));
            $broker->setConsumerVersionSelectors($selectors);
            $broker->setEnablePending(true);
            $broker->setIncludeWipPactSince('2020-01-30');
