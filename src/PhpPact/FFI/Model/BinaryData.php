@@ -32,7 +32,7 @@ class BinaryData
         }
 
         $length = \strlen($contents);
-        $cData  = FFI::new("uint8_t[{$length}]", false);
+        $cData  = FFI::new("uint8_t[{$length}]");
         if ($cData === null) {
             throw new CDataNotCreatedException();
         }

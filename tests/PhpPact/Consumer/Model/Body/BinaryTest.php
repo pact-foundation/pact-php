@@ -24,20 +24,20 @@ class BinaryTest extends TestCase
         $this->assertSame('text/csv', $body->getContentType());
     }
 
-    public function testCreateBinaryDataFromInvalidFilePath(): void
+    public function testGetDataFromInvalidFilePath(): void
     {
         $path = __DIR__ . '/../../../../_resources/invalid.jpg';
         $body = new Binary($path, 'image/jpeg');
         $this->expectException(BinaryFileNotExistException::class);
         $this->expectExceptionMessage("File $path does not exist");
-        $body->createBinaryData();
+        $body->getData();
     }
 
-    public function testCreateBinaryData(): void
+    public function testGetData(): void
     {
         $path = __DIR__ . '/../../../../_resources/image.jpg';
         $body = new Binary($path, 'image/jpeg');
-        $data = $body->createBinaryData();
+        $data = $body->getData();
 
         $this->assertEquals(file_get_contents($path), (string) $data);
     }

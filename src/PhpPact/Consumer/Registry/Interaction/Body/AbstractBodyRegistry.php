@@ -24,7 +24,7 @@ abstract class AbstractBodyRegistry implements BodyRegistryInterface
     {
         switch (true) {
             case $body instanceof Binary:
-                $data = $body->createBinaryData();
+                $data = $body->getData();
                 $success = $this->client->call('pactffi_with_binary_file', $this->interactionRegistry->getId(), $this->getPart(), $body->getContentType(), $data->getValue(), $data->getSize());
                 break;
 
