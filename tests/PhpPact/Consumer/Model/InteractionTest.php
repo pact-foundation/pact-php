@@ -2,12 +2,13 @@
 
 namespace PhpPactTest\Consumer\Model;
 
-use PhpPact\Consumer\Model\Body\Text;
-use PhpPact\Consumer\Model\Message;
+use PhpPact\Consumer\Model\ConsumerRequest;
+use PhpPact\Consumer\Model\Interaction;
+use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Consumer\Model\ProviderState;
 use PHPUnit\Framework\TestCase;
 
-class MessageTest extends TestCase
+class InteractionTest extends TestCase
 {
     public function testSetters()
     {
@@ -15,15 +16,15 @@ class MessageTest extends TestCase
         $description         = 'a message';
         $providerStateName   = 'a provider state';
         $providerStateParams = ['foo' => 'bar'];
-        $metadata            = ['queue' => 'foo', 'routing_key' => 'bar'];
-        $contents            = 'test';
+        $request             = new ConsumerRequest();
+        $response            = new ProviderResponse();
 
-        $subject = (new Message())
+        $subject = (new Interaction())
             ->setId($id)
             ->setDescription($description)
             ->addProviderState($providerStateName, $providerStateParams)
-            ->setMetadata($metadata)
-            ->setContents($contents);
+            ->setRequest($request)
+            ->setResponse($response);
 
         static::assertSame($id, $subject->getId());
         static::assertSame($description, $subject->getDescription());
@@ -32,11 +33,7 @@ class MessageTest extends TestCase
         static::assertContainsOnlyInstancesOf(ProviderState::class, $providerStates);
         static::assertEquals($providerStateName, $providerStates[0]->getName());
         static::assertEquals($providerStateParams, $providerStates[0]->getParams());
-        static::assertSame($metadata, $subject->getMetadata());
-
-        $messageContents = $subject->getContents();
-        $this->assertInstanceOf(Text::class, $messageContents);
-        $this->assertEquals($contents, $messageContents->getContents());
-        $this->assertEquals('text/plain', $messageContents->getContentType());
+        static::assertSame($request, $subject->getRequest());
+        static::assertSame($response, $subject->getResponse());
     }
 }

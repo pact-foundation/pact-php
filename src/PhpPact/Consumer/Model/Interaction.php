@@ -3,6 +3,7 @@
 namespace PhpPact\Consumer\Model;
 
 use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
+use PhpPact\Consumer\Model\Interaction\IdTrait;
 
 /**
  * Request/Response Pair to be posted to the Mock Server for PACT tests.
@@ -11,6 +12,7 @@ class Interaction
 {
     use ProviderStates;
     use DescriptionTrait;
+    use IdTrait;
 
     private ConsumerRequest $request;
 
