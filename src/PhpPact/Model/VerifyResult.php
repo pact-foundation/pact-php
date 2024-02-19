@@ -1,10 +1,10 @@
 <?php
 
-namespace PhpPactTest\CompatibilitySuite\Model;
+namespace PhpPact\Model;
 
 class VerifyResult
 {
-    public function __construct(private bool $success, private string $output)
+    public function __construct(private readonly bool $success, private readonly string $output)
     {
     }
 

@@ -2,13 +2,13 @@
 
 namespace PhpPactTest\CompatibilitySuite\Service;
 
+use PhpPact\Model\VerifyResult;
 use PhpPact\Standalone\ProviderVerifier\Model\Source\Broker;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
 use PhpPactTest\CompatibilitySuite\Model\Logger;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
-use PhpPactTest\CompatibilitySuite\Model\VerifyResult;
 
 final class ProviderVerifier implements ProviderVerifierInterface
 {

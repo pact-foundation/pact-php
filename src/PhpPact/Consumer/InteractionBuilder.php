@@ -73,6 +73,6 @@ class InteractionBuilder implements BuilderInterface
      */
     public function verify(): bool
     {
-        return $this->driver->verifyInteractions();
+        return $this->driver->verifyInteractions()->isSuccess();
     }
 }

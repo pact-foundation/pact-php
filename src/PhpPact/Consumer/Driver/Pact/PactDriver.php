@@ -5,28 +5,27 @@ namespace PhpPact\Consumer\Driver\Pact;
 use Composer\Semver\Comparator;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Exception\PactFileNotWroteException;
-use PhpPact\Consumer\Registry\Pact\PactRegistryInterface;
+use PhpPact\Consumer\Model\Pact\Pact;
 use PhpPact\FFI\ClientInterface;
 
 class PactDriver implements PactDriverInterface
 {
     public function __construct(
         protected ClientInterface $client,
-        protected PactConfigInterface $config,
-        protected PactRegistryInterface $pactRegistry
+        protected PactConfigInterface $config
     ) {
     }
 
-    public function cleanUp(): void
+    public function deletePact(Pact $pact): void
     {
-        $this->pactRegistry->deletePact();
+        $this->client->call('pactffi_free_pact_handle', $pact->handle);
     }
 
-    public function writePact(): void
+    public function writePact(Pact $pact): void
     {
         $error = $this->client->call(
             'pactffi_pact_handle_write_file',
-            $this->pactRegistry->getId(),
+            $pact->handle,
             $this->config->getPactDir(),
             $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
         );
@@ -35,11 +34,12 @@ class PactDriver implements PactDriverInterface
         }
     }
 
-    public function setUp(): void
+    public function newPact(): Pact
     {
-        $this
-            ->initWithLogLevel()
-            ->registerPact();
+        $pact = new Pact($this->client->call('pactffi_new_pact', $this->config->getConsumer(), $this->config->getProvider()));
+        $this->client->call('pactffi_with_specification', $pact->handle, $this->getSpecification());
+
+        return $pact;
     }
 
     protected function getSpecification(): int
@@ -63,24 +63,11 @@ class PactDriver implements PactDriverInterface
         return Comparator::equalTo($this->config->getPactSpecificationVersion(), $version);
     }
 
-    private function initWithLogLevel(): self
+    public function initWithLogLevel(): void
     {
         $logLevel = $this->config->getLogLevel();
         if ($logLevel) {
             $this->client->call('pactffi_init_with_log_level', $logLevel);
         }
-
-        return $this;
-    }
-
-    private function registerPact(): self
-    {
-        $this->pactRegistry->registerPact(
-            $this->config->getConsumer(),
-            $this->config->getProvider(),
-            $this->getSpecification()
-        );
-
-        return $this;
     }
 }

@@ -3,12 +3,9 @@
 namespace PhpPactTest\CompatibilitySuite\Service;
 
 use PhpPact\Config\PactConfigInterface;
-use PhpPact\Consumer\Driver\Pact\PactDriver;
 use PhpPact\Consumer\Model\Message;
-use PhpPact\Consumer\Registry\Pact\PactRegistry;
-use PhpPact\FFI\Client;
 use PhpPact\Standalone\MockService\MockServerConfig;
-use PhpPact\SyncMessage\Registry\Interaction\SyncMessageRegistry;
+use PhpPact\SyncMessage\Factory\SyncMessageDriverFactory;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 
@@ -28,14 +25,9 @@ class SyncMessagePactWriter implements SyncMessagePactWriterInterface
             ->setPactDir(Path::PACTS_PATH)
             ->setPactSpecificationVersion($this->specificationVersion)
             ->setPactFileWriteMode($mode);
-        $client = new Client();
-        $pactRegistry = new PactRegistry($client);
-        $pactDriver = new PactDriver($client, $config, $pactRegistry);
-        $messageRegistry = new SyncMessageRegistry($client, $pactRegistry);
+        $driver = (new SyncMessageDriverFactory())->create($config);
 
-        $pactDriver->setUp();
-        $messageRegistry->registerMessage($message);
-        $pactDriver->writePact();
-        $pactDriver->cleanUp();
+        $driver->registerMessage($message);
+        $driver->writePactAndCleanUp();
     }
 }

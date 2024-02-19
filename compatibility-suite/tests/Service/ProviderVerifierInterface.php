@@ -2,9 +2,9 @@
 
 namespace PhpPactTest\CompatibilitySuite\Service;
 
+use PhpPact\Model\VerifyResult;
 use PhpPact\Standalone\ProviderVerifier\Model\Source\Broker;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
-use PhpPactTest\CompatibilitySuite\Model\VerifyResult;
 
 interface ProviderVerifierInterface
 {

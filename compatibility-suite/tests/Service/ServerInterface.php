@@ -2,8 +2,8 @@
 
 namespace PhpPactTest\CompatibilitySuite\Service;
 
+use PhpPact\Model\VerifyResult;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
-use PhpPactTest\CompatibilitySuite\Model\VerifyResult;
 use Psr\Http\Message\UriInterface;
 
 interface ServerInterface

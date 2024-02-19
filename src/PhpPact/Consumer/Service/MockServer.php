@@ -6,26 +6,24 @@ use FFI;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Exception\MockServerNotStartedException;
 use PhpPact\Consumer\Exception\MockServerNotWrotePactFileException;
-use PhpPact\Consumer\Registry\Pact\PactRegistryInterface;
+use PhpPact\Consumer\Model\Pact\Pact;
 use PhpPact\FFI\ClientInterface;
-use PhpPact\Service\LoggerInterface;
+use PhpPact\Model\VerifyResult;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 
 class MockServer implements MockServerInterface
 {
     public function __construct(
         private ClientInterface $client,
-        private PactRegistryInterface $pactRegistry,
-        private MockServerConfigInterface $config,
-        private ?LoggerInterface $logger = null
+        private MockServerConfigInterface $config
     ) {
     }
 
-    public function start(): void
+    public function start(Pact $pact): void
     {
         $port = $this->client->call(
             'pactffi_create_mock_server_for_transport',
-            $this->pactRegistry->getId(),
+            $pact->handle,
             $this->config->getHost(),
             $this->config->getPort(),
             $this->getTransport(),
@@ -38,18 +36,18 @@ class MockServer implements MockServerInterface
         $this->config->setPort($port);
     }
 
-    public function verify(): bool
+    public function verify(): VerifyResult
     {
         try {
             $matched = $this->isMatched();
 
             if ($matched) {
                 $this->writePact();
-            } elseif ($this->logger) {
-                $this->logger->log($this->getMismatches());
+            } else {
+                $mismatches = $this->getMismatches();
             }
 
-            return $matched;
+            return new VerifyResult($matched, $mismatches ?? '');
         } finally {
             $this->cleanUp();
         }
@@ -65,7 +63,7 @@ class MockServer implements MockServerInterface
         return null;
     }
 
-    private function writePact(): void
+    public function writePact(): void
     {
         $error = $this->client->call(
             'pactffi_write_pact_file',
@@ -81,7 +79,6 @@ class MockServer implements MockServerInterface
     private function cleanUp(): void
     {
         $this->client->call('pactffi_cleanup_mock_server', $this->config->getPort());
-        $this->pactRegistry->deletePact();
     }
 
     private function isMatched(): bool

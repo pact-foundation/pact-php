@@ -2,8 +2,8 @@
 
 namespace PhpPact\Consumer;
 
-use PhpPact\Consumer\Driver\Interaction\MessageDriverInterface;
 use PhpPact\Config\PactConfigInterface;
+use PhpPact\Consumer\Driver\Interaction\MessageDriverInterface;
 use PhpPact\Consumer\Factory\MessageDriverFactory;
 use PhpPact\Consumer\Factory\MessageDriverFactoryInterface;
 
@@ -48,7 +48,7 @@ class MessageBuilder extends AbstractMessageBuilder
     {
         $this->driver->registerMessage($this->message);
 
-        return $this->driver->reify();
+        return $this->driver->reify($this->message);
     }
 
     /**
