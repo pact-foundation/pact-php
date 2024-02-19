@@ -2,30 +2,19 @@
 
 namespace PhpPact\Consumer\Model;
 
+use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
+
 /**
  * Request/Response Pair to be posted to the Mock Server for PACT tests.
  */
 class Interaction
 {
     use ProviderStates;
-
-    private string $description;
+    use DescriptionTrait;
 
     private ConsumerRequest $request;
 
     private ProviderResponse $response;
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
 
     public function getRequest(): ConsumerRequest
     {
