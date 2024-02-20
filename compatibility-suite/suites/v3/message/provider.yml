@@ -22,5 +22,5 @@ default:
 
             services: PhpPactTest\CompatibilitySuite\ServiceContainer\V3
 
-            # filters:
-            #     tags: ~@wip
+            filters:
+                tags: ~@wip
