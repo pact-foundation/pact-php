@@ -8,6 +8,7 @@ use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PhpPact\Consumer\Model\Body\Binary;
 use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
+use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
 
 /**
  * Message metadata and contents to be posted to the Mock Server for PACT tests.
@@ -15,8 +16,7 @@ use PhpPact\Consumer\Model\Body\Text;
 class Message
 {
     use ProviderStates;
-
-    private string $description;
+    use DescriptionTrait;
 
     /**
      * @var array<string, string>
@@ -24,18 +24,6 @@ class Message
     private array $metadata = [];
 
     private Text|Binary|null $contents = null;
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
 
     /**
      * @return array<string, string>
