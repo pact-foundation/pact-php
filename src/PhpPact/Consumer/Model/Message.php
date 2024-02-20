@@ -9,7 +9,7 @@ use PhpPact\Consumer\Model\Body\Binary;
 use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
-use PhpPact\Consumer\Model\Interaction\IdTrait;
+use PhpPact\Consumer\Model\Interaction\HandleTrait;
 
 /**
  * Message metadata and contents to be posted to the Mock Server for PACT tests.
@@ -18,7 +18,7 @@ class Message
 {
     use ProviderStates;
     use DescriptionTrait;
-    use IdTrait;
+    use HandleTrait;
 
     /**
      * @var array<string, string>

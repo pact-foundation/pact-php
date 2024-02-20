@@ -11,7 +11,7 @@ class MessageTest extends TestCase
 {
     public function testSetters()
     {
-        $id                  = 123;
+        $handle              = 123;
         $description         = 'a message';
         $providerStateName   = 'a provider state';
         $providerStateParams = ['foo' => 'bar'];
@@ -19,13 +19,13 @@ class MessageTest extends TestCase
         $contents            = 'test';
 
         $subject = (new Message())
-            ->setId($id)
+            ->setHandle($handle)
             ->setDescription($description)
             ->addProviderState($providerStateName, $providerStateParams)
             ->setMetadata($metadata)
             ->setContents($contents);
 
-        static::assertSame($id, $subject->getId());
+        static::assertSame($handle, $subject->getHandle());
         static::assertSame($description, $subject->getDescription());
         $providerStates = $subject->getProviderStates();
         static::assertCount(1, $providerStates);

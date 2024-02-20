@@ -12,7 +12,7 @@ class InteractionTest extends TestCase
 {
     public function testSetters()
     {
-        $id                  = 123;
+        $handle              = 123;
         $description         = 'a message';
         $providerStateName   = 'a provider state';
         $providerStateParams = ['foo' => 'bar'];
@@ -20,13 +20,13 @@ class InteractionTest extends TestCase
         $response            = new ProviderResponse();
 
         $subject = (new Interaction())
-            ->setId($id)
+            ->setHandle($handle)
             ->setDescription($description)
             ->addProviderState($providerStateName, $providerStateParams)
             ->setRequest($request)
             ->setResponse($response);
 
-        static::assertSame($id, $subject->getId());
+        static::assertSame($handle, $subject->getHandle());
         static::assertSame($description, $subject->getDescription());
         $providerStates = $subject->getProviderStates();
         static::assertCount(1, $providerStates);
