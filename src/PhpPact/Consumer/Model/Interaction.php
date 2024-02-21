@@ -2,6 +2,10 @@
 
 namespace PhpPact\Consumer\Model;
 
+use PhpPact\Consumer\Driver\Enum\InteractionPart;
+use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Multipart;
+use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
 use PhpPact\Consumer\Model\Interaction\HandleTrait;
 
@@ -40,5 +44,24 @@ class Interaction
         $this->response = $response;
 
         return $this;
+    }
+
+    public function getBody(InteractionPart $part): Text|Binary|Multipart|null
+    {
+        return match ($part) {
+            InteractionPart::REQUEST => $this->getRequest()->getBody(),
+            InteractionPart::RESPONSE => $this->getResponse()->getBody(),
+        };
+    }
+
+    /**
+     * @return array<string, string[]>
+     */
+    public function getHeaders(InteractionPart $part): array
+    {
+        return match ($part) {
+            InteractionPart::REQUEST => $this->getRequest()->getHeaders(),
+            InteractionPart::RESPONSE => $this->getResponse()->getHeaders(),
+        };
     }
 }
