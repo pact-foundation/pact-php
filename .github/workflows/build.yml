@@ -111,6 +111,13 @@ jobs:
         run: composer gen-lib
         if: ${{ !matrix.example || contains(matrix.example, 'protobuf') }}
 
+      - name: Cache Pact Plugins
+        uses: actions/cache@v4
+        with:
+          path: ~/.pact/plugins
+          key: ${{ matrix.os }}-pact-plugins
+        if: ${{ !matrix.example || matrix.example == 'csv' || contains(matrix.example, 'protobuf') }}
+
       - name: Run example(s)
         run: composer test -- --exclude-testsuite unit ${{ matrix.example && format('--testsuite {0}-example', matrix.example) || '' }}
         env:
