@@ -54,8 +54,10 @@ jobs:
     name: PHP ${{ matrix.php }} on ${{ matrix.operating-system }} with ${{ matrix.dependencies }} dependencies
 
     steps:
-      - name: Tune GitHub-hosted runner network
-        uses: smorimoto/tune-github-hosted-runner-network@v1
+      - name: Tune Windows Network
+        if: ${{ runner.os == 'Windows' }}
+        shell: pwsh
+        run: Disable-NetAdapterChecksumOffload -Name * -TcpIPv4 -UdpIPv4 -TcpIPv6 -UdpIPv6
 
       - uses: actions/checkout@v3
         name: Checkout repository
