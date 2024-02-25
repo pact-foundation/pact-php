@@ -149,9 +149,9 @@ class InteractionBodyDriverTest extends TestCase
             ->willReturnCallback(
                 fn (string $method, int $interactionId, int $partId, string $contentType, string $path, string $name, string $boundary) =>
                 match([$method, $interactionId, $partId, $contentType, $path, $name, $boundary]) {
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[0]->getContentType(), $this->parts[0]->getPath(), $this->parts[0]->getName(), $this->boundary] => (object) [],
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[1]->getContentType(), $this->parts[1]->getPath(), $this->parts[1]->getName(), $this->boundary] => (object) [],
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[2]->getContentType(), $this->parts[2]->getPath(), $this->parts[2]->getName(), $this->boundary] => (object) ($success ? [] : ['failed' => $this->failed]),
+                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[0]->getContentType(), $this->parts[0]->getPath(), $this->parts[0]->getName(), $this->boundary] => (object) ['failed' => null],
+                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[1]->getContentType(), $this->parts[1]->getPath(), $this->parts[1]->getName(), $this->boundary] => (object) ['failed' => null],
+                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[2]->getContentType(), $this->parts[2]->getPath(), $this->parts[2]->getName(), $this->boundary] => (object) (['failed' => $success ? null : $this->failed]),
                 }
             );
         if (!$success) {
@@ -172,9 +172,9 @@ class InteractionBodyDriverTest extends TestCase
             ->willReturnCallback(
                 fn (string $method, int $interactionId, int $partId, string $contentType, string $path, string $name, string $boundary) =>
                 match([$method, $interactionId, $partId, $contentType, $path, $name, $boundary]) {
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[0]->getContentType(), $this->parts[0]->getPath(), $this->parts[0]->getName(), $this->boundary] => (object) [],
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[1]->getContentType(), $this->parts[1]->getPath(), $this->parts[1]->getName(), $this->boundary] => (object) [],
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[2]->getContentType(), $this->parts[2]->getPath(), $this->parts[2]->getName(), $this->boundary] => (object) ($success ? [] : ['failed' => $this->failed]),
+                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[0]->getContentType(), $this->parts[0]->getPath(), $this->parts[0]->getName(), $this->boundary] => (object) ['failed' => null],
+                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[1]->getContentType(), $this->parts[1]->getPath(), $this->parts[1]->getName(), $this->boundary] => (object) ['failed' => null],
+                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[2]->getContentType(), $this->parts[2]->getPath(), $this->parts[2]->getName(), $this->boundary] => (object) (['failed' => $success ? null : $this->failed]),
                 }
             );
         if (!$success) {

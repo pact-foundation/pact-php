@@ -39,7 +39,7 @@ class InteractionBodyDriver implements InteractionBodyDriverInterface
             case $body instanceof Multipart:
                 foreach ($body->getParts() as $part) {
                     $result = $this->client->call('pactffi_with_multipart_file_v2', $interaction->getHandle(), $partId, $part->getContentType(), $part->getPath(), $part->getName(), $body->getBoundary());
-                    if (isset($result->failed) && $result->failed instanceof CData) {
+                    if ($result->failed instanceof CData) {
                         throw new PartNotAddedException(FFI::string($result->failed));
                     }
                 }
