@@ -2,124 +2,136 @@
 
 namespace PhpPactTest\Consumer;
 
+use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
+use PhpPact\Consumer\Factory\InteractionDriverFactoryInterface;
 use PhpPact\Consumer\InteractionBuilder;
-use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
+use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
-use PhpPact\Standalone\Exception\MissingEnvVariableException;
-use PhpPact\Standalone\MockService\MockServerEnvConfig;
+use PhpPact\Consumer\Model\ProviderState;
+use PhpPact\Standalone\MockService\MockServerConfigInterface;
+use PhpPact\Standalone\MockService\Model\VerifyResult;
+use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 
 class InteractionBuilderTest extends TestCase
 {
-    /**
-     * @throws MissingEnvVariableException
-     * @throws \Exception
-     */
-    public function testSimpleGet()
+    private InteractionBuilder $builder;
+    private InteractionDriverInterface|MockObject $driver;
+    private MockServerConfigInterface|MockObject $config;
+    private InteractionDriverFactoryInterface|MockObject $driverFactory;
+
+    public function setUp(): void
     {
-        $matcher = new Matcher();
-
-        $request = new ConsumerRequest();
-        $request
-            ->setPath('/something')
-            ->setMethod('GET')
-            ->addHeader('Content-Type', 'application/json');
-
-        $response = new ProviderResponse();
-        $response
-            ->setStatus(200)
-            ->setBody([
-                'message' => 'Hello, world!',
-                'age'     => $matcher->like(73),
-            ])
-            ->addHeader('Content-Type', 'application/json');
-
-        $builder = new InteractionBuilder(new MockServerEnvConfig());
-        $builder
-            ->given('A test request.', ['key' => 'value'])
-            ->uponReceiving('A test response.')
-            ->with($request)
-            ->willRespondWith($response);
-
-        $verifyResult = $builder->verify();
-
-        $this->assertFalse($verifyResult);
+        $this->driver = $this->createMock(InteractionDriverInterface::class);
+        $this->config = $this->createMock(MockServerConfigInterface::class);
+        $this->driverFactory = $this->createMock(InteractionDriverFactoryInterface::class);
+        $this->driverFactory
+            ->expects($this->once())
+            ->method('create')
+            ->with($this->config)
+            ->willReturn($this->driver);
+        $this->builder = new InteractionBuilder($this->config, $this->driverFactory);
     }
 
-    /**
-     * @throws MissingEnvVariableException
-     */
-    public function testPostWithBody()
+    public function testNewInteraction(): void
     {
-        $request = new ConsumerRequest();
-        $request
-            ->setPath('/something')
-            ->setMethod('POST')
-            ->addHeader('Content-Type', 'application/json')
-            ->setBody([
-                'someStuff'  => 'someOtherStuff',
-                'someNumber' => 12,
-                'anArray'    => [
-                    12,
-                    'words here',
-                    493.5,
-                ],
-            ]);
-
-        $response = new ProviderResponse();
-        $response
-            ->setStatus(200)
-            ->addHeader('Content-Type', 'application/json')
-            ->setBody([
-                'message' => 'Hello, world!',
-            ]);
-
-        $builder = new InteractionBuilder(new MockServerEnvConfig());
-        $builder
-            ->given('A test request.', ['key' => 'value'])
-            ->uponReceiving('A test response.')
-            ->with($request)
-            ->willRespondWith($response);
-
-        $verifyResult = $builder->verify();
-
-        $this->assertFalse($verifyResult);
+        $oldInteraction = $this->getInteraction();
+        $this->builder->newInteraction();
+        $newInteraction = $this->getInteraction();
+        $this->assertNotSame($oldInteraction, $newInteraction);
     }
 
-    /**
-     * @throws MissingEnvVariableException
-     */
-    public function testBuildWithEachLikeMatcher()
+    public function testGiven(): void
     {
-        $matcher = new Matcher();
+        $this->assertSame($this->builder, $this->builder->given('test', ['key' => 'value']));
+        $interaction = $this->getInteraction();
+        $providerStates = $interaction->getProviderStates();
+        $this->assertCount(1, $providerStates);
+        $providerState = $providerStates[0];
+        $this->assertInstanceOf(ProviderState::class, $providerState);
+        $this->assertSame('test', $providerState->getName());
+        $this->assertSame(['key' => 'value'], $providerState->getParams());
+    }
 
+    public function testUponReceiving(): void
+    {
+        $description = 'interaction description';
+        $this->assertSame($this->builder, $this->builder->uponReceiving($description));
+        $interaction = $this->getInteraction();
+        $this->assertSame($description, $interaction->getDescription());
+    }
+
+    public function testWithRequest(): void
+    {
         $request = new ConsumerRequest();
-        $request
-            ->setPath('/something')
-            ->setMethod('GET')
-            ->addHeader('Content-Type', 'application/json');
+        $this->assertSame($this->builder, $this->builder->with($request));
+        $interaction = $this->getInteraction();
+        $this->assertSame($request, $interaction->getRequest());
+    }
 
+    #[TestWith([false, true])]
+    #[TestWith([true, true])]
+    #[TestWith([false, false])]
+    #[TestWith([true, false])]
+    public function testWillRespondWith(bool $startMockServer, bool $result): void
+    {
         $response = new ProviderResponse();
-        $response
-            ->setStatus(200)
-            ->addHeader('Content-Type', 'application/json')
-            ->setBody([
-                'list' => $matcher->eachLike([
-                    'test'    => 1,
-                    'another' => 2,
-                ]),
-            ]);
+        $interaction = $this->getInteraction();
+        $this->driver
+            ->expects($this->once())
+            ->method('registerInteraction')
+            ->with($interaction, $startMockServer)
+            ->willReturn($result);
+        $this->assertSame($result, $this->builder->willRespondWith($response, $startMockServer));
+        $this->assertSame($response, $interaction->getResponse());
+    }
 
-        $builder = new InteractionBuilder(new MockServerEnvConfig());
-        $builder
-            ->given('A test request.', ['key' => 'value'])
-            ->uponReceiving('A test response.')
-            ->with($request)
-            ->willRespondWith($response);
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function testVerify(bool $matched): void
+    {
+        $this->driver
+            ->expects($this->once())
+            ->method('verifyInteractions')
+            ->willReturn(new VerifyResult($matched, ''));
+        $this->assertSame($matched, $this->builder->verify());
+    }
 
-        $verifyResult = $builder->verify();
+    #[TestWith([null])]
+    #[TestWith(['key'])]
+    public function testSetKey(?string $key): void
+    {
+        $this->assertSame($this->builder, $this->builder->key($key));
+        $interaction = $this->getInteraction();
+        $this->assertSame($key, $interaction->getKey());
+    }
 
-        $this->assertFalse($verifyResult);
+    #[TestWith([null])]
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function testSetPending(?bool $pending): void
+    {
+        $this->assertSame($this->builder, $this->builder->pending($pending));
+        $interaction = $this->getInteraction();
+        $this->assertSame($pending, $interaction->getPending());
+    }
+
+    #[TestWith([[]])]
+    #[TestWith([['key' => 'value']])]
+    public function testSetComments(array $comments): void
+    {
+        $this->assertSame($this->builder, $this->builder->comments($comments));
+        $interaction = $this->getInteraction();
+        $this->assertSame($comments, $interaction->getComments());
+    }
+
+    private function getInteraction(): Interaction
+    {
+        $reflection = new ReflectionProperty($this->builder, 'interaction');
+
+        return $reflection->getValue($this->builder);
     }
 }
