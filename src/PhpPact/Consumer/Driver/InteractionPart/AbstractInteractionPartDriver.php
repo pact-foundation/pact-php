@@ -19,14 +19,12 @@ abstract class AbstractInteractionPartDriver
         $this->bodyDriver = $bodyDriver ?? new InteractionBodyDriver($client);
     }
 
-    protected function withBody(Interaction $interaction, InteractionPart $part): self
+    protected function withBody(Interaction $interaction, InteractionPart $part): void
     {
         $this->bodyDriver->registerBody($interaction, $part);
-
-        return $this;
     }
 
-    protected function withHeaders(Interaction $interaction, InteractionPart $interactionPart): self
+    protected function withHeaders(Interaction $interaction, InteractionPart $interactionPart): void
     {
         $headers = $interaction->getHeaders($interactionPart);
         $partId = match ($interactionPart) {
@@ -38,7 +36,5 @@ abstract class AbstractInteractionPartDriver
                 $this->client->call('pactffi_with_header_v2', $interaction->getHandle(), $partId, (string) $header, (int) $index, (string) $value);
             }
         }
-
-        return $this;
     }
 }

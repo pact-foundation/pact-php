@@ -9,16 +9,15 @@ class ResponseDriver extends AbstractInteractionPartDriver implements ResponseDr
 {
     public function registerResponse(Interaction $interaction): void
     {
-        $this
-            ->withResponse($interaction)
-            ->withHeaders($interaction, InteractionPart::RESPONSE)
-            ->withBody($interaction, InteractionPart::RESPONSE);
+        // @todo Fix 'Exception: String could not be parsed as XML' in xml's consumer test
+        // when calling `withBody` before `withHeaders`
+        $this->withHeaders($interaction, InteractionPart::RESPONSE);
+        $this->withBody($interaction, InteractionPart::RESPONSE);
+        $this->withResponse($interaction);
     }
 
-    private function withResponse(Interaction $interaction): self
+    private function withResponse(Interaction $interaction): void
     {
         $this->client->call('pactffi_response_status_v2', $interaction->getHandle(), $interaction->getResponse()->getStatus());
-
-        return $this;
     }
 }
