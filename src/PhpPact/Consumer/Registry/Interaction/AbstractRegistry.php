@@ -2,7 +2,7 @@
 
 namespace PhpPact\Consumer\Registry\Interaction;
 
-use PhpPact\Consumer\Registry\Pact\PactRegistryInterface;
+use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\FFI\ClientInterface;
 
 abstract class AbstractRegistry implements RegistryInterface
@@ -11,7 +11,7 @@ abstract class AbstractRegistry implements RegistryInterface
 
     public function __construct(
         protected ClientInterface $client,
-        protected PactRegistryInterface $pactRegistry
+        protected PactDriverInterface $pactDriver
     ) {
     }
 

@@ -9,7 +9,7 @@ class SyncMessageRegistry extends MessageRegistry
 {
     protected function newInteraction(string $description): self
     {
-        $this->id = $this->client->call('pactffi_new_sync_message_interaction', $this->pactRegistry->getId(), $description);
+        $this->id = $this->client->call('pactffi_new_sync_message_interaction', $this->pactDriver->getPact()->handle, $description);
 
         return $this;
     }

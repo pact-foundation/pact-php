@@ -7,7 +7,6 @@ use PhpPact\Consumer\Driver\Pact\PactDriver;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Registry\Interaction\InteractionRegistry;
 use PhpPact\Consumer\Registry\Interaction\InteractionRegistryInterface;
-use PhpPact\Consumer\Registry\Pact\PactRegistry;
 use PhpPact\Consumer\Service\MockServer;
 use PhpPact\Consumer\Service\MockServerInterface;
 use PhpPact\FFI\Client;
@@ -45,16 +44,14 @@ final class Server implements ServerInterface
         $this->logger = new Logger();
 
         $client = new Client();
-        $pactRegistry = new PactRegistry($client);
-        $this->pactDriver = new PactDriver($client, $this->config, $pactRegistry);
-        $this->mockServer = new MockServer($client, $pactRegistry, $this->config, $this->logger);
-        $this->interactionRegistry = new InteractionRegistry($client, $pactRegistry);
+        $this->pactDriver = new PactDriver($client, $this->config);
+        $this->mockServer = new MockServer($client, $this->pactDriver, $this->config, $this->logger);
+        $this->interactionRegistry = new InteractionRegistry($client, $this->pactDriver);
     }
 
     public function register(int ...$ids): void
     {
         $interactions = array_map(fn (int $id) => $this->storage->get(InteractionsStorageInterface::SERVER_DOMAIN, $id), $ids);
-        $this->pactDriver->setUp();
         foreach ($interactions as $interaction) {
             $this->interactionRegistry->registerInteraction($interaction);
         }

@@ -2,13 +2,13 @@
 
 namespace PhpPact\Consumer\Registry\Interaction;
 
+use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Model\Body\Binary;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Consumer\Model\ProviderState;
 use PhpPact\Consumer\Registry\Interaction\Body\BodyRegistryInterface;
 use PhpPact\Consumer\Registry\Interaction\Body\MessageContentsRegistry;
-use PhpPact\Consumer\Registry\Pact\PactRegistryInterface;
 use PhpPact\FFI\ClientInterface;
 
 class MessageRegistry extends AbstractRegistry implements MessageRegistryInterface
@@ -17,10 +17,10 @@ class MessageRegistry extends AbstractRegistry implements MessageRegistryInterfa
 
     public function __construct(
         ClientInterface $client,
-        PactRegistryInterface $pactRegistry,
+        PactDriverInterface $pactDriver,
         ?BodyRegistryInterface $messageContentsRegistry = null
     ) {
-        parent::__construct($client, $pactRegistry);
+        parent::__construct($client, $pactDriver);
         $this->messageContentsRegistry = $messageContentsRegistry ?? new MessageContentsRegistry($client, $this);
     }
 
@@ -37,7 +37,7 @@ class MessageRegistry extends AbstractRegistry implements MessageRegistryInterfa
 
     protected function newInteraction(string $description): self
     {
-        $this->id = $this->client->call('pactffi_new_message_interaction', $this->pactRegistry->getId(), $description);
+        $this->id = $this->client->call('pactffi_new_message_interaction', $this->pactDriver->getPact()->handle, $description);
 
         return $this;
     }

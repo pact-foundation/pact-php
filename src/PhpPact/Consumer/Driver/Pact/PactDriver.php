@@ -4,29 +4,35 @@ namespace PhpPact\Consumer\Driver\Pact;
 
 use Composer\Semver\Comparator;
 use PhpPact\Config\PactConfigInterface;
+use PhpPact\Consumer\Driver\Exception\MissingPactException;
 use PhpPact\Consumer\Exception\PactFileNotWroteException;
-use PhpPact\Consumer\Registry\Pact\PactRegistryInterface;
+use PhpPact\Consumer\Model\Pact\Pact;
 use PhpPact\FFI\ClientInterface;
 
 class PactDriver implements PactDriverInterface
 {
+    protected ?Pact $pact = null;
+
     public function __construct(
         protected ClientInterface $client,
-        protected PactConfigInterface $config,
-        protected PactRegistryInterface $pactRegistry
+        protected PactConfigInterface $config
     ) {
+        $this->setUp();
     }
 
     public function cleanUp(): void
     {
-        $this->pactRegistry->deletePact();
+        $this->validatePact();
+        $this->client->call('pactffi_free_pact_handle', $this->pact->handle);
+        $this->pact = null;
     }
 
     public function writePact(): void
     {
+        $this->validatePact();
         $error = $this->client->call(
             'pactffi_pact_handle_write_file',
-            $this->pactRegistry->getId(),
+            $this->pact->handle,
             $this->config->getPactDir(),
             $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
         );
@@ -35,11 +41,18 @@ class PactDriver implements PactDriverInterface
         }
     }
 
-    public function setUp(): void
+    public function getPact(): Pact
     {
-        $this
-            ->initWithLogLevel()
-            ->registerPact();
+        $this->validatePact();
+
+        return $this->pact;
+    }
+
+    protected function setUp(): void
+    {
+        $this->initWithLogLevel();
+        $this->newPact();
+        $this->withSpecification();
     }
 
     protected function getSpecification(): int
@@ -58,29 +71,33 @@ class PactDriver implements PactDriverInterface
         };
     }
 
+    protected function validatePact(): void
+    {
+        if (!$this->pact) {
+            throw new MissingPactException();
+        }
+    }
+
     private function versionEqualTo(string $version): bool
     {
         return Comparator::equalTo($this->config->getPactSpecificationVersion(), $version);
     }
 
-    private function initWithLogLevel(): self
+    private function initWithLogLevel(): void
     {
         $logLevel = $this->config->getLogLevel();
         if ($logLevel) {
             $this->client->call('pactffi_init_with_log_level', $logLevel);
         }
-
-        return $this;
     }
 
-    private function registerPact(): self
+    private function newPact(): void
     {
-        $this->pactRegistry->registerPact(
-            $this->config->getConsumer(),
-            $this->config->getProvider(),
-            $this->getSpecification()
-        );
+        $this->pact = new Pact($this->client->call('pactffi_new_pact', $this->config->getConsumer(), $this->config->getProvider()));
+    }
 
-        return $this;
+    private function withSpecification(): void
+    {
+        $this->client->call('pactffi_with_specification', $this->pact->handle, $this->getSpecification());
     }
 }

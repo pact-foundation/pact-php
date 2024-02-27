@@ -3,7 +3,6 @@
 namespace PhpPact\SyncMessage\Factory;
 
 use PhpPact\Consumer\Driver\Pact\PactDriver;
-use PhpPact\Consumer\Registry\Pact\PactRegistry;
 use PhpPact\Consumer\Service\MockServer;
 use PhpPact\FFI\Client;
 use PhpPact\SyncMessage\Driver\Interaction\SyncMessageDriver;
@@ -16,11 +15,10 @@ class SyncMessageDriverFactory implements SyncMessageDriverFactoryInterface
     public function create(MockServerConfigInterface $config): SyncMessageDriverInterface
     {
         $client = new Client();
-        $pactRegistry = new PactRegistry($client);
-        $pactDriver = new PactDriver($client, $config, $pactRegistry);
-        $messageRegistry = new SyncMessageRegistry($client, $pactRegistry);
-        $mockServer = new MockServer($client, $pactRegistry, $config);
+        $pactDriver = new PactDriver($client, $config);
+        $messageRegistry = new SyncMessageRegistry($client, $pactDriver);
+        $mockServer = new MockServer($client, $pactDriver, $config);
 
-        return new SyncMessageDriver($pactDriver, $messageRegistry, $mockServer);
+        return new SyncMessageDriver($messageRegistry, $mockServer);
     }
 }
