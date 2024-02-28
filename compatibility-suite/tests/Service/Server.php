@@ -3,17 +3,11 @@
 namespace PhpPactTest\CompatibilitySuite\Service;
 
 use PhpPact\Config\PactConfigInterface;
-use PhpPact\Consumer\Driver\Pact\PactDriver;
-use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
-use PhpPact\Consumer\Registry\Interaction\InteractionRegistry;
-use PhpPact\Consumer\Registry\Interaction\InteractionRegistryInterface;
-use PhpPact\Consumer\Service\MockServer;
-use PhpPact\Consumer\Service\MockServerInterface;
-use PhpPact\FFI\Client;
+use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
+use PhpPact\Consumer\Factory\InteractionDriverFactory;
 use PhpPact\Standalone\MockService\MockServerConfig;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
-use PhpPactTest\CompatibilitySuite\Model\Logger;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Model\VerifyResult;
 use Psr\Http\Message\UriInterface;
@@ -21,11 +15,8 @@ use Psr\Http\Message\UriInterface;
 final class Server implements ServerInterface
 {
     private MockServerConfigInterface $config;
-    private PactDriverInterface $pactDriver;
-    private InteractionRegistryInterface $interactionRegistry;
-    private MockServerInterface $mockServer;
+    private InteractionDriverInterface $driver;
     private VerifyResult $verifyResult;
-    private Logger $logger;
     private PactPath $pactPath;
 
     public function __construct(
@@ -41,21 +32,16 @@ final class Server implements ServerInterface
             ->setPactSpecificationVersion($specificationVersion)
             ->setPactFileWriteMode(PactConfigInterface::MODE_OVERWRITE);
 
-        $this->logger = new Logger();
-
-        $client = new Client();
-        $this->pactDriver = new PactDriver($client, $this->config);
-        $this->mockServer = new MockServer($client, $this->pactDriver, $this->config, $this->logger);
-        $this->interactionRegistry = new InteractionRegistry($client, $this->pactDriver);
+        $this->driver = (new InteractionDriverFactory())->create($this->config);
     }
 
     public function register(int ...$ids): void
     {
         $interactions = array_map(fn (int $id) => $this->storage->get(InteractionsStorageInterface::SERVER_DOMAIN, $id), $ids);
-        foreach ($interactions as $interaction) {
-            $this->interactionRegistry->registerInteraction($interaction);
+        foreach ($interactions as $index => $interaction) {
+            $startMockServer = $index === count($interactions) - 1;
+            $this->driver->registerInteraction($interaction, $startMockServer);
         }
-        $this->mockServer->start();
     }
 
     public function getBaseUri(): UriInterface
@@ -65,8 +51,8 @@ final class Server implements ServerInterface
 
     public function verify(): void
     {
-        $success = $this->mockServer->verify();
-        $this->verifyResult = new VerifyResult($success, !$success ? $this->logger->getOutput() : '');
+        $result = $this->driver->verifyInteractions();
+        $this->verifyResult = new VerifyResult($result->matched, $result->mismatches);
     }
 
     public function getVerifyResult(): VerifyResult
