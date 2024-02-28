@@ -7,8 +7,9 @@ use PhpPact\Consumer\Driver\Interaction\MessageDriver;
 use PhpPact\Consumer\Driver\Interaction\MessageDriverInterface;
 use PhpPact\Consumer\Factory\MessageDriverFactoryInterface;
 use PhpPact\FFI\Client;
+use PhpPact\Plugin\Driver\Body\PluginBodyDriver;
+use PhpPact\Plugins\Protobuf\Driver\Body\ProtobufMessageBodyDriver;
 use PhpPact\Plugins\Protobuf\Driver\Pact\ProtobufPactDriver;
-use PhpPact\Plugins\Protobuf\Registry\Interaction\ProtobufMessageRegistry;
 
 class ProtobufMessageDriverFactory implements MessageDriverFactoryInterface
 {
@@ -16,8 +17,8 @@ class ProtobufMessageDriverFactory implements MessageDriverFactoryInterface
     {
         $client = new Client();
         $pactDriver = new ProtobufPactDriver($client, $config);
-        $messageRegistry = new ProtobufMessageRegistry($client, $pactDriver);
+        $messageBodyDriver = new ProtobufMessageBodyDriver(new PluginBodyDriver($client));
 
-        return new MessageDriver($client, $pactDriver, $messageRegistry);
+        return new MessageDriver($client, $pactDriver, $messageBodyDriver);
     }
 }

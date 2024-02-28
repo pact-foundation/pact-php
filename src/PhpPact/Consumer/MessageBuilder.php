@@ -48,7 +48,7 @@ class MessageBuilder extends AbstractMessageBuilder
     {
         $this->driver->registerMessage($this->message);
 
-        return $this->driver->reify();
+        return $this->driver->reify($this->message);
     }
 
     /**
@@ -85,9 +85,11 @@ class MessageBuilder extends AbstractMessageBuilder
                 \call_user_func($callback, $pactJson);
             }
 
-            return $this->driver->writePactAndCleanUp();
+            $this->driver->writePactAndCleanUp();
         } catch (\Exception $e) {
             return false;
         }
+
+        return true;
     }
 }
