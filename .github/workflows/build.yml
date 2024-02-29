@@ -112,9 +112,7 @@ jobs:
         if: ${{ !matrix.example || contains(matrix.example, 'protobuf') }}
 
       - name: Run example(s)
-        run: |
-          php -r "array_map('unlink', glob('./example/*/pacts/*.json'));"
-          vendor/bin/phpunit --no-coverage --exclude-testsuite unit ${{ matrix.example && format('--testsuite {0}-example', matrix.example) || '' }}
+        run: composer test -- --exclude-testsuite unit ${{ matrix.example && format('--testsuite {0}-example', matrix.example) || '' }}
         env:
           PACT_DO_NOT_TRACK: true
 
