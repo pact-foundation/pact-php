@@ -2,11 +2,11 @@
 
 namespace PhpPact\Consumer\Registry\Interaction;
 
+use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Registry\Interaction\Part\RequestRegistry;
 use PhpPact\Consumer\Registry\Interaction\Part\RequestRegistryInterface;
 use PhpPact\Consumer\Registry\Interaction\Part\ResponseRegistry;
 use PhpPact\Consumer\Registry\Interaction\Part\ResponseRegistryInterface;
-use PhpPact\Consumer\Registry\Pact\PactRegistryInterface;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
@@ -20,11 +20,11 @@ class InteractionRegistry extends AbstractRegistry implements InteractionRegistr
 
     public function __construct(
         ClientInterface $client,
-        PactRegistryInterface $pactRegistry,
+        PactDriverInterface $pactDriver,
         ?RequestRegistryInterface $requestRegistry = null,
         ?ResponseRegistryInterface $responseRegistry = null,
     ) {
-        parent::__construct($client, $pactRegistry);
+        parent::__construct($client, $pactDriver);
         $this->requestRegistry = $requestRegistry ?? new RequestRegistry($client, $this);
         $this->responseRegistry = $responseRegistry ?? new ResponseRegistry($client, $this);
     }
@@ -43,7 +43,7 @@ class InteractionRegistry extends AbstractRegistry implements InteractionRegistr
 
     protected function newInteraction(string $description): self
     {
-        $this->id = $this->client->call('pactffi_new_interaction', $this->pactRegistry->getId(), $description);
+        $this->id = $this->client->call('pactffi_new_interaction', $this->pactDriver->getPact()->handle, $description);
 
         return $this;
     }

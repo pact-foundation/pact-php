@@ -2,7 +2,6 @@
 
 namespace PhpPact\Plugins\Protobuf\Factory;
 
-use PhpPact\Consumer\Registry\Pact\PactRegistry;
 use PhpPact\FFI\Client;
 use PhpPact\Plugins\Protobuf\Driver\Pact\ProtobufPactDriver;
 use PhpPact\Plugins\Protobuf\Registry\Interaction\ProtobufSyncMessageRegistry;
@@ -17,11 +16,10 @@ class ProtobufSyncMessageDriverFactory implements SyncMessageDriverFactoryInterf
     public function create(MockServerConfigInterface $config): SyncMessageDriverInterface
     {
         $client = new Client();
-        $pactRegistry = new PactRegistry($client);
-        $pactDriver = new ProtobufPactDriver($client, $config, $pactRegistry);
-        $grpcMockServer = new GrpcMockServer($client, $pactRegistry, $config);
-        $syncMessageRegistry = new ProtobufSyncMessageRegistry($client, $pactRegistry);
+        $pactDriver = new ProtobufPactDriver($client, $config);
+        $grpcMockServer = new GrpcMockServer($client, $pactDriver, $config);
+        $syncMessageRegistry = new ProtobufSyncMessageRegistry($client, $pactDriver);
 
-        return new SyncMessageDriver($pactDriver, $syncMessageRegistry, $grpcMockServer);
+        return new SyncMessageDriver($syncMessageRegistry, $grpcMockServer);
     }
 }

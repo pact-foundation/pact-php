@@ -31,7 +31,6 @@ class MessageDriver implements MessageDriverInterface
 
     public function registerMessage(Message $message): void
     {
-        $this->pactDriver->setUp();
         $this->messageRegistry->registerMessage($message);
     }
 }

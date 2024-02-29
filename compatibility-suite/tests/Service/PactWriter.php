@@ -5,7 +5,6 @@ namespace PhpPactTest\CompatibilitySuite\Service;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Driver\Pact\PactDriver;
 use PhpPact\Consumer\Registry\Interaction\InteractionRegistry;
-use PhpPact\Consumer\Registry\Pact\PactRegistry;
 use PhpPact\FFI\Client;
 use PhpPact\Standalone\MockService\MockServerConfig;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
@@ -29,12 +28,10 @@ class PactWriter implements PactWriterInterface
             ->setPactSpecificationVersion($this->specificationVersion)
             ->setPactFileWriteMode($mode);
         $client = new Client();
-        $pactRegistry = new PactRegistry($client);
-        $pactDriver = new PactDriver($client, $config, $pactRegistry);
-        $interactionRegistry = new InteractionRegistry($client, $pactRegistry);
+        $pactDriver = new PactDriver($client, $config);
+        $interactionRegistry = new InteractionRegistry($client, $pactDriver);
 
         $interaction = $this->storage->get(InteractionsStorageInterface::PACT_WRITER_DOMAIN, $id);
-        $pactDriver->setUp();
         $interactionRegistry->registerInteraction($interaction);
         $pactDriver->writePact();
         $pactDriver->cleanUp();
