@@ -54,11 +54,6 @@ jobs:
     name: PHP ${{ matrix.php }} on ${{ matrix.operating-system }} with ${{ matrix.dependencies }} dependencies
 
     steps:
-      - name: Tune Windows Network
-        if: ${{ runner.os == 'Windows' }}
-        shell: pwsh
-        run: Disable-NetAdapterChecksumOffload -Name * -TcpIPv4 -UdpIPv4 -TcpIPv6 -UdpIPv6
-
       - uses: actions/checkout@v3
         name: Checkout repository
 
