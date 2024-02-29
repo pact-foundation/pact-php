@@ -7,68 +7,38 @@
     </report>
   </coverage>
   <testsuites>
-    <testsuite name="PhpPact Core Tests">
+    <testsuite name="unit">
       <directory>./tests</directory>
     </testsuite>
-    <testsuite name="PhpPact Json Consumer Example Tests">
-      <directory>./example/json/consumer/tests</directory>
+    <testsuite name="json-example">
+      <directory>./example/json</directory>
     </testsuite>
-    <testsuite name="PhpPact Json Provider Example Tests">
-      <directory>./example/json/provider/tests</directory>
+    <testsuite name="binary-example">
+      <directory>./example/binary</directory>
     </testsuite>
-    <testsuite name="PhpPact Binary Consumer Example Tests">
-      <directory>./example/binary/consumer/tests</directory>
+    <testsuite name="multipart-example">
+      <directory>./example/multipart</directory>
     </testsuite>
-    <testsuite name="PhpPact Binary Provider Example Tests">
-      <directory>./example/binary/provider/tests</directory>
+    <testsuite name="xml-example">
+      <directory>./example/xml</directory>
     </testsuite>
-    <testsuite name="PhpPact Multipart Consumer Example Tests">
-      <directory>./example/multipart/consumer/tests</directory>
+    <testsuite name="message-example">
+      <directory>./example/message</directory>
     </testsuite>
-    <testsuite name="PhpPact Multipart Provider Example Tests">
-      <directory>./example/multipart/provider/tests</directory>
+    <testsuite name="matchers-example">
+      <directory>./example/matchers</directory>
     </testsuite>
-    <testsuite name="PhpPact Xml Consumer Example Tests">
-      <directory>./example/xml/consumer/tests</directory>
+    <testsuite name="generators-example">
+      <directory>./example/generators</directory>
     </testsuite>
-    <testsuite name="PhpPact Xml Provider Example Tests">
-      <directory>./example/xml/provider/tests</directory>
+    <testsuite name="csv-example">
+      <directory>./example/csv</directory>
     </testsuite>
-    <testsuite name="PhpPact Message Consumer Example Tests">
-      <directory>./example/message/consumer/tests</directory>
+    <testsuite name="protobuf-sync-message-example">
+      <directory>./example/protobuf-sync-message</directory>
     </testsuite>
-    <testsuite name="PhpPact Message Provider Example Tests">
-      <directory>./example/message/provider/tests</directory>
-    </testsuite>
-    <testsuite name="PhpPact Matchers Consumer Example Tests">
-      <directory>./example/matchers/consumer/tests</directory>
-    </testsuite>
-    <testsuite name="PhpPact Matchers Provider Example Tests">
-      <directory>./example/matchers/provider/tests</directory>
-    </testsuite>
-    <testsuite name="PhpPact Generators Consumer Example Tests">
-      <directory>./example/generators/consumer/tests</directory>
-    </testsuite>
-    <testsuite name="PhpPact Generators Provider Example Tests">
-      <directory>./example/generators/provider/tests</directory>
-    </testsuite>
-    <testsuite name="PhpPact Csv Consumer Example Tests">
-      <directory>./example/csv/consumer/tests</directory>
-    </testsuite>
-    <testsuite name="PhpPact Csv Provider Example Tests">
-      <directory>./example/csv/provider/tests</directory>
-    </testsuite>
-    <testsuite name="PhpPact Protobuf Sync Message Consumer Example Tests">
-      <directory>./example/protobuf-sync-message/consumer/tests</directory>
-    </testsuite>
-    <testsuite name="PhpPact Protobuf Sync Message Provider Example Tests">
-      <directory>./example/protobuf-sync-message/provider/tests</directory>
-    </testsuite>
-    <testsuite name="PhpPact Protobuf Async Message Consumer Example Tests">
-      <directory>./example/protobuf-async-message/consumer/tests</directory>
-    </testsuite>
-    <testsuite name="PhpPact Protobuf Async Message Provider Example Tests">
-      <directory>./example/protobuf-async-message/provider/tests</directory>
+    <testsuite name="protobuf-async-message-example">
+      <directory>./example/protobuf-async-message</directory>
     </testsuite>
   </testsuites>
   <logging>

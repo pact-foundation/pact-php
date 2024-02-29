@@ -1,7 +1,7 @@
-name: Pact-PHP Code Analysis & Test
+name: Code Analysis & Test
 
 on:
-  push: 
+  push:
   pull_request:
   # Once on the first of the month at 06:00 UTC
   schedule:
@@ -16,17 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        php: [ '8.2' ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout repository
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: 8.1
           coverage: none
 
       - uses: ramsey/composer-install@v2
@@ -39,54 +37,114 @@ jobs:
       - name: Static Code Analysis
         run: composer run static-code-analysis
 
-  test:
-    runs-on: ${{ matrix.operating-system }}
+  examples:
+    runs-on: ${{ matrix.os }}
     needs:
       - php-cs
     strategy:
       fail-fast: false
       matrix:
-        operating-system: [ ubuntu-latest, windows-latest, macos-12, macos-14 ]
-        php: [ '8.1', '8.2', '8.3' ]
-        dependencies: [ 'lowest', 'locked' ]
+        include:
+          - os: ubuntu-latest
+            php: 8.1
+          - os: macos-12
+            php: 8.2
+          - os: macos-14
+            php: 8.2
+          - os: windows-latest
+            example: 'json'
+            php: 8.2
+          - os: windows-latest
+            example: 'binary'
+            php: 8.2
+          - os: windows-latest
+            example: 'multipart'
+            php: 8.2
+          - os: windows-latest
+            example: 'xml'
+            php: 8.2
+          - os: windows-latest
+            example: 'message'
+            php: 8.2
+          - os: windows-latest
+            example: 'matchers'
+            php: 8.2
+          - os: windows-latest
+            example: 'generators'
+            php: 8.2
+          - os: windows-latest
+            example: 'csv'
+            php: 8.2
+          - os: windows-latest
+            example: 'protobuf-sync-message'
+            php: 8.1
+          - os: windows-latest
+            example: 'protobuf-async-message'
+            php: 8.2
     timeout-minutes: 5
 
-    name: PHP ${{ matrix.php }} on ${{ matrix.operating-system }} with ${{ matrix.dependencies }} dependencies
-
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout repository
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          extensions: ${{ matrix.operating-system == 'windows-latest' && contains('["8.2","8.3"]', matrix.php) && 'sockets, curl, zip, ffi' || 'sockets, curl, zip, ffi, grpc' }}
+          extensions: sockets, curl, zip, ffi ${{ (!matrix.example || matrix.example == 'protobuf-sync-message') && ', grpc' || '' }}
           php-version: ${{ matrix.php }}
           coverage: none
-          ini-values: ${{ matrix.operating-system == 'windows-latest' && 'opcache.enable=0 opcache.enable_cli=0' || '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Composer install
+        uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: 'locked'
 
       - name: Install Protoc
-        uses: arduino/setup-protoc@v2
+        uses: arduino/setup-protoc@v3
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ !matrix.example || contains(matrix.example, 'protobuf') }}
 
-      - name: Install gRPC Extension (for PHP 8.2 & 8.3 on Windows)
+      - name: Generate Library
+        run: composer gen-lib
+        if: ${{ !matrix.example || contains(matrix.example, 'protobuf') }}
+
+      - name: Run example(s)
         run: |
-          cd C:\tools\php
-          Invoke-WebRequest -Uri https://github.com/tienvx/build-php-grpc-extension/releases/download/builds/grpc_windows-2022_php-${{ matrix.php }}.dll -OutFile ext\php_grpc.dll
-          echo "extension=php_grpc.dll" >> php.ini
-        if: ${{ matrix.operating-system == 'windows-latest' && contains('["8.2","8.3"]', matrix.php) }}
-        shell: pwsh
+          php -r "array_map('unlink', glob('./example/*/pacts/*.json'));"
+          vendor/bin/phpunit --no-coverage --exclude-testsuite unit ${{ matrix.example && format('--testsuite {0}-example', matrix.example) || '' }}
+        env:
+          PACT_DO_NOT_TRACK: true
+
+  unit:
+    runs-on: ubuntu-latest
+    needs:
+      - php-cs
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '8.1', '8.2', '8.3' ]
+        dependencies: [ 'lowest', 'locked' ]
+
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout repository
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          extensions: 'sockets, curl, zip, ffi'
+          php-version: ${{ matrix.php }}
+          coverage: pcov
 
       - name: Composer install
         uses: ramsey/composer-install@v2
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
-      - name: Generate Library
-        run: composer gen-lib
-
-      - name: Composer test
-        run: composer test
+      - name: Test Unit
+        run: vendor/bin/phpunit --testsuite unit
         env:
           PACT_DO_NOT_TRACK: true

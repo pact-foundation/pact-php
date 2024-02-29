@@ -1,4 +1,4 @@
-name: Pact-PHP Compatibility Suite
+name: Compatibility Suite
 
 on: [push, pull_request]
 
