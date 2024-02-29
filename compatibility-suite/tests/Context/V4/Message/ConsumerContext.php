@@ -4,6 +4,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4\Message;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
+use PhpPact\Consumer\Model\Message;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
 use PHPUnit\Framework\Assert;
@@ -11,6 +12,7 @@ use PHPUnit\Framework\Assert;
 final class ConsumerContext implements Context
 {
     private PactPath $pactPath;
+    private Message $message;
 
     public function __construct(
         private MessagePactWriterInterface $pactWriter
@@ -23,6 +25,8 @@ final class ConsumerContext implements Context
      */
     public function aMessageInteractionIsBeingDefinedForAConsumerTest(): void
     {
+        $this->message = new Message();
+        $this->message->setDescription('a message');
     }
 
     /**
@@ -30,7 +34,7 @@ final class ConsumerContext implements Context
      */
     public function thePactFileForTheTestIsGenerated(): void
     {
-        $this->pactWriter->write('a message', '', $this->pactPath);
+        $this->pactWriter->write($this->message, $this->pactPath);
     }
 
     /**
@@ -47,7 +51,7 @@ final class ConsumerContext implements Context
      */
     public function aKeyOfIsSpecifiedForTheMessageInteraction(string $key): void
     {
-        throw new PendingException("Can't set message's key using FFI call");
+        $this->message->setKey($key);
     }
 
     /**
@@ -72,6 +76,6 @@ final class ConsumerContext implements Context
     public function theFirstInteractionInThePactFileWillHave(string $name, string $value): void
     {
         $pact = json_decode(file_get_contents($this->pactPath), true);
-        Assert::assertSame($value, $pact['interactions'][0][$name]);
+        Assert::assertSame(json_decode($value), $pact['interactions'][0][$name]);
     }
 }

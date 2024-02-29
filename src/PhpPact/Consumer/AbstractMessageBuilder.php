@@ -56,4 +56,14 @@ abstract class AbstractMessageBuilder implements BuilderInterface
 
         return $this;
     }
+
+    /**
+     * Set key for message interaction. This feature only work with specification v4. It doesn't affect pact file with specification <= v3.
+     */
+    public function key(?string $key): self
+    {
+        $this->message->setKey($key);
+
+        return $this;
+    }
 }

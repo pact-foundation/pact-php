@@ -53,7 +53,7 @@ final class ConsumerContext implements Context
      */
     public function aKeyOfIsSpecifiedForTheSynchronousMessageInteraction(string $key): void
     {
-        throw new PendingException("Can't set sync message's key using FFI call");
+        $this->message->setKey($key);
     }
 
     /**
@@ -78,7 +78,7 @@ final class ConsumerContext implements Context
     public function theFirstInteractionInThePactFileWillHave(string $name, string $value): void
     {
         $pact = json_decode(file_get_contents($this->pactPath), true);
-        Assert::assertSame($value, $pact['interactions'][0][$name]);
+        Assert::assertSame(json_decode($value), $pact['interactions'][0][$name]);
     }
 
     /**

@@ -11,6 +11,7 @@ default:
                     - '@interactions_storage'
                     - '@message_pact_writer'
                     - '@provider_verifier'
+                    - '@parser'
 
             filters:
                 tags: "@provider&&@message"

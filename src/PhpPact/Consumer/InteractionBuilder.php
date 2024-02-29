@@ -75,4 +75,14 @@ class InteractionBuilder implements BuilderInterface
     {
         return $this->driver->verifyInteractions()->matched;
     }
+
+    /**
+     * Set key for interaction. This feature only work with specification v4. It doesn't affect pact file with specification <= v3.
+     */
+    public function key(?string $key): self
+    {
+        $this->interaction->setKey($key);
+
+        return $this;
+    }
 }

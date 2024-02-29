@@ -8,15 +8,16 @@ use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\FFI\ClientInterface;
 
-abstract class AbstractMessageDriver implements SharedMessageDriverInterface
+abstract class AbstractMessageDriver extends AbstractDriver implements SharedMessageDriverInterface
 {
     private MessageBodyDriverInterface $messageBodyDriver;
 
     public function __construct(
-        protected ClientInterface $client,
+        ClientInterface $client,
         protected PactDriverInterface $pactDriver,
         ?MessageBodyDriverInterface $messageBodyDriver = null
     ) {
+        parent::__construct($client);
         $this->messageBodyDriver = $messageBodyDriver ?? new MessageBodyDriver($client);
     }
 
@@ -27,6 +28,7 @@ abstract class AbstractMessageDriver implements SharedMessageDriverInterface
         $this->expectsToReceive($message);
         $this->withMetadata($message);
         $this->withContents($message);
+        $this->setKey($message);
     }
 
     public function writePactAndCleanUp(): void

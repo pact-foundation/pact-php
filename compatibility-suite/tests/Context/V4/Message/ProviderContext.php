@@ -4,12 +4,14 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4\Message;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
+use PhpPactTest\CompatibilitySuite\Service\ParserInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
 use PHPUnit\Framework\Assert;
@@ -25,6 +27,7 @@ final class ProviderContext implements Context
         private InteractionsStorageInterface $storage,
         private MessagePactWriterInterface $pactWriter,
         private ProviderVerifierInterface $providerVerifier,
+        private ParserInterface $parser,
     ) {
         $this->pactPath = new PactPath();
     }
@@ -61,7 +64,10 @@ final class ProviderContext implements Context
      */
     public function aPactFileForIsToBeVerifiedButIsMarkedPending(string $name, string $fixture): void
     {
-        $this->pactWriter->write($name, $fixture, $this->pactPath);
+        $message = new Message();
+        $message->setDescription($name);
+        $message->setContents($this->parser->parseBody($fixture));
+        $this->pactWriter->write($message, $this->pactPath);
         $this->providerVerifier->addSource($this->pactPath);
         $pact = json_decode(file_get_contents($this->pactPath), true);
         $pact['interactions'][0]['pending'] = true;
@@ -89,7 +95,10 @@ final class ProviderContext implements Context
                     break;
             }
         }
-        $this->pactWriter->write($name, $fixture, $this->pactPath);
+        $message = new Message();
+        $message->setDescription($name);
+        $message->setContents($this->parser->parseBody($fixture));
+        $this->pactWriter->write($message, $this->pactPath);
         $this->providerVerifier->addSource($this->pactPath);
         $pact = json_decode(file_get_contents($this->pactPath), true);
         $pact['interactions'][0]['comments'] = $comments;

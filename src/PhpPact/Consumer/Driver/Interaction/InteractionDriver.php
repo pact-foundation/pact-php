@@ -12,18 +12,19 @@ use PhpPact\Consumer\Service\MockServerInterface;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\Standalone\MockService\Model\VerifyResult;
 
-class InteractionDriver implements InteractionDriverInterface
+class InteractionDriver extends AbstractDriver implements InteractionDriverInterface
 {
     private RequestDriverInterface $requestDriver;
     private ResponseDriverInterface $responseDriver;
 
     public function __construct(
-        private ClientInterface $client,
+        ClientInterface $client,
         private MockServerInterface $mockServer,
         private PactDriverInterface $pactDriver,
         ?RequestDriverInterface $requestDriver = null,
         ?ResponseDriverInterface $responseDriver = null,
     ) {
+        parent::__construct($client);
         $this->requestDriver = $requestDriver ?? new RequestDriver($client);
         $this->responseDriver = $responseDriver ?? new ResponseDriver($client);
     }
@@ -40,6 +41,7 @@ class InteractionDriver implements InteractionDriverInterface
         $this->uponReceiving($interaction);
         $this->withRequest($interaction);
         $this->willRespondWith($interaction);
+        $this->setKey($interaction);
 
         if ($startMockServer) {
             $this->mockServer->start();

@@ -5,6 +5,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V3\Message;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeStepScope;
 use Behat\Gherkin\Node\TableNode;
+use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\FixtureLoaderInterface;
@@ -80,7 +81,10 @@ final class ProviderContext implements Context
      */
     public function aPactFileForIsToBeVerified(string $name, string $fixture): void
     {
-        $this->pactWriter->write($name, $fixture, $this->pactPath);
+        $message = new Message();
+        $message->setDescription($name);
+        $message->setContents($this->parser->parseBody($fixture));
+        $this->pactWriter->write($message, $this->pactPath);
         $this->providerVerifier->addSource($this->pactPath);
     }
 
