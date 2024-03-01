@@ -5,6 +5,7 @@ namespace PhpPact\SyncMessage\Driver\Interaction;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Consumer\Registry\Interaction\MessageRegistryInterface;
 use PhpPact\Consumer\Service\MockServerInterface;
+use PhpPact\Standalone\MockService\Model\VerifyResult;
 
 class SyncMessageDriver implements SyncMessageDriverInterface
 {
@@ -14,7 +15,7 @@ class SyncMessageDriver implements SyncMessageDriverInterface
     ) {
     }
 
-    public function verifyMessage(): bool
+    public function verifyMessage(): VerifyResult
     {
         return $this->mockServer->verify();
     }

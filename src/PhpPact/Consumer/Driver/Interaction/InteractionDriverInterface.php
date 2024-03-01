@@ -4,9 +4,11 @@ namespace PhpPact\Consumer\Driver\Interaction;
 
 use PhpPact\Consumer\Model\Interaction;
 
-interface InteractionDriverInterface
-{
-    public function registerInteraction(Interaction $interaction): bool;
+use PhpPact\Standalone\MockService\Model\VerifyResult;
 
-    public function verifyInteractions(): bool;
+interface InteractionDriverInterface extends DriverInterface
+{
+    public function registerInteraction(Interaction $interaction, bool $startMockServer = true): bool;
+
+    public function verifyInteractions(): VerifyResult;
 }

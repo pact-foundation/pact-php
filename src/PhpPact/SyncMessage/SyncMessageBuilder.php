@@ -25,6 +25,6 @@ class SyncMessageBuilder extends AbstractMessageBuilder
 
     public function verify(): bool
     {
-        return $this->driver->verifyMessage();
+        return $this->driver->verifyMessage()->matched;
     }
 }
