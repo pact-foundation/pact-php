@@ -9,7 +9,7 @@ jobs:
   v1:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -18,14 +18,14 @@ jobs:
           php-version: 8.2
           coverage: none
 
-      - uses: ramsey/composer-install@v2
+      - uses: ramsey/composer-install@v3
 
       - name: Run Behat
         run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V1
   v2:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -34,14 +34,14 @@ jobs:
           php-version: 8.2
           coverage: none
 
-      - uses: ramsey/composer-install@v2
+      - uses: ramsey/composer-install@v3
 
       - name: Run Behat
         run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V2
   v3:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -50,14 +50,14 @@ jobs:
           php-version: 8.2
           coverage: none
 
-      - uses: ramsey/composer-install@v2
+      - uses: ramsey/composer-install@v3
 
       - name: Run Behat
         run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V3 --name '/^((?!binary body \(negative|Message provider).)*$/'
   v4:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -66,7 +66,7 @@ jobs:
           php-version: 8.2
           coverage: none
 
-      - uses: ramsey/composer-install@v2
+      - uses: ramsey/composer-install@v3
 
       - name: Run Behat
         run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V4
