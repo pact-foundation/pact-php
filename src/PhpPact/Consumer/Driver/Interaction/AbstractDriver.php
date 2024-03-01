@@ -2,6 +2,7 @@
 
 namespace PhpPact\Consumer\Driver\Interaction;
 
+use PhpPact\Consumer\Driver\Exception\InteractionCommentNotSetException;
 use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
 use PhpPact\Consumer\Driver\Exception\InteractionPendingNotSetException;
 use PhpPact\Consumer\Model\Interaction;
@@ -36,6 +37,16 @@ abstract class AbstractDriver
         $success = $this->client->call('pactffi_set_pending', $interaction->getHandle(), $pending);
         if (!$success) {
             throw new InteractionPendingNotSetException(sprintf("Can not mark interaction '%s' as pending", $interaction->getDescription()));
+        }
+    }
+
+    protected function setComments(Interaction|Message $interaction): void
+    {
+        foreach ($interaction->getComments() as $key => $value) {
+            $success = $this->client->call('pactffi_set_comment', $interaction->getHandle(), $key, $value);
+            if (!$success) {
+                throw new InteractionCommentNotSetException(sprintf("Can add comment '%s' to the interaction '%s'", $key, $interaction->getDescription()));
+            }
         }
     }
 }

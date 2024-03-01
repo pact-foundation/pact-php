@@ -30,6 +30,7 @@ abstract class AbstractMessageDriver extends AbstractDriver implements SharedMes
         $this->withContents($message);
         $this->setKey($message);
         $this->setPending($message);
+        $this->setComments($message);
     }
 
     public function writePactAndCleanUp(): void

@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\Consumer\Driver\Interaction;
 
+use PhpPact\Consumer\Driver\Exception\InteractionCommentNotSetException;
 use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
 use PhpPact\Consumer\Driver\Exception\InteractionPendingNotSetException;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriver;
@@ -161,6 +162,34 @@ class InteractionDriverTest extends TestCase
         if (!$success) {
             $this->expectException(InteractionPendingNotSetException::class);
             $this->expectExceptionMessage("Can not mark interaction '{$this->description}' as pending");
+        }
+        $this->assertClientCalls($calls);
+        $this->driver->registerInteraction($this->interaction, false);
+    }
+
+    #[TestWith([[], true])]
+    #[TestWith([['key1' => 'value1'], false])]
+    #[TestWith([['key2' => 'value2', 'key3' => 'value3'], true])]
+    public function testSetComments(array $comments, $success): void
+    {
+        $this->interaction->setComments($comments);
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $calls = [
+            ['pactffi_new_interaction', $this->pactHandle, $this->description, $this->interactionHandle],
+            ['pactffi_given', $this->interactionHandle, 'item exist', null],
+            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'id', '12', null],
+            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
+            ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
+        ];
+        foreach ($comments as $key => $value) {
+            $calls[] = ['pactffi_set_comment', $this->interactionHandle, $key, $value, $success];
+        }
+        if (!$success) {
+            $this->expectException(InteractionCommentNotSetException::class);
+            $this->expectExceptionMessage("Can add comment '$key' to the interaction '{$this->description}'");
         }
         $this->assertClientCalls($calls);
         $this->driver->registerInteraction($this->interaction, false);

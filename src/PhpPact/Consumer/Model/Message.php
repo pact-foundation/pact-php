@@ -8,6 +8,7 @@ use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PhpPact\Consumer\Model\Body\Binary;
 use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
+use PhpPact\Consumer\Model\Interaction\CommentsTrait;
 use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
 use PhpPact\Consumer\Model\Interaction\HandleTrait;
 use PhpPact\Consumer\Model\Interaction\KeyTrait;
@@ -23,6 +24,7 @@ class Message
     use HandleTrait;
     use KeyTrait;
     use PendingTrait;
+    use CommentsTrait;
 
     /**
      * @var array<string, string>

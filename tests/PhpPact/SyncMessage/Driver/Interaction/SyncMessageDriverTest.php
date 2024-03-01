@@ -3,6 +3,7 @@
 namespace PhpPactTest\Consumer\Driver\Interaction;
 
 use PhpPact\Consumer\Driver\Body\MessageBodyDriverInterface;
+use PhpPact\Consumer\Driver\Exception\InteractionCommentNotSetException;
 use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
 use PhpPact\Consumer\Driver\Exception\InteractionPendingNotSetException;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
@@ -160,6 +161,36 @@ class SyncMessageDriverTest extends TestCase
         if (!$success) {
             $this->expectException(InteractionPendingNotSetException::class);
             $this->expectExceptionMessage("Can not mark interaction '{$this->description}' as pending");
+        }
+        $this->assertClientCalls($calls);
+        $this->driver->registerMessage($this->message);
+    }
+
+    #[TestWith([[], true])]
+    #[TestWith([['key1' => 'value1'], false])]
+    #[TestWith([['key2' => 'value2', 'key3' => 'value3'], true])]
+    public function testSetComments(array $comments, $success): void
+    {
+        $this->message->setComments($comments);
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $calls = [
+            ['pactffi_new_sync_message_interaction', $this->pactHandle, $this->description, $this->messageHandle],
+            ['pactffi_given', $this->messageHandle, 'item exist', null],
+            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
+            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
+            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
+            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
+            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
+        ];
+        foreach ($comments as $key => $value) {
+            $calls[] = ['pactffi_set_comment', $this->messageHandle, $key, $value, $success];
+        }
+        if (!$success) {
+            $this->expectException(InteractionCommentNotSetException::class);
+            $this->expectExceptionMessage("Can add comment '$key' to the interaction '{$this->description}'");
         }
         $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
