@@ -9,6 +9,7 @@ use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
 use PhpPact\Consumer\Model\Interaction\HandleTrait;
 use PhpPact\Consumer\Model\Interaction\KeyTrait;
+use PhpPact\Consumer\Model\Interaction\PendingTrait;
 
 /**
  * Request/Response Pair to be posted to the Mock Server for PACT tests.
@@ -19,6 +20,7 @@ class Interaction
     use DescriptionTrait;
     use HandleTrait;
     use KeyTrait;
+    use PendingTrait;
 
     private ConsumerRequest $request;
 

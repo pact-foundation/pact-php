@@ -85,4 +85,14 @@ class InteractionBuilder implements BuilderInterface
 
         return $this;
     }
+
+    /**
+     * Mark the interaction as pending. This feature only work with specification v4. It doesn't affect pact file with specification <= v3.
+     */
+    public function pending(?bool $pending): self
+    {
+        $this->interaction->setPending($pending);
+
+        return $this;
+    }
 }

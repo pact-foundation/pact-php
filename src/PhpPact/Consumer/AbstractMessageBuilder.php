@@ -66,4 +66,14 @@ abstract class AbstractMessageBuilder implements BuilderInterface
 
         return $this;
     }
+
+    /**
+     * Mark the message interaction as pending. This feature only work with specification v4. It doesn't affect pact file with specification <= v3.
+     */
+    public function pending(?bool $pending): self
+    {
+        $this->message->setPending($pending);
+
+        return $this;
+    }
 }

@@ -11,6 +11,7 @@ use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
 use PhpPact\Consumer\Model\Interaction\HandleTrait;
 use PhpPact\Consumer\Model\Interaction\KeyTrait;
+use PhpPact\Consumer\Model\Interaction\PendingTrait;
 
 /**
  * Message metadata and contents to be posted to the Mock Server for PACT tests.
@@ -21,6 +22,7 @@ class Message
     use DescriptionTrait;
     use HandleTrait;
     use KeyTrait;
+    use PendingTrait;
 
     /**
      * @var array<string, string>

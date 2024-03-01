@@ -59,7 +59,7 @@ final class ConsumerContext implements Context
      */
     public function theMessageInteractionIsMarkedAsPending(): void
     {
-        throw new PendingException("Can't set message's pending using FFI call");
+        $this->message->setPending(true);
     }
 
     /**
