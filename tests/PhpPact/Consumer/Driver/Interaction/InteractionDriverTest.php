@@ -3,6 +3,7 @@
 namespace PhpPactTest\Consumer\Driver\Interaction;
 
 use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
+use PhpPact\Consumer\Driver\Exception\InteractionPendingNotSetException;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriver;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
 use PhpPact\Consumer\Driver\InteractionPart\RequestDriverInterface;
@@ -129,6 +130,37 @@ class InteractionDriverTest extends TestCase
         if (!$success) {
             $this->expectException(InteractionKeyNotSetException::class);
             $this->expectExceptionMessage("Can not set the key '$key' for the interaction '{$this->description}'");
+        }
+        $this->assertClientCalls($calls);
+        $this->driver->registerInteraction($this->interaction, false);
+    }
+
+    #[TestWith([null, true])]
+    #[TestWith([null, true])]
+    #[TestWith([true, false])]
+    #[TestWith([true, true])]
+    #[TestWith([false, false])]
+    #[TestWith([false, true])]
+    public function testSetPending(?bool $pending, $success): void
+    {
+        $this->interaction->setPending($pending);
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $calls = [
+            ['pactffi_new_interaction', $this->pactHandle, $this->description, $this->interactionHandle],
+            ['pactffi_given', $this->interactionHandle, 'item exist', null],
+            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'id', '12', null],
+            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
+            ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
+        ];
+        if (is_bool($pending)) {
+            $calls[] = ['pactffi_set_pending', $this->interactionHandle, $pending, $success];
+        }
+        if (!$success) {
+            $this->expectException(InteractionPendingNotSetException::class);
+            $this->expectExceptionMessage("Can not mark interaction '{$this->description}' as pending");
         }
         $this->assertClientCalls($calls);
         $this->driver->registerInteraction($this->interaction, false);

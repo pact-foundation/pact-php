@@ -4,6 +4,7 @@ namespace PhpPactTest\Consumer\Driver\Interaction;
 
 use PhpPact\Consumer\Driver\Body\MessageBodyDriverInterface;
 use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
+use PhpPact\Consumer\Driver\Exception\InteractionPendingNotSetException;
 use PhpPact\Consumer\Driver\Interaction\MessageDriver;
 use PhpPact\Consumer\Driver\Interaction\MessageDriverInterface;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
@@ -124,6 +125,39 @@ class MessageDriverTest extends TestCase
         if (!$success) {
             $this->expectException(InteractionKeyNotSetException::class);
             $this->expectExceptionMessage("Can not set the key '$key' for the interaction '{$this->description}'");
+        }
+        $this->assertClientCalls($calls);
+        $this->driver->registerMessage($this->message);
+    }
+
+    #[TestWith([null, true])]
+    #[TestWith([null, true])]
+    #[TestWith([true, false])]
+    #[TestWith([true, true])]
+    #[TestWith([false, false])]
+    #[TestWith([false, true])]
+    public function testSetPending(?bool $pending, $success): void
+    {
+        $this->message->setPending($pending);
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $calls = [
+            ['pactffi_new_message_interaction', $this->pactHandle, $this->description, $this->messageHandle],
+            ['pactffi_message_given', $this->messageHandle, 'item exist', null],
+            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
+            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
+            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
+            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
+            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
+        ];
+        if (is_bool($pending)) {
+            $calls[] = ['pactffi_set_pending', $this->messageHandle, $pending, $success];
+        }
+        if (!$success) {
+            $this->expectException(InteractionPendingNotSetException::class);
+            $this->expectExceptionMessage("Can not mark interaction '{$this->description}' as pending");
         }
         $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);

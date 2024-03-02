@@ -42,6 +42,7 @@ class InteractionDriver extends AbstractDriver implements InteractionDriverInter
         $this->withRequest($interaction);
         $this->willRespondWith($interaction);
         $this->setKey($interaction);
+        $this->setPending($interaction);
 
         if ($startMockServer) {
             $this->mockServer->start();
