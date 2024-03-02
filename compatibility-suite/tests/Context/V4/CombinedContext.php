@@ -4,6 +4,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4;
 
 use Behat\Behat\Context\Context;
 use PhpPact\Config\PactConfigInterface;
+use PhpPact\Consumer\Model\Message;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
@@ -51,7 +52,9 @@ final class CombinedContext implements Context
     public function thePactFileForTheTestIsGenerated(): void
     {
         $this->pactWriter->write($this->id, $this->pactPath, PactConfigInterface::MODE_MERGE);
-        $this->messagePactWriter->write('message interaction', '', $this->pactPath, PactConfigInterface::MODE_MERGE);
+        $message = new Message();
+        $message->setDescription('message interaction');
+        $this->messagePactWriter->write($message, $this->pactPath, PactConfigInterface::MODE_MERGE);
     }
 
     /**

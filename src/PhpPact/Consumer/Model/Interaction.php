@@ -8,6 +8,7 @@ use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
 use PhpPact\Consumer\Model\Interaction\HandleTrait;
+use PhpPact\Consumer\Model\Interaction\KeyTrait;
 
 /**
  * Request/Response Pair to be posted to the Mock Server for PACT tests.
@@ -17,6 +18,7 @@ class Interaction
     use ProviderStates;
     use DescriptionTrait;
     use HandleTrait;
+    use KeyTrait;
 
     private ConsumerRequest $request;
 

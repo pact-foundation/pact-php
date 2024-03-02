@@ -52,7 +52,7 @@ final class ConsumerContext implements Context
      */
     public function aKeyOfIsSpecifiedForTheHttpInteraction(string $key): void
     {
-        throw new PendingException("Can't set interaction's key using FFI call");
+        $this->interaction->setKey($key);
     }
 
     /**
@@ -61,7 +61,7 @@ final class ConsumerContext implements Context
     public function theFirstInteractionInThePactFileWillHave(string $name, string $value): void
     {
         $pact = json_decode(file_get_contents($this->pactPath), true);
-        Assert::assertSame($value, $pact['interactions'][0][$name]);
+        Assert::assertSame(json_decode($value), $pact['interactions'][0][$name]);
     }
 
     /**

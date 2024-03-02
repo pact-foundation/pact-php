@@ -17,7 +17,7 @@ class MessagePactWriter implements MessagePactWriterInterface
     ) {
     }
 
-    public function write(string $name, string $body, PactPath $pactPath, string $mode = PactConfigInterface::MODE_OVERWRITE): void
+    public function write(Message $message, PactPath $pactPath, string $mode = PactConfigInterface::MODE_OVERWRITE): void
     {
         $config = new MockServerConfig();
         $config
@@ -28,9 +28,6 @@ class MessagePactWriter implements MessagePactWriterInterface
             ->setPactFileWriteMode($mode);
         $driver = (new MessageDriverFactory())->create($config);
 
-        $message = new Message();
-        $message->setDescription($name);
-        $message->setContents($this->parser->parseBody($body));
         $driver->registerMessage($message);
         $driver->writePactAndCleanUp();
     }

@@ -3,6 +3,7 @@
 namespace PhpPactTest\Consumer\Driver\Interaction;
 
 use PhpPact\Consumer\Driver\Body\MessageBodyDriverInterface;
+use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Consumer\Model\Pact\Pact;
@@ -11,14 +12,17 @@ use PhpPact\FFI\ClientInterface;
 use PhpPact\Standalone\MockService\Model\VerifyResult;
 use PhpPact\SyncMessage\Driver\Interaction\SyncMessageDriver;
 use PhpPact\SyncMessage\Driver\Interaction\SyncMessageDriverInterface;
+use PhpPactTest\Helper\FFI\ClientTrait;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class SyncMessageDriverTest extends TestCase
 {
+    use ClientTrait;
+
     private SyncMessageDriverInterface $driver;
     private MockServerInterface|MockObject $mockServer;
-    private ClientInterface|MockObject $client;
     private PactDriverInterface|MockObject $pactDriver;
     private MessageBodyDriverInterface|MockObject $messageBodyDriver;
     private Message $message;
@@ -91,17 +95,39 @@ class SyncMessageDriverTest extends TestCase
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
         ];
-        $this->client
-            ->expects($this->exactly(count($calls)))
-            ->method('call')
-            ->willReturnCallback(function (...$args) use (&$calls) {
-                $call = array_shift($calls);
-                $return = array_pop($call);
-                $this->assertSame($call, $args);
-
-                return $return;
-            });
+        $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
         $this->assertSame($this->messageHandle, $this->message->getHandle());
+    }
+
+    #[TestWith([null, true])]
+    #[TestWith([null, true])]
+    #[TestWith(['123ABC', false])]
+    #[TestWith(['123ABC', true])]
+    public function testSetKey(?string $key, $success): void
+    {
+        $this->message->setKey($key);
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $calls = [
+            ['pactffi_new_sync_message_interaction', $this->pactHandle, $this->description, $this->messageHandle],
+            ['pactffi_given', $this->messageHandle, 'item exist', null],
+            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
+            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
+            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
+            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
+            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
+        ];
+        if (is_string($key)) {
+            $calls[] = ['pactffi_set_key', $this->messageHandle, $key, $success];
+        }
+        if (!$success) {
+            $this->expectException(InteractionKeyNotSetException::class);
+            $this->expectExceptionMessage("Can not set the key '$key' for the interaction '{$this->description}'");
+        }
+        $this->assertClientCalls($calls);
+        $this->driver->registerMessage($this->message);
     }
 }

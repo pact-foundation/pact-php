@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\Consumer\Driver\Interaction;
 
+use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriver;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
 use PhpPact\Consumer\Driver\InteractionPart\RequestDriverInterface;
@@ -12,14 +13,16 @@ use PhpPact\Consumer\Model\Pact\Pact;
 use PhpPact\Consumer\Service\MockServerInterface;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\Standalone\MockService\Model\VerifyResult;
+use PhpPactTest\Helper\FFI\ClientTrait;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class InteractionDriverTest extends TestCase
 {
+    use ClientTrait;
+
     private InteractionDriverInterface $driver;
-    private ClientInterface|MockObject $client;
     private MockServerInterface|MockObject $mockServer;
     private PactDriverInterface|MockObject $pactDriver;
     private RequestDriverInterface|MockObject $requestDriver;
@@ -94,20 +97,40 @@ class InteractionDriverTest extends TestCase
             ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
             ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
         ];
-        $this->client
-            ->expects($this->exactly(count($calls)))
-            ->method('call')
-            ->willReturnCallback(function (...$args) use (&$calls) {
-                $call = array_shift($calls);
-                $return = array_pop($call);
-                $this->assertSame($call, $args);
-
-                return $return;
-            });
+        $this->assertClientCalls($calls);
         $this->mockServer
             ->expects($this->exactly($startMockServer))
             ->method('start');
         $this->assertTrue($this->driver->registerInteraction($this->interaction, $startMockServer));
         $this->assertSame($this->interactionHandle, $this->interaction->getHandle());
+    }
+
+    #[TestWith([null, true])]
+    #[TestWith([null, true])]
+    #[TestWith(['123ABC', false])]
+    #[TestWith(['123ABC', true])]
+    public function testSetKey(?string $key, $success): void
+    {
+        $this->interaction->setKey($key);
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $calls = [
+            ['pactffi_new_interaction', $this->pactHandle, $this->description, $this->interactionHandle],
+            ['pactffi_given', $this->interactionHandle, 'item exist', null],
+            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'id', '12', null],
+            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
+            ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
+        ];
+        if (is_string($key)) {
+            $calls[] = ['pactffi_set_key', $this->interactionHandle, $key, $success];
+        }
+        if (!$success) {
+            $this->expectException(InteractionKeyNotSetException::class);
+            $this->expectExceptionMessage("Can not set the key '$key' for the interaction '{$this->description}'");
+        }
+        $this->assertClientCalls($calls);
+        $this->driver->registerInteraction($this->interaction, false);
     }
 }

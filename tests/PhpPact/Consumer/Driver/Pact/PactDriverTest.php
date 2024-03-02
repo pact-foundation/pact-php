@@ -8,12 +8,15 @@ use PhpPact\Consumer\Driver\Pact\PactDriver;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Exception\PactFileNotWroteException;
 use PhpPact\FFI\ClientInterface;
+use PhpPactTest\Helper\FFI\ClientTrait;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PactDriverTest extends TestCase
 {
+    use ClientTrait;
+
     protected const SPEC_UNKNOWN = 0;
     protected const SPEC_V1 = 1;
     protected const SPEC_V1_1 = 2;
@@ -21,7 +24,6 @@ class PactDriverTest extends TestCase
     protected const SPEC_V3 = 4;
     protected const SPEC_V4 = 5;
     protected PactDriverInterface $driver;
-    protected ClientInterface|MockObject $client;
     protected PactConfigInterface|MockObject $config;
     protected int $pactHandle = 123;
     protected string $consumer = 'consumer';
@@ -151,19 +153,5 @@ class PactDriverTest extends TestCase
             ->expects($this->once())
             ->method('getProvider')
             ->willReturn($this->provider);
-    }
-
-    protected function assertClientCalls(array $calls): void
-    {
-        $this->client
-            ->expects($this->exactly(count($calls)))
-            ->method('call')
-            ->willReturnCallback(function (...$args) use (&$calls) {
-                $call = array_shift($calls);
-                $return = array_pop($call);
-                $this->assertSame($call, $args);
-
-                return $return;
-            });
     }
 }
