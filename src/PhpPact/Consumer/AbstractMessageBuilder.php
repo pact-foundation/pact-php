@@ -76,4 +76,16 @@ abstract class AbstractMessageBuilder implements BuilderInterface
 
         return $this;
     }
+
+    /**
+     * Add comments to the message interaction. This feature only work with specification v4. It doesn't affect pact file with specification <= v3.
+     *
+     * @param array<string, string> $comments
+     */
+    public function comments(array $comments): self
+    {
+        $this->message->setComments($comments);
+
+        return $this;
+    }
 }

@@ -6,6 +6,7 @@ use PhpPact\Consumer\Driver\Enum\InteractionPart;
 use PhpPact\Consumer\Model\Body\Binary;
 use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
+use PhpPact\Consumer\Model\Interaction\CommentsTrait;
 use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
 use PhpPact\Consumer\Model\Interaction\HandleTrait;
 use PhpPact\Consumer\Model\Interaction\KeyTrait;
@@ -21,6 +22,7 @@ class Interaction
     use HandleTrait;
     use KeyTrait;
     use PendingTrait;
+    use CommentsTrait;
 
     private ConsumerRequest $request;
 

@@ -69,7 +69,7 @@ final class ConsumerContext implements Context
      */
     public function aCommentIsAddedToTheSynchronousMessageInteraction(string $value): void
     {
-        throw new PendingException("Can't set message's comment using FFI call");
+        $this->message->setComments(['text' => json_encode([$value])]);
     }
 
     /**
@@ -78,7 +78,7 @@ final class ConsumerContext implements Context
     public function theFirstInteractionInThePactFileWillHave(string $name, string $value): void
     {
         $pact = json_decode(file_get_contents($this->pactPath), true);
-        Assert::assertSame(json_decode($value), $pact['interactions'][0][$name]);
+        Assert::assertJsonStringEqualsJsonString($value, json_encode($pact['interactions'][0][$name]));
     }
 
     /**
