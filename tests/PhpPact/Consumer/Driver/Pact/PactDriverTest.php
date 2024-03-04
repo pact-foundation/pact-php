@@ -55,6 +55,8 @@ class PactDriverTest extends TestCase
     #[TestWith(['error', '1.0.0', self::SPEC_V1])]
     #[TestWith(['off'  , '1.1.0', self::SPEC_V1_1])]
     #[TestWith(['none' , '2.0.0', self::SPEC_V2])]
+    #[TestWith([null   , '0.1.2', self::SPEC_UNKNOWN])]
+    #[TestWith([null   , 'x.y.z', self::SPEC_UNKNOWN])]
     public function testSetUp(?string $logLevel, string $version, int $specificationHandle): void
     {
         $this->assertConfig($logLevel, $version);

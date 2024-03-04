@@ -63,11 +63,11 @@ class PactDriver implements PactDriverInterface
             $this->versionEqualTo('2.0.0') => $this->client->get('PactSpecification_V2'),
             $this->versionEqualTo('3.0.0') => $this->client->get('PactSpecification_V3'),
             $this->versionEqualTo('4.0.0') => $this->client->get('PactSpecification_V4'),
-            default => function () {
+            default => call_user_func(function () {
                 trigger_error(sprintf("Specification version '%s' is unknown", $this->config->getPactSpecificationVersion()), E_USER_WARNING);
 
                 return $this->client->get('PactSpecification_Unknown');
-            },
+            }),
         };
     }
 
