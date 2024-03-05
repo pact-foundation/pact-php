@@ -26,7 +26,7 @@ final class PactBroker implements PactBrokerInterface
 
     public function start(): void
     {
-        exec('docker run --rm --publish 9292:9292 --detach --env PACT_BROKER_DATABASE_URL=sqlite:////tmp/pact_broker.sqlite3 --name pact-broker pactfoundation/pact-broker:2.117.1-pactbroker2.109.1');
+        exec('docker run --rm --publish 9292:9292 --detach --env PACT_BROKER_DATABASE_URL=sqlite:////tmp/pact_broker.sqlite3 --name pact-broker pactfoundation/pact-broker:latest');
         while (true) {
             try {
                 $response = $this->client->get('http://localhost:9292/diagnostic/status/heartbeat', ['http_errors' => false]);
