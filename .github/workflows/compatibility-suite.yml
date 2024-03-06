@@ -15,7 +15,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.1
           coverage: none
 
       - uses: ramsey/composer-install@v3
@@ -31,7 +31,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.1
           coverage: none
 
       - uses: ramsey/composer-install@v3
@@ -47,7 +47,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.1
           coverage: none
 
       - uses: ramsey/composer-install@v3
@@ -63,7 +63,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.1
           coverage: none
 
       - uses: ramsey/composer-install@v3
