@@ -3,6 +3,7 @@
 namespace CsvConsumer\Tests\Service;
 
 use CsvConsumer\Service\HttpClientService;
+use PhpPact\Consumer\Driver\Enum\InteractionPart;
 use PhpPact\Consumer\InteractionBuilder;
 use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
 use PhpPact\Consumer\Matcher\Matcher;
@@ -49,7 +50,7 @@ class HttpClientServiceTest extends TestCase
         if ($logLevel = \getenv('PACT_LOGLEVEL')) {
             $config->setLogLevel($logLevel);
         }
-        $builder = new InteractionBuilder($config, new CsvInteractionDriverFactory());
+        $builder = new InteractionBuilder($config, new CsvInteractionDriverFactory(InteractionPart::RESPONSE));
         $builder
             ->given('report.csv file exist')
             ->uponReceiving('request for a report.csv')
