@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPactTest\Consumer\Driver\Interaction;
+namespace PhpPactTest\SyncMessage\Driver\Interaction;
 
 use PhpPact\Consumer\Driver\Body\MessageBodyDriverInterface;
 use PhpPact\Consumer\Driver\Exception\InteractionCommentNotSetException;
