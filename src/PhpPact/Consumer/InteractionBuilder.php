@@ -21,6 +21,11 @@ class InteractionBuilder implements BuilderInterface
     public function __construct(MockServerConfigInterface $config, ?InteractionDriverFactoryInterface $driverFactory = null)
     {
         $this->driver      = ($driverFactory ?? new InteractionDriverFactory())->create($config);
+        $this->newInteraction();
+    }
+
+    public function newInteraction(): void
+    {
         $this->interaction = new Interaction();
     }
 
@@ -58,14 +63,15 @@ class InteractionBuilder implements BuilderInterface
 
     /**
      * @param ProviderResponse $response mock of response received
+     * @param bool             $startMockServer start mock server. Can't register more interaction if mock server is started
      *
      * @return bool returns true on success
      */
-    public function willRespondWith(ProviderResponse $response): bool
+    public function willRespondWith(ProviderResponse $response, bool $startMockServer = true): bool
     {
         $this->interaction->setResponse($response);
 
-        return $this->driver->registerInteraction($this->interaction);
+        return $this->driver->registerInteraction($this->interaction, $startMockServer);
     }
 
     /**
