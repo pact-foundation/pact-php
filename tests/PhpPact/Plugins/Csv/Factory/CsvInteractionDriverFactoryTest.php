@@ -64,6 +64,7 @@ class CsvInteractionDriverFactoryTest extends TestCase
             'client' => Client::class,
             'bodyDriver' => in_array(InteractionPart::RESPONSE, $pluginParts) ? CsvBodyDriver::class : InteractionBodyDriver::class,
         ]);
+        $this->cleanUp($driver);
     }
 
     public function testMissingPluginPartsException(): void

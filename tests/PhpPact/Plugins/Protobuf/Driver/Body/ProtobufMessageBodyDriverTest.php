@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPactTest\Plugins\Csv\Driver\Body;
+namespace PhpPactTest\Plugins\Protobuf\Driver\Body;
 
 use PhpPact\Consumer\Driver\Body\MessageBodyDriverInterface;
 use PhpPact\Consumer\Driver\Enum\InteractionPart;
