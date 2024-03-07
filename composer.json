@@ -91,7 +91,9 @@
             "ProtobufSyncMessageProvider\\Tests\\": "example/protobuf-sync-message/provider/tests",
             "ProtobufAsyncMessageConsumer\\": "example/protobuf-async-message/consumer/src",
             "ProtobufAsyncMessageConsumer\\Tests\\": "example/protobuf-async-message/consumer/tests",
-            "ProtobufAsyncMessageProvider\\Tests\\": "example/protobuf-async-message/provider/tests"
+            "ProtobufAsyncMessageProvider\\Tests\\": "example/protobuf-async-message/provider/tests",
+            "StubServerConsumer\\": "example/stub-server/consumer/src",
+            "StubServerConsumer\\Tests\\": "example/stub-server/consumer/tests"
         }
     },
     "scripts": {

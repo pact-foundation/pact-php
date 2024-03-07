@@ -7,18 +7,16 @@ use PhpPact\Standalone\Installer\Model\Scripts;
 use PhpPact\Standalone\StubService\Exception\LogLevelNotSupportedException;
 use Symfony\Component\Process\Process;
 
-/**
- * Ruby Standalone Stub Server Wrapper
- */
 class StubServer
 {
     private StubServerConfigInterface $config;
 
     private Process $process;
 
-    public function __construct(StubServerConfigInterface $config)
+    public function __construct(StubServerConfigInterface $config, ?Process $process = null)
     {
         $this->config = $config;
+        $this->process = $process ?? new Process([Scripts::getStubService(), ...$this->getArguments()], null, ['PACT_BROKER_BASE_URL' => false]);
     }
 
     /**
@@ -30,14 +28,14 @@ class StubServer
      */
     public function start(): ?int
     {
-        $this->process = new Process([Scripts::getStubService(), ...$this->getArguments()], null, ['PACT_BROKER_BASE_URL' => false]);
-
-        $this->process->start(function (string $type, string $buffer) {
-            echo $buffer;
-        });
-
         $logLevel = $this->config->getLogLevel();
-        if (is_null($logLevel) || in_array($logLevel, ['info', 'debug', 'trace'])) {
+        if (is_null($logLevel) || \strtoupper($logLevel) !== 'NONE') {
+            $callback = function (string $type, string $buffer): void {
+                echo "\n$type > $buffer";
+            };
+        }
+        $this->process->start($callback ?? null);
+        if (is_null($logLevel) || in_array(\strtoupper($logLevel), ['INFO', 'DEBUG', 'TRACE'])) {
             $this->process->waitUntil(function (string $type, string $output) {
                 $result = preg_match('/Server started on port (\d+)/', $output, $matches);
                 if ($result === 1 && $this->config->getPort() === 0) {

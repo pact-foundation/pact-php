@@ -81,6 +81,9 @@ jobs:
           - os: windows-latest
             example: 'protobuf-async-message'
             php: 8.2
+          - os: windows-latest
+            example: 'stub-server'
+            php: 8.2
     timeout-minutes: 5
 
     steps:
