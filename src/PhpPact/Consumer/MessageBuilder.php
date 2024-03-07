@@ -4,6 +4,7 @@ namespace PhpPact\Consumer;
 
 use PhpPact\Consumer\Driver\Interaction\MessageDriverInterface;
 use PhpPact\Config\PactConfigInterface;
+use PhpPact\Consumer\Exception\MissingCallbackException;
 use PhpPact\Consumer\Factory\MessageDriverFactory;
 use PhpPact\Consumer\Factory\MessageDriverFactoryInterface;
 
@@ -17,7 +18,7 @@ class MessageBuilder extends AbstractMessageBuilder
     /**
      * @var array<mixed, callable>
      */
-    protected array $callback;
+    protected array $callback = [];
 
     public function __construct(PactConfigInterface $config, ?MessageDriverFactoryInterface $driverFactory = null)
     {
@@ -55,7 +56,8 @@ class MessageBuilder extends AbstractMessageBuilder
      * Wrapper around verify()
      *
      * @param null|string $description description of the pact and thus callback
-     * @throws \Exception
+     *
+     * @throws MissingCallbackException
      */
     public function verifyMessage(callable $callback, ?string $description = null): bool
     {
@@ -68,12 +70,12 @@ class MessageBuilder extends AbstractMessageBuilder
      * Verify the use of the pact by calling the callback
      * It also calls finalize to write the pact
      *
-     * @throws \Exception if callback is not set
+     * @throws MissingCallbackException if callback is not set
      */
     public function verify(): bool
     {
         if (\count($this->callback) < 1) {
-            throw new \Exception('Callbacks need to exist to run verify.');
+            throw new MissingCallbackException('Callbacks need to exist to run verify.');
         }
 
         $pactJson = $this->reify();
