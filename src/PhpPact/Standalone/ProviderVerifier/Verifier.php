@@ -16,33 +16,30 @@ class Verifier
     protected ClientInterface $client;
     protected CData $handle;
 
-    public function __construct(VerifierConfigInterface $config, private ?LoggerInterface $logger = null)
+    public function __construct(VerifierConfigInterface $config, private ?LoggerInterface $logger = null, ?ClientInterface $client = null)
     {
-        $this->client = new Client();
-        $this
-            ->newHandle($config)
-            ->setProviderInfo($config)
-            ->setProviderTransports($config)
-            ->setFilterInfo($config)
-            ->setProviderState($config)
-            ->setVerificationOptions($config)
-            ->setPublishOptions($config)
-            ->setConsumerFilters($config)
-            ->setLogLevel($config);
+        $this->client = $client ?? new Client();
+        $this->newHandle($config);
+        $this->setProviderInfo($config);
+        $this->setProviderTransports($config);
+        $this->setFilterInfo($config);
+        $this->setProviderState($config);
+        $this->setVerificationOptions($config);
+        $this->setPublishOptions($config);
+        $this->setConsumerFilters($config);
+        $this->setLogLevel($config);
     }
 
-    private function newHandle(VerifierConfigInterface $config): self
+    private function newHandle(VerifierConfigInterface $config): void
     {
         $this->handle = $this->client->call(
             'pactffi_verifier_new_for_application',
             $config->getCallingApp()->getName(),
             $config->getCallingApp()->getVersion()
         );
-
-        return $this;
     }
 
-    private function setProviderInfo(VerifierConfigInterface $config): self
+    private function setProviderInfo(VerifierConfigInterface $config): void
     {
         $this->client->call(
             'pactffi_verifier_set_provider_info',
@@ -53,11 +50,9 @@ class Verifier
             $config->getProviderInfo()->getPort(),
             $config->getProviderInfo()->getPath()
         );
-
-        return $this;
     }
 
-    private function setProviderTransports(VerifierConfigInterface $config): self
+    private function setProviderTransports(VerifierConfigInterface $config): void
     {
         foreach ($config->getProviderTransports() as $transport) {
             $this->client->call(
@@ -69,11 +64,9 @@ class Verifier
                 $transport->getScheme()
             );
         }
-
-        return $this;
     }
 
-    private function setFilterInfo(VerifierConfigInterface $config): self
+    private function setFilterInfo(VerifierConfigInterface $config): void
     {
         $this->client->call(
             'pactffi_verifier_set_provider_state',
@@ -82,11 +75,9 @@ class Verifier
             $config->getProviderState()->isStateChangeTeardown(),
             $config->getProviderState()->isStateChangeAsBody()
         );
-
-        return $this;
     }
 
-    private function setProviderState(VerifierConfigInterface $config): self
+    private function setProviderState(VerifierConfigInterface $config): void
     {
         $this->client->call(
             'pactffi_verifier_set_filter_info',
@@ -95,11 +86,9 @@ class Verifier
             $config->getFilterInfo()->getFilterState(),
             $config->getFilterInfo()->getFilterNoState()
         );
-
-        return $this;
     }
 
-    private function setVerificationOptions(VerifierConfigInterface $config): self
+    private function setVerificationOptions(VerifierConfigInterface $config): void
     {
         $this->client->call(
             'pactffi_verifier_set_verification_options',
@@ -107,11 +96,9 @@ class Verifier
             $config->getVerificationOptions()->isDisableSslVerification(),
             $config->getVerificationOptions()->getRequestTimeout()
         );
-
-        return $this;
     }
 
-    private function setPublishOptions(VerifierConfigInterface $config): self
+    private function setPublishOptions(VerifierConfigInterface $config): void
     {
         if ($config->isPublishResults()) {
             $providerTags = ArrayData::createFrom($config->getPublishOptions()->getProviderTags());
@@ -125,11 +112,9 @@ class Verifier
                 $config->getPublishOptions()->getProviderBranch()
             );
         }
-
-        return $this;
     }
 
-    private function setConsumerFilters(VerifierConfigInterface $config): self
+    private function setConsumerFilters(VerifierConfigInterface $config): void
     {
         $filterConsumerNames = ArrayData::createFrom($config->getConsumerFilters()->getFilterConsumerNames());
         $this->client->call(
@@ -138,17 +123,13 @@ class Verifier
             $filterConsumerNames?->getItems(),
             $filterConsumerNames?->getSize()
         );
-
-        return $this;
     }
 
-    private function setLogLevel(VerifierConfigInterface $config): self
+    private function setLogLevel(VerifierConfigInterface $config): void
     {
         if ($logLevel = $config->getLogLevel()) {
             $this->client->call('pactffi_init_with_log_level', $logLevel);
         }
-
-        return $this;
     }
 
     public function addFile(string $file): self

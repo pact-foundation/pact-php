@@ -3,6 +3,8 @@
 namespace PhpPactTest\Helper\FFI;
 
 use PhpPact\FFI\ClientInterface;
+use PHPUnit\Framework\Constraint\Constraint;
+use PHPUnit\Framework\Constraint\IsIdentical;
 use PHPUnit\Framework\MockObject\MockObject;
 
 trait ClientTrait
@@ -17,7 +19,9 @@ trait ClientTrait
             ->willReturnCallback(function (...$args) use (&$calls) {
                 $call = array_shift($calls);
                 $return = array_pop($call);
-                $this->assertSame($call, $args);
+                foreach ($args as $key => $arg) {
+                    $this->assertThat($arg, $call[$key] instanceof Constraint ? $call[$key] : new IsIdentical($call[$key]));
+                }
 
                 return $return;
             });
