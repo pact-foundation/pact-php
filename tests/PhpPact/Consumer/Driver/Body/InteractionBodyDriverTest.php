@@ -4,8 +4,6 @@ namespace PhpPactTest\Consumer\Driver\Body;
 
 use FFI;
 use FFI\CData;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
 use PhpPact\Consumer\Driver\Body\InteractionBodyDriver;
 use PhpPact\Consumer\Driver\Body\InteractionBodyDriverInterface;
 use PhpPact\Consumer\Driver\Enum\InteractionPart;
@@ -38,15 +36,9 @@ class InteractionBodyDriverTest extends TestCase
     private string $boundary = 'abcde12345';
     private CData $failed;
     private string $message = 'error';
-    private vfsStreamDirectory $root;
 
     public function setUp(): void
     {
-        $this->root = vfsStream::setup();
-        file_put_contents($this->root->url() . '/id.txt', 'text');
-        file_put_contents($this->root->url() . '/address.json', 'json');
-        file_put_contents($this->root->url() . '/image.png', 'image');
-
         $this->client = $this->createMock(ClientInterface::class);
         $this->client
             ->expects($this->once())
@@ -63,9 +55,9 @@ class InteractionBodyDriverTest extends TestCase
         $this->binary = new Binary(__DIR__ . '/../../../../_resources/image.jpg', 'image/jpeg');
         $this->text = new Text('example', 'text/plain');
         $this->parts = [
-            new Part($this->root->url() . '/id.txt', 'id', 'text/plain'),
-            new Part($this->root->url() . '/address.json', 'address', 'application/json'),
-            new Part($this->root->url() . '/image.png', 'profileImage', 'image/png'),
+            new Part('/path/to/id.txt', 'id', 'text/plain'),
+            new Part('/path/to//address.json', 'address', 'application/json'),
+            new Part('/path/to//image.png', 'profileImage', 'image/png'),
         ];
         $this->multipart = new Multipart($this->parts, $this->boundary);
         $this->failed = FFI::new('char[5]');
@@ -156,7 +148,7 @@ class InteractionBodyDriverTest extends TestCase
             );
         if (!$success) {
             $this->expectException(PartNotAddedException::class);
-            $this->expectExceptionMessage($this->message);
+            $this->expectExceptionMessage("Can not add part '{$this->parts[2]->getName()}': {$this->message}");
         }
         $this->driver->registerBody($this->interaction, InteractionPart::REQUEST);
     }
@@ -179,7 +171,7 @@ class InteractionBodyDriverTest extends TestCase
             );
         if (!$success) {
             $this->expectException(PartNotAddedException::class);
-            $this->expectExceptionMessage($this->message);
+            $this->expectExceptionMessage("Can not add part '{$this->parts[2]->getName()}': {$this->message}");
         }
         $this->driver->registerBody($this->interaction, InteractionPart::RESPONSE);
     }

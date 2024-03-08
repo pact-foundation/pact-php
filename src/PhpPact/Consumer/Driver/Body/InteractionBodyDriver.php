@@ -40,7 +40,7 @@ class InteractionBodyDriver implements InteractionBodyDriverInterface
                 foreach ($body->getParts() as $part) {
                     $result = $this->client->call('pactffi_with_multipart_file_v2', $interaction->getHandle(), $partId, $part->getContentType(), $part->getPath(), $part->getName(), $body->getBoundary());
                     if ($result->failed instanceof CData) {
-                        throw new PartNotAddedException(FFI::string($result->failed));
+                        throw new PartNotAddedException(sprintf("Can not add part '%s': %s", $part->getName(), FFI::string($result->failed)));
                     }
                 }
                 $success = true;
