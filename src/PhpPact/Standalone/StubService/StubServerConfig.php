@@ -94,7 +94,7 @@ class StubServerConfig implements StubServerConfigInterface
         return $this->files;
     }
 
-    public function setLogLevel(string $logLevel): StubServerConfigInterface
+    public function setLogLevel(?string $logLevel): StubServerConfigInterface
     {
         $this->logLevel = $logLevel;
 
