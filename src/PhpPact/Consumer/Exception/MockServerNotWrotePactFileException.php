@@ -2,9 +2,7 @@
 
 namespace PhpPact\Consumer\Exception;
 
-use Exception;
-
-class MockServerNotWrotePactFileException extends Exception
+class MockServerNotWrotePactFileException extends ConsumerException
 {
     public function __construct(int $code)
     {

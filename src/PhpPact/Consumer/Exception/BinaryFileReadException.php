@@ -2,8 +2,6 @@
 
 namespace PhpPact\Consumer\Exception;
 
-use Exception;
-
-class BinaryFileReadException extends Exception
+class BinaryFileReadException extends ConsumerException
 {
 }

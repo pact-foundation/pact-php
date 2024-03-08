@@ -2,8 +2,8 @@
 
 namespace PhpPactTest\Helper\Exception;
 
-use Exception;
+use PhpPact\Exception\BaseException;
 
-class HelperException extends Exception
+class HelperException extends BaseException
 {
 }

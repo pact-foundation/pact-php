@@ -4,9 +4,9 @@ namespace PhpPactTest\Consumer\Driver\Pact;
 
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Driver\Exception\MissingPactException;
+use PhpPact\Consumer\Driver\Exception\PactFileNotWroteException;
 use PhpPact\Consumer\Driver\Pact\PactDriver;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
-use PhpPact\Consumer\Exception\PactFileNotWroteException;
 use PhpPact\FFI\ClientInterface;
 use PhpPactTest\Helper\FFI\ClientTrait;
 use PHPUnit\Framework\Attributes\TestWith;

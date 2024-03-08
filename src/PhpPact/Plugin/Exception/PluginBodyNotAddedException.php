@@ -2,9 +2,7 @@
 
 namespace PhpPact\Plugin\Exception;
 
-use Exception;
-
-class PluginBodyNotAddedException extends Exception
+class PluginBodyNotAddedException extends PluginException
 {
     public function __construct(int $code)
     {

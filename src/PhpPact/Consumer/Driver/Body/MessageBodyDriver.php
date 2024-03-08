@@ -2,7 +2,7 @@
 
 namespace PhpPact\Consumer\Driver\Body;
 
-use PhpPact\Consumer\Exception\MessageContentsNotAddedException;
+use PhpPact\Consumer\Driver\Exception\MessageContentsNotAddedException;
 use PhpPact\Consumer\Model\Body\Binary;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\Message;

@@ -5,7 +5,7 @@ namespace PhpPact\Consumer\Driver\Pact;
 use Composer\Semver\Comparator;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Driver\Exception\MissingPactException;
-use PhpPact\Consumer\Exception\PactFileNotWroteException;
+use PhpPact\Consumer\Driver\Exception\PactFileNotWroteException;
 use PhpPact\Consumer\Model\Pact\Pact;
 use PhpPact\FFI\ClientInterface;
 
