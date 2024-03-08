@@ -14,7 +14,7 @@ abstract class AbstractPluginPactDriver extends PactDriver
         parent::cleanUp();
     }
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
         $this->usingPlugin();

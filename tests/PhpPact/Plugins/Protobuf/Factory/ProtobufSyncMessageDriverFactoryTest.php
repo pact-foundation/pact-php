@@ -42,6 +42,5 @@ class ProtobufSyncMessageDriverFactoryTest extends TestCase
         $this->assertPropertiesInstanceOf($driver, AbstractMessageDriver::class, [
             'messageBodyDriver' => ProtobufMessageBodyDriver::class,
         ]);
-        $this->cleanUp($driver);
     }
 }

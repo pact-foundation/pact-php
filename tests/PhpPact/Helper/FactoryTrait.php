@@ -2,7 +2,6 @@
 
 namespace PhpPactTest\Helper;
 
-use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use ReflectionProperty;
 
 trait FactoryTrait
@@ -17,13 +16,5 @@ trait FactoryTrait
             $value = $reflection->getValue($object);
             $this->assertInstanceOf($propertyClass, $value);
         }
-    }
-
-    private function cleanUp(object $driver): void
-    {
-        $reflection = new ReflectionProperty($driver, 'pactDriver');
-        $pactDriver = $reflection->getValue($driver);
-        $this->assertInstanceOf(PactDriverInterface::class, $pactDriver);
-        $pactDriver->cleanUp();
     }
 }

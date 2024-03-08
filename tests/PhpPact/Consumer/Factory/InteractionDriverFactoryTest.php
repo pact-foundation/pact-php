@@ -9,7 +9,6 @@ use PhpPact\Consumer\Service\MockServer;
 use PhpPact\FFI\Client;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPactTest\Helper\FactoryTrait;
-use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -38,6 +37,5 @@ class InteractionDriverFactoryTest extends TestCase
             'mockServer' => MockServer::class,
             'pactDriver' => PactDriver::class,
         ]);
-        $this->cleanUp($driver);
     }
 }

@@ -38,6 +38,5 @@ class ProtobufMessageDriverFactoryTest extends TestCase
             'pactDriver' => PactDriver::class,
             'messageBodyDriver' => ProtobufMessageBodyDriver::class,
         ]);
-        $this->cleanUp($driver);
     }
 }
