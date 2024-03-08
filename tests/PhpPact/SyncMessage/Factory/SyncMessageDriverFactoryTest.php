@@ -37,6 +37,5 @@ class SyncMessageDriverFactoryTest extends TestCase
             'mockServer' => MockServer::class,
             'pactDriver' => PactDriver::class,
         ]);
-        $this->cleanUp($driver);
     }
 }

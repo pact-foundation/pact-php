@@ -64,7 +64,6 @@ class CsvInteractionDriverFactoryTest extends TestCase
             'client' => Client::class,
             'bodyDriver' => in_array(InteractionPart::RESPONSE, $pluginParts) ? CsvBodyDriver::class : InteractionBodyDriver::class,
         ]);
-        $this->cleanUp($driver);
     }
 
     public function testMissingPluginPartsException(): void
@@ -72,7 +71,6 @@ class CsvInteractionDriverFactoryTest extends TestCase
         $this->expectException(MissingPluginPartsException::class);
         $this->expectExceptionMessage('At least 1 interaction part must be csv');
         $this->factory = new CsvInteractionDriverFactory();
-        $this->factory->create($this->config);
     }
 
     private function getRequestDriver(InteractionDriverInterface $driver): RequestDriverInterface

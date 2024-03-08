@@ -23,6 +23,7 @@ abstract class AbstractMessageDriver extends AbstractDriver implements SharedMes
 
     public function registerMessage(Message $message): void
     {
+        $this->pactDriver->setUp();
         $this->newInteraction($message);
         $this->given($message);
         $this->expectsToReceive($message);

@@ -36,6 +36,7 @@ class InteractionDriver extends AbstractDriver implements InteractionDriverInter
 
     public function registerInteraction(Interaction $interaction, bool $startMockServer = true): bool
     {
+        $this->pactDriver->setUp();
         $this->newInteraction($interaction);
         $this->given($interaction);
         $this->uponReceiving($interaction);

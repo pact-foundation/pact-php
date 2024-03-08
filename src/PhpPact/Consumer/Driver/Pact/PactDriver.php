@@ -17,7 +17,6 @@ class PactDriver implements PactDriverInterface
         protected ClientInterface $client,
         protected PactConfigInterface $config
     ) {
-        $this->setUp();
     }
 
     public function cleanUp(): void
@@ -48,8 +47,11 @@ class PactDriver implements PactDriverInterface
         return $this->pact;
     }
 
-    protected function setUp(): void
+    public function setUp(): void
     {
+        if ($this->pact) {
+            return;
+        }
         $this->initWithLogLevel();
         $this->newPact();
         $this->withSpecification();
