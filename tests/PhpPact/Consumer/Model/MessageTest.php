@@ -2,6 +2,9 @@
 
 namespace PhpPactTest\Consumer\Model;
 
+use PhpPact\Consumer\Exception\BodyNotSupportedException;
+use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Consumer\Model\ProviderState;
@@ -97,5 +100,42 @@ class MessageTest extends TestCase
             $this->assertSame('provider state 2', $providerState->getName());
             $this->assertSame(['key 2' => 'value 2'], $providerState->getParams());
         }
+    }
+
+    #[TestWith([null])]
+    #[TestWith([new Text('column1,column2,column3', 'text/csv')])]
+    #[TestWith([new Binary('/path/to/image.png', 'image/png')])]
+    public function testContents(mixed $contents): void
+    {
+        $this->assertSame($this->message, $this->message->setContents($contents));
+        $this->assertSame($contents, $this->message->getContents());
+    }
+
+    public function testTextContents(): void
+    {
+        $text = 'example text';
+        $this->assertSame($this->message, $this->message->setContents($text));
+        $contents = $this->message->getContents();
+        $this->assertInstanceOf(Text::class, $contents);
+        $this->assertSame($text, $contents->getContents());
+        $this->assertSame('text/plain', $contents->getContentType());
+    }
+
+    public function testJsonContents(): void
+    {
+        $array = ['key' => 'value'];
+        $this->assertSame($this->message, $this->message->setContents($array));
+        $contents = $this->message->getContents();
+        $this->assertInstanceOf(Text::class, $contents);
+        $this->assertSame('{"key":"value"}', $contents->getContents());
+        $this->assertSame('application/json', $contents->getContentType());
+    }
+
+    public function testMultipartContents(): void
+    {
+        $this->expectException(BodyNotSupportedException::class);
+        $this->expectExceptionMessage('Message does not support multipart');
+        $multipart = new Multipart([], 'abc123');
+        $this->message->setContents($multipart);
     }
 }
