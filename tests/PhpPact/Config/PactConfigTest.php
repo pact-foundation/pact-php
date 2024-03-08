@@ -4,6 +4,7 @@ namespace PhpPactTest\Config;
 
 use PhpPact\Config\PactConfig;
 use PhpPact\Config\PactConfigInterface;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class PactConfigTest extends TestCase
@@ -50,11 +51,22 @@ class PactConfigTest extends TestCase
         $this->config->setPactSpecificationVersion('invalid');
     }
 
-    public function testInvalidLogLevel(): void
+    #[TestWith(['trace', 'TRACE'])]
+    #[TestWith(['debug', 'DEBUG'])]
+    #[TestWith(['info', 'INFO'])]
+    #[TestWith(['warn', 'WARN'])]
+    #[TestWith(['error', 'ERROR'])]
+    #[TestWith(['off', 'OFF'])]
+    #[TestWith(['none', 'NONE'])]
+    #[TestWith(['verbose', null])]
+    public function testLogLevel(string $logLevel, ?string $result): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('LogLevel VERBOSE not supported.');
-        $this->config->setLogLevel('VERBOSE');
+        if (!$result) {
+            $this->expectException(\InvalidArgumentException::class);
+            $this->expectExceptionMessage('LogLevel VERBOSE not supported.');
+        }
+        $this->config->setLogLevel($logLevel);
+        $this->assertSame($result, $this->config->getLogLevel());
     }
 
     public function testInvalidPactFileWriteMode(): void
