@@ -3,11 +3,12 @@
 namespace PhpPactTest\Standalone\MockServer;
 
 use PhpPact\Standalone\MockService\MockServerConfig;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class MockServerConfigTest extends TestCase
 {
-    public function testSetters()
+    public function testSetters(): void
     {
         $host                     = 'test-host';
         $port                     = 1234;
@@ -41,5 +42,17 @@ class MockServerConfigTest extends TestCase
         static::assertSame($log, $subject->getLog());
         static::assertSame($logLevel, $subject->getLogLevel());
         static::assertSame($pactSpecificationVersion, $subject->getPactSpecificationVersion());
+    }
+
+    #[TestWith([false, 'http://example.test:123'])]
+    #[TestWith([true, 'https://example.test:123'])]
+    public function testGetBaseUri(bool $secure, string $baseUri): void
+    {
+        $config = new MockServerConfig();
+        $config
+            ->setHost('example.test')
+            ->setPort(123)
+            ->setSecure($secure);
+        $this->assertEquals($baseUri, $config->getBaseUri());
     }
 }
