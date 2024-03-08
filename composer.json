@@ -39,7 +39,6 @@
         "behat/behat": "^3.13",
         "galbar/jsonpath": "^3.0",
         "ramsey/uuid": "^4.7",
-        "mikey179/vfsstream": "^1.6.7",
         "pact-foundation/example-protobuf-sync-message-provider": "@dev"
     },
     "autoload": {

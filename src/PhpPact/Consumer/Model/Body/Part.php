@@ -2,17 +2,12 @@
 
 namespace PhpPact\Consumer\Model\Body;
 
-use PhpPact\Consumer\Exception\PartNotExistException;
-
 class Part
 {
     use ContentTypeTrait;
 
     public function __construct(private string $path, private string $name, string $contentType)
     {
-        if (!file_exists($path)) {
-            throw new PartNotExistException(sprintf('File %s does not exist', $path));
-        }
         $this->setContentType($contentType);
     }
 
