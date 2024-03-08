@@ -13,6 +13,7 @@ $app->get('/movies', function (Request $request, Response $response) {
         <<<XML
         <?xml version='1.0' standalone='yes'?>
         <movies>
+            List of movies
             <movie>
                 <title>PHP: Behind the Parser</title>
                 <characters>

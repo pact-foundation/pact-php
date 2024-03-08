@@ -42,6 +42,7 @@ class XmlBuilderTest extends TestCase
                 $this->builder->name('ns1:projects'),
                 $this->builder->attribute('id', '1234'),
                 $this->builder->attribute('xmlns:ns1', 'http://some.namespace/and/more/stuff'),
+                $this->builder->content('List of projects'),
                 $this->builder->eachLike(
                     $this->builder->examples(2),
                     $this->builder->name('ns1:project'),
@@ -52,6 +53,7 @@ class XmlBuilderTest extends TestCase
                     $this->builder->contentLike('Project 1 description'),
                     $this->builder->add(
                         $this->builder->name('ns1:tasks'),
+                        $this->builder->content('List of tasks'),
                         $this->builder->eachLike(
                             $this->builder->examples(5),
                             $this->builder->name('ns1:task'),
@@ -110,6 +112,9 @@ class XmlBuilderTest extends TestCase
                                             ],
                                             'examples' => 5,
                                         ],
+                                        [
+                                            'content' => 'List of tasks',
+                                        ],
                                     ],
                                     'attributes' => [],
                                 ],
@@ -136,6 +141,9 @@ class XmlBuilderTest extends TestCase
                             ],
                         ],
                         'examples' => 2,
+                    ],
+                    [
+                        'content' => 'List of projects',
                     ],
                 ],
                 'attributes' => [

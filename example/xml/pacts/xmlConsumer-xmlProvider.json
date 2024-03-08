@@ -31,7 +31,7 @@
         "path": "/movies"
       },
       "response": {
-        "body": "<?xml version='1.0'?><movies><movie><title>Big Buck Bunny</title><characters><character><name>Big Buck Bunny</name><actor>Jan Morgenstern</actor></character><character><name/><actor/></character></characters><plot>The plot follows a day in the life of Big Buck Bunny, during which time he meets three bullying rodents: the leader, Frank the flying squirrel, and his sidekicks Rinky the red squirrel and Gimera the chinchilla.\nThe rodents amuse themselves by harassing helpless creatures of the forest by throwing fruits, nuts, and rocks at them.</plot><great-lines><line>Open source movie</line></great-lines><rating type='stars'>6</rating></movie></movies>",
+        "body": "<?xml version='1.0'?><movies><movie><title>Big Buck Bunny</title><characters><character><name>Big Buck Bunny</name><actor>Jan Morgenstern</actor></character><character><name/><actor/></character></characters><plot>The plot follows a day in the life of Big Buck Bunny, during which time he meets three bullying rodents: the leader, Frank the flying squirrel, and his sidekicks Rinky the red squirrel and Gimera the chinchilla.\nThe rodents amuse themselves by harassing helpless creatures of the forest by throwing fruits, nuts, and rocks at them.</plot><great-lines><line>Open source movie</line></great-lines><rating type='stars'>6</rating></movie>List of movies</movies>",
         "headers": {
           "Content-Type": "application/xml"
         },
