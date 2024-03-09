@@ -5,10 +5,18 @@ namespace PhpPactTest\Consumer\Model;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Consumer\Model\ProviderState;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class MessageTest extends TestCase
 {
+    private Message $message;
+
+    public function setUp(): void
+    {
+        $this->message = new Message();
+    }
+
     public function testSetters()
     {
         $handle              = 123;
@@ -18,7 +26,7 @@ class MessageTest extends TestCase
         $metadata            = ['queue' => 'foo', 'routing_key' => 'bar'];
         $contents            = 'test';
 
-        $subject = (new Message())
+        $subject = $this->message
             ->setHandle($handle)
             ->setDescription($description)
             ->addProviderState($providerStateName, $providerStateParams)
@@ -38,5 +46,56 @@ class MessageTest extends TestCase
         $this->assertInstanceOf(Text::class, $messageContents);
         $this->assertEquals($contents, $messageContents->getContents());
         $this->assertEquals('text/plain', $messageContents->getContentType());
+    }
+
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function testSetProviderState(bool $overwrite): void
+    {
+        $this->message->setProviderState('provider state 1', ['key 1' => 'value 1'], true);
+        $providerStates = $this->message->setProviderState('provider state 2', ['key 2' => 'value 2'], $overwrite);
+        if ($overwrite) {
+            $this->assertCount(1, $providerStates);
+            $providerState = reset($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 2', $providerState->getName());
+            $this->assertSame(['key 2' => 'value 2'], $providerState->getParams());
+        } else {
+            $this->assertCount(2, $providerStates);
+            $providerState = reset($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 1', $providerState->getName());
+            $this->assertSame(['key 1' => 'value 1'], $providerState->getParams());
+            $providerState = end($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 2', $providerState->getName());
+            $this->assertSame(['key 2' => 'value 2'], $providerState->getParams());
+        }
+    }
+
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function testAddProviderState(bool $overwrite): void
+    {
+        $this->assertSame($this->message, $this->message->addProviderState('provider state 1', ['key 1' => 'value 1'], true));
+        $this->assertSame($this->message, $this->message->addProviderState('provider state 2', ['key 2' => 'value 2'], $overwrite));
+        $providerStates = $this->message->getProviderStates();
+        if ($overwrite) {
+            $this->assertCount(1, $providerStates);
+            $providerState = reset($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 2', $providerState->getName());
+            $this->assertSame(['key 2' => 'value 2'], $providerState->getParams());
+        } else {
+            $this->assertCount(2, $providerStates);
+            $providerState = reset($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 1', $providerState->getName());
+            $this->assertSame(['key 1' => 'value 1'], $providerState->getParams());
+            $providerState = end($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 2', $providerState->getName());
+            $this->assertSame(['key 2' => 'value 2'], $providerState->getParams());
+        }
     }
 }

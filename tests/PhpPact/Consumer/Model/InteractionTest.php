@@ -9,6 +9,7 @@ use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\Consumer\Model\ProviderState;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class InteractionTest extends TestCase
@@ -71,5 +72,56 @@ class InteractionTest extends TestCase
 
         $this->assertSame($requestHeaders, $this->interaction->getHeaders(InteractionPart::REQUEST));
         $this->assertSame($responseHeaders, $this->interaction->getHeaders(InteractionPart::RESPONSE));
+    }
+
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function testSetProviderState(bool $overwrite): void
+    {
+        $this->interaction->setProviderState('provider state 1', ['key 1' => 'value 1'], true);
+        $providerStates = $this->interaction->setProviderState('provider state 2', ['key 2' => 'value 2'], $overwrite);
+        if ($overwrite) {
+            $this->assertCount(1, $providerStates);
+            $providerState = reset($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 2', $providerState->getName());
+            $this->assertSame(['key 2' => 'value 2'], $providerState->getParams());
+        } else {
+            $this->assertCount(2, $providerStates);
+            $providerState = reset($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 1', $providerState->getName());
+            $this->assertSame(['key 1' => 'value 1'], $providerState->getParams());
+            $providerState = end($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 2', $providerState->getName());
+            $this->assertSame(['key 2' => 'value 2'], $providerState->getParams());
+        }
+    }
+
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function testAddProviderState(bool $overwrite): void
+    {
+        $this->assertSame($this->interaction, $this->interaction->addProviderState('provider state 1', ['key 1' => 'value 1'], true));
+        $this->assertSame($this->interaction, $this->interaction->addProviderState('provider state 2', ['key 2' => 'value 2'], $overwrite));
+        $providerStates = $this->interaction->getProviderStates();
+        if ($overwrite) {
+            $this->assertCount(1, $providerStates);
+            $providerState = reset($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 2', $providerState->getName());
+            $this->assertSame(['key 2' => 'value 2'], $providerState->getParams());
+        } else {
+            $this->assertCount(2, $providerStates);
+            $providerState = reset($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 1', $providerState->getName());
+            $this->assertSame(['key 1' => 'value 1'], $providerState->getParams());
+            $providerState = end($providerStates);
+            $this->assertInstanceOf(ProviderState::class, $providerState);
+            $this->assertSame('provider state 2', $providerState->getName());
+            $this->assertSame(['key 2' => 'value 2'], $providerState->getParams());
+        }
     }
 }
