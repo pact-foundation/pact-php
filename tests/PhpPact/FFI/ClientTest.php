@@ -5,6 +5,7 @@ namespace PhpPactTest\FFI;
 use FFI;
 use PhpPact\FFI\Client;
 use PhpPact\FFI\ClientInterface;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
@@ -21,9 +22,10 @@ class ClientTest extends TestCase
         $this->assertSame(5, $this->client->get('LevelFilter_Trace'));
     }
 
-    public function testCall(): void
+    #[TestWith(['abc123', true])]
+    #[TestWith(['testing', false])]
+    public function testCall(string $example, bool $result): void
     {
-        $this->expectNotToPerformAssertions();
-        $this->client->call('pactffi_string_delete', null);
+        $this->assertSame($result, $this->client->call('pactffi_check_regex', '\w{3}\d+', $example));
     }
 }
