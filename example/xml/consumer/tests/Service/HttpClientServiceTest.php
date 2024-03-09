@@ -27,6 +27,7 @@ class HttpClientServiceTest extends TestCase
         $xmlBuilder
             ->root(
                 $xmlBuilder->name('movies'),
+                $xmlBuilder->content('List of movies'),
                 $xmlBuilder->eachLike(
                     $xmlBuilder->examples(1),
                     $xmlBuilder->name('movie'),
