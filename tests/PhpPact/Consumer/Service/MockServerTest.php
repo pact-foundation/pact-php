@@ -13,14 +13,16 @@ use PhpPact\Consumer\Service\MockServerInterface;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\Standalone\MockService\MockServerConfig;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
+use PhpPactTest\Helper\FFI\ClientTrait;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class MockServerTest extends TestCase
 {
+    use ClientTrait;
+
     protected MockServerInterface $mockServer;
-    protected ClientInterface|MockObject $client;
     protected PactDriverInterface|MockObject $pactDriver;
     protected MockServerConfigInterface $config;
     protected int $pactHandle = 123;
@@ -139,19 +141,5 @@ class MockServerTest extends TestCase
             ->expects($this->once())
             ->method('cleanUp');
         $this->mockServer->cleanUp();
-    }
-
-    protected function assertClientCalls(array $calls): void
-    {
-        $this->client
-            ->expects($this->exactly(count($calls)))
-            ->method('call')
-            ->willReturnCallback(function (...$args) use (&$calls) {
-                $call = array_shift($calls);
-                $return = array_pop($call);
-                $this->assertSame($call, $args);
-
-                return $return;
-            });
     }
 }
