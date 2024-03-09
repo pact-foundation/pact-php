@@ -17,7 +17,6 @@ use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
 use PhpPact\Standalone\ProviderVerifier\Verifier;
 use PhpPactTest\Helper\FFI\ClientTrait;
-use PhpPactTest\Helper\PhpProcess;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
