@@ -8,6 +8,11 @@ use PHPUnit\Framework\TestCase;
 
 class ArrayDataTest extends TestCase
 {
+    public function testCreateFromEmptyArray(): void
+    {
+        $this->assertNull(ArrayData::createFrom([]));
+    }
+
     public function testCreateFromArray()
     {
         $branches = ['feature-x', 'master', 'test', 'prod'];
