@@ -3,12 +3,22 @@
 namespace PhpPactTest\Consumer\Model;
 
 use PhpPact\Consumer\Matcher\Matcher;
+use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\ConsumerRequest;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class ConsumerRequestTest extends TestCase
 {
+    private ConsumerRequest $request;
+
+    public function setUp(): void
+    {
+        $this->request = new ConsumerRequest();
+    }
+
     public function testSerializing()
     {
         $model = new ConsumerRequest();
@@ -55,5 +65,35 @@ class ConsumerRequestTest extends TestCase
         $this->assertInstanceOf(Text::class, $body);
         $this->assertEquals('{"status":"finished"}', $body->getContents());
         $this->assertEquals('application/json', $body->getContentType());
+    }
+
+    #[TestWith([null])]
+    #[TestWith([new Text('column1,column2,column3', 'text/csv')])]
+    #[TestWith([new Binary('/path/to/image.png', 'image/png')])]
+    #[TestWith([new Multipart([], 'abc123')])]
+    public function testBody(mixed $body): void
+    {
+        $this->assertSame($this->request, $this->request->setBody($body));
+        $this->assertSame($body, $this->request->getBody());
+    }
+
+    public function testTextBody(): void
+    {
+        $text = 'example text';
+        $this->assertSame($this->request, $this->request->setBody($text));
+        $body = $this->request->getBody();
+        $this->assertInstanceOf(Text::class, $body);
+        $this->assertSame($text, $body->getContents());
+        $this->assertSame('text/plain', $body->getContentType());
+    }
+
+    public function testJsonBody(): void
+    {
+        $array = ['key' => 'value'];
+        $this->assertSame($this->request, $this->request->setBody($array));
+        $body = $this->request->getBody();
+        $this->assertInstanceOf(Text::class, $body);
+        $this->assertSame('{"key":"value"}', $body->getContents());
+        $this->assertSame('application/json', $body->getContentType());
     }
 }
