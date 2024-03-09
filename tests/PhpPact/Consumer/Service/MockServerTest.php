@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpPactTest\Consumer\Driver\Pact;
+namespace PhpPactTest\Consumer\Service;
 
 use FFI;
 use PhpPact\Config\PactConfigInterface;
@@ -38,16 +38,16 @@ class MockServerTest extends TestCase
         $this->mockServer = new MockServer($this->client, $this->pactDriver, $this->config);
     }
 
-    #[TestWith([234, true, 'https'])]
-    #[TestWith([234, false, 'http'])]
-    #[TestWith([0, true, 'https'])]
-    #[TestWith([-1, true, 'https'])]
-    #[TestWith([-2, true, 'https'])]
-    #[TestWith([-3, true, 'https'])]
-    #[TestWith([-4, true, 'https'])]
-    #[TestWith([-5, true, 'https'])]
-    #[TestWith([-6, true, 'https'])]
-    public function testStart(int $returnedPort, bool $secure, string $transport): void
+    #[TestWith([234, true])]
+    #[TestWith([234, false])]
+    #[TestWith([0, true])]
+    #[TestWith([-1, true])]
+    #[TestWith([-2, true])]
+    #[TestWith([-3, true])]
+    #[TestWith([-4, true])]
+    #[TestWith([-5, true])]
+    #[TestWith([-6, true])]
+    public function testStart(int $returnedPort, bool $secure): void
     {
         $this->config->setHost($this->host);
         $this->config->setPort($this->port);
@@ -57,7 +57,7 @@ class MockServerTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $calls = [
-            ['pactffi_create_mock_server_for_transport', $this->pactHandle, $this->host, $this->port, $transport, null, $returnedPort],
+            ['pactffi_create_mock_server_for_transport', $this->pactHandle, $this->host, $this->port, $this->getTransport($secure), null, $returnedPort],
         ];
         $this->assertClientCalls($calls);
         if ($returnedPort < 0) {
@@ -141,5 +141,10 @@ class MockServerTest extends TestCase
             ->expects($this->once())
             ->method('cleanUp');
         $this->mockServer->cleanUp();
+    }
+
+    protected function getTransport(bool $secure): string
+    {
+        return $secure ? 'https' : 'http';
     }
 }
