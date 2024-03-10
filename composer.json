@@ -29,8 +29,7 @@
     "require-dev": {
         "ext-sockets": "*",
         "roave/security-advisories": "dev-latest",
-        "slim/slim": "^4.6",
-        "slim/psr7": "^1.2.0",
+        "slim/slim": "^4.13",
         "friendsofphp/php-cs-fixer": "^3.0",
         "php-amqplib/php-amqplib": "^3.0",
         "phpstan/phpstan": "^1.9",
