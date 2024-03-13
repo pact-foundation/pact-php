@@ -2,7 +2,7 @@
 
 namespace PhpPact\Consumer\Driver\Exception;
 
-class PactFileNotWroteException extends DriverException
+class PactFileNotWrittenException extends DriverException
 {
     public function __construct(int $code)
     {

@@ -4,7 +4,7 @@ namespace PhpPactTest\Consumer\Driver\Pact;
 
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Driver\Exception\MissingPactException;
-use PhpPact\Consumer\Driver\Exception\PactFileNotWroteException;
+use PhpPact\Consumer\Driver\Exception\PactFileNotWrittenException;
 use PhpPact\Consumer\Driver\Pact\PactDriver;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\FFI\ClientInterface;
@@ -154,7 +154,7 @@ class PactDriverTest extends TestCase
         $this->assertClientCalls($calls);
         $this->driver->setUp();
         if ($error) {
-            $this->expectException(PactFileNotWroteException::class);
+            $this->expectException(PactFileNotWrittenException::class);
             $this->expectExceptionMessage(match ($error) {
                 1 => 'The function panicked.',
                 2 => 'The pact file was not able to be written.',
