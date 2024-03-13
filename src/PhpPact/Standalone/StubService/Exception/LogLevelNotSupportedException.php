@@ -2,8 +2,6 @@
 
 namespace PhpPact\Standalone\StubService\Exception;
 
-use Exception;
-
-class LogLevelNotSupportedException extends Exception
+class LogLevelNotSupportedException extends StubServerException
 {
 }

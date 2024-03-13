@@ -6,7 +6,7 @@ use FFI;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Exception\MockServerNotStartedException;
-use PhpPact\Consumer\Exception\MockServerNotWrotePactFileException;
+use PhpPact\Consumer\Exception\MockServerPactFileNotWrittenException;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
 use PhpPact\Standalone\MockService\Model\VerifyResult;
@@ -73,7 +73,7 @@ class MockServer implements MockServerInterface
             $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
         );
         if ($error) {
-            throw new MockServerNotWrotePactFileException($error);
+            throw new MockServerPactFileNotWrittenException($error);
         }
     }
 

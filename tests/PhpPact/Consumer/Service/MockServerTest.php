@@ -6,7 +6,7 @@ use FFI;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Exception\MockServerNotStartedException;
-use PhpPact\Consumer\Exception\MockServerNotWrotePactFileException;
+use PhpPact\Consumer\Exception\MockServerPactFileNotWrittenException;
 use PhpPact\Consumer\Model\Pact\Pact;
 use PhpPact\Consumer\Service\MockServer;
 use PhpPact\Consumer\Service\MockServerInterface;
@@ -119,7 +119,7 @@ class MockServerTest extends TestCase
         ];
         $this->assertClientCalls($calls);
         if ($error) {
-            $this->expectException(MockServerNotWrotePactFileException::class);
+            $this->expectException(MockServerPactFileNotWrittenException::class);
             $this->expectExceptionMessage(match ($error) {
                 1 => 'A general panic was caught',
                 2 => 'The pact file was not able to be written',

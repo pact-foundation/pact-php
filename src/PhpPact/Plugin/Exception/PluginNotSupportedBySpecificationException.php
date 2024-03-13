@@ -2,9 +2,7 @@
 
 namespace PhpPact\Plugin\Exception;
 
-use Exception;
-
-class PluginNotSupportedBySpecificationException extends Exception
+class PluginNotSupportedBySpecificationException extends PluginException
 {
     public function __construct(string $specification)
     {
