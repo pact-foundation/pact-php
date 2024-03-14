@@ -69,22 +69,22 @@ class Verifier
     private function setFilterInfo(VerifierConfigInterface $config): void
     {
         $this->client->call(
-            'pactffi_verifier_set_provider_state',
+            'pactffi_verifier_set_filter_info',
             $this->handle,
-            $config->getProviderState()->getStateChangeUrl() ? (string) $config->getProviderState()->getStateChangeUrl() : null,
-            $config->getProviderState()->isStateChangeTeardown(),
-            $config->getProviderState()->isStateChangeAsBody()
+            $config->getFilterInfo()->getFilterDescription(),
+            $config->getFilterInfo()->getFilterState(),
+            $config->getFilterInfo()->getFilterNoState()
         );
     }
 
     private function setProviderState(VerifierConfigInterface $config): void
     {
         $this->client->call(
-            'pactffi_verifier_set_filter_info',
+            'pactffi_verifier_set_provider_state',
             $this->handle,
-            $config->getFilterInfo()->getFilterDescription(),
-            $config->getFilterInfo()->getFilterState(),
-            $config->getFilterInfo()->getFilterNoState()
+            $config->getProviderState()->getStateChangeUrl() ? (string) $config->getProviderState()->getStateChangeUrl() : null,
+            $config->getProviderState()->isStateChangeTeardown(),
+            $config->getProviderState()->isStateChangeAsBody()
         );
     }
 
