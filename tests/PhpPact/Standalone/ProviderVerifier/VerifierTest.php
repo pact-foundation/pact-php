@@ -81,8 +81,8 @@ class VerifierTest extends TestCase
             ['pactffi_verifier_new_for_application', $callingAppName, $callingAppVersion, $this->handle],
             ['pactffi_verifier_set_provider_info', $this->handle, $providerName, $providerScheme, $providerHost, $providerPort, $providerPath, null],
             ['pactffi_verifier_add_provider_transport', $this->handle, $transportProtocol, $transportPort, $transportPath, $transportScheme, null],
-            ['pactffi_verifier_set_provider_state', $this->handle, (string) $stateChangeUrl, $stateChangeTearDown, $stateChangeAsBody, null],
             ['pactffi_verifier_set_filter_info', $this->handle, $filterDescription, $filterState, $filterNoState, null],
+            ['pactffi_verifier_set_provider_state', $this->handle, (string) $stateChangeUrl, $stateChangeTearDown, $stateChangeAsBody, null],
             ['pactffi_verifier_set_verification_options', $this->handle, $disableSslVerification, $requestTimeout, null],
             [
                 'pactffi_verifier_set_publish_options',
