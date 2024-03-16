@@ -96,6 +96,7 @@
         }
     },
     "scripts": {
+        "start-provider": "echo 'removed in 10.x' & exit 1",
         "static-code-analysis": "phpstan",
         "lint": "php-cs-fixer fix --dry-run",
         "fix": "php-cs-fixer fix",
