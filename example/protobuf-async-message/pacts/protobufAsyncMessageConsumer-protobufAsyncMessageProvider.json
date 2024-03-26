@@ -1,0 +1,93 @@
+{
+  "consumer": {
+    "name": "protobufAsyncMessageConsumer"
+  },
+  "interactions": [
+    {
+      "contents": {
+        "content": "CiRkMWYwNzdiNS0wZjkxLTQwYWEtYjhmOS01NjhiNTBlZTRkZDkSEAoFR2l2ZW4SB1N1cm5hbWU=",
+        "contentType": "application/protobuf;message=Person",
+        "contentTypeHint": "BINARY",
+        "encoded": "base64"
+      },
+      "description": "Person message sent",
+      "interactionMarkup": {
+        "markup": "```protobuf\nmessage Person {\n    string id = 1;\n    message .library.Name name = 2;\n}\n```\n",
+        "markupType": "COMMON_MARK"
+      },
+      "matchingRules": {
+        "body": {
+          "$.id": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "regex",
+                "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+              }
+            ]
+          },
+          "$.name.given": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          },
+          "$.name.surname": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ]
+          }
+        }
+      },
+      "metadata": {
+        "contentType": "application/protobuf;message=Person"
+      },
+      "pending": false,
+      "pluginConfiguration": {
+        "protobuf": {
+          "descriptorKey": "f77f40284a5ed1f38188ed943aca6938",
+          "message": "Person"
+        }
+      },
+      "providerStates": [
+        {
+          "name": "A person with fixed id exists",
+          "params": {
+            "id": "d1f077b5-0f91-40aa-b8f9-568b50ee4dd9",
+            "reuse": 0
+          }
+        }
+      ],
+      "type": "Asynchronous/Messages"
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.14",
+      "models": "1.1.17"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    },
+    "plugins": [
+      {
+        "configuration": {
+          "f77f40284a5ed1f38188ed943aca6938": {
+            "protoDescriptors": "CpcBCg9zYXlfaGVsbG8ucHJvdG8SB2xpYnJhcnkiOwoGUGVyc29uEg4KAmlkGAEgASgJUgJpZBIhCgRuYW1lGAIgASgLMg0ubGlicmFyeS5OYW1lUgRuYW1lIjYKBE5hbWUSFAoFZ2l2ZW4YASABKAlSBWdpdmVuEhgKB3N1cm5hbWUYAiABKAlSB3N1cm5hbWViBnByb3RvMw==",
+            "protoFile": "syntax = \"proto3\";\n\npackage library;\n\nmessage Person {\n  string id = 1;\n  Name name = 2;\n}\n\nmessage Name {\n  string given = 1;\n  string surname = 2;\n}\n"
+          }
+        },
+        "name": "protobuf",
+        "version": "0.3.13"
+      }
+    ]
+  },
+  "provider": {
+    "name": "protobufAsyncMessageProvider"
+  }
+}

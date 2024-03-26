@@ -1,0 +1,57 @@
+{
+  "consumer": {
+    "name": "binaryConsumer"
+  },
+  "interactions": [
+    {
+      "description": "A get request to /image.jpg",
+      "providerStates": [
+        {
+          "name": "Image file image.jpg exists"
+        }
+      ],
+      "request": {
+        "headers": {
+          "Accept": "image/jpeg"
+        },
+        "method": "GET",
+        "path": "/image.jpg"
+      },
+      "response": {
+        "body": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/wAALCAAPAA8BAREA/8QAFgABAQEAAAAAAAAAAAAAAAAAAgME/8QAIBAAAgIDAAIDAQAAAAAAAAAAAQIDBAUREhMhACIxUf/aAAgBAQAAPwBNlclNW6S0s7wbvv4K6iNI2HJcp9Rrnk+T0ByNofwZIjdnyYx0stWrYWAP5y03SBjt+GQ/YnmHbaUkfoA107Br40Wa+DrRLNXhjchECDwyjjlXPpdFSo3Gw5CbDFdmUVOrHcfEU4JYb2PWSJCzbVPUEmh7PQaOZHOyD0x/hHz/2Q==",
+        "headers": {
+          "Content-Type": "image/jpeg"
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "contentType",
+                  "value": "image/jpeg"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.14",
+      "mockserver": "1.2.5",
+      "models": "1.1.17"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "binaryProvider"
+  }
+}

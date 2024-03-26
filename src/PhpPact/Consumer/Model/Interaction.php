@@ -2,42 +2,31 @@
 
 namespace PhpPact\Consumer\Model;
 
-/**
- * Request/Response Pair to be posted to the Ruby Standalone Mock Server for PACT tests.
- */
-class Interaction implements \JsonSerializable
-{
-    private string $description;
+use PhpPact\Consumer\Driver\Enum\InteractionPart;
+use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Multipart;
+use PhpPact\Consumer\Model\Body\Text;
+use PhpPact\Consumer\Model\Interaction\CommentsTrait;
+use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
+use PhpPact\Consumer\Model\Interaction\HandleTrait;
+use PhpPact\Consumer\Model\Interaction\KeyTrait;
+use PhpPact\Consumer\Model\Interaction\PendingTrait;
 
-    private ?string $providerState = null;
+/**
+ * Request/Response Pair to be posted to the Mock Server for PACT tests.
+ */
+class Interaction
+{
+    use ProviderStates;
+    use DescriptionTrait;
+    use HandleTrait;
+    use KeyTrait;
+    use PendingTrait;
+    use CommentsTrait;
 
     private ConsumerRequest $request;
 
     private ProviderResponse $response;
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getProviderState(): ?string
-    {
-        return $this->providerState;
-    }
-
-    public function setProviderState(string $providerState): self
-    {
-        $this->providerState = $providerState;
-
-        return $this;
-    }
 
     public function getRequest(): ConsumerRequest
     {
@@ -63,24 +52,22 @@ class Interaction implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
+    public function getBody(InteractionPart $part): Text|Binary|Multipart|null
     {
-        if ($this->getProviderState()) {
-            return [
-                'description'   => $this->getDescription(),
-                'providerState' => $this->getProviderState(),
-                'request'       => $this->getRequest(),
-                'response'      => $this->getResponse(),
-            ];
-        }
+        return match ($part) {
+            InteractionPart::REQUEST => $this->getRequest()->getBody(),
+            InteractionPart::RESPONSE => $this->getResponse()->getBody(),
+        };
+    }
 
-        return [
-                'description'   => $this->getDescription(),
-                'request'       => $this->getRequest(),
-                'response'      => $this->getResponse(),
-            ];
+    /**
+     * @return array<string, string[]>
+     */
+    public function getHeaders(InteractionPart $part): array
+    {
+        return match ($part) {
+            InteractionPart::REQUEST => $this->getRequest()->getHeaders(),
+            InteractionPart::RESPONSE => $this->getResponse()->getHeaders(),
+        };
     }
 }

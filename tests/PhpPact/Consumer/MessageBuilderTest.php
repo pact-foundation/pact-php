@@ -1,0 +1,228 @@
+<?php
+
+namespace PhpPactTest\Consumer;
+
+use Exception;
+use PhpPact\Config\PactConfigInterface;
+use PhpPact\Consumer\Driver\Interaction\MessageDriverInterface;
+use PhpPact\Consumer\Exception\MissingCallbackException;
+use PhpPact\Consumer\Factory\MessageDriverFactoryInterface;
+use PhpPact\Consumer\MessageBuilder;
+use PhpPact\Consumer\Model\Body\Binary;
+use PhpPact\Consumer\Model\Body\Text;
+use PhpPact\Consumer\Model\Message;
+use PhpPact\Consumer\Model\ProviderState;
+use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
+use stdClass;
+
+class MessageBuilderTest extends TestCase
+{
+    private MessageBuilder $builder;
+    private MessageDriverInterface|MockObject $driver;
+    private PactConfigInterface|MockObject $config;
+    private MessageDriverFactoryInterface|MockObject $driverFactory;
+
+    public function setUp(): void
+    {
+        $this->driver = $this->createMock(MessageDriverInterface::class);
+        $this->config = $this->createMock(PactConfigInterface::class);
+        $this->driverFactory = $this->createMock(MessageDriverFactoryInterface::class);
+        $this->driverFactory
+            ->expects($this->once())
+            ->method('create')
+            ->with($this->config)
+            ->willReturn($this->driver);
+        $this->builder = new MessageBuilder($this->config, $this->driverFactory);
+    }
+
+    public function testGiven(): void
+    {
+        $this->assertSame($this->builder, $this->builder->given('test', ['key' => 'value']));
+        $message = $this->getMessage();
+        $providerStates = $message->getProviderStates();
+        $this->assertCount(1, $providerStates);
+        $providerState = $providerStates[0];
+        $this->assertInstanceOf(ProviderState::class, $providerState);
+        $this->assertSame('test', $providerState->getName());
+        $this->assertSame(['key' => 'value'], $providerState->getParams());
+    }
+
+    public function testExpectsToReceive(): void
+    {
+        $description = 'message description';
+        $this->assertSame($this->builder, $this->builder->expectsToReceive($description));
+        $message = $this->getMessage();
+        $this->assertSame($description, $message->getDescription());
+    }
+
+    public function testWithMetadata(): void
+    {
+        $metadata = ['key' => 'value'];
+        $this->assertSame($this->builder, $this->builder->withMetadata($metadata));
+        $message = $this->getMessage();
+        $this->assertSame($metadata, $message->getMetadata());
+    }
+
+    #[TestWith([null                                          , null])]
+    #[TestWith([new Text('example', 'text/plain')             , null])]
+    #[TestWith([new Binary('/path/to/image.jpg', 'image/jpeg'), null])]
+    #[TestWith(['example text'                                , Text::class])]
+    #[TestWith([['key' => 'value']                            , Text::class])]
+    public function testWithContent(mixed $content, ?string $contentClass): void
+    {
+        $this->assertSame($this->builder, $this->builder->withContent($content));
+        $message = $this->getMessage();
+        if ($contentClass) {
+            $this->assertInstanceOf($contentClass, $message->getContents());
+        } else {
+            $this->assertSame($content, $message->getContents());
+        }
+    }
+
+    #[TestWith([null])]
+    #[TestWith(['key'])]
+    public function testSetKey(?string $key): void
+    {
+        $this->assertSame($this->builder, $this->builder->key($key));
+        $message = $this->getMessage();
+        $this->assertSame($key, $message->getKey());
+    }
+
+    #[TestWith([null])]
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function testSetPending(?bool $pending): void
+    {
+        $this->assertSame($this->builder, $this->builder->pending($pending));
+        $message = $this->getMessage();
+        $this->assertSame($pending, $message->getPending());
+    }
+
+    #[TestWith([[]])]
+    #[TestWith([['key' => 'value']])]
+    public function testSetComments(array $comments): void
+    {
+        $this->assertSame($this->builder, $this->builder->comments($comments));
+        $message = $this->getMessage();
+        $this->assertSame($comments, $message->getComments());
+    }
+
+    public function testSetSingleCallback(): void
+    {
+        $callbacks = [
+            fn () => 'first',
+            fn () => 'second',
+            fn () => 'third',
+            fn () => 'fourth',
+        ];
+        foreach ($callbacks as $callback) {
+            $this->assertSame($this->builder, $this->builder->setCallback($callback));
+        }
+        $builderCallbacks = $this->getCallbacks();
+        $this->assertSame([end($callbacks)], $builderCallbacks);
+    }
+
+    public function testSetMultipleCallbacks(): void
+    {
+        $callbacks = [
+            'first callback' => fn () => 'first',
+            'second callback' => fn () => 'second',
+            'third callback' => fn () => 'third',
+            'fourth callback' => fn () => 'fourth',
+        ];
+        foreach ($callbacks as $description => $callback) {
+            $this->assertSame($this->builder, $this->builder->setCallback($callback, $description));
+        }
+        $builderCallbacks = $this->getCallbacks();
+        $this->assertSame($callbacks, $builderCallbacks);
+    }
+
+    public function testReify(): void
+    {
+        $jsonMessage = '{"key": "value"}';
+        $message = $this->getMessage();
+        $this->driver
+            ->expects($this->once())
+            ->method('registerMessage')
+            ->with($message);
+        $this->driver
+            ->expects($this->once())
+            ->method('reify')
+            ->with($message)
+            ->willReturn($jsonMessage);
+        $this->assertSame($jsonMessage, $this->builder->reify());
+    }
+
+    public function testVerifyWithoutCallback(): void
+    {
+        $this->expectException(MissingCallbackException::class);
+        $this->expectExceptionMessage('Callbacks need to exist to run verify.');
+        $this->builder->verify();
+    }
+
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function testVerifyMessage(bool $callbackThrowException): void
+    {
+        $jsonMessage = '{"key": "value"}';
+        $callback = $this->getMockBuilder(stdClass::class)
+            ->addMethods(['__invoke'])
+            ->getMock();
+        $mocker = $callback
+            ->expects($this->once())
+            ->method('__invoke');
+        if ($callbackThrowException) {
+            $mocker->willThrowException(new Exception('something wrong'));
+        }
+        $this->driver
+            ->expects($this->once())
+            ->method('reify')
+            ->willReturn($jsonMessage);
+        $this->driver
+            ->expects($this->exactly(!$callbackThrowException))
+            ->method('writePactAndCleanUp');
+        $this->assertSame(!$callbackThrowException, $this->builder->verifyMessage($callback, 'a callback'));
+    }
+
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function testVerify(bool $callbackThrowException): void
+    {
+        $jsonMessage = '{"key": "value"}';
+        $callback = $this->getMockBuilder(stdClass::class)
+            ->addMethods(['__invoke'])
+            ->getMock();
+        $mocker = $callback
+            ->expects($this->once())
+            ->method('__invoke');
+        if ($callbackThrowException) {
+            $mocker->willThrowException(new Exception('something wrong'));
+        }
+        $this->driver
+            ->expects($this->once())
+            ->method('reify')
+            ->willReturn($jsonMessage);
+        $this->driver
+            ->expects($this->exactly(!$callbackThrowException))
+            ->method('writePactAndCleanUp');
+        $this->builder->setCallback($callback);
+        $this->assertSame(!$callbackThrowException, $this->builder->verify());
+    }
+
+    private function getMessage(): Message
+    {
+        $reflection = new ReflectionProperty($this->builder, 'message');
+
+        return $reflection->getValue($this->builder);
+    }
+
+    private function getCallbacks(): array
+    {
+        $reflection = new ReflectionProperty($this->builder, 'callback');
+
+        return $reflection->getValue($this->builder);
+    }
+}

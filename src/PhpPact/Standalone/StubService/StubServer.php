@@ -2,53 +2,67 @@
 
 namespace PhpPact\Standalone\StubService;
 
-use Amp\Process\ProcessException;
 use Exception;
 use PhpPact\Standalone\Installer\Model\Scripts;
-use PhpPact\Standalone\Runner\ProcessRunner;
+use PhpPact\Standalone\StubService\Exception\LogLevelNotSupportedException;
+use Symfony\Component\Process\Process;
 
-/**
- * Ruby Standalone Stub Server Wrapper
- */
 class StubServer
 {
     private StubServerConfigInterface $config;
 
-    private ProcessRunner $processRunner;
+    private Process $process;
 
-    public function __construct(StubServerConfigInterface $config)
+    public function __construct(StubServerConfigInterface $config, ?Process $process = null)
     {
         $this->config = $config;
+        $this->process = $process ?? new Process([Scripts::getStubService(), ...$this->getArguments()], null, ['PACT_BROKER_BASE_URL' => false]);
     }
 
     /**
      * Start the Stub Server. Verify that it is running.
      *
-     * @param int $wait seconds to delay for the server to come up
-     *
      * @throws Exception
      *
-     * @return int process ID of the started Stub Server
+     * @return int|null process ID of the started Stub Server if running, null otherwise
      */
-    public function start(int $wait = 1): int
+    public function start(): ?int
     {
-        $this->processRunner = new ProcessRunner(Scripts::getStubService(), $this->getArguments());
+        $logLevel = $this->config->getLogLevel();
+        if (is_null($logLevel) || \strtoupper($logLevel) !== 'NONE') {
+            $callback = function (string $type, string $buffer): void {
+                echo "\n$type > $buffer";
+            };
+        }
+        $this->process->start($callback ?? null);
+        if (is_null($logLevel) || in_array(\strtoupper($logLevel), ['INFO', 'DEBUG', 'TRACE'])) {
+            $this->process->waitUntil(function (string $type, string $output) {
+                $result = preg_match('/Server started on port (\d+)/', $output, $matches);
+                if ($result === 1 && $this->config->getPort() === 0) {
+                    $this->config->setPort((int)$matches[1]);
+                }
 
-        $processId =  $this->processRunner->run();
-        \sleep($wait); // wait for server to start
+                return $result;
+            });
+        } else {
+            if ($this->config->getPort() === 0) {
+                throw new LogLevelNotSupportedException(sprintf("Setting random port for stub server required log level 'info', 'debug' or 'trace'. '%s' given.", $logLevel));
+            }
+        }
 
-        return $processId;
+        return $this->process->getPid();
     }
 
     /**
      * Stop the Stub Server process.
      *
      * @return bool Was stopping successful?
-     * @throws ProcessException
      */
     public function stop(): bool
     {
-        return $this->processRunner->stop();
+        $this->process->stop();
+
+        return true;
     }
 
     /**
@@ -60,12 +74,64 @@ class StubServer
     {
         $results = [];
 
-        $results[] = $this->config->getPactLocation();
-        $results[] = "--host={$this->config->getHost()}";
-        $results[] = "--port={$this->config->getPort()}";
+        if ($this->config->getBrokerUrl() !== null) {
+            $results[] = "--broker-url={$this->config->getBrokerUrl()}";
+        }
 
-        if ($this->config->getLog() !== null) {
-            $results[] = "--log={$this->config->getLog()}";
+        foreach ($this->config->getDirs() as $dir) {
+            $results[] = "--dir={$dir}";
+        }
+
+        if ($this->config->getExtension() !== null) {
+            $results[] = "--extension={$this->config->getExtension()}";
+        }
+
+        foreach ($this->config->getFiles() as $file) {
+            $results[] = "--file={$file}";
+        }
+
+        if ($this->config->getLogLevel() !== null) {
+            $results[] = "--loglevel={$this->config->getLogLevel()}";
+        }
+
+        if ($this->config->getPort() !== null) {
+            $results[] = "--port={$this->config->getPort()}";
+        }
+
+        if ($this->config->getProviderState() !== null) {
+            $results[] = "--provider-state={$this->config->getProviderState()}";
+        }
+
+        if ($this->config->getProviderStateHeaderName() !== null) {
+            $results[] = "--provider-state-header-name={$this->config->getProviderStateHeaderName()}";
+        }
+
+        if ($this->config->getToken() !== null) {
+            $results[] = "--token={$this->config->getToken()}";
+        }
+
+        foreach ($this->config->getUrls() as $url) {
+            $results[] = "--url={$url}";
+        }
+
+        if ($this->config->getUser() !== null) {
+            $results[] = "--user={$this->config->getUser()}";
+        }
+
+        if ($this->config->isCors()) {
+            $results[] = '--cors';
+        }
+
+        if ($this->config->isCorsReferer()) {
+            $results[] = '--cors-referer';
+        }
+
+        if ($this->config->isEmptyProviderState()) {
+            $results[] = '--empty-provider-state';
+        }
+
+        if ($this->config->isInsecureTls()) {
+            $results[] = '--insecure-tls';
         }
 
         return $results;

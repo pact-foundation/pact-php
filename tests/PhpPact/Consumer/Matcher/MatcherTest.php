@@ -2,8 +2,41 @@
 
 namespace PhpPactTest\Consumer\Matcher;
 
-use Exception;
+use PhpPact\Consumer\Matcher\Exception\MatcherException;
+use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
+use PhpPact\Consumer\Matcher\Formatters\MinimalFormatter;
+use PhpPact\Consumer\Matcher\Formatters\ValueOptionalFormatter;
+use PhpPact\Consumer\Matcher\Generators\MockServerURL;
+use PhpPact\Consumer\Matcher\Generators\ProviderState;
+use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
+use PhpPact\Consumer\Matcher\Generators\Uuid;
+use PhpPact\Consumer\Matcher\HttpStatus;
 use PhpPact\Consumer\Matcher\Matcher;
+use PhpPact\Consumer\Matcher\Matchers\ArrayContains;
+use PhpPact\Consumer\Matcher\Matchers\Boolean;
+use PhpPact\Consumer\Matcher\Matchers\ContentType;
+use PhpPact\Consumer\Matcher\Matchers\Date;
+use PhpPact\Consumer\Matcher\Matchers\DateTime;
+use PhpPact\Consumer\Matcher\Matchers\Decimal;
+use PhpPact\Consumer\Matcher\Matchers\EachKey;
+use PhpPact\Consumer\Matcher\Matchers\EachValue;
+use PhpPact\Consumer\Matcher\Matchers\Equality;
+use PhpPact\Consumer\Matcher\Matchers\Includes;
+use PhpPact\Consumer\Matcher\Matchers\Integer;
+use PhpPact\Consumer\Matcher\Matchers\MatchingField;
+use PhpPact\Consumer\Matcher\Matchers\MaxType;
+use PhpPact\Consumer\Matcher\Matchers\MinMaxType;
+use PhpPact\Consumer\Matcher\Matchers\MinType;
+use PhpPact\Consumer\Matcher\Matchers\NotEmpty;
+use PhpPact\Consumer\Matcher\Matchers\NullValue;
+use PhpPact\Consumer\Matcher\Matchers\Number;
+use PhpPact\Consumer\Matcher\Matchers\Regex;
+use PhpPact\Consumer\Matcher\Matchers\Semver;
+use PhpPact\Consumer\Matcher\Matchers\StatusCode;
+use PhpPact\Consumer\Matcher\Matchers\StringValue;
+use PhpPact\Consumer\Matcher\Matchers\Time;
+use PhpPact\Consumer\Matcher\Matchers\Type;
+use PhpPact\Consumer\Matcher\Matchers\Values;
 use PHPUnit\Framework\TestCase;
 
 class MatcherTest extends TestCase
@@ -15,156 +48,79 @@ class MatcherTest extends TestCase
         $this->matcher = new Matcher();
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testLikeNoValue()
+    public function testSomethingLike(): void
     {
-        $this->expectException(Exception::class);
-        $this->matcher->like(null);
+        $this->assertInstanceOf(Type::class, $this->matcher->somethingLike(123));
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testLike()
+    public function testLike(): void
     {
-        $json = \json_encode($this->matcher->like(12));
-
-        $this->assertEquals('{"contents":12,"json_class":"Pact::SomethingLike"}', $json);
+        $this->assertInstanceOf(Type::class, $this->matcher->like('abc'));
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testEachLikeStdClass()
+    public function testEachLike(): void
     {
-        $object         = new \stdClass();
-        $object->value1 = $this->matcher->like(1);
-        $object->value2 = 2;
-
-        $expected = \json_encode([
-            'contents' => [
-                'value1' => [
-                    'contents'   => 1,
-                    'json_class' => 'Pact::SomethingLike',
-                ],
-                'value2' => 2,
-            ],
-            'json_class' => 'Pact::ArrayLike',
-            'min'        => 1,
-        ]);
-
-        $actual = \json_encode($this->matcher->eachLike($object, 1));
-
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf(MinType::class, $this->matcher->eachLike('test'));
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testEachLikeArray()
+    public function testAtLeastLike(): void
     {
-        $object = [
-            'value1' => $this->matcher->like(1),
-            'value2' => 2,
-        ];
-
-        $expected = \json_encode([
-            'contents' => [
-                'value1' => [
-                    'contents'   => 1,
-                    'json_class' => 'Pact::SomethingLike',
-                ],
-                'value2' => 2,
-            ],
-            'json_class' => 'Pact::ArrayLike',
-            'min'        => 1,
-        ]);
-
-        $actual = \json_encode($this->matcher->eachLike($object, 1));
-
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf(MinType::class, $this->matcher->atLeastLike('test', 2));
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testRegexNoMatch()
+    public function testAtMostLike(): void
     {
-        $this->expectException(Exception::class);
-        $this->matcher->regex('SomeWord', 'BadPattern');
+        $this->assertInstanceOf(MaxType::class, $this->matcher->atMostLike('test', 2));
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testRegex()
+    public function testConstrainedArrayLikeCountLessThanMin(): void
     {
-        $expected = [
-            'data' => [
-                'generate' => 'Games',
-                'matcher'  => [
-                    'json_class' => 'Regexp',
-                    'o'          => 0,
-                    's'          => 'Games|Other',
-                ],
-            ],
-            'json_class' => 'Pact::Term',
-        ];
-
-        $actual = $this->matcher->regex('Games', 'Games|Other');
-
-        $this->assertEquals($expected, $actual);
+        $this->expectException(MatcherException::class);
+        $this->expectExceptionMessage('constrainedArrayLike has a minimum of 2 but 1 elements where requested.' .
+        ' Make sure the count is greater than or equal to the min.');
+        $this->matcher->constrainedArrayLike('text', 2, 4, 1);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testDate()
+    public function testConstrainedArrayLikeCountLargerThanMax(): void
     {
-        $expected = [
-            'data' => [
-                'generate' => '2010-01-17',
-                'matcher'  => [
-                    'json_class' => 'Regexp',
-                    'o'          => 0,
-                    's'          => '^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))?)$',
-                ],
-            ],
-            'json_class' => 'Pact::Term',
-        ];
+        $this->expectException(MatcherException::class);
+        $this->expectExceptionMessage('constrainedArrayLike has a maximum of 5 but 7 elements where requested.' .
+        ' Make sure the count is less than or equal to the max.');
+        $this->matcher->constrainedArrayLike('text', 3, 5, 7);
+    }
 
-        $actual = $this->matcher->dateISO8601('2010-01-17');
+    public function testConstrainedArrayLike(): void
+    {
+        $this->assertInstanceOf(MinMaxType::class, $this->matcher->constrainedArrayLike('test', 2, 4, 3));
+    }
 
-        $this->assertEquals($expected, $actual);
+    public function testTerm(): void
+    {
+        $this->assertInstanceOf(Regex::class, $this->matcher->term('123', '\d+'));
+    }
+
+    public function testRegex(): void
+    {
+        $this->assertInstanceOf(Regex::class, $this->matcher->regex('Games', 'Games|Other'));
+    }
+
+    public function testDateISO8601(): void
+    {
+        $this->assertInstanceOf(Regex::class, $this->matcher->dateISO8601('2010-01-17'));
     }
 
     /**
      * @dataProvider dataProviderForTimeTest
-     *
-     * @throws Exception
      */
-    public function testTime($time)
+    public function testTimeISO8601(string $time): void
     {
-        $expected = [
-            'data' => [
-                'generate' => $time,
-                'matcher'  => [
-                    'json_class' => 'Regexp',
-                    'o'          => 0,
-                    's'          => '^(T\\d\\d:\\d\\d(:\\d\\d)?(\\.\\d+)?([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?)$',
-                ],
-            ],
-            'json_class' => 'Pact::Term',
-        ];
-
-        $actual = $this->matcher->timeISO8601($time);
-
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf(Regex::class, $this->matcher->timeISO8601($time));
     }
 
-    public function dataProviderForTimeTest()
+    /**
+     * @return string[]
+     */
+    public static function dataProviderForTimeTest(): array
     {
         return [
             ['T22:44:30.652Z'],
@@ -182,29 +138,16 @@ class MatcherTest extends TestCase
 
     /**
      * @dataProvider dataProviderForDateTimeTest
-     *
-     * @throws Exception
      */
-    public function testDateTime($dateTime)
+    public function testDateTimeISO8601(string $dateTime): void
     {
-        $expected = [
-            'data' => [
-                'generate' => $dateTime,
-                'matcher'  => [
-                    'json_class' => 'Regexp',
-                    'o'          => 0,
-                    's'          => '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?$',
-                ],
-            ],
-            'json_class' => 'Pact::Term',
-        ];
-
-        $actual = $this->matcher->dateTimeISO8601($dateTime);
-
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf(Regex::class, $this->matcher->dateTimeISO8601($dateTime));
     }
 
-    public function dataProviderForDateTimeTest()
+    /**
+     * @return string[]
+     */
+    public static function dataProviderForDateTimeTest(): array
     {
         return [
             ['2015-08-06T16:53:10+01:00'],
@@ -220,29 +163,16 @@ class MatcherTest extends TestCase
 
     /**
      * @dataProvider dataProviderForDateTimeWithMillisTest
-     *
-     * @throws Exception
      */
-    public function testDateTimeWithMillis($dateTime)
+    public function testDateTimeWithMillisISO8601(string $dateTime): void
     {
-        $expected = [
-            'data' => [
-                'generate' => $dateTime,
-                'matcher'  => [
-                    'json_class' => 'Regexp',
-                    'o'          => 0,
-                    's'          => '^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d{3}([+-][0-2]\\d(?:|:?[0-5]\\d)|Z)?$',
-                ],
-            ],
-            'json_class' => 'Pact::Term',
-        ];
-
-        $actual = $this->matcher->dateTimeWithMillisISO8601($dateTime);
-
-        $this->assertEquals($expected, $actual);
+        $this->assertInstanceOf(Regex::class, $this->matcher->dateTimeWithMillisISO8601($dateTime));
     }
 
-    public function dataProviderForDateTimeWithMillisTest()
+    /**
+     * @return string[]
+     */
+    public static function dataProviderForDateTimeWithMillisTest(): array
     {
         return [
             ['2015-08-06T16:53:10.123+01:00'],
@@ -256,156 +186,229 @@ class MatcherTest extends TestCase
         ];
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testTimestampRFC3339()
+    public function testTimestampRFC3339(): void
     {
-        $expected = [
-            'data' => [
-                'generate' => 'Mon, 31 Oct 2016 15:21:41 -0400',
-                'matcher'  => [
-                    'json_class' => 'Regexp',
-                    'o'          => 0,
-                    's'          => '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\\s\\d{2}\\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\s\\d{4}\\s\\d{2}:\\d{2}:\\d{2}\\s(\\+|-)\\d{4}$',
-                ],
-            ],
-            'json_class' => 'Pact::Term',
+        $this->assertInstanceOf(Regex::class, $this->matcher->timestampRFC3339('Mon, 31 Oct 2016 15:21:41 -0400'));
+    }
+
+    public function testInteger(): void
+    {
+        $this->assertInstanceOf(Type::class, $this->matcher->integer());
+    }
+
+    public function testBoolean(): void
+    {
+        $this->assertInstanceOf(Type::class, $this->matcher->boolean());
+    }
+
+    public function testDecimal(): void
+    {
+        $this->assertInstanceOf(Type::class, $this->matcher->decimal());
+    }
+
+    public function testIntegerV3(): void
+    {
+        $this->assertInstanceOf(Integer::class, $this->matcher->integerV3(13));
+    }
+
+    public function testBooleanV3(): void
+    {
+        $this->assertInstanceOf(Boolean::class, $this->matcher->booleanV3(true));
+    }
+
+    public function testDecimalV3(): void
+    {
+        $this->assertInstanceOf(Decimal::class, $this->matcher->decimalV3(13.01));
+    }
+
+    /**
+     * @testWith [null, true]
+     *           ["3F", false]
+     */
+    public function testHexadecimal(?string $value, bool $hasGenerator): void
+    {
+        $hexadecimal = $this->matcher->hexadecimal($value);
+        $this->assertInstanceOf(Regex::class, $hexadecimal);
+        if ($hasGenerator) {
+            $this->assertSame(RandomHexadecimal::class, get_class($hexadecimal->getGenerator()));
+        } else {
+            $this->assertNull($hexadecimal->getGenerator());
+        }
+    }
+
+    /**
+     * @testWith [null,                                   true]
+     *           ["ce118b6e-d8e1-11e7-9296-cec278b6b50a", false]
+     */
+    public function testUuid(?string $value, bool $hasGenerator): void
+    {
+        $uuid = $this->matcher->uuid($value);
+        $this->assertInstanceOf(Regex::class, $uuid);
+        if ($hasGenerator) {
+            $this->assertSame(Uuid::class, get_class($uuid->getGenerator()));
+        } else {
+            $this->assertNull($uuid->getGenerator());
+        }
+    }
+
+    public function testIpv4Address(): void
+    {
+        $this->assertInstanceOf(Regex::class, $this->matcher->ipv4Address());
+    }
+
+    public function testIpv6Address(): void
+    {
+        $this->assertInstanceOf(Regex::class, $this->matcher->ipv6Address());
+    }
+
+    public function testEmail(): void
+    {
+        $this->assertInstanceOf(Regex::class, $this->matcher->email());
+    }
+
+    public function testNullValue(): void
+    {
+        $this->assertInstanceOf(NullValue::class, $this->matcher->nullValue());
+    }
+
+    public function testDate(): void
+    {
+        $this->assertInstanceOf(Date::class, $this->matcher->date('yyyy-MM-dd', '2022-11-21'));
+    }
+
+    public function testTime(): void
+    {
+        $this->assertInstanceOf(Time::class, $this->matcher->time('HH:mm:ss', '21:45::31'));
+    }
+
+    public function testDateTime(): void
+    {
+        $this->assertInstanceOf(DateTime::class, $this->matcher->datetime("yyyy-MM-dd'T'HH:mm:ss", '2015-08-06T16:53:10'));
+    }
+
+    public function testString(): void
+    {
+        $this->assertInstanceOf(StringValue::class, $this->matcher->string('test string'));
+    }
+
+    public function testFromProviderStateMatcherNotSupport(): void
+    {
+        $this->expectException(MatcherNotSupportedException::class);
+        $this->expectExceptionMessage("Matcher 'type' must be generator aware");
+        $this->matcher->fromProviderState(new Type('text'), '${text}');
+    }
+
+    public function testFromProviderState(): void
+    {
+        $uuid = $this->matcher->uuid();
+        $this->assertInstanceOf(Regex::class, $uuid);
+        $this->assertSame(Uuid::class, get_class($uuid->getGenerator()));
+        $this->assertSame($uuid, $this->matcher->fromProviderState($uuid, '${id}'));
+        $this->assertSame(ProviderState::class, get_class($uuid->getGenerator()));
+    }
+
+    public function testEqual(): void
+    {
+        $this->assertInstanceOf(Equality::class, $this->matcher->equal('test string'));
+    }
+
+    public function testIncludes(): void
+    {
+        $this->assertInstanceOf(Includes::class, $this->matcher->includes('test string'));
+    }
+
+    public function testNumber(): void
+    {
+        $this->assertInstanceOf(Number::class, $this->matcher->number(13.01));
+    }
+
+    public function testArrayContaining(): void
+    {
+        $this->assertInstanceOf(ArrayContains::class, $this->matcher->arrayContaining([
+            'item 1',
+            'item 2'
+        ]));
+    }
+
+    public function testNotEmpty(): void
+    {
+        $this->assertInstanceOf(NotEmpty::class, $this->matcher->notEmpty('not empty string'));
+    }
+
+    public function testSemver(): void
+    {
+        $this->assertInstanceOf(Semver::class, $this->matcher->semver('1.2.3'));
+    }
+
+    public function testValidStatusCode(): void
+    {
+        $this->assertInstanceOf(StatusCode::class, $this->matcher->statusCode(HttpStatus::SUCCESS));
+    }
+
+    public function testValues(): void
+    {
+        $this->assertInstanceOf(Values::class, $this->matcher->values([
+            'item 1',
+            'item 2'
+        ]));
+    }
+
+    public function testContentType(): void
+    {
+        $this->assertInstanceOf(ContentType::class, $this->matcher->contentType('image/jpeg'));
+    }
+
+    public function testEachKey(): void
+    {
+        $values = [
+            'page 1' => 'Hello',
+            'page 2' => 'World',
         ];
-
-        $actual = $this->matcher->timestampRFC3339('Mon, 31 Oct 2016 15:21:41 -0400');
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testInteger()
-    {
-        $json = \json_encode($this->matcher->integer());
-
-        $this->assertEquals('{"contents":13,"json_class":"Pact::SomethingLike"}', $json);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testBoolean()
-    {
-        $json = \json_encode($this->matcher->boolean());
-
-        $this->assertEquals('{"contents":true,"json_class":"Pact::SomethingLike"}', $json);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testDecimal()
-    {
-        $json = \json_encode($this->matcher->decimal());
-
-        $this->assertEquals('{"contents":13.01,"json_class":"Pact::SomethingLike"}', $json);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testHexadecimal()
-    {
-        $expected = [
-            'data' => [
-                'generate' => '3F',
-                'matcher'  => [
-                    'json_class' => 'Regexp',
-                    'o'          => 0,
-                    's'          => '^[0-9a-fA-F]+$',
-                ],
-            ],
-            'json_class' => 'Pact::Term',
+        $rules = [
+            $this->matcher->regex('page 3', '^page \d+$'),
         ];
+        $this->assertInstanceOf(EachKey::class, $this->matcher->eachKey($values, $rules));
+    }
 
-        $this->assertEquals($expected, $this->matcher->hexadecimal());
+    public function testEachValue(): void
+    {
+        $values = [
+            'vehicle 1' => 'car',
+            'vehicle 2' => 'bike',
+            'vehicle 3' => 'motorbike'
+        ];
+        $rules = [
+            $this->matcher->regex('car', 'car|bike|motorbike'),
+        ];
+        $this->assertInstanceOf(EachValue::class, $this->matcher->eachValue($values, $rules));
     }
 
     /**
-     * @throws Exception
+     * @testWith [true, true]
+     *           [false, false]
      */
-    public function testUuid()
+    public function testUrl(bool $useMockServerBasePath, bool $hasGenerator): void
     {
-        $expected = [
-            'data' => [
-                'generate' => 'ce118b6e-d8e1-11e7-9296-cec278b6b50a',
-                'matcher'  => [
-                    'json_class' => 'Regexp',
-                    'o'          => 0,
-                    's'          => '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$',
-                ],
-            ],
-            'json_class' => 'Pact::Term',
-        ];
-
-        $this->assertEquals($expected, $this->matcher->uuid());
+        $url = $this->matcher->url('http://localhost:1234/path', '.*(/path)$', $useMockServerBasePath);
+        $this->assertInstanceOf(Regex::class, $url);
+        if ($hasGenerator) {
+            $this->assertSame(MockServerURL::class, get_class($url->getGenerator()));
+        } else {
+            $this->assertNull($url->getGenerator());
+        }
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testIpv4Address()
+    public function testMatchingField(): void
     {
-        $expected = [
-            'data' => [
-                'generate' => '127.0.0.13',
-                'matcher'  => [
-                    'json_class' => 'Regexp',
-                    'o'          => 0,
-                    's'          => '^(\\d{1,3}\\.)+\\d{1,3}$',
-                ],
-            ],
-            'json_class' => 'Pact::Term',
-        ];
-
-        $this->assertEquals($expected, $this->matcher->ipv4Address());
+        $this->assertInstanceOf(MatchingField::class, $this->matcher->matchingField('address'));
     }
 
-    /**
-     * @throws Exception
-     */
-    public function testIpv6Address()
+    public function testWithFormatter(): void
     {
-        $expected = [
-            'data' => [
-                'generate' => '::ffff:192.0.2.128',
-                'matcher'  => [
-                    'json_class' => 'Regexp',
-                    'o'          => 0,
-                    's'          => '^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$',
-                ],
-            ],
-            'json_class' => 'Pact::Term',
-        ];
-
-        $this->assertEquals($expected, $this->matcher->ipv6Address());
-    }
-
-
-    /**
-     * @throws Exception
-     */
-    public function testEmail()
-    {
-
-        $expected = [
-            'data' => [
-                'generate' => 'hello@pact.io',
-                'matcher'  => [
-                    'json_class' => 'Regexp',
-                    'o'          => 0,
-                    's'          => '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$',
-                ],
-            ],
-            'json_class' => 'Pact::Term',
-        ];
-        $this->assertEquals($expected, $this->matcher->email());
+        $uuid = $this->matcher->uuid();
+        $this->assertInstanceOf(ValueOptionalFormatter::class, $uuid->getFormatter());
+        $matcher = new Matcher($formatter = new MinimalFormatter());
+        $uuid = $matcher->uuid();
+        $this->assertSame($formatter, $uuid->getFormatter());
     }
 }

@@ -1,0 +1,152 @@
+{
+  "consumer": {
+    "name": "xmlConsumer"
+  },
+  "interactions": [
+    {
+      "description": "A get request to /movies",
+      "providerStates": [
+        {
+          "name": "Movies exist"
+        }
+      ],
+      "request": {
+        "headers": {
+          "Accept": "application/xml"
+        },
+        "matchingRules": {
+          "header": {
+            "Accept": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application\\/.*xml"
+                }
+              ]
+            }
+          }
+        },
+        "method": "GET",
+        "path": "/movies"
+      },
+      "response": {
+        "body": "<?xml version='1.0'?><movies><movie><title>Big Buck Bunny</title><characters><character><name>Big Buck Bunny</name><actor>Jan Morgenstern</actor></character><character><name/><actor/></character></characters><plot>The plot follows a day in the life of Big Buck Bunny, during which time he meets three bullying rodents: the leader, Frank the flying squirrel, and his sidekicks Rinky the red squirrel and Gimera the chinchilla.\nThe rodents amuse themselves by harassing helpless creatures of the forest by throwing fruits, nuts, and rocks at them.</plot><great-lines><line>Open source movie</line></great-lines><rating type='stars'>6</rating></movie>List of movies</movies>",
+        "headers": {
+          "Content-Type": "application/xml"
+        },
+        "matchingRules": {
+          "body": {
+            "$.movies.movie": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.characters.character": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.characters.character.actor.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.characters.character.name.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.great-lines.line": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.great-lines.line.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.plot.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.rating.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.rating['@type']": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "stars|thumbs"
+                }
+              ]
+            },
+            "$.movies.movie.title.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {
+            "Content-Type": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "application\\/.*xml"
+                }
+              ]
+            }
+          },
+          "status": {}
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.14",
+      "mockserver": "1.2.5",
+      "models": "1.1.17"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "xmlProvider"
+  }
+}

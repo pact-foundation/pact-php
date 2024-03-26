@@ -1,0 +1,78 @@
+{
+  "consumer": {
+    "name": "jsonConsumer"
+  },
+  "interactions": [
+    {
+      "description": "A get request to /hello/{name}",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "GET",
+        "path": "/hello/Bob"
+      },
+      "response": {
+        "body": {
+          "message": "Hello, Bob"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.message": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "(Hello, )[A-Za-z]+"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "A get request to /goodbye/{name}",
+      "providerStates": [
+        {
+          "name": "Get Goodbye"
+        }
+      ],
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "GET",
+        "path": "/goodbye/Bob"
+      },
+      "response": {
+        "body": {
+          "message": "Goodbye, Bob"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.14",
+      "mockserver": "1.2.5",
+      "models": "1.1.17"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "jsonProvider"
+  }
+}

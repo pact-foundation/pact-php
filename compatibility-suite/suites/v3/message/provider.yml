@@ -1,0 +1,26 @@
+default:
+    suites:
+        v3_message_provider:
+            paths: [ '%paths.base%/compatibility-suite/pact-compatibility-suite/features/V3/message_provider.feature' ]
+
+            contexts:
+                - 'PhpPactTest\CompatibilitySuite\Context\Shared\Hook\SetUpContext'
+                - 'PhpPactTest\CompatibilitySuite\Context\Shared\Hook\ProviderStateContext':
+                    - '@provider_state_server'
+                - 'PhpPactTest\CompatibilitySuite\Context\Shared\ProviderContext':
+                    - '@server'
+                    - '@provider_verifier'
+                    - '@provider_state_server'
+                - 'PhpPactTest\CompatibilitySuite\Context\V3\Message\ProviderContext':
+                    - '@server'
+                    - '@interaction_builder'
+                    - '@interactions_storage'
+                    - '@message_pact_writer'
+                    - '@provider_verifier'
+                    - '@parser'
+                    - '@fixture_loader'
+
+            services: PhpPactTest\CompatibilitySuite\ServiceContainer\V3
+
+            filters:
+                tags: ~@wip

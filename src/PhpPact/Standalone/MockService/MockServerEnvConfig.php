@@ -9,19 +9,22 @@ use PhpPact\Standalone\Exception\MissingEnvVariableException;
  */
 class MockServerEnvConfig extends MockServerConfig
 {
-    public const DEFAULT_SPECIFICATION_VERSION = '2.0.0';
-
     /**
      * @throws MissingEnvVariableException
      */
     public function __construct()
     {
-        $this->setHost($this->parseEnv('PACT_MOCK_SERVER_HOST'));
-        $this->setPort((int) $this->parseEnv('PACT_MOCK_SERVER_PORT'));
+        if ($host = $this->parseEnv('PACT_MOCK_SERVER_HOST', false)) {
+            $this->setHost($host);
+        }
+
+        if ($port = $this->parseEnv('PACT_MOCK_SERVER_PORT', false)) {
+            $this->setPort((int) $port);
+        }
+
         $this->setConsumer($this->parseEnv('PACT_CONSUMER_NAME'));
         $this->setProvider($this->parseEnv('PACT_PROVIDER_NAME'));
         $this->setPactDir($this->parseEnv('PACT_OUTPUT_DIR', false));
-        $this->setCors($this->parseEnv('PACT_CORS', false));
 
         if ($logDir = $this->parseEnv('PACT_LOG', false)) {
             $this->setLog($logDir);
@@ -30,18 +33,6 @@ class MockServerEnvConfig extends MockServerConfig
         if ($logLevel = $this->parseEnv('PACT_LOGLEVEL', false)) {
             $this->setLogLevel($logLevel);
         }
-
-        $timeout = $this->parseEnv('PACT_MOCK_SERVER_HEALTH_CHECK_TIMEOUT', false);
-        if (!$timeout) {
-            $timeout = 100;
-        }
-        $this->setHealthCheckTimeout($timeout);
-
-        $seconds = $this->parseEnv('PACT_MOCK_SERVER_HEALTH_CHECK_RETRY_SEC', false);
-        if (!$seconds) {
-            $seconds = 0.1;
-        }
-        $this->setHealthCheckRetrySec($seconds);
 
         $version = $this->parseEnv('PACT_SPECIFICATION_VERSION', false);
         if (!$version) {
@@ -56,17 +47,12 @@ class MockServerEnvConfig extends MockServerConfig
      *
      * @throws MissingEnvVariableException
      */
-    private function parseEnv(string $variableName, bool $required = true): mixed
+    private function parseEnv(string $variableName, bool $required = true): ?string
     {
-        $result = null;
+        $result = \getenv($variableName);
 
-        if (\getenv($variableName) === 'false') {
-            $result = false;
-        } elseif (\getenv($variableName) === 'true') {
-            $result = true;
-        }
-        if (\getenv($variableName) !== false) {
-            $result = \getenv($variableName);
+        if (is_bool($result)) {
+            $result = null;
         }
 
         if ($required === true && $result === null) {

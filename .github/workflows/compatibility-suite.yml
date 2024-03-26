@@ -1,0 +1,72 @@
+name: Compatibility Suite
+
+on: [push, pull_request]
+
+env:
+  PACT_DO_NOT_TRACK: true
+
+jobs:
+  v1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+
+      - name: Run Behat
+        run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V1 --colors
+  v2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+
+      - name: Run Behat
+        run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V2 --colors
+  v3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+
+      - name: Run Behat
+        run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V3 --name '/^((?!binary body \(negative|Message provider).)*$/' --colors
+  v4:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          coverage: none
+
+      - uses: ramsey/composer-install@v3
+
+      - name: Run Behat
+        run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V4 --colors

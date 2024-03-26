@@ -18,34 +18,28 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "ext-openssl": "*",
+        "ext-ffi": "*",
         "ext-json": "*",
         "composer/semver": "^1.4.0|^3.2.0",
-        "amphp/amp": "^2.5.1",
-        "amphp/byte-stream": "^1.8",
-        "amphp/dns": "^1.2.3",
-        "amphp/hpack": "^3.1.0",
-        "amphp/http-server": "^2.1",
-        "amphp/log": "^1.1",
-        "amphp/process": "^1.1.1",
-        "amphp/serialization": "^1.0",
-        "amphp/socket": "^1.1.3",
-        "amphp/sync": "^1.4.0",
-        "amphp/cache": "^1.4.0",
-        "amphp/windows-registry": "v0.3.3",
-        "guzzlehttp/guzzle": "^6.5.8|^7.4.5",
-        "phpunit/phpunit": ">=8.5.23 <10",
-        "tienvx/composer-downloads-plugin": "^1.1.0"
+        "symfony/process": "^5.4|^6.0|^7.0",
+        "guzzlehttp/psr7": "^2.4.5",
+        "pact-foundation/composer-downloads-plugin": "^1.0.0"
     },
     "require-dev": {
+        "ext-sockets": "*",
         "roave/security-advisories": "dev-latest",
-        "mockery/mockery": "^1.4.2",
-        "slim/slim": "^4.6",
-        "slim/psr7": "^1.2.0",
+        "slim/slim": "^4.13",
         "friendsofphp/php-cs-fixer": "^3.0",
         "php-amqplib/php-amqplib": "^3.0",
-        "phpstan/phpstan": "^1.9"
+        "phpstan/phpstan": "^1.9",
+        "phpunit/phpunit": "^10.1|^11",
+        "guzzlehttp/guzzle": "^7.8",
+        "behat/behat": "^3.13",
+        "galbar/jsonpath": "^3.0",
+        "ramsey/uuid": "^4.7",
+        "pact-foundation/example-protobuf-sync-message-provider": "@dev"
     },
     "autoload": {
         "psr-4": {
@@ -55,44 +49,111 @@
     "autoload-dev": {
         "psr-4": {
             "PhpPactTest\\": "tests/PhpPact",
-            "Consumer\\": [
-                "example/src/Consumer",
-                "example/tests/Consumer"
+            "PhpPactTest\\CompatibilitySuite\\": "compatibility-suite/tests",
+            "JsonConsumer\\": "example/json/consumer/src",
+            "JsonConsumer\\Tests\\": "example/json/consumer/tests",
+            "JsonProvider\\": "example/json/provider/src",
+            "JsonProvider\\Tests\\": "example/json/provider/tests",
+            "MessageConsumer\\": "example/message/consumer/src",
+            "MessageConsumer\\Tests\\": "example/message/consumer/tests",
+            "MessageProvider\\": "example/message/provider/src",
+            "MessageProvider\\Tests\\": "example/message/provider/tests",
+            "BinaryConsumer\\": "example/binary/consumer/src",
+            "BinaryConsumer\\Tests\\": "example/binary/consumer/tests",
+            "BinaryProvider\\": "example/binary/provider/src",
+            "BinaryProvider\\Tests\\": "example/binary/provider/tests",
+            "MultipartConsumer\\": "example/multipart/consumer/src",
+            "MultipartConsumer\\Tests\\": "example/multipart/consumer/tests",
+            "MultipartProvider\\": "example/multipart/provider/src",
+            "MultipartProvider\\Tests\\": "example/multipart/provider/tests",
+            "XmlConsumer\\": "example/xml/consumer/src",
+            "XmlConsumer\\Tests\\": "example/xml/consumer/tests",
+            "XmlProvider\\": "example/xml/provider/src",
+            "XmlProvider\\Tests\\": "example/xml/provider/tests",
+            "MatchersConsumer\\": "example/matchers/consumer/src",
+            "MatchersConsumer\\Tests\\": "example/matchers/consumer/tests",
+            "MatchersProvider\\Tests\\": "example/matchers/provider/tests",
+            "GeneratorsConsumer\\": "example/generators/consumer/src",
+            "GeneratorsConsumer\\Tests\\": "example/generators/consumer/tests",
+            "GeneratorsProvider\\Tests\\": "example/generators/provider/tests",
+            "CsvConsumer\\": "example/csv/consumer/src",
+            "CsvConsumer\\Tests\\": "example/csv/consumer/tests",
+            "CsvProvider\\": "example/csv/provider/src",
+            "CsvProvider\\Tests\\": "example/csv/provider/tests",
+            "": [
+                "example/protobuf-sync-message/library/src",
+                "example/protobuf-async-message/library/src"
             ],
-            "MessageConsumer\\": [
-                "example/src/MessageConsumer",
-                "example/tests/MessageConsumer"
-            ],
-            "MessageProvider\\": [
-                "example/src/MessageProvider",
-                "example/tests/MessageProvider"
-            ]
+            "ProtobufSyncMessageConsumer\\": "example/protobuf-sync-message/consumer/src",
+            "ProtobufSyncMessageConsumer\\Tests\\": "example/protobuf-sync-message/consumer/tests",
+            "ProtobufSyncMessageProvider\\": "example/protobuf-sync-message/provider/src",
+            "ProtobufSyncMessageProvider\\Tests\\": "example/protobuf-sync-message/provider/tests",
+            "ProtobufAsyncMessageConsumer\\": "example/protobuf-async-message/consumer/src",
+            "ProtobufAsyncMessageConsumer\\Tests\\": "example/protobuf-async-message/consumer/tests",
+            "ProtobufAsyncMessageProvider\\Tests\\": "example/protobuf-async-message/provider/tests",
+            "StubServerConsumer\\": "example/stub-server/consumer/src",
+            "StubServerConsumer\\Tests\\": "example/stub-server/consumer/tests"
         }
     },
     "scripts": {
-        "start-provider": "php -S localhost:58000 -t example/src/Provider/public/",
-        "static-code-analysis": "phpstan analyse src/ --level=7",
-        "lint": "php-cs-fixer fix --config .php-cs-fixer.php --dry-run",
-        "fix": "php-cs-fixer fix --config .php-cs-fixer.php",
-        "test": "phpunit --debug -c example/phpunit.all.xml"
+        "start-provider": "echo 'removed in 10.x' & exit 1",
+        "static-code-analysis": "phpstan",
+        "lint": "php-cs-fixer fix --dry-run",
+        "fix": "php-cs-fixer fix",
+        "test": [
+            "php -r \"array_map('unlink', glob('./example/*/pacts/*.json'));\" --",
+            "phpunit --no-coverage"
+        ],
+        "gen-lib": [
+            "protoc --php_out=example/protobuf-sync-message/library/src example/protobuf-sync-message/library/proto/area_calculator.proto",
+            "protoc --php_out=example/protobuf-async-message/library/src example/protobuf-async-message/library/proto/say_hello.proto"
+        ],
+        "check-compatibility": "behat"
     },
     "extra": {
         "downloads": {
-            "pact-ruby-standalone": {
-                "version": "2.4.1",
+            "pact-ffi-headers": {
+                "version": "0.4.18",
+                "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/pact.h",
+                "path": "bin/pact-ffi-headers/pact.h"
+            },
+            "pact-ffi-lib": {
+                "version": "0.4.18",
                 "variables": {
-                    "{$os}": "PHP_OS_FAMILY === 'Windows' ? 'windows' : (PHP_OS === 'Darwin' ? 'osx' : 'linux')",
-                    "{$architecture}": "strtolower(php_uname('m')) === 'arm64' || strtolower(php_uname('m')) === 'aarch64' ? '-arm64' : (strtolower(php_uname('m')) === 'x86' && PHP_OS_FAMILY === 'Windows' ? '-x86' : '-x86_64')",
-                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'zip' : 'tar.gz'"
+                    "{$prefix}": "PHP_OS_FAMILY === 'Windows' ? 'pact_ffi' : 'libpact_ffi'",
+                    "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
+                    "{$architecture}": "in_array(php_uname('m'), ['arm64', 'aarch64']) ? (PHP_OS === 'Darwin' ? 'aarch64-apple-darwin' : 'aarch64') : 'x86_64'",
+                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'dll' : (PHP_OS === 'Darwin' ? 'dylib' : 'so')"
                 },
-                "url": "https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v{$version}/pact-{$version}-{$os}{$architecture}.{$extension}",
-                "path": "bin/pact-ruby-standalone"
+                "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/{$prefix}-{$os}-{$architecture}.{$extension}.gz",
+                "path": "bin/pact-ffi-lib/pact.{$extension}"
+            },
+            "pact-stub-server": {
+                "version": "0.5.3",
+                "variables": {
+                    "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
+                    "{$architecture}": "in_array(php_uname('m'), ['arm64', 'aarch64']) ? 'aarch64' : 'x86_64'",
+                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? '.exe' : ''"
+                },
+                "url": "https://github.com/pact-foundation/pact-stub-server/releases/download/v{$version}/pact-stub-server-{$os}-{$architecture}{$extension}.gz",
+                "path": "bin/pact-stub-server/pact-stub-server{$extension}",
+                "executable": true
             }
         }
     },
     "config": {
         "allow-plugins": {
-            "tienvx/composer-downloads-plugin": true
+            "pact-foundation/composer-downloads-plugin": true
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pact-foundation/composer-downloads-plugin"
+        },
+        {
+            "type": "path",
+            "url": "example/protobuf-sync-message/provider"
+        }
+    ]
 }

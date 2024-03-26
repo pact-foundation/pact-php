@@ -1,0 +1,28 @@
+default:
+    suites:
+        v3_generators:
+            paths:
+                - '%paths.base%/compatibility-suite/pact-compatibility-suite/features/V3/generators.feature'
+                - '%paths.base%/compatibility-suite/pact-compatibility-suite/features/V3/http_generators.feature'
+
+            contexts:
+                - 'PhpPactTest\CompatibilitySuite\Context\Shared\Hook\SetUpContext'
+                - 'PhpPactTest\CompatibilitySuite\Context\V3\BodyGeneratorsContext':
+                    - '@body_validator'
+                - 'PhpPactTest\CompatibilitySuite\Context\V3\RequestGeneratorsContext':
+                    - '@interaction_builder'
+                    - '@request_generator_builder'
+                    - '@interactions_storage'
+                    - '@pact_writer'
+                    - '@generator_server'
+                    - '@provider_verifier'
+                    - '@body_storage'
+                - 'PhpPactTest\CompatibilitySuite\Context\V3\ResponseGeneratorsContext':
+                    - '@interaction_builder'
+                    - '@response_generator_builder'
+                    - '@interactions_storage'
+                    - '@server'
+                    - '@client'
+                    - '@body_storage'
+
+            services: PhpPactTest\CompatibilitySuite\ServiceContainer\V3

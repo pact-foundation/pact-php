@@ -3,11 +3,12 @@
 namespace PhpPactTest\Standalone\MockServer;
 
 use PhpPact\Standalone\MockService\MockServerConfig;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class MockServerConfigTest extends TestCase
 {
-    public function testSetters()
+    public function testSetters(): void
     {
         $host                     = 'test-host';
         $port                     = 1234;
@@ -17,15 +18,11 @@ class MockServerConfigTest extends TestCase
         $pactFileWriteMode        = 'merge';
         $logLevel                 = 'INFO';
         $log                      = 'test-log-dir/';
-        $cors                     = true;
-        $pactSpecificationVersion = '2.0';
-        $healthCheckTimeout       = 20;
-        $healthCheckRetrySec      = 2.0;
+        $pactSpecificationVersion = '3.0.0';
         $secure                   = false;
 
-        $subject = (new MockServerConfig())
-            ->setSecure(false)
-            ->setHost($host)
+        $subject = new MockServerConfig();
+        $subject->setHost($host)
             ->setPort($port)
             ->setProvider($provider)
             ->setConsumer($consumer)
@@ -33,10 +30,7 @@ class MockServerConfigTest extends TestCase
             ->setPactFileWriteMode($pactFileWriteMode)
             ->setLogLevel($logLevel)
             ->setLog($log)
-            ->setPactSpecificationVersion($pactSpecificationVersion)
-            ->setCors($cors)
-            ->setHealthCheckTimeout(20)
-            ->setHealthCheckRetrySec(2);
+            ->setPactSpecificationVersion($pactSpecificationVersion);
 
         static::assertSame($secure, $subject->isSecure());
         static::assertSame($host, $subject->getHost());
@@ -48,8 +42,17 @@ class MockServerConfigTest extends TestCase
         static::assertSame($log, $subject->getLog());
         static::assertSame($logLevel, $subject->getLogLevel());
         static::assertSame($pactSpecificationVersion, $subject->getPactSpecificationVersion());
-        static::assertSame($cors, $subject->hasCors());
-        static::assertSame($healthCheckTimeout, $subject->getHealthCheckTimeout());
-        static::assertSame($healthCheckRetrySec, $subject->getHealthCheckRetrySec());
+    }
+
+    #[TestWith([false, 'http://example.test:123'])]
+    #[TestWith([true, 'https://example.test:123'])]
+    public function testGetBaseUri(bool $secure, string $baseUri): void
+    {
+        $config = new MockServerConfig();
+        $config
+            ->setHost('example.test')
+            ->setPort(123)
+            ->setSecure($secure);
+        $this->assertEquals($baseUri, $config->getBaseUri());
     }
 }

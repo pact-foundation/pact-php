@@ -1,0 +1,275 @@
+{
+  "consumer": {
+    "name": "generatorsConsumer"
+  },
+  "interactions": [
+    {
+      "description": "A get request to /generators",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "Get Generators"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "id": null
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "generators": {
+          "body": {
+            "$.id": {
+              "expression": "${id}",
+              "type": "ProviderState"
+            }
+          }
+        },
+        "headers": {
+          "Accept": [
+            "application/json"
+          ],
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "GET",
+        "path": "/generators"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "boolean": null,
+            "date": null,
+            "datetime": null,
+            "decimal": null,
+            "hexadecimal": null,
+            "integer": null,
+            "number": null,
+            "regex": null,
+            "requestId": 222,
+            "string": "some string",
+            "time": null,
+            "url": null,
+            "uuid": null
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "generators": {
+          "body": {
+            "$.boolean": {
+              "type": "RandomBoolean"
+            },
+            "$.date": {
+              "format": "yyyy-MM-dd",
+              "type": "Date"
+            },
+            "$.datetime": {
+              "format": "yyyy-MM-dd'T'HH:mm:ss",
+              "type": "DateTime"
+            },
+            "$.decimal": {
+              "digits": 10,
+              "type": "RandomDecimal"
+            },
+            "$.hexadecimal": {
+              "digits": 10,
+              "type": "RandomHexadecimal"
+            },
+            "$.integer": {
+              "max": 10,
+              "min": 0,
+              "type": "RandomInt"
+            },
+            "$.number": {
+              "max": 10,
+              "min": 0,
+              "type": "RandomInt"
+            },
+            "$.regex": {
+              "regex": "\\d+ (miles|kilometers)",
+              "type": "Regex"
+            },
+            "$.string": {
+              "size": 10,
+              "type": "RandomString"
+            },
+            "$.time": {
+              "format": "HH:mm:ss",
+              "type": "Time"
+            },
+            "$.url": {
+              "example": "http://localhost/users/1234/posts/latest",
+              "regex": ".*(\\/users\\/\\d+\\/posts\\/latest)$",
+              "type": "MockServerURL"
+            },
+            "$.uuid": {
+              "type": "Uuid"
+            }
+          },
+          "status": {
+            "max": 499,
+            "min": 400,
+            "type": "RandomInt"
+          }
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.boolean": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "boolean"
+                }
+              ]
+            },
+            "$.date": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "yyyy-MM-dd",
+                  "match": "date"
+                }
+              ]
+            },
+            "$.datetime": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "yyyy-MM-dd'T'HH:mm:ss",
+                  "match": "datetime"
+                }
+              ]
+            },
+            "$.decimal": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            },
+            "$.hexadecimal": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-fA-F]+$"
+                }
+              ]
+            },
+            "$.integer": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.number": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.regex": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "\\d+ (miles|kilometers)"
+                }
+              ]
+            },
+            "$.string": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.time": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "HH:mm:ss",
+                  "match": "time"
+                }
+              ]
+            },
+            "$.url": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": ".*(\\/users\\/\\d+\\/posts\\/latest)$"
+                }
+              ]
+            },
+            "$.uuid": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "statusCode",
+                  "status": "clientError"
+                }
+              ]
+            }
+          }
+        },
+        "status": 0
+      },
+      "transport": "http",
+      "type": "Synchronous/HTTP"
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.14",
+      "mockserver": "1.2.5",
+      "models": "1.1.17"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  },
+  "provider": {
+    "name": "generatorsProvider"
+  }
+}
