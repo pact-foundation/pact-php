@@ -3,7 +3,7 @@
     "require": {
         "grpc/grpc": "^1.57",
         "spiral/roadrunner-grpc": "^3.2",
-        "tienvx/composer-downloads-plugin": "^1.2"
+        "pact-foundation/composer-downloads-plugin": "^1.0"
     },
     "require-dev": {
         "ext-grpc": "*"
@@ -27,7 +27,7 @@
     },
     "config": {
         "allow-plugins": {
-            "tienvx/composer-downloads-plugin": true
+            "pact-foundation/composer-downloads-plugin": true
         }
     }
 }
