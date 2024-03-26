@@ -25,7 +25,7 @@
         "composer/semver": "^1.4.0|^3.2.0",
         "symfony/process": "^5.4|^6.0|^7.0",
         "guzzlehttp/psr7": "^2.4.5",
-        "tienvx/composer-downloads-plugin": "^1.2.0"
+        "pact-foundation/composer-downloads-plugin": "^1.0.0"
     },
     "require-dev": {
         "ext-sockets": "*",
@@ -143,10 +143,14 @@
     },
     "config": {
         "allow-plugins": {
-            "tienvx/composer-downloads-plugin": true
+            "pact-foundation/composer-downloads-plugin": true
         }
     },
     "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pact-foundation/composer-downloads-plugin"
+        },
         {
             "type": "path",
             "url": "example/protobuf-sync-message/provider"
