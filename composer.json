@@ -148,10 +148,6 @@
     },
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/pact-foundation/composer-downloads-plugin"
-        },
-        {
             "type": "path",
             "url": "example/protobuf-sync-message/provider"
         }
