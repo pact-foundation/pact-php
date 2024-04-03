@@ -66,13 +66,19 @@ If you wish to stick with the 2.X implementation, you can continue to pull from 
 
 ## Specifications
 
-| Specification | Supported  | Pact-PHP Version |
-| ------------- | ---------  | ---------------- |
-| 1             | ✅         | 1.x +            |
-| 1.1           | ✅         | 1.x +            |
-| 2             | ✅         | 2.x +            |
-| 3             | ✅         | 10.x +           |
-| 4             | ✅         | 10.x +           |
+| Version | Status     | [Spec] Compatibility | Install            |
+| ------- | ---------- | -------------------- | ------------------ |
+| 10.x    | Alpha      | 2, 3, 4              | See [installation] |
+| 9.x     | Stable     | 2, 3\*               | [9xx]              |
+| 8.x     | Deprecated | 2, 3\*               |                    |
+| 7.x     | Deprecated | 2, 3\*               |                    |
+| 6.x     | Deprecated | 2, 3\*               |                    |
+| 5.x     | Deprecated | 2, 3\*               |                    |
+| 4.x     | Deprecated | 2                    |                    |
+| 3.x     | Deprecated | 2                    |                    |
+| 2.x     | Deprecated | 2                    |                    |
+
+_\*_ v3 support is limited to the subset of functionality required to enable language inter-operable [Message support].
 
 ##  Supported Platforms
 
@@ -450,3 +456,8 @@ $response = $client->get($this->config->getBaseUri() . '/' . $endpoint);
 
 echo $response->getBody(); // output: {"results":[{"name":"Games"}]}
 ```
+
+[spec]: https://github.com/pact-foundation/pact-specification
+[installation]: #installation
+[9xx]: https://github.com/pact-foundation/pact-php/tree/release/9.x
+[message support]: https://github.com/pact-foundation/pact-specification/tree/version-3#introduces-messages-for-services-that-communicate-via-event-streams-and-message-queues
