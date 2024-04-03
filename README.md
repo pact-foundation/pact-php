@@ -66,13 +66,13 @@ If you wish to stick with the 2.X implementation, you can continue to pull from 
 
 ## Specifications
 
-The 3.X version is the version of Pact-PHP, not the pact specification version that it supports.
-
-Pact-Php 3.X -> 9.X supports [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2).
-Pact-Php 10.X supports:
-    * [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2)
-    * [Pact-Specification 3.X](https://github.com/pact-foundation/pact-specification/tree/version-3).
-    * [Pact-Specification 4.X](https://github.com/pact-foundation/pact-specification/tree/version-4).
+| Specification | Supported  | Pact-PHP Version |
+| ------------- | ---------  | ---------------- |
+| 1             | ✅         | 1.x +            |
+| 1.1           | ✅         | 1.x +            |
+| 2             | ✅         | 2.x +            |
+| 3             | ✅         | 10.x +           |
+| 4             | ✅         | 10.x +           |
 
 ##  Supported Platforms
 
