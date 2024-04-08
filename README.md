@@ -68,15 +68,16 @@ If you wish to stick with the 2.X implementation, you can continue to pull from 
 
 | Version | Status     | [Spec] Compatibility | Install            |
 | ------- | ---------- | -------------------- | ------------------ |
-| 10.x    | Alpha      | 2, 3, 4              | See [installation] |
-| 9.x     | Stable     | 2, 3\*               | [9xx]              |
-| 8.x     | Deprecated | 2, 3\*               |                    |
-| 7.x     | Deprecated | 2, 3\*               |                    |
-| 6.x     | Deprecated | 2, 3\*               |                    |
-| 5.x     | Deprecated | 2, 3\*               |                    |
-| 4.x     | Deprecated | 2                    |                    |
-| 3.x     | Deprecated | 2                    |                    |
-| 2.x     | Deprecated | 2                    |                    |
+| 10.x    | Alpha      | 1, 1.1, 2, 3, 4      | See [installation] |
+| 9.x     | Stable     | 1, 1.1, 2, 3\*       | [9xx]              |
+| 8.x     | Deprecated | 1, 1.1, 2, 3\*       |                    |
+| 7.x     | Deprecated | 1, 1.1, 2, 3\*       |                    |
+| 6.x     | Deprecated | 1, 1.1, 2, 3\*       |                    |
+| 5.x     | Deprecated | 1, 1.1, 2, 3\*       |                    |
+| 4.x     | Deprecated | 1, 1.1, 2            |                    |
+| 3.x     | Deprecated | 1, 1.1, 2            |                    |
+| 2.x     | Deprecated | 1, 1.1, 2            |                    |
+| 1.x     | Deprecated | 1, 1.1               |                    |
 
 _\*_ v3 support is limited to the subset of functionality required to enable language inter-operable [Message support].
 
