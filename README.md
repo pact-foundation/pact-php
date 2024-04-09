@@ -66,13 +66,20 @@ If you wish to stick with the 2.X implementation, you can continue to pull from 
 
 ## Specifications
 
-The 3.X version is the version of Pact-PHP, not the pact specification version that it supports.
+| Version | Status     | [Spec] Compatibility | Install            |
+| ------- | ---------- | -------------------- | ------------------ |
+| 10.x    | Alpha      | 1, 1.1, 2, 3, 4      | See [installation] |
+| 9.x     | Stable     | 1, 1.1, 2, 3\*       | [9xx]              |
+| 8.x     | Deprecated | 1, 1.1, 2, 3\*       |                    |
+| 7.x     | Deprecated | 1, 1.1, 2, 3\*       |                    |
+| 6.x     | Deprecated | 1, 1.1, 2, 3\*       |                    |
+| 5.x     | Deprecated | 1, 1.1, 2, 3\*       |                    |
+| 4.x     | Deprecated | 1, 1.1, 2            |                    |
+| 3.x     | Deprecated | 1, 1.1, 2            |                    |
+| 2.x     | Deprecated | 1, 1.1, 2            |                    |
+| 1.x     | Deprecated | 1, 1.1               |                    |
 
-Pact-Php 3.X -> 9.X supports [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2).
-Pact-Php 10.X supports:
-    * [Pact-Specification 2.X](https://github.com/pact-foundation/pact-specification/tree/version-2)
-    * [Pact-Specification 3.X](https://github.com/pact-foundation/pact-specification/tree/version-3).
-    * [Pact-Specification 4.X](https://github.com/pact-foundation/pact-specification/tree/version-4).
+_\*_ v3 support is limited to the subset of functionality required to enable language inter-operable [Message support].
 
 ##  Supported Platforms
 
@@ -450,3 +457,8 @@ $response = $client->get($this->config->getBaseUri() . '/' . $endpoint);
 
 echo $response->getBody(); // output: {"results":[{"name":"Games"}]}
 ```
+
+[spec]: https://github.com/pact-foundation/pact-specification
+[installation]: #installation
+[9xx]: https://github.com/pact-foundation/pact-php/tree/release/9.x
+[message support]: https://github.com/pact-foundation/pact-specification/tree/version-3#introduces-messages-for-services-that-communicate-via-event-streams-and-message-queues
