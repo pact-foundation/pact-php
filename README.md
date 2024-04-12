@@ -15,7 +15,7 @@ Table of contents
 - [Pact PHP](#pact-php)
 - [Table of contents](#table-of-contents)
   - [Versions](#versions)
-  - [Specifications](#specifications)
+  - [Supported Platforms](#supported-platforms)
   - [Installation](#installation)
   - [Basic Consumer Usage](#basic-consumer-usage)
     - [Create Consumer Unit Test](#create-consumer-unit-test)
