@@ -2,7 +2,7 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\MinimalFormatter;
+use PhpPact\Consumer\Matcher\Formatters\ValueRequiredFormatter;
 
 /**
  * Checks if all the variants are present in an array.
@@ -14,7 +14,7 @@ class ArrayContains extends AbstractMatcher
      */
     public function __construct(private array $variants)
     {
-        $this->setFormatter(new MinimalFormatter());
+        $this->setFormatter(new ValueRequiredFormatter());
     }
 
     /**
@@ -22,15 +22,15 @@ class ArrayContains extends AbstractMatcher
      */
     protected function getAttributesData(): array
     {
-        return ['variants' => array_values($this->variants)];
+        return ['variants' => $this->getValue()];
     }
 
     /**
-     * @todo Change return type to `null`
+     * @return array<mixed>
      */
-    public function getValue(): mixed
+    public function getValue(): array
     {
-        return null;
+        return array_values($this->variants);
     }
 
     public function getType(): string
