@@ -42,12 +42,54 @@
             ]
           },
           "query": {
+            "browsers[]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "arrayContains",
+                  "variants": [
+                    {
+                      "index": 0,
+                      "rules": {
+                        "": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "equality"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "index": 0,
+                      "rules": {
+                        "": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "equality"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
             "locales[]": {
               "combine": "AND",
               "matchers": [
                 {
-                  "match": "regex",
-                  "regex": "^[a-z]{2}-[A-Z]{2}$"
+                  "match": "eachValue",
+                  "rules": [
+                    {
+                      "match": "regex",
+                      "regex": "^[a-z]{2}-[A-Z]{2}$"
+                    }
+                  ],
+                  "value": "[\"en-US\",\"en-AU\"]"
                 }
               ]
             },
@@ -55,8 +97,14 @@
               "combine": "AND",
               "matchers": [
                 {
-                  "match": "regex",
-                  "regex": "\\d+"
+                  "match": "eachValue",
+                  "rules": [
+                    {
+                      "match": "regex",
+                      "regex": "\\d+"
+                    }
+                  ],
+                  "value": "[1,22]"
                 }
               ]
             }
@@ -65,6 +113,10 @@
         "method": "GET",
         "path": "/matchers",
         "query": {
+          "browsers[]": [
+            "Firefox",
+            "Chrome"
+          ],
           "locales[]": [
             "en-US",
             "en-AU"
@@ -142,6 +194,10 @@
             "nullValue": null,
             "number": 123,
             "query": {
+              "browsers": [
+                "Firefox",
+                "Chrome"
+              ],
               "locales": [
                 "en-US",
                 "en-AU"
@@ -565,7 +621,22 @@
               "combine": "AND",
               "matchers": [
                 {
-                  "match": "type"
+                  "match": "arrayContains",
+                  "variants": [
+                    {
+                      "index": 0,
+                      "rules": {
+                        "": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "equality"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -590,9 +661,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.14",
-      "mockserver": "1.2.5",
-      "models": "1.1.17"
+      "ffi": "0.4.19",
+      "mockserver": "1.2.6",
+      "models": "1.1.19"
     },
     "pactSpecification": {
       "version": "4.0"

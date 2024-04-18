@@ -27,17 +27,26 @@ class MatchersTest extends TestCase
             ->setMethod('GET')
             ->setPath($this->matcher->regex('/matchers', '^\/matchers$'))
             ->setQuery([
-                'pages' => $this->matcher->regex([1, 22], '\d+'), // arrayContains, eachKey, eachValue matchers are not working with query
-                'locales[]' => $this->matcher->regex(['en-US', 'en-AU'], '^[a-z]{2}-[A-Z]{2}$'), // Use `locales[]` instead of `locales` syntax if provider use PHP language
+                'pages' => $this->matcher->eachValue([1, 22], [
+                    $this->matcher->regex(null, '\d+')
+                ]),
+                // 'pages' => $this->matcher->regex([1, 22], '\d+'), // Alternative approach
+                'locales[]' => $this->matcher->eachValue(['en-US', 'en-AU'], [
+                    $this->matcher->regex(null, '^[a-z]{2}-[A-Z]{2}$'),
+                ]),  // Use `locales[]` instead of `locales` syntax if provider use PHP language
+                // 'locales[]' => $this->matcher->regex(['en-US', 'en-AU'], '^[a-z]{2}-[A-Z]{2}$'), // Alternative approach
+                'browsers[]' => $this->matcher->arrayContaining(['Firefox', 'Chrome']),
             ])
             ->addHeader('Accept', 'application/json')
-            ->addHeader('Theme', $this->matcher->regex('dark', 'light|dark')); // arrayContains, eachKey, eachValue matchers are not working with headers
+            ->addHeader('Theme', $this->matcher->regex('dark', 'light|dark'));
 
         $response = new ProviderResponse();
         $response
             ->setStatus($this->matcher->statusCode(HttpStatus::SERVER_ERROR, 512))
             ->addHeader('Content-Type', 'application/json')
-            ->addHeader('X-Powered-By', $this->matcher->string('PHP'))
+            ->addHeader('X-Powered-By', $this->matcher->arrayContaining([
+                'PHP'
+            ]))
             ->setBody([
                 'like' => $this->matcher->like(['key' => 'value']),
                 'likeNull' => $this->matcher->like(null),
@@ -95,6 +104,7 @@ class MatchersTest extends TestCase
                 'query' => [
                     'pages' => '22',
                     'locales' => ['en-US', 'en-AU'],
+                    'browsers' => ['Firefox', 'Chrome'],
                 ],
             ]);
 
@@ -178,6 +188,7 @@ class MatchersTest extends TestCase
             'query' => [
                 'pages' => '22',
                 'locales' => ['en-US', 'en-AU'],
+                'browsers' => ['Firefox', 'Chrome'],
             ],
         ], $body);
     }
