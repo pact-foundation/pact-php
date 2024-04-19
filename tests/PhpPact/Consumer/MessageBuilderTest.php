@@ -102,7 +102,7 @@ class MessageBuilderTest extends TestCase
     }
 
     #[TestWith([[]])]
-    #[TestWith([['key' => 'value']])]
+    #[TestWith([['comment 1', 'comment 2']])]
     public function testSetComments(array $comments): void
     {
         $this->assertSame($this->builder, $this->builder->comments($comments));

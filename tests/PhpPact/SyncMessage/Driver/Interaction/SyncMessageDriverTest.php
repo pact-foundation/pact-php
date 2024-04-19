@@ -167,8 +167,8 @@ class SyncMessageDriverTest extends TestCase
     }
 
     #[TestWith([[], true])]
-    #[TestWith([['key1' => 'value1'], false])]
-    #[TestWith([['key2' => 'value2', 'key3' => 'value3'], true])]
+    #[TestWith([['comment 1'], false])]
+    #[TestWith([['comment 2', 'comment 3'], true])]
     public function testSetComments(array $comments, $success): void
     {
         $this->message->setComments($comments);
@@ -185,12 +185,12 @@ class SyncMessageDriverTest extends TestCase
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
         ];
-        foreach ($comments as $key => $value) {
-            $calls[] = ['pactffi_set_comment', $this->messageHandle, $key, $value, $success];
+        foreach ($comments as $value) {
+            $calls[] = ['pactffi_add_text_comment', $this->messageHandle, $value, $success];
         }
         if (!$success) {
             $this->expectException(InteractionCommentNotSetException::class);
-            $this->expectExceptionMessage("Can add comment '$key' to the interaction '{$this->description}'");
+            $this->expectExceptionMessage("Can add comment '$value' to the interaction '{$this->description}'");
         }
         $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);

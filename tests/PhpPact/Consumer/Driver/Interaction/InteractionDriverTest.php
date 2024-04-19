@@ -168,8 +168,8 @@ class InteractionDriverTest extends TestCase
     }
 
     #[TestWith([[], true])]
-    #[TestWith([['key1' => 'value1'], false])]
-    #[TestWith([['key2' => 'value2', 'key3' => 'value3'], true])]
+    #[TestWith([['comment 1'], false])]
+    #[TestWith([['comment 2', 'comment 3'], true])]
     public function testSetComments(array $comments, $success): void
     {
         $this->interaction->setComments($comments);
@@ -184,12 +184,12 @@ class InteractionDriverTest extends TestCase
             ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
             ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
         ];
-        foreach ($comments as $key => $value) {
-            $calls[] = ['pactffi_set_comment', $this->interactionHandle, $key, $value, $success];
+        foreach ($comments as $value) {
+            $calls[] = ['pactffi_add_text_comment', $this->interactionHandle, $value, $success];
         }
         if (!$success) {
             $this->expectException(InteractionCommentNotSetException::class);
-            $this->expectExceptionMessage("Can add comment '$key' to the interaction '{$this->description}'");
+            $this->expectExceptionMessage("Can add comment '$value' to the interaction '{$this->description}'");
         }
         $this->assertClientCalls($calls);
         $this->driver->registerInteraction($this->interaction, false);
