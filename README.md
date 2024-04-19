@@ -1,3 +1,5 @@
+![logo](https://user-images.githubusercontent.com/53900/121775784-0191d200-cbcd-11eb-83dd-adc001b94519.png)
+
 # Pact PHP
 
 ![Code Analysis & Test](https://github.com/pact-foundation/pact-php/actions/workflows/build.yml/badge.svg)
@@ -7,7 +9,38 @@
 [![Downloads](https://img.shields.io/packagist/dt/pact-foundation/pact-php?style=flat-square)](https://packagist.org/packages/pact-foundation/pact-php)
 [![Downloads This Month](https://img.shields.io/packagist/dm/pact-foundation/pact-php?style=flat-square)](https://packagist.org/packages/pact-foundation/pact-php)
 
-PHP version of [Pact](https://pact.io). Enables consumer driven contract testing. Please read the [Pact.io](https://pact.io) for specific information about PACT.
+
+#### Fast, easy and reliable testing for your APIs and microservices.
+
+</span>
+
+**Pact** is the de-facto API contract testing tool. Replace expensive and brittle end-to-end integration tests with fast, reliable and easy to debug unit tests.
+
+- ⚡ Lightning fast
+- 🎈 Effortless full-stack integration testing - from the front-end to the back-end
+- 🔌 Supports HTTP/REST and event-driven systems
+- 🛠️ Configurable mock server
+- 😌 Powerful matching rules prevents brittle tests
+- 🤝 Integrates with Pact Broker / PactFlow for powerful CI/CD workflows
+- 🔡 Supports 12+ languages
+
+**Why use Pact?**
+
+Contract testing with Pact lets you:
+
+- ⚡ Test locally
+- 🚀 Deploy faster
+- ⬇️ Reduce the lead time for change
+- 💰 Reduce the cost of API integration testing
+- 💥 Prevent breaking changes
+- 🔎 Understand your system usage
+- 📃 Document your APIs for free
+- 🗄 Remove the need for complex data fixtures
+- 🤷‍♂️ Reduce the reliance on complex test environments
+
+Watch our [series](https://www.youtube.com/playlist?list=PLwy9Bnco-IpfZ72VQ7hce8GicVZs7nm0i) on the problems with end-to-end integrated tests, and how contract testing can help.
+
+![----------](https://raw.githubusercontent.com/pactumjs/pactum/master/assets/rainbow.png)
 
 Table of contents
 =================
