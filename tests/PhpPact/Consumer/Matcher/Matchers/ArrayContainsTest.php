@@ -17,7 +17,7 @@ class ArrayContainsTest extends TestCase
         ];
         $array = new ArrayContains($variants);
         $this->assertSame(
-            '{"pact:matcher:type":"arrayContains","variants":[{"pact:matcher:type":"type","value":"string"},{"pact:matcher:type":"integer","pact:generator:type":"RandomInt","min":0,"max":10}]}',
+            '{"pact:matcher:type":"arrayContains","variants":[{"pact:matcher:type":"type","value":"string"},{"pact:matcher:type":"integer","pact:generator:type":"RandomInt","min":0,"max":10}],"value":[{"pact:matcher:type":"type","value":"string"},{"pact:matcher:type":"integer","pact:generator:type":"RandomInt","min":0,"max":10}]}',
             json_encode($array)
         );
     }
