@@ -30,11 +30,23 @@ class MatchersTest extends TestCase
                 'pages' => $this->matcher->eachValue([1, 22], [
                     $this->matcher->regex(null, '\d+')
                 ]),
-                // 'pages' => $this->matcher->regex([1, 22], '\d+'), // Alternative approach
+
+                // Alternative approach:
+                // Pros:
+                //      * Shorter
+                // Cons:
+                //      * Only works with `regex` matcher
+                //      * Can't use if there are multiple rules for each value
+                // 'pages' => $this->matcher->regex([1, 22], '\d+'),
+
+                // Use `locales[]` instead of `locales` syntax if provider use PHP language
                 'locales[]' => $this->matcher->eachValue(['en-US', 'en-AU'], [
                     $this->matcher->regex(null, '^[a-z]{2}-[A-Z]{2}$'),
-                ]),  // Use `locales[]` instead of `locales` syntax if provider use PHP language
-                // 'locales[]' => $this->matcher->regex(['en-US', 'en-AU'], '^[a-z]{2}-[A-Z]{2}$'), // Alternative approach
+                ]),
+
+                // Alternative approach:
+                // 'locales[]' => $this->matcher->regex(['en-US', 'en-AU'], '^[a-z]{2}-[A-Z]{2}$'),
+
                 'browsers[]' => $this->matcher->arrayContaining(['Firefox', 'Chrome']),
             ])
             ->addHeader('Accept', 'application/json')
@@ -101,6 +113,8 @@ class MatchersTest extends TestCase
                     [$this->matcher->regex(null, 'car|bike|motorbike')]
                 ),
                 'url' => $this->matcher->url('http://localhost:8080/users/1234/posts/latest', '.*(\\/users\\/\\d+\\/posts\\/latest)$', false),
+
+                // Don't mind this. This is for demonstrating what query values provider will received.
                 'query' => [
                     'pages' => '22',
                     'locales' => ['en-US', 'en-AU'],
@@ -185,6 +199,8 @@ class MatchersTest extends TestCase
                 'vehicle 1' => 'car',
             ],
             'url' => 'http://localhost:8080/users/1234/posts/latest',
+
+            // Don't mind this. This is for demonstrating what query values provider will received.
             'query' => [
                 'pages' => '22',
                 'locales' => ['en-US', 'en-AU'],
