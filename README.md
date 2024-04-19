@@ -72,7 +72,6 @@ Table of contents
   - [Tips](#tips)
     - [Starting API Asynchronously](#starting-api-asynchronously)
     - [Set Up Provider State](#set-up-provider-state)
-    - [Additional Examples](#additional-examples)
   - [Message support](#message-support)
     - [Consumer Side Message Processing](#consumer-side-message-processing)
     - [Provider Side Message Validation](#provider-side-message-validation)
@@ -385,11 +384,6 @@ Here are some options:
 2. Set up your database to meet the expectations of the request. At the start of each request, you should first reset the database to its original state.
 
 No matter which direction you go, you will have to modify something outside of the PHP process because each request to your server will be stateless and independent.
-
-### Additional Examples
-There is a separate repository with an end to end example for both the 2.X and 3.X implementations.
-- [pact-php-example](https://github.com/mattermack/pact-php-example) for 3.X examples
-- [2.2.1 tag](https://github.com/mattermack/pact-php-example/tree/2.2.1) for 2.X examples
 
 ## Message support
 The goal is not to test the transmission of an object over a bus but instead vet the contents of the message.
