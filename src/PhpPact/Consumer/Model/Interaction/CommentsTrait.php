@@ -5,12 +5,17 @@ namespace PhpPact\Consumer\Model\Interaction;
 trait CommentsTrait
 {
     /**
-     * @var string[]
+     * @var array<string, mixed>
      */
     private array $comments = [];
 
     /**
-     * @return string[]
+     * @var string[]
+     */
+    private array $textComments = [];
+
+    /**
+     * @return array<string, mixed>
      */
     public function getComments(): array
     {
@@ -18,20 +23,26 @@ trait CommentsTrait
     }
 
     /**
-     * @param string[] $comments
+     * @param array<string, mixed> $comments
      */
-    public function setComments(array $comments): self
+    public function setComments(array $comments): void
     {
-        $this->comments = [];
-        foreach ($comments as $value) {
-            $this->addComment($value);
-        }
-
-        return $this;
+        $this->comments = $comments;
     }
 
-    public function addComment(string $comment): void
+    /**
+     * @return string[]
+     */
+    public function getTextComments(): array
     {
-        $this->comments[] = $comment;
+        return $this->textComments;
+    }
+
+    /**
+     * @param string $comment
+     */
+    public function addTextComment(string $comment): void
+    {
+        $this->textComments[] = $comment;
     }
 }

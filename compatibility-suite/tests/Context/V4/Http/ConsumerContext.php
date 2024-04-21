@@ -77,7 +77,7 @@ final class ConsumerContext implements Context
      */
     public function aCommentIsAddedToTheHttpInteraction(string $value): void
     {
-        $this->interaction->addComment($value);
+        $this->interaction->addTextComment($value);
     }
 
     /**

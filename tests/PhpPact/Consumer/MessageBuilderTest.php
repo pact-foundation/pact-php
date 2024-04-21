@@ -102,12 +102,20 @@ class MessageBuilderTest extends TestCase
     }
 
     #[TestWith([[]])]
-    #[TestWith([['comment 1', 'comment 2']])]
+    #[TestWith([['key1' => null, 'key2' => 'value', 'key3' => ['value']]])]
     public function testSetComments(array $comments): void
     {
         $this->assertSame($this->builder, $this->builder->comments($comments));
         $message = $this->getMessage();
         $this->assertSame($comments, $message->getComments());
+    }
+
+    public function testAddTextComment(): void
+    {
+        $this->assertSame($this->builder, $this->builder->comment('comment 1'));
+        $this->assertSame($this->builder, $this->builder->comment('comment 2'));
+        $message = $this->getMessage();
+        $this->assertSame(['comment 1', 'comment 2'], $message->getTextComments());
     }
 
     public function testSetSingleCallback(): void

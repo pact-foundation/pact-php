@@ -103,13 +103,56 @@ class InteractionBuilder implements BuilderInterface
     }
 
     /**
-     * Add comments to the interaction. This feature only work with specification v4. It doesn't affect pact file with specification <= v3.
+     * Set comments for the interaction.
      *
-     * @param array<string, string> $comments
+     * This is used by V4 interactions to set comments for the interaction. A
+     * comment consists of a key-value pair, where the key is a string and the
+     * value is anything that can be encoded as JSON.
+     *
+     * Args:
+     *     key:
+     *         Key for the comment.
+     *
+     *     value:
+     *         Value for the comment. This must be encodable using
+     *         `json_encode`, or an existing JSON string. The
+     *         value of `null` will remove the comment with the given key.
+     *
+     *  # Warning
+     *
+     *  This function will overwrite any existing comment with the same key. In
+     *  particular, the `text` key is used by {@see self::comment()}.
+     *
+     * @param array<string, mixed> $comments
      */
     public function comments(array $comments): self
     {
         $this->interaction->setComments($comments);
+
+        return $this;
+    }
+
+    /**
+     *  Add a text comment for the interaction.
+     *
+     *  This is used by V4 interactions to set arbitrary text comments for the
+     *  interaction.
+     *
+     *  Args:
+     *      comment:
+     *          Text of the comment.
+     *
+     *  # Warning
+     *
+     *  Internally, the comments are appended to an array under the `text`
+     *  comment key. Care should be taken to ensure that conflicts are not
+     *  introduced by {@see self::comments()}.
+     *
+     * @param string $comment
+     */
+    public function comment(string $comment): self
+    {
+        $this->interaction->addTextComment($comment);
 
         return $this;
     }

@@ -167,8 +167,12 @@ class SyncMessageDriverTest extends TestCase
     }
 
     #[TestWith([[], true])]
-    #[TestWith([['comment 1'], false])]
-    #[TestWith([['comment 2', 'comment 3'], true])]
+    #[TestWith([['key1' => null], true])]
+    #[TestWith([['key1' => null], false])]
+    #[TestWith([['key2' => 'string value'], true])]
+    #[TestWith([['key2' => 'string value'], false])]
+    #[TestWith([['key3' => ['value 1', 'value 2']], true])]
+    #[TestWith([['key3' => ['value 1', 'value 2']], false])]
     public function testSetComments(array $comments, $success): void
     {
         $this->message->setComments($comments);
@@ -185,12 +189,39 @@ class SyncMessageDriverTest extends TestCase
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
         ];
-        foreach ($comments as $value) {
-            $calls[] = ['pactffi_add_text_comment', $this->messageHandle, $value, $success];
+        foreach ($comments as $key => $value) {
+            $calls[] = ['pactffi_set_comment', $this->messageHandle, $key, (is_string($value) || is_null($value)) ? $value : json_encode($value), $success];
         }
         if (!$success) {
             $this->expectException(InteractionCommentNotSetException::class);
-            $this->expectExceptionMessage("Can add comment '$value' to the interaction '{$this->description}'");
+            $this->expectExceptionMessage("Can not add comment '$key' to the interaction '{$this->description}'");
+        }
+        $this->assertClientCalls($calls);
+        $this->driver->registerMessage($this->message);
+    }
+
+    #[TestWith(['comment 1', false])]
+    #[TestWith(['comment 2', true])]
+    public function testAddTextComment(string $comment, $success): void
+    {
+        $this->message->addTextComment($comment);
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $calls = [
+            ['pactffi_new_sync_message_interaction', $this->pactHandle, $this->description, $this->messageHandle],
+            ['pactffi_given', $this->messageHandle, 'item exist', null],
+            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
+            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
+            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
+            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
+            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
+            ['pactffi_add_text_comment', $this->messageHandle, $comment, $success],
+        ];
+        if (!$success) {
+            $this->expectException(InteractionCommentNotSetException::class);
+            $this->expectExceptionMessage("Can not add text comment '$comment' to the interaction '{$this->description}'");
         }
         $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);

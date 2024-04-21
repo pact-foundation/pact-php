@@ -120,12 +120,20 @@ class InteractionBuilderTest extends TestCase
     }
 
     #[TestWith([[]])]
-    #[TestWith([['comment 1', 'comment 2']])]
+    #[TestWith([['key1' => null, 'key2' => 'value', 'key3' => ['value']]])]
     public function testSetComments(array $comments): void
     {
         $this->assertSame($this->builder, $this->builder->comments($comments));
         $interaction = $this->getInteraction();
         $this->assertSame($comments, $interaction->getComments());
+    }
+
+    public function testAddTextComment(): void
+    {
+        $this->assertSame($this->builder, $this->builder->comment('comment 1'));
+        $this->assertSame($this->builder, $this->builder->comment('comment 2'));
+        $interaction = $this->getInteraction();
+        $this->assertSame(['comment 1', 'comment 2'], $interaction->getTextComments());
     }
 
     private function getInteraction(): Interaction
