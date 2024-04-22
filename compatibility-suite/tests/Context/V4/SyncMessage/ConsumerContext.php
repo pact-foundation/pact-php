@@ -69,7 +69,7 @@ final class ConsumerContext implements Context
      */
     public function aCommentIsAddedToTheSynchronousMessageInteraction(string $value): void
     {
-        $this->message->setComments(['text' => json_encode([$value])]);
+        $this->message->addTextComment($value);
     }
 
     /**

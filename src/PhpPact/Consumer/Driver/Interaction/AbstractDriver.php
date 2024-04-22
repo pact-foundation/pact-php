@@ -43,9 +43,16 @@ abstract class AbstractDriver
     protected function setComments(Interaction|Message $interaction): void
     {
         foreach ($interaction->getComments() as $key => $value) {
+            $value = (is_string($value) || is_null($value)) ? $value : json_encode($value);
             $success = $this->client->call('pactffi_set_comment', $interaction->getHandle(), $key, $value);
             if (!$success) {
-                throw new InteractionCommentNotSetException(sprintf("Can add comment '%s' to the interaction '%s'", $key, $interaction->getDescription()));
+                throw new InteractionCommentNotSetException(sprintf("Can not add comment '%s' to the interaction '%s'", $key, $interaction->getDescription()));
+            }
+        }
+        foreach ($interaction->getTextComments() as $value) {
+            $success = $this->client->call('pactffi_add_text_comment', $interaction->getHandle(), $value);
+            if (!$success) {
+                throw new InteractionCommentNotSetException(sprintf("Can not add text comment '%s' to the interaction '%s'", $value, $interaction->getDescription()));
             }
         }
     }

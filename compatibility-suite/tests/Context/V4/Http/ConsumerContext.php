@@ -77,7 +77,7 @@ final class ConsumerContext implements Context
      */
     public function aCommentIsAddedToTheHttpInteraction(string $value): void
     {
-        $this->interaction->setComments(['text' => json_encode([$value])]);
+        $this->interaction->addTextComment($value);
     }
 
     /**
