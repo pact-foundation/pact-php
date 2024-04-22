@@ -42,15 +42,12 @@ Watch our [series](https://www.youtube.com/playlist?list=PLwy9Bnco-IpfZ72VQ7hce8
 
 ![----------](https://raw.githubusercontent.com/pactumjs/pactum/master/assets/rainbow.png)
 
-Table of contents
-=================
+# Table of contents
 
-- [Pact PHP](#pact-php)
-- [Table of contents](#table-of-contents)
-  - [Versions](#versions)
-  - [Supported Platforms](#supported-platforms)
-  - [Installation](#installation)
-  - [Basic Consumer Usage](#basic-consumer-usage)
+- [Versions](#versions)
+- [Supported Platforms](#supported-platforms)
+- [Installation](#installation)
+- [Basic Consumer Usage](#basic-consumer-usage)
     - [Create Consumer Unit Test](#create-consumer-unit-test)
     - [Create Mock Request](#create-mock-request)
     - [Create Mock Response](#create-mock-response)
@@ -62,20 +59,21 @@ Table of contents
     - [Publish Contracts To Pact Broker](#publish-contracts-to-pact-broker)
         - [CLI](#cli)
         - [Github Actions](#github-actions)
-  - [Basic Provider Usage](#basic-provider-usage)
-        - [Create Unit Test](#create-unit-test)
-        - [Start API](#start-api)
-    - [Provider Verification](#provider-verification)
+- [Basic Provider Usage](#basic-provider-usage)
+    - [Create Unit Test](#create-unit-test)
+    - [Verification Sources](#provider-verification)
         - [Verify From Pact Broker](#verify-from-pact-broker)
+        - [Verify From Url](#verify-from-url)
         - [Verify Files in Directory](#verify-files-in-directory)
         - [Verify Files by Path](#verify-files-by-path)
-  - [Tips](#tips)
+    - [Start API](#start-api)
+- [Tips](#tips)
     - [Starting API Asynchronously](#starting-api-asynchronously)
     - [Set Up Provider State](#set-up-provider-state)
-  - [Message support](#message-support)
+- [Message support](#message-support)
     - [Consumer Side Message Processing](#consumer-side-message-processing)
     - [Provider Side Message Validation](#provider-side-message-validation)
-  - [Usage for the optional `pact-stub-service`](#usage-for-the-optional-pact-stub-service)
+- [Usage for the optional `pact-stub-service`](#usage-for-the-optional-pact-stub-service)
 
 ## Versions
 
@@ -266,52 +264,57 @@ See how to use at https://github.com/pactflow/actions/tree/main/publish-pact-fil
 
 All of the following code will be used exclusively for Providers. This will run the Pacts against the real Provider and either verify or fail validation on the Pact Broker.
 
-##### Create Unit Test
+### Create Unit Test
 
-Create a single unit test function. This will test a single consumer of the service.
+Create a single unit test function. This will test all defined consumers of the service.
 
-##### Start API
+```php
+public function testPactVerifyConsumers(): void
+{
+    $config = new VerifierConfig();
+    $config
+        ->setProviderName('someProvider') // Providers name to fetch.
+        ->setProviderVersion('1.0.0') // Providers version.
+        ->setProviderTags('prod' ,'dev')
+        ->setProviderBranch('main')
+        ->setScheme('http')
+        ->setHost('localhost')
+        ->setPort(58000)
+        ->setBasePath('/')
+        ->setStateChangeUrl(new Uri('http://localhost:58000/change-state'))
+        ->setBuildUrl(new Uri('http://build.domain.com'))
+        ->setFilterConsumerNames('someConsumer', 'otherConsumer')
+        ->setFilterDescription('Send POST to create')
+        ->setFilterNoState(true)
+        ->setFilterState('state')
+        ->setPublishResults(true)
+        ->setDisableSslVerification(true)
+        ->setStateChangeAsBody(false)
+        ->setStateChangeTeardown(true)
+        ->setRequestTimeout(500);
 
-Get an instance of the API up and running. [Click here](#starting-api-asynchronously) for some tips.
+    $verifier = new Verifier($config);
 
-If you need to set up the state of your API before making each request please see [Set Up Provider State](#set-up-provider-state).
+    // Add sources ...
 
-### Provider Verification
+    $verifyResult = $verifier->verify();
 
-There are three ways to verify Pact files. See the examples below.
+    $this->assertTrue($verifyResult);
+}
+```
 
-##### Verify From Pact Broker
+### Verification Sources
+
+There are four ways to verify Pact files. See the examples below.
+
+#### Verify From Pact Broker
 
 This will grab the Pact file from a Pact Broker and run the data against the stood up API.
 
 ```php
-$config = new VerifierConfig();
-$config
-    ->setProviderName('someProvider') // Providers name to fetch.
-    ->setProviderVersion('1.0.0') // Providers version.
-    ->setProviderTags('prod' ,'dev')
-    ->setProviderBranch('main')
-    ->setScheme('http')
-    ->setHost('localhost')
-    ->setPort(58000)
-    ->setBasePath('/')
-    ->setStateChangeUrl(new Uri('http://localhost:58000/change-state'))
-    ->setBuildUrl(new Uri('http://build.domain.com'))
-    ->setFilterConsumerNames('someConsumer', 'otherConsumer')
-    ->setFilterDescription('Send POST to create')
-    ->setFilterNoState(true)
-    ->setFilterState('state')
-    ->setPublishResults(true)
-    ->setDisableSslVerification(true)
-    ->setStateChangeAsBody(false)
-    ->setStateChangeTeardown(true)
-    ->setRequestTimeout(500);
-
-$verifier = new Verifier($config);
-
 $selectors = (new ConsumerVersionSelectors())
-    ->addSelector('{"tag":"foo","latest":true}')
-    ->addSelector('{"tag":"bar","latest":true}');
+    ->addSelector('{ "mainBranch": true }')
+    ->addSelector('{ "deployedOrReleased": true }');
 
 $broker = new Broker();
 $broker
@@ -327,41 +330,44 @@ $broker
     ->setConsumerVersionTags(['dev']);
 
 $verifier->addBroker($broker);
-
-$verifyResult = $verifier->verify();
-
-$this->assertTrue($verifyResult);
 ```
 
-##### Verify Files in Directory
+#### Verify From Url
+
+This will grab the Pact file from a url and run the data against the stood up API.
+
+```php
+$url = new Url();
+$url
+    ->setUrl(new Uri('http://localhost'))
+    ->setUsername('user')
+    ->setPassword('pass')
+    ->setToken('token');
+
+$verifier->addUrl($url);
+```
+
+#### Verify Files in Directory
+
+This allows local Pact files in directory testing.
+
+```php
+$verifier->addDirectory('C:\SomePath');
+```
+
+#### Verify Files by Path
 
 This allows local Pact file testing.
 
 ```php
-public function testPactVerifyFilesInDirectory()
-{
-    $verifier->addDirectory('C:\SomePath');
-
-    $verifyResult = $verifier->verify();
-
-    $this->assertTrue($verifyResult);
-}
+$verifier->addFile('C:\SomePath\consumer-provider.json');
 ```
 
-##### Verify Files by Path
+### Start API
 
-This allows local Pact file testing.
+Get an instance of the API up and running. [Click here](#starting-api-asynchronously) for some tips.
 
-```php
-public function testPactVerifyFiles()
-{
-    $verifier->addFile('C:\SomePath\consumer-provider.json');
-
-    $verifyResult = $verifier->verify();
-
-    $this->assertTrue($verifyResult);
-}
-```
+If you need to set up the state of your API before making each request please see [Set Up Provider State](#set-up-provider-state).
 
 ## Tips
 
