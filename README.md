@@ -74,6 +74,7 @@ Watch our [series](https://www.youtube.com/playlist?list=PLwy9Bnco-IpfZ72VQ7hce8
     - [Consumer Side Message Processing](#consumer-side-message-processing)
     - [Provider Side Message Validation](#provider-side-message-validation)
 - [Usage for the optional `pact-stub-service`](#usage-for-the-optional-pact-stub-service)
+- [Framework Integrations](#framework-integrations)
 
 ## Versions
 
@@ -490,6 +491,16 @@ $response = $client->get($this->config->getBaseUri() . '/' . $endpoint);
 
 echo $response->getBody(); // output: {"results":[{"name":"Games"}]}
 ```
+
+## Framework Integrations
+
+There are several external packages to help verifying providers implemented these framework easier:
+
+* Symfony
+    * [Provider Bundle](https://github.com/tienvx/pact-provider-bundle)
+    * [Messenger Bundle](https://github.com/tienvx/pact-messenger-bundle)
+* Laravel
+    * [Provider Package](https://github.com/tienvx/laravel-pact-provider)
 
 [spec]: https://github.com/pact-foundation/pact-specification
 [installation]: #installation
