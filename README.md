@@ -269,31 +269,50 @@ All of the following code will be used exclusively for Providers. This will run 
 Create a single unit test function. This will test all defined consumers of the service.
 
 ```php
+protected function setUp(): void
+{
+    // Start API
+}
+
+protected function tearDown(): void
+{
+    // Stop API
+}
+
 public function testPactVerifyConsumers(): void
 {
     $config = new VerifierConfig();
-    $config
-        ->setProviderName('someProvider') // Providers name to fetch.
-        ->setProviderVersion('1.0.0') // Providers version.
-        ->setProviderTags('prod' ,'dev')
-        ->setProviderBranch('main')
-        ->setScheme('http')
+    $config->getProviderInfo()
+        ->setName('someProvider')
         ->setHost('localhost')
-        ->setPort(58000)
-        ->setBasePath('/')
-        ->setStateChangeUrl(new Uri('http://localhost:58000/change-state'))
-        ->setBuildUrl(new Uri('http://build.domain.com'))
-        ->setFilterConsumerNames('someConsumer', 'otherConsumer')
-        ->setFilterDescription('Send POST to create')
-        ->setFilterNoState(true)
-        ->setFilterState('state')
-        ->setPublishResults(true)
-        ->setDisableSslVerification(true)
-        ->setStateChangeAsBody(false)
+        ->setPort(8000);
+    $config->getProviderState()
+        ->setStateChangeUrl(new Uri('http://localhost:8000/pact-change-state'))
         ->setStateChangeTeardown(true)
-        ->setRequestTimeout(500);
+        ->setStateChangeAsBody(true);
 
-    $verifier = new Verifier($config);
+    // If your provider dispatch messages
+    $config->addProviderTransport(
+        (new ProviderTransport())
+            ->setProtocol(ProviderTransport::MESSAGE_PROTOCOL)
+            ->setPort(8000)
+            ->setPath('/pact-messages')
+            ->setScheme('http')
+    );
+
+    // If you want to publish verification results to Pact Broker.
+    if ($isCi = getenv('CI')) {
+        $publishOptions = new PublishOptions();
+        $publishOptions
+            ->setProviderVersion(exec('git rev-parse --short HEAD'))
+            ->setProviderBranch(exec('git rev-parse --abbrev-ref HEAD'));
+        $config->setPublishOptions($publishOptions);
+    }
+
+    // If you want to display more/less verification logs.
+    if ($logLevel = \getenv('PACT_LOGLEVEL')) {
+        $config->setLogLevel($logLevel);
+    }
 
     // Add sources ...
 
@@ -313,8 +332,8 @@ This will grab the Pact file from a Pact Broker and run the data against the sto
 
 ```php
 $selectors = (new ConsumerVersionSelectors())
-    ->addSelector('{ "mainBranch": true }')
-    ->addSelector('{ "deployedOrReleased": true }');
+    ->addSelector(new Selector(mainBranch: true))
+    ->addSelector(new Selector(deployedOrReleased: true));
 
 $broker = new Broker();
 $broker
