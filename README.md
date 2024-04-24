@@ -328,7 +328,7 @@ There are four ways to verify Pact files. See the examples below.
 
 #### Verify From Pact Broker
 
-This will grab the Pact file from a Pact Broker and run the data against the stood up API.
+This will grab the Pact files from a Pact Broker.
 
 ```php
 $selectors = (new ConsumerVersionSelectors())
@@ -353,12 +353,12 @@ $verifier->addBroker($broker);
 
 #### Verify From Url
 
-This will grab the Pact file from a url and run the data against the stood up API.
+This will grab the Pact file from a url.
 
 ```php
 $url = new Url();
 $url
-    ->setUrl(new Uri('http://localhost'))
+    ->setUrl(new Uri('http://localhost:9292/pacts/provider/personProvider/consumer/personConsumer/latest'))
     ->setUsername('user')
     ->setPassword('pass')
     ->setToken('token');
@@ -368,7 +368,7 @@ $verifier->addUrl($url);
 
 #### Verify Files in Directory
 
-This allows local Pact files in directory testing.
+This will grab local Pact files in directory. Results will not be published.
 
 ```php
 $verifier->addDirectory('C:\SomePath');
@@ -376,7 +376,7 @@ $verifier->addDirectory('C:\SomePath');
 
 #### Verify Files by Path
 
-This allows local Pact file testing.
+This will grab local Pact file. Results will not be published.
 
 ```php
 $verifier->addFile('C:\SomePath\consumer-provider.json');
