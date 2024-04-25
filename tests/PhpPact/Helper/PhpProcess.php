@@ -3,6 +3,7 @@
 namespace PhpPactTest\Helper;
 
 use PhpPactTest\Helper\Exception\NoPortAvailableException;
+use PhpPactTest\Helper\Exception\SocketNotOpenException;
 use Symfony\Component\Process\Process;
 
 class PhpProcess extends AbstractProcess
@@ -29,6 +30,9 @@ class PhpProcess extends AbstractProcess
     private function findAvailablePort(): int
     {
         $socket = \socket_create_listen(0);
+        if (is_bool($socket)) {
+            throw new SocketNotOpenException(sprintf('Can not open socket: %s', socket_strerror(socket_last_error())));
+        }
         \socket_getsockname($socket, $addr, $port);
         \socket_close($socket);
 
