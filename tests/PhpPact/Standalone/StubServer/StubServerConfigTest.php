@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class StubServerConfigTest extends TestCase
 {
-    public function testSetters()
+    public function testSetters(): void
     {
         $brokerUrl               = new Uri('http://localhost');
         $port                    = 1234;
