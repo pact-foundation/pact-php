@@ -29,6 +29,9 @@ class VerifierTest extends TestCase
     private VerifierConfigInterface $config;
     private LoggerInterface&MockObject $logger;
     private CData $handle;
+    /**
+     * @var mixed[][]
+     */
     private array $calls;
 
     protected function setUp(): void

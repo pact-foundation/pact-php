@@ -34,6 +34,7 @@ use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Consumer\Matcher\Matchers\Values;
 use PhpPact\Consumer\Matcher\Model\FormatterInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class PluginFormatterTest extends TestCase
@@ -54,9 +55,10 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    /**
-     * @dataProvider invalidRulesProvider
-     */
+    #[TestWith([new EachKey(["doesn't matter"], [])])]
+    #[TestWith([new EachValue(["doesn't matter"], [])])]
+    #[TestWith([new EachKey(["doesn't matter"], [new Type(1), new Type(2)])])]
+    #[TestWith([new EachValue(["doesn't matter"], [new Type(1), new Type(2), new Type(3)])])]
     public function testInvalidRules(EachKey|EachValue $matcher): void
     {
         $this->expectException(MatchingExpressionException::class);
@@ -64,19 +66,11 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    public static function invalidRulesProvider(): array
-    {
-        return [
-            [new EachKey(["doesn't matter"], [])],
-            [new EachValue(["doesn't matter"], [])],
-            [new EachKey(["doesn't matter"], [new Type(1), new Type(2)])],
-            [new EachValue(["doesn't matter"], [new Type(1), new Type(2), new Type(3)])],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidValueProvider
-     */
+    #[TestWith([new Type(new \stdClass()), 'object'])]
+    #[TestWith([new Type(['key' => 'value']), 'array'])]
+    #[TestWith([new MinType(['Example value'], 1), 'array'])]
+    #[TestWith([new MaxType(['Example value'], 2), 'array'])]
+    #[TestWith([new MinMaxType(['Example value'], 1, 2), 'array'])]
     public function testInvalidValue(MatcherInterface $matcher, string $type): void
     {
         $this->expectException(MatchingExpressionException::class);
@@ -84,20 +78,9 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    public static function invalidValueProvider(): array
-    {
-        return [
-            [new Type((object)['key' => 'value']), 'object'],
-            [new Type(['key' => 'value']), 'array'],
-            [new MinType(['Example value'], 1), 'array'],
-            [new MaxType(['Example value'], 2), 'array'],
-            [new MinMaxType(['Example value'], 1, 2), 'array'],
-        ];
-    }
-
-    /**
-     * @dataProvider notSupportedMatcherProvider
-     */
+    #[TestWith([new Values([1, 2, 3])])]
+    #[TestWith([new ArrayContains([new Equality(1)])])]
+    #[TestWith([new StatusCode('clientError', 405)])]
     public function testNotSupportedMatcher(MatcherInterface $matcher): void
     {
         $this->expectException(MatcherNotSupportedException::class);
@@ -105,44 +88,26 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    public static function notSupportedMatcherProvider(): array
-    {
-        return [
-            [new Values([1, 2, 3])],
-            [new ArrayContains([new Equality(1)])],
-            [new StatusCode('clientError', 405)],
-        ];
-    }
-
-    /**
-     * @dataProvider matcherProvider
-     */
+    #[TestWith([new MatchingField('product'), '"matching($\'product\')"'])]
+    #[TestWith([new NotEmpty('test'), '"notEmpty(\'test\')"'])]
+    #[TestWith([new EachKey(["doesn't matter"], [new Regex('\$(\.\w+)+', '$.test.one')]), '"eachKey(matching(regex, \'\\\\$(\\\\.\\\\w+)+\', \'$.test.one\'))"'])]
+    #[TestWith([new EachValue(["doesn't matter"], [new Type(100)]), '"eachValue(matching(type, 100))"'])]
+    #[TestWith([new Equality('Example value'), '"matching(equalTo, \'Example value\')"'])]
+    #[TestWith([new Type('Example value'), '"matching(type, \'Example value\')"'])]
+    #[TestWith([new Number(100.09), '"matching(number, 100.09)"'])]
+    #[TestWith([new Integer(100), '"matching(integer, 100)"'])]
+    #[TestWith([new Decimal(100.01), '"matching(decimal, 100.01)"'])]
+    #[TestWith([new Includes('testing'), '"matching(include, \'testing\')"'])]
+    #[TestWith([new Boolean(true), '"matching(boolean, true)"'])]
+    #[TestWith([new Semver('1.0.0'), '"matching(semver, \'1.0.0\')"'])]
+    #[TestWith([new DateTime('yyyy-MM-dd HH:mm:ssZZZZZ', '2020-05-21 16:44:32+10:00'), '"matching(datetime, \'yyyy-MM-dd HH:mm:ssZZZZZ\', \'2020-05-21 16:44:32+10:00\')"'])]
+    #[TestWith([new Date('yyyy-MM-dd', '2012-04-12'), '"matching(date, \'yyyy-MM-dd\', \'2012-04-12\')"'])]
+    #[TestWith([new Time('HH:mm', '22:04'), '"matching(time, \'HH:mm\', \'22:04\')"'])]
+    #[TestWith([new Regex('\\w{3}\\d+', 'abc123'), '"matching(regex, \'\\\\w{3}\\\\d+\', \'abc123\')"'])]
+    #[TestWith([new ContentType('application/xml'), '"matching(contentType, \'application\/xml\', \'application\/xml\')"'])]
+    #[TestWith([new NullValue(), '"matching(type, null)"'])]
     public function testFormat(MatcherInterface $matcher, string $json): void
     {
         $this->assertSame($json, json_encode($this->formatter->format($matcher)));
-    }
-
-    public static function matcherProvider(): array
-    {
-        return [
-            [new MatchingField('product'), '"matching($\'product\')"'],
-            [new NotEmpty('test'), '"notEmpty(\'test\')"'],
-            [new EachKey(["doesn't matter"], [new Regex('\$(\.\w+)+', '$.test.one')]), '"eachKey(matching(regex, \'\\\\$(\\\\.\\\\w+)+\', \'$.test.one\'))"'],
-            [new EachValue(["doesn't matter"], [new Type(100)]), '"eachValue(matching(type, 100))"'],
-            [new Equality('Example value'), '"matching(equalTo, \'Example value\')"'],
-            [new Type('Example value'), '"matching(type, \'Example value\')"'],
-            [new Number(100.09), '"matching(number, 100.09)"'],
-            [new Integer(100), '"matching(integer, 100)"'],
-            [new Decimal(100.01), '"matching(decimal, 100.01)"'],
-            [new Includes('testing'), '"matching(include, \'testing\')"'],
-            [new Boolean(true), '"matching(boolean, true)"'],
-            [new Semver('1.0.0'), '"matching(semver, \'1.0.0\')"'],
-            [new DateTime('yyyy-MM-dd HH:mm:ssZZZZZ', '2020-05-21 16:44:32+10:00'), '"matching(datetime, \'yyyy-MM-dd HH:mm:ssZZZZZ\', \'2020-05-21 16:44:32+10:00\')"'],
-            [new Date('yyyy-MM-dd', '2012-04-12'), '"matching(date, \'yyyy-MM-dd\', \'2012-04-12\')"'],
-            [new Time('HH:mm', '22:04'), '"matching(time, \'HH:mm\', \'22:04\')"'],
-            [new Regex('\\w{3}\\d+', 'abc123'), '"matching(regex, \'\\\\w{3}\\\\d+\', \'abc123\')"'],
-            [new ContentType('application/xml'), '"matching(contentType, \'application\/xml\', \'application\/xml\')"'],
-            [new NullValue(), '"matching(type, null)"'],
-        ];
     }
 }

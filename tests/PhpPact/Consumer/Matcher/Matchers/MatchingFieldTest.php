@@ -10,14 +10,14 @@ use PhpPact\Consumer\Matcher\Formatters\ValueRequiredFormatter;
 use PhpPact\Consumer\Matcher\Formatters\XmlContentFormatter;
 use PhpPact\Consumer\Matcher\Formatters\XmlElementFormatter;
 use PhpPact\Consumer\Matcher\Matchers\MatchingField;
+use PhpPact\Consumer\Matcher\Model\FormatterInterface;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class MatchingFieldTest extends TestCase
 {
-    /**
-     * @testWith ["person",                "\"matching($'person')\""]
-     *           ["probably doesn't work", "\"matching($'probably doesn\\\\'t work')\""]
-     */
+    #[TestWith(['person', "\"matching($'person')\""])]
+    #[TestWith(["probably doesn't work", "\"matching($'probably doesn\\\\'t work')\""])]
     public function testSerialize(string $fieldName, string $json): void
     {
         $matcher = new MatchingField($fieldName);
@@ -28,26 +28,17 @@ class MatchingFieldTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider formatterProvider
-     */
-    public function testNotSupportedFormatter(string $formatterClassName): void
+    #[TestWith([new MinimalFormatter()])]
+    #[TestWith([new ValueOptionalFormatter()])]
+    #[TestWith([new ValueRequiredFormatter()])]
+    #[TestWith([new XmlContentFormatter()])]
+    #[TestWith([new XmlElementFormatter()])]
+    public function testNotSupportedFormatter(FormatterInterface $formatter): void
     {
         $this->expectException(MatcherNotSupportedException::class);
         $this->expectExceptionMessage('MatchingField matcher only work with plugin');
         $matcher = new MatchingField('person');
-        $matcher->setFormatter(new $formatterClassName());
+        $matcher->setFormatter($formatter);
         json_encode($matcher);
-    }
-
-    public static function formatterProvider(): array
-    {
-        return [
-            [MinimalFormatter::class],
-            [ValueOptionalFormatter::class],
-            [ValueRequiredFormatter::class],
-            [XmlContentFormatter::class],
-            [XmlElementFormatter::class],
-        ];
     }
 }

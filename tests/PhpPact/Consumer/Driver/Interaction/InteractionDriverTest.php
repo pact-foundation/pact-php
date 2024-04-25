@@ -33,6 +33,9 @@ class InteractionDriverTest extends TestCase
     private int $interactionHandle = 123;
     private int $pactHandle = 234;
     private string $description = 'Sending request receiving response';
+    /**
+     * @var array<string, array<string, mixed>>
+     */
     private array $providerStates = [
         'item exist' => [
             'id' => 12,
@@ -167,6 +170,9 @@ class InteractionDriverTest extends TestCase
         $this->driver->registerInteraction($this->interaction, false);
     }
 
+    /**
+     * @param array<string, mixed> $comments
+     */
     #[TestWith([[], true])]
     #[TestWith([['key1' => null], true])]
     #[TestWith([['key1' => null], false])]

@@ -8,6 +8,7 @@ use PhpPact\Consumer\Matcher\Generators\RandomString;
 use PhpPact\Consumer\Matcher\Matchers\StringValue;
 use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Xml\XmlElement;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class XmlElementFormatterTest extends TestCase
@@ -22,11 +23,9 @@ class XmlElementFormatterTest extends TestCase
         $formatter->format($matcher);
     }
 
-    /**
-     * @testWith [null, {"pact:matcher:type": "type", "value": {"name": "test", "children": [], "attributes": []}}]
-     *           [123,  {"pact:matcher:type": "type", "value": {"name": "test", "children": [], "attributes": []}, "examples": 123}]
-     */
-    public function testFormat(?int $examples, array $result): void
+    #[TestWith([null, '{"pact:matcher:type": "type", "value": {"name": "test", "children": [], "attributes": []}}'])]
+    #[TestWith([123, '{"pact:matcher:type": "type", "value": {"name": "test", "children": [], "attributes": []}, "examples": 123}'])]
+    public function testFormat(?int $examples, string $result): void
     {
         $value = new XmlElement(
             fn (XmlElement $element) => $element->setName('test'),
@@ -34,6 +33,8 @@ class XmlElementFormatterTest extends TestCase
         );
         $matcher = new Type($value);
         $formatter = new XmlElementFormatter();
-        $this->assertSame(json_encode($result), json_encode($formatter->format($matcher)));
+        $jsonEncoded = json_encode($formatter->format($matcher));
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($result, $jsonEncoded);
     }
 }

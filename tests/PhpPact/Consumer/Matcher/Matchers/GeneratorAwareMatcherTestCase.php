@@ -18,6 +18,7 @@ use PhpPact\Consumer\Matcher\Generators\Time;
 use PhpPact\Consumer\Matcher\Generators\Uuid;
 use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
 use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 abstract class GeneratorAwareMatcherTestCase extends TestCase
@@ -31,9 +32,18 @@ abstract class GeneratorAwareMatcherTestCase extends TestCase
         json_encode($matcher);
     }
 
-    /**
-     * @dataProvider generatorProvider
-     */
+    #[TestWith([new Date()])]
+    #[TestWith([new DateTime()])]
+    #[TestWith([new MockServerURL('.*(/\d+)$', 'http://example.com/123')])]
+    #[TestWith([new ProviderState('${key}')])]
+    #[TestWith([new RandomBoolean()])]
+    #[TestWith([new RandomDecimal()])]
+    #[TestWith([new RandomHexadecimal()])]
+    #[TestWith([new RandomInt()])]
+    #[TestWith([new RandomString()])]
+    #[TestWith([new Regex('\w')])]
+    #[TestWith([new Time()])]
+    #[TestWith([new Uuid()])]
     public function testGeneratorNotRequired(GeneratorInterface $generator): void
     {
         $matcher = $this->getMatcherWithExampleValue();
@@ -41,27 +51,6 @@ abstract class GeneratorAwareMatcherTestCase extends TestCase
         $this->expectExceptionMessage(sprintf("Generator '%s' is not required for matcher '%s' when example value is set", $generator->getType(), $matcher->getType()));
         $matcher->setGenerator($generator);
         json_encode($matcher);
-    }
-
-    /**
-     * @return GeneratorInterface[]
-     */
-    public static function generatorProvider(): array
-    {
-        return [
-            [new Date()],
-            [new DateTime()],
-            [new MockServerURL('.*(/\d+)$', 'http://example.com/123')],
-            [new ProviderState('${key}')],
-            [new RandomBoolean()],
-            [new RandomDecimal()],
-            [new RandomHexadecimal()],
-            [new RandomInt()],
-            [new RandomString()],
-            [new Regex('\w')],
-            [new Time()],
-            [new Uuid()],
-        ];
     }
 
     abstract protected function getMatcherWithExampleValue(): GeneratorAwareMatcher;

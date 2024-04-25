@@ -37,6 +37,7 @@ use PhpPact\Consumer\Matcher\Matchers\StringValue;
 use PhpPact\Consumer\Matcher\Matchers\Time;
 use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Consumer\Matcher\Matchers\Values;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class MatcherTest extends TestCase
@@ -109,81 +110,45 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(Regex::class, $this->matcher->dateISO8601('2010-01-17'));
     }
 
-    /**
-     * @dataProvider dataProviderForTimeTest
-     */
+    #[TestWith(['T22:44:30.652Z'])]
+    #[TestWith(['T22:44:30Z'])]
+    #[TestWith(['T22:44Z'])]
+    #[TestWith(['T22:44:30+01:00'])]
+    #[TestWith(['T22:44:30+0100'])]
+    #[TestWith(['T22:44:30+01'])]
+    #[TestWith(['T22:44:30'])]
+    #[TestWith(['T22:44:30-12:00'])]
+    #[TestWith(['T22:44:30+0545'])]
+    #[TestWith(['T22:44:30+14'])]
     public function testTimeISO8601(string $time): void
     {
         $this->assertInstanceOf(Regex::class, $this->matcher->timeISO8601($time));
     }
 
-    /**
-     * @return string[]
-     */
-    public static function dataProviderForTimeTest(): array
-    {
-        return [
-            ['T22:44:30.652Z'],
-            ['T22:44:30Z'],
-            ['T22:44Z'],
-            ['T22:44:30+01:00'],
-            ['T22:44:30+0100'],
-            ['T22:44:30+01'],
-            ['T22:44:30'],
-            ['T22:44:30-12:00'],
-            ['T22:44:30+0545'],
-            ['T22:44:30+14'],
-        ];
-    }
-
-    /**
-     * @dataProvider dataProviderForDateTimeTest
-     */
+    #[TestWith(['2015-08-06T16:53:10+01:00'])]
+    #[TestWith(['2015-08-06T16:53:10+0100'])]
+    #[TestWith(['2015-08-06T16:53:10+01'])]
+    #[TestWith(['2015-08-06T16:53:10Z'])]
+    #[TestWith(['2015-08-06T16:53:10'])]
+    #[TestWith(['2015-08-06T16:53:10-12:00'])]
+    #[TestWith(['2015-08-06T16:53:10+0545'])]
+    #[TestWith(['2015-08-06T16:53:10+14'])]
     public function testDateTimeISO8601(string $dateTime): void
     {
         $this->assertInstanceOf(Regex::class, $this->matcher->dateTimeISO8601($dateTime));
     }
 
-    /**
-     * @return string[]
-     */
-    public static function dataProviderForDateTimeTest(): array
-    {
-        return [
-            ['2015-08-06T16:53:10+01:00'],
-            ['2015-08-06T16:53:10+0100'],
-            ['2015-08-06T16:53:10+01'],
-            ['2015-08-06T16:53:10Z'],
-            ['2015-08-06T16:53:10'],
-            ['2015-08-06T16:53:10-12:00'],
-            ['2015-08-06T16:53:10+0545'],
-            ['2015-08-06T16:53:10+14'],
-        ];
-    }
-
-    /**
-     * @dataProvider dataProviderForDateTimeWithMillisTest
-     */
+    #[TestWith(['2015-08-06T16:53:10.123+01:00'])]
+    #[TestWith(['2015-08-06T16:53:10.123+0100'])]
+    #[TestWith(['2015-08-06T16:53:10.123+01'])]
+    #[TestWith(['2015-08-06T16:53:10.123Z'])]
+    #[TestWith(['2015-08-06T16:53:10.123'])]
+    #[TestWith(['2015-08-06T16:53:10.123-12:00'])]
+    #[TestWith(['2015-08-06T16:53:10.123+0545'])]
+    #[TestWith(['2015-08-06T16:53:10.123+14'])]
     public function testDateTimeWithMillisISO8601(string $dateTime): void
     {
         $this->assertInstanceOf(Regex::class, $this->matcher->dateTimeWithMillisISO8601($dateTime));
-    }
-
-    /**
-     * @return string[]
-     */
-    public static function dataProviderForDateTimeWithMillisTest(): array
-    {
-        return [
-            ['2015-08-06T16:53:10.123+01:00'],
-            ['2015-08-06T16:53:10.123+0100'],
-            ['2015-08-06T16:53:10.123+01'],
-            ['2015-08-06T16:53:10.123Z'],
-            ['2015-08-06T16:53:10.123'],
-            ['2015-08-06T16:53:10.123-12:00'],
-            ['2015-08-06T16:53:10.123+0545'],
-            ['2015-08-06T16:53:10.123+14'],
-        ];
     }
 
     public function testTimestampRFC3339(): void
@@ -221,10 +186,8 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(Decimal::class, $this->matcher->decimalV3(13.01));
     }
 
-    /**
-     * @testWith [null, true]
-     *           ["3F", false]
-     */
+    #[TestWith([null, true])]
+    #[TestWith(['3F', false])]
     public function testHexadecimal(?string $value, bool $hasGenerator): void
     {
         $hexadecimal = $this->matcher->hexadecimal($value);
@@ -236,10 +199,8 @@ class MatcherTest extends TestCase
         }
     }
 
-    /**
-     * @testWith [null,                                   true]
-     *           ["ce118b6e-d8e1-11e7-9296-cec278b6b50a", false]
-     */
+    #[TestWith([null, true])]
+    #[TestWith(['ce118b6e-d8e1-11e7-9296-cec278b6b50a', false])]
     public function testUuid(?string $value, bool $hasGenerator): void
     {
         $uuid = $this->matcher->uuid($value);
@@ -383,10 +344,8 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(EachValue::class, $this->matcher->eachValue($values, $rules));
     }
 
-    /**
-     * @testWith [true, true]
-     *           [false, false]
-     */
+    #[TestWith([true, true])]
+    #[TestWith([false, false])]
     public function testUrl(bool $useMockServerBasePath, bool $hasGenerator): void
     {
         $url = $this->matcher->url('http://localhost:1234/path', '.*(/path)$', $useMockServerBasePath);

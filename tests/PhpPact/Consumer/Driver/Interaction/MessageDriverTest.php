@@ -28,12 +28,18 @@ class MessageDriverTest extends TestCase
     private int $messageHandle = 123;
     private int $pactHandle = 234;
     private string $description = 'Receiving message';
+    /**
+     * @var array<string, array<string, mixed>>
+     */
     private array $providerStates = [
         'item exist' => [
             'id' => 12,
             'name' => 'abc',
         ]
     ];
+    /**
+     * @var array<string, string>
+     */
     private array $metadata = [
         'key1' => 'value1',
         'key2' => 'value2',
@@ -164,6 +170,9 @@ class MessageDriverTest extends TestCase
         $this->driver->registerMessage($this->message);
     }
 
+    /**
+     * @param array<string, mixed> $comments
+     */
     #[TestWith([[], true])]
     #[TestWith([['key1' => null], true])]
     #[TestWith([['key1' => null], false])]
