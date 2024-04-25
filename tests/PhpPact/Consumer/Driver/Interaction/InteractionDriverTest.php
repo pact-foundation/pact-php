@@ -101,7 +101,7 @@ class InteractionDriverTest extends TestCase
         ];
         $this->assertClientCalls($calls);
         $this->mockServer
-            ->expects($this->exactly($startMockServer))
+            ->expects($startMockServer ? $this->once() : $this->never())
             ->method('start');
         $this->assertTrue($this->driver->registerInteraction($this->interaction, $startMockServer));
         $this->assertSame($this->interactionHandle, $this->interaction->getHandle());

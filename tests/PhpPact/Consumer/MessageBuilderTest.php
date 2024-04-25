@@ -190,7 +190,7 @@ class MessageBuilderTest extends TestCase
             ->method('reify')
             ->willReturn($jsonMessage);
         $this->driver
-            ->expects($this->exactly(!$callbackThrowException))
+            ->expects($callbackThrowException ? $this->never() : $this->once())
             ->method('writePactAndCleanUp');
         $this->assertSame(!$callbackThrowException, $this->builder->verifyMessage($callback, 'a callback'));
     }
@@ -214,7 +214,7 @@ class MessageBuilderTest extends TestCase
             ->method('reify')
             ->willReturn($jsonMessage);
         $this->driver
-            ->expects($this->exactly(!$callbackThrowException))
+            ->expects($callbackThrowException ? $this->never() : $this->once())
             ->method('writePactAndCleanUp');
         $this->builder->setCallback($callback);
         $this->assertSame(!$callbackThrowException, $this->builder->verify());
