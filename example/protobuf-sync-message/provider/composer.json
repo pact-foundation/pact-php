@@ -3,7 +3,7 @@
     "require": {
         "grpc/grpc": "^1.57",
         "spiral/roadrunner-grpc": "^3.2",
-        "pact-foundation/composer-downloads-plugin": "^1.0"
+        "pact-foundation/composer-downloads-plugin": "^2.0"
     },
     "require-dev": {
         "ext-grpc": "*"
