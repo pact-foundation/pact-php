@@ -13,7 +13,7 @@ class ArrayDataTest extends TestCase
         $this->assertNull(ArrayData::createFrom([]));
     }
 
-    public function testCreateFromArray()
+    public function testCreateFromArray(): void
     {
         $branches = ['feature-x', 'master', 'test', 'prod'];
         $arrayData = ArrayData::createFrom($branches);

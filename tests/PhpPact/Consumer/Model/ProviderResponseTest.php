@@ -18,7 +18,7 @@ class ProviderResponseTest extends TestCase
         $this->response = new ProviderResponse();
     }
 
-    public function testSerializing()
+    public function testSerializing(): void
     {
         $model = new ProviderResponse();
         $model

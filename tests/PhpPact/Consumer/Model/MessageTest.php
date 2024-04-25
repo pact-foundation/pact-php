@@ -20,7 +20,7 @@ class MessageTest extends TestCase
         $this->message = new Message();
     }
 
-    public function testSetters()
+    public function testSetters(): void
     {
         $handle              = 123;
         $description         = 'a message';
