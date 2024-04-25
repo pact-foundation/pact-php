@@ -27,15 +27,17 @@ class StatusCodeTest extends GeneratorAwareMatcherTestCase
      *           ["serverError", null,  "{\"pact:matcher:type\":\"statusCode\",\"pact:generator:type\":\"RandomInt\",\"status\":\"serverError\",\"min\":500,\"max\":599}"]
      *           ["nonError",    null,  "{\"pact:matcher:type\":\"statusCode\",\"pact:generator:type\":\"RandomInt\",\"status\":\"nonError\",\"min\":100,\"max\":399}"]
      *           ["error",       null,  "{\"pact:matcher:type\":\"statusCode\",\"pact:generator:type\":\"RandomInt\",\"status\":\"error\",\"min\":400,\"max\":599}"]
-     *           ["info",        "123", "{\"pact:matcher:type\":\"statusCode\",\"status\":\"info\",\"value\":123}"]
+     *           ["info",        123,   "{\"pact:matcher:type\":\"statusCode\",\"status\":\"info\",\"value\":123}"]
      */
-    public function testSerialize(string $status, ?string $value, ?string $json): void
+    public function testSerialize(string $status, ?int $value, ?string $json): void
     {
         if (!$json) {
             $this->expectException(InvalidHttpStatusException::class);
             $this->expectExceptionMessage("Status 'invalid' is not supported. Supported status are: info, success, redirect, clientError, serverError, nonError, error");
         }
         $matcher = new StatusCode($status, $value);
-        $this->assertSame($json, json_encode($matcher));
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 }

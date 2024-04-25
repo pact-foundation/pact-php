@@ -7,20 +7,15 @@ use PHPUnit\Framework\TestCase;
 
 class StringValueTest extends TestCase
 {
-    protected StringValue $matcher;
-
-    protected function setUp(): void
-    {
-        $this->matcher = new StringValue();
-    }
-
     /**
      * @testWith [null,   "{\"pact:matcher:type\":\"type\",\"value\":\"some string\",\"pact:generator:type\":\"RandomString\",\"size\":10}"]
      *           ["test", "{\"pact:matcher:type\":\"type\",\"value\":\"test\"}"]
      */
     public function testSerialize(?string $value, string $json): void
     {
-        $this->matcher = new StringValue($value);
-        $this->assertJsonStringEqualsJsonString($json, json_encode($this->matcher));
+        $matcher = new StringValue($value);
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 }
