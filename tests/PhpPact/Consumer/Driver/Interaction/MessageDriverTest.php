@@ -104,7 +104,7 @@ class MessageDriverTest extends TestCase
     #[TestWith([null, true])]
     #[TestWith(['123ABC', false])]
     #[TestWith(['123ABC', true])]
-    public function testSetKey(?string $key, $success): void
+    public function testSetKey(?string $key, bool $success): void
     {
         $this->message->setKey($key);
         $this->pactDriver
@@ -137,7 +137,7 @@ class MessageDriverTest extends TestCase
     #[TestWith([true, true])]
     #[TestWith([false, false])]
     #[TestWith([false, true])]
-    public function testSetPending(?bool $pending, $success): void
+    public function testSetPending(?bool $pending, bool $success): void
     {
         $this->message->setPending($pending);
         $this->pactDriver
@@ -171,7 +171,7 @@ class MessageDriverTest extends TestCase
     #[TestWith([['key2' => 'string value'], false])]
     #[TestWith([['key3' => ['value 1', 'value 2']], true])]
     #[TestWith([['key3' => ['value 1', 'value 2']], false])]
-    public function testSetComments(array $comments, $success): void
+    public function testSetComments(array $comments, bool $success): void
     {
         $this->message->setComments($comments);
         $this->pactDriver
@@ -200,7 +200,7 @@ class MessageDriverTest extends TestCase
 
     #[TestWith(['comment 1', false])]
     #[TestWith(['comment 2', true])]
-    public function testAddTextComment(string $comment, $success): void
+    public function testAddTextComment(string $comment, bool $success): void
     {
         $this->message->addTextComment($comment);
         $this->pactDriver
