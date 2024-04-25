@@ -27,7 +27,7 @@ class VerifierTest extends TestCase
 
     private Verifier $verifier;
     private VerifierConfigInterface $config;
-    private LoggerInterface|MockObject $logger;
+    private LoggerInterface&MockObject $logger;
     private CData $handle;
     private array $calls;
 

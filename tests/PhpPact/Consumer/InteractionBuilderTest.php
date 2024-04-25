@@ -19,9 +19,9 @@ use ReflectionProperty;
 class InteractionBuilderTest extends TestCase
 {
     private InteractionBuilder $builder;
-    private InteractionDriverInterface|MockObject $driver;
-    private MockServerConfigInterface|MockObject $config;
-    private InteractionDriverFactoryInterface|MockObject $driverFactory;
+    private InteractionDriverInterface&MockObject $driver;
+    private MockServerConfigInterface&MockObject $config;
+    private InteractionDriverFactoryInterface&MockObject $driverFactory;
 
     public function setUp(): void
     {

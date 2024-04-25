@@ -21,9 +21,9 @@ use stdClass;
 class MessageBuilderTest extends TestCase
 {
     private MessageBuilder $builder;
-    private MessageDriverInterface|MockObject $driver;
-    private PactConfigInterface|MockObject $config;
-    private MessageDriverFactoryInterface|MockObject $driverFactory;
+    private MessageDriverInterface&MockObject $driver;
+    private PactConfigInterface&MockObject $config;
+    private MessageDriverFactoryInterface&MockObject $driverFactory;
 
     public function setUp(): void
     {

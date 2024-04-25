@@ -17,7 +17,7 @@ class SyncMessageDriverFactoryTest extends TestCase
     use FactoryTrait;
 
     private SyncMessageDriverFactoryInterface $factory;
-    private MockServerConfigInterface|MockObject $config;
+    private MockServerConfigInterface&MockObject $config;
 
     public function setUp(): void
     {

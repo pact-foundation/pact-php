@@ -22,8 +22,8 @@ class MessageDriverTest extends TestCase
     use ClientTrait;
 
     private MessageDriverInterface $driver;
-    private PactDriverInterface|MockObject $pactDriver;
-    private MessageBodyDriverInterface|MockObject $messageBodyDriver;
+    private PactDriverInterface&MockObject $pactDriver;
+    private MessageBodyDriverInterface&MockObject $messageBodyDriver;
     private Message $message;
     private int $messageHandle = 123;
     private int $pactHandle = 234;

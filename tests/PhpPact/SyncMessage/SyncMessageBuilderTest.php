@@ -19,9 +19,9 @@ use ReflectionProperty;
 class SyncMessageBuilderTest extends TestCase
 {
     private SyncMessageBuilder $builder;
-    private SyncMessageDriverInterface|MockObject $driver;
-    private MockServerConfigInterface|MockObject $config;
-    private SyncMessageDriverFactoryInterface|MockObject $driverFactory;
+    private SyncMessageDriverInterface&MockObject $driver;
+    private MockServerConfigInterface&MockObject $config;
+    private SyncMessageDriverFactoryInterface&MockObject $driverFactory;
 
     public function setUp(): void
     {

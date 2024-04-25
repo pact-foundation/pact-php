@@ -15,8 +15,8 @@ use PHPUnit\Framework\TestCase;
 class RequestDriverTest extends TestCase
 {
     private RequestDriverInterface $driver;
-    private ClientInterface|MockObject $client;
-    private InteractionBodyDriverInterface|MockObject $bodyDriver;
+    private ClientInterface&MockObject $client;
+    private InteractionBodyDriverInterface&MockObject $bodyDriver;
     private Interaction $interaction;
     private int $requestPartId = 1;
     private int $interactionHandle = 123;

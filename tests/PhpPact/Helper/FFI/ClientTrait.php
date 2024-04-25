@@ -9,7 +9,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 trait ClientTrait
 {
-    protected ClientInterface|MockObject $client;
+    protected ClientInterface&MockObject $client;
 
     protected function assertClientCalls(array $calls): void
     {

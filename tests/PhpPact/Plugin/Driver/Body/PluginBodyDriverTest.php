@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 class PluginBodyDriverTest extends TestCase
 {
     private PluginBodyDriverInterface $driver;
-    private ClientInterface|MockObject $client;
+    private ClientInterface&MockObject $client;
     private Interaction $interaction;
     private int $requestPartId = 1;
     private int $responsePartId = 2;
