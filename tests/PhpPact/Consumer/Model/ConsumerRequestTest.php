@@ -19,7 +19,7 @@ class ConsumerRequestTest extends TestCase
         $this->request = new ConsumerRequest();
     }
 
-    public function testSerializing()
+    public function testSerializing(): void
     {
         $model = new ConsumerRequest();
         $model
@@ -42,7 +42,7 @@ class ConsumerRequestTest extends TestCase
         $this->assertEquals('application/json', $body->getContentType());
     }
 
-    public function testSerializingWhenPathUsingMatcher()
+    public function testSerializingWhenPathUsingMatcher(): void
     {
         $matcher = new Matcher();
         $pathVariable = '474d610b-c6e3-45bd-9f70-529e7ad21df0';

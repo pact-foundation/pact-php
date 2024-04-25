@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class UrlTest extends TestCase
 {
-    public function testSetters()
+    public function testSetters(): void
     {
         $url      = new Uri('http://example.com/path/to/pact.json');
         $token    = 'test-123';

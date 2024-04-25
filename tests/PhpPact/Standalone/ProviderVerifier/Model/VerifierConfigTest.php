@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 class VerifierConfigTest extends TestCase
 {
-    public function testSetters()
+    public function testSetters(): void
     {
         $callingApp = new CallingApp();
         $providerInfo = new ProviderInfo();

@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class BrokerTest extends TestCase
 {
-    public function testSetters()
+    public function testSetters(): void
     {
         $enablePending            = true;
         $wipPactSince             = '2020-01-30';
