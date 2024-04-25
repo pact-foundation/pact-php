@@ -134,6 +134,9 @@ This migrates from a CLI driven process for the Pact Framework, to an FFI proces
 
 Examples of Additional Features now possible
 
-- Pact Plugins
-  - CSV https://github.com/tienvx/pact-php-csv
-  - Protobuf/gRPC https://github.com/tienvx/pact-php-protobuf
+- [CSV](./example/csv/)
+- [Protobuf Async Message](./example/protobuf-async-message/)
+- [Protobuf Sync Message/gRPC](./example/protobuf-sync-message/)
+- [XML](./example/xml/)
+- [Binary](./example/binary/)
+- [Multipart](./example/multipart/)
