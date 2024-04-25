@@ -64,6 +64,9 @@ class SyncMessageBuilderTest extends TestCase
         $this->assertSame($metadata, $message->getMetadata());
     }
 
+    /**
+     * @param null|class-string<Text> $contentClass
+     */
     #[TestWith([null                                          , null])]
     #[TestWith([new Text('example', 'text/plain')             , null])]
     #[TestWith([new Binary('/path/to/image.jpg', 'image/jpeg'), null])]
