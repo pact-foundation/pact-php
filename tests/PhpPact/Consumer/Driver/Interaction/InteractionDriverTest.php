@@ -25,10 +25,10 @@ class InteractionDriverTest extends TestCase
     use ClientTrait;
 
     private InteractionDriverInterface $driver;
-    private MockServerInterface|MockObject $mockServer;
-    private PactDriverInterface|MockObject $pactDriver;
-    private RequestDriverInterface|MockObject $requestDriver;
-    private ResponseDriverInterface|MockObject $responseDriver;
+    private MockServerInterface&MockObject $mockServer;
+    private PactDriverInterface&MockObject $pactDriver;
+    private RequestDriverInterface&MockObject $requestDriver;
+    private ResponseDriverInterface&MockObject $responseDriver;
     private Interaction $interaction;
     private int $interactionHandle = 123;
     private int $pactHandle = 234;

@@ -16,7 +16,7 @@ class MessageDriverFactoryTest extends TestCase
     use FactoryTrait;
 
     private MessageDriverFactoryInterface $factory;
-    private MockServerConfigInterface|MockObject $config;
+    private MockServerConfigInterface&MockObject $config;
 
     public function setUp(): void
     {

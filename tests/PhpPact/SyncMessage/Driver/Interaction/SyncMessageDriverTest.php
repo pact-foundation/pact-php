@@ -24,9 +24,9 @@ class SyncMessageDriverTest extends TestCase
     use ClientTrait;
 
     private SyncMessageDriverInterface $driver;
-    private MockServerInterface|MockObject $mockServer;
-    private PactDriverInterface|MockObject $pactDriver;
-    private MessageBodyDriverInterface|MockObject $messageBodyDriver;
+    private MockServerInterface&MockObject $mockServer;
+    private PactDriverInterface&MockObject $pactDriver;
+    private MessageBodyDriverInterface&MockObject $messageBodyDriver;
     private Message $message;
     private int $messageHandle = 123;
     private int $pactHandle = 234;

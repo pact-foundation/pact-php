@@ -23,7 +23,7 @@ class MockServerTest extends TestCase
     use ClientTrait;
 
     protected MockServerInterface $mockServer;
-    protected PactDriverInterface|MockObject $pactDriver;
+    protected PactDriverInterface&MockObject $pactDriver;
     protected MockServerConfigInterface $config;
     protected int $pactHandle = 123;
     protected string $host = 'example.test';

@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 class MessageBodyDriverTest extends TestCase
 {
     private MessageBodyDriverInterface $driver;
-    private ClientInterface|MockObject $client;
+    private ClientInterface&MockObject $client;
     private Message $message;
     private int $requestPartId = 1;
     private int $messageId = 123;

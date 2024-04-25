@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class ProtobufMessageBodyDriverTest extends TestCase
 {
     private MessageBodyDriverInterface $driver;
-    private PluginBodyDriverInterface|MockObject $decorated;
+    private PluginBodyDriverInterface&MockObject $decorated;
 
     public function setUp(): void
     {

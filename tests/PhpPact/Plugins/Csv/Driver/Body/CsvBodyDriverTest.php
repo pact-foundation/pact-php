@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class CsvBodyDriverTest extends TestCase
 {
     private InteractionBodyDriverInterface $driver;
-    private PluginBodyDriverInterface|MockObject $decorated;
+    private PluginBodyDriverInterface&MockObject $decorated;
 
     public function setUp(): void
     {

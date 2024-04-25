@@ -24,7 +24,7 @@ class PactDriverTest extends TestCase
     protected const SPEC_V3 = 4;
     protected const SPEC_V4 = 5;
     protected PactDriverInterface $driver;
-    protected PactConfigInterface|MockObject $config;
+    protected PactConfigInterface&MockObject $config;
     protected int $pactHandle = 123;
     protected string $consumer = 'consumer';
     protected string $provider = 'provider';

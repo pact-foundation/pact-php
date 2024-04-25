@@ -15,7 +15,7 @@ class StubServerTest extends TestCase
 {
     protected StubServer $server;
     protected StubServerConfigInterface $config;
-    protected Process|MockObject $process;
+    protected Process&MockObject $process;
 
     public function setUp(): void
     {

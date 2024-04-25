@@ -29,7 +29,7 @@ class CsvInteractionDriverFactoryTest extends TestCase
     use FactoryTrait;
 
     private InteractionDriverFactoryInterface $factory;
-    private MockServerConfigInterface|MockObject $config;
+    private MockServerConfigInterface&MockObject $config;
 
     public function setUp(): void
     {
