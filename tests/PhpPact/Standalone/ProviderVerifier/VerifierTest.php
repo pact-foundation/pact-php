@@ -210,7 +210,7 @@ class VerifierTest extends TestCase
         $json = '{"key": "value"}';
         $this->calls[] = ['pactffi_verifier_execute', $this->handle, $error];
         $this->logger
-            ->expects($this->exactly($hasLogger))
+            ->expects($hasLogger ? $this->once() : $this->never())
             ->method('log')
             ->with($json);
         if ($hasLogger) {
