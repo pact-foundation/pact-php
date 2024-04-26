@@ -8,17 +8,17 @@ interface UrlInterface
 {
     public function getUrl(): UriInterface;
 
-    public function setUrl(UriInterface $url): self;
+    public function setUrl(UriInterface $url): static;
 
     public function getToken(): ?string;
 
-    public function setToken(?string $token): self;
+    public function setToken(?string $token): static;
 
     public function getUsername(): ?string;
 
-    public function setUsername(string $username): self;
+    public function setUsername(string $username): static;
 
     public function getPassword(): ?string;
 
-    public function setPassword(string $password): self;
+    public function setPassword(string $password): static;
 }
