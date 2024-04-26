@@ -82,7 +82,7 @@ Watch our [series](https://www.youtube.com/playlist?list=PLwy9Bnco-IpfZ72VQ7hce8
 | ------- | ---------- | -------------------- | ----------------- | ------------------ |
 | 10.x    | Alpha      | 1, 1.1, 2, 3, 4      | ^8.1              | See [installation] |
 | 9.x     | Stable     | 1, 1.1, 2, 3\*       | ^8.0              | [9xx]              |
-| 8.x     | Deprecated | 1, 1.1, 2, 3\*       | ^7.4|^8.0         |                    |
+| 8.x     | Deprecated | 1, 1.1, 2, 3\*       | ^7.4\|^8.0        |                    |
 | 7.x     | Deprecated | 1, 1.1, 2, 3\*       | ^7.3              |                    |
 | 6.x     | Deprecated | 1, 1.1, 2, 3\*       | ^7.2              |                    |
 | 5.x     | Deprecated | 1, 1.1, 2, 3\*       | ^7.1              |                    |
