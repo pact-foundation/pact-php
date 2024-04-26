@@ -20,10 +20,12 @@ class EachValueTest extends TestCase
             new Type('string'),
             new Regex('\w{2}\d'),
         ];
-        $eachValue = new EachValue($value, $rules);
+        $matcher = new EachValue($value, $rules);
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
         $this->assertJsonStringEqualsJsonString(
             '{"pact:matcher:type":"eachValue","value":["ab1","cd2","ef9"],"rules":[{"pact:matcher:type":"type","value":"string"},{"pact:matcher:type":"regex","pact:generator:type":"Regex","regex":"\\\\w{2}\\\\d"}]}',
-            json_encode($eachValue)
+            $jsonEncoded
         );
     }
 }
