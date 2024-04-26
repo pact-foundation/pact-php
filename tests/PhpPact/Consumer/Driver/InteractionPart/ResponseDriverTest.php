@@ -20,7 +20,7 @@ class ResponseDriverTest extends TestCase
     private Interaction $interaction;
     private int $responsePartId = 2;
     private int $interactionHandle = 123;
-    private string $status = '400';
+    private int $status = 400;
     /**
      * @var array<string, string[]>
      */
