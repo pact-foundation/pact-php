@@ -16,7 +16,7 @@ class Url implements UrlInterface
         return $this->url;
     }
 
-    public function setUrl(UriInterface $url): self
+    public function setUrl(UriInterface $url): static
     {
         $this->url = $url;
 
@@ -28,7 +28,7 @@ class Url implements UrlInterface
         return $this->token;
     }
 
-    public function setToken(?string $token): self
+    public function setToken(?string $token): static
     {
         $this->token = $token;
 
@@ -40,7 +40,7 @@ class Url implements UrlInterface
         return $this->username;
     }
 
-    public function setUsername(string $username): self
+    public function setUsername(string $username): static
     {
         $this->username = $username;
 
@@ -52,7 +52,7 @@ class Url implements UrlInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password): static
     {
         $this->password = $password;
 
