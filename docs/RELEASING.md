@@ -4,7 +4,7 @@ Pact-PHP packages are published to Packagist
 
 - https://packagist.org/packages/pact-foundation/pact-php
 
-## Release Process
+## Release Process
 
 The release process is automated via GitHub Release tags, and Packagist Webhooks.
 
