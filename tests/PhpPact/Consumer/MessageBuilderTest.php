@@ -182,6 +182,9 @@ class MessageBuilderTest extends TestCase
     public function testVerifyMessage(bool $callbackThrowException): void
     {
         $jsonMessage = '{"key": "value"}';
+        /**
+         * @var MockObject&callable
+         */
         $callback = $this->getMockBuilder(stdClass::class)
             ->addMethods(['__invoke'])
             ->getMock();
@@ -206,6 +209,9 @@ class MessageBuilderTest extends TestCase
     public function testVerify(bool $callbackThrowException): void
     {
         $jsonMessage = '{"key": "value"}';
+        /**
+         * @var MockObject&callable
+         */
         $callback = $this->getMockBuilder(stdClass::class)
             ->addMethods(['__invoke'])
             ->getMock();
