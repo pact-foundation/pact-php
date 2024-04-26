@@ -53,7 +53,7 @@ class ResponseDriverTest extends TestCase
             ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header1', 0, 'header-value-1'],
             ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header2', 0, 'header-value-2'],
             ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header2', 1, 'header-value-3'],
-            ['pactffi_response_status_v2', $this->interactionHandle, $this->status],
+            ['pactffi_response_status_v2', $this->interactionHandle, (string) $this->status],
         ];
         $matcher = $this->exactly(count($calls));
         $this->client
