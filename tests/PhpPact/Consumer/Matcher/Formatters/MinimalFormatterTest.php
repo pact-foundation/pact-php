@@ -3,7 +3,6 @@
 namespace PhpPactTest\Consumer\Matcher\Formatters;
 
 use PhpPact\Consumer\Matcher\Formatters\MinimalFormatter;
-use PhpPact\Consumer\Matcher\Generators\RandomString;
 use PhpPact\Consumer\Matcher\Matchers\Date;
 use PHPUnit\Framework\TestCase;
 
@@ -17,12 +16,11 @@ class MinimalFormatterTest extends TestCase
      */
     public function testFormat(bool $hasGenerator, ?string $value): void
     {
-        $matcher = new Date('yyyy-MM-dd', 5);
-        $generator = $hasGenerator ? new RandomString(10) : null;
+        $matcher = new Date('yyyy-MM-dd', $value);
         $formatter = new MinimalFormatter();
         $this->assertSame([
             'pact:matcher:type' => 'date',
             'format' => 'yyyy-MM-dd',
-        ], $formatter->format($matcher, $generator, $value));
+        ], $formatter->format($matcher));
     }
 }
