@@ -49,15 +49,23 @@ class ResponseDriverTest extends TestCase
             ->method('get')
             ->with('InteractionPart_Response')
             ->willReturn($this->responsePartId);
+        $calls = [
+            ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header1', 0, 'header-value-1'],
+            ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header2', 0, 'header-value-2'],
+            ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header2', 1, 'header-value-3'],
+            ['pactffi_response_status_v2', $this->interactionHandle, $this->status],
+        ];
+        $matcher = $this->exactly(count($calls));
         $this->client
-            ->expects($this->exactly(4))
+            ->expects($matcher)
             ->method('call')
             ->willReturnCallback(
-                fn (...$args) => match($args) {
-                    ['pactffi_response_status_v2', $this->interactionHandle, $this->status] => null,
-                    ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header1', 0, 'header-value-1'] => null,
-                    ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header2', 0, 'header-value-2'] => null,
-                    ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header2', 1, 'header-value-3'] => null,
+                function (...$args) use ($calls, $matcher) {
+                    $index = $matcher->numberOfInvocations() - 1;
+                    $call = $calls[$index];
+                    $this->assertSame($call, $args);
+
+                    return null;
                 }
             );
         $this->bodyDriver

@@ -138,15 +138,31 @@ class InteractionBodyDriverTest extends TestCase
     public function testRequestMultipartBody(bool $success): void
     {
         $this->interaction->getRequest()->setBody($this->multipart);
+        $matcher = $this->exactly(count($this->parts));
+        $calls = [
+            [
+                'args' => ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[0]->getContentType(), $this->parts[0]->getPath(), $this->parts[0]->getName(), $this->boundary],
+                'return' => (object) ['failed' => null],
+            ],
+            [
+                'args' => ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[1]->getContentType(), $this->parts[1]->getPath(), $this->parts[1]->getName(), $this->boundary],
+                'return' => (object) ['failed' => null],
+            ],
+            [
+                'args' => ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[2]->getContentType(), $this->parts[2]->getPath(), $this->parts[2]->getName(), $this->boundary],
+                'return' => (object) (['failed' => $success ? null : $this->failed]),
+            ]
+        ];
         $this->client
-            ->expects($this->exactly(count($this->parts)))
+            ->expects($matcher)
             ->method('call')
             ->willReturnCallback(
-                fn (string $method, int $interactionId, int $partId, string $contentType, string $path, string $name, string $boundary) =>
-                match([$method, $interactionId, $partId, $contentType, $path, $name, $boundary]) {
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[0]->getContentType(), $this->parts[0]->getPath(), $this->parts[0]->getName(), $this->boundary] => (object) ['failed' => null],
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[1]->getContentType(), $this->parts[1]->getPath(), $this->parts[1]->getName(), $this->boundary] => (object) ['failed' => null],
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->requestPartId, $this->parts[2]->getContentType(), $this->parts[2]->getPath(), $this->parts[2]->getName(), $this->boundary] => (object) (['failed' => $success ? null : $this->failed]),
+                function (...$args) use ($calls, $matcher) {
+                    $index = $matcher->numberOfInvocations() - 1;
+                    $call = $calls[$index];
+                    $this->assertSame($call['args'], $args);
+
+                    return $call['return'];
                 }
             );
         if (!$success) {
@@ -161,15 +177,31 @@ class InteractionBodyDriverTest extends TestCase
     public function testResponseMultipartBody(bool $success): void
     {
         $this->interaction->getResponse()->setBody($this->multipart);
+        $matcher = $this->exactly(count($this->parts));
+        $calls = [
+            [
+                'args' => ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[0]->getContentType(), $this->parts[0]->getPath(), $this->parts[0]->getName(), $this->boundary],
+                'return' => (object) ['failed' => null],
+            ],
+            [
+                'args' => ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[1]->getContentType(), $this->parts[1]->getPath(), $this->parts[1]->getName(), $this->boundary],
+                'return' => (object) ['failed' => null],
+            ],
+            [
+                'args' => ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[2]->getContentType(), $this->parts[2]->getPath(), $this->parts[2]->getName(), $this->boundary],
+                'return' => (object) (['failed' => $success ? null : $this->failed]),
+            ]
+        ];
         $this->client
-            ->expects($this->exactly(count($this->parts)))
+            ->expects($matcher)
             ->method('call')
             ->willReturnCallback(
-                fn (string $method, int $interactionId, int $partId, string $contentType, string $path, string $name, string $boundary) =>
-                match([$method, $interactionId, $partId, $contentType, $path, $name, $boundary]) {
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[0]->getContentType(), $this->parts[0]->getPath(), $this->parts[0]->getName(), $this->boundary] => (object) ['failed' => null],
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[1]->getContentType(), $this->parts[1]->getPath(), $this->parts[1]->getName(), $this->boundary] => (object) ['failed' => null],
-                    ['pactffi_with_multipart_file_v2', $this->interactionHandle, $this->responsePartId, $this->parts[2]->getContentType(), $this->parts[2]->getPath(), $this->parts[2]->getName(), $this->boundary] => (object) (['failed' => $success ? null : $this->failed]),
+                function (...$args) use ($calls, $matcher) {
+                    $index = $matcher->numberOfInvocations() - 1;
+                    $call = $calls[$index];
+                    $this->assertSame($call['args'], $args);
+
+                    return $call['return'];
                 }
             );
         if (!$success) {
