@@ -200,10 +200,10 @@ class SyncMessageDriverTest extends TestCase
         ];
         foreach ($comments as $key => $value) {
             $calls[] = ['pactffi_set_comment', $this->messageHandle, $key, (is_string($value) || is_null($value)) ? $value : json_encode($value), $success];
-        }
-        if (!$success) {
-            $this->expectException(InteractionCommentNotSetException::class);
-            $this->expectExceptionMessage("Can not add comment '$key' to the interaction '{$this->description}'");
+            if (!$success) {
+                $this->expectException(InteractionCommentNotSetException::class);
+                $this->expectExceptionMessage("Can not add comment '$key' to the interaction '{$this->description}'");
+            }
         }
         $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
