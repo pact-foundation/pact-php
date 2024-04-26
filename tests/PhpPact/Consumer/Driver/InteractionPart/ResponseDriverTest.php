@@ -21,6 +21,9 @@ class ResponseDriverTest extends TestCase
     private int $responsePartId = 2;
     private int $interactionHandle = 123;
     private string $status = '400';
+    /**
+     * @var array<string, string[]>
+     */
     private array $headers = [
         'header1' => ['header-value-1'],
         'header2' => ['header-value-2', 'header-value-3'],

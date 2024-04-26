@@ -11,6 +11,9 @@ trait ClientTrait
 {
     protected ClientInterface&MockObject $client;
 
+    /**
+     * @param mixed[][] $calls
+     */
     protected function assertClientCalls(array $calls): void
     {
         $this->client

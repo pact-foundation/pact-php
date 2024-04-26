@@ -119,6 +119,9 @@ class InteractionBuilderTest extends TestCase
         $this->assertSame($pending, $interaction->getPending());
     }
 
+    /**
+     * @param array<string, mixed> $comments
+     */
     #[TestWith([[]])]
     #[TestWith([['key1' => null, 'key2' => 'value', 'key3' => ['value']]])]
     public function testSetComments(array $comments): void

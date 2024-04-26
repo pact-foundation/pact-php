@@ -131,7 +131,14 @@ class PluginBodyDriverTest extends TestCase
         };
     }
 
-    #[DataProvider('errorProvider')]
+    #[TestWith([0])]
+    #[TestWith([1])]
+    #[TestWith([2])]
+    #[TestWith([3])]
+    #[TestWith([4])]
+    #[TestWith([5])]
+    #[TestWith([6])]
+    #[TestWith([7])]
     public function testRequestJsonBody(int $error): void
     {
         $this->interaction->getRequest()->setBody($this->json);
@@ -147,7 +154,14 @@ class PluginBodyDriverTest extends TestCase
         $this->driver->registerBody($this->interaction, InteractionPart::REQUEST);
     }
 
-    #[DataProvider('errorProvider')]
+    #[TestWith([0])]
+    #[TestWith([1])]
+    #[TestWith([2])]
+    #[TestWith([3])]
+    #[TestWith([4])]
+    #[TestWith([5])]
+    #[TestWith([6])]
+    #[TestWith([7])]
     public function testResponseJsonBody(int $error): void
     {
         $this->interaction->getResponse()->setBody($this->json);
@@ -163,7 +177,14 @@ class PluginBodyDriverTest extends TestCase
         $this->driver->registerBody($this->interaction, InteractionPart::RESPONSE);
     }
 
-    #[DataProvider('errorProvider')]
+    #[TestWith([0])]
+    #[TestWith([1])]
+    #[TestWith([2])]
+    #[TestWith([3])]
+    #[TestWith([4])]
+    #[TestWith([5])]
+    #[TestWith([6])]
+    #[TestWith([7])]
     public function testMessageJsonBody(int $error): void
     {
         $this->message->setContents($this->json);
@@ -177,20 +198,6 @@ class PluginBodyDriverTest extends TestCase
             $this->expectExceptionMessage($this->getPluginBodyErrorMessage($error));
         }
         $this->driver->registerBody($this->message, InteractionPart::REQUEST);
-    }
-
-    public static function errorProvider(): array
-    {
-        return [
-            [0],
-            [1],
-            [2],
-            [3],
-            [4],
-            [5],
-            [6],
-            [7],
-        ];
     }
 
     #[TestWith([InteractionPart::REQUEST])]

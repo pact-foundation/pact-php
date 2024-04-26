@@ -4,6 +4,7 @@ namespace PhpPactTest\Consumer\Matcher\Generators;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidUuidFormatException;
 use PhpPact\Consumer\Matcher\Generators\Uuid;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class UuidTest extends TestCase
@@ -15,13 +16,14 @@ class UuidTest extends TestCase
     }
 
     /**
-     * @testWith [null,                    []]
-     *           ["simple",                {"format":"simple"}]
-     *           ["lower-case-hyphenated", {"format":"lower-case-hyphenated"}]
-     *           ["upper-case-hyphenated", {"format":"upper-case-hyphenated"}]
-     *           ["URN",                   {"format":"URN"}]
-     *           ["invalid",               null]
+     * @param null|array<string, string> $data
      */
+    #[TestWith([null, []])]
+    #[TestWith(['simple', ['format' => 'simple']])]
+    #[TestWith(['lower-case-hyphenated', ['format' => 'lower-case-hyphenated']])]
+    #[TestWith(['upper-case-hyphenated', ['format' => 'upper-case-hyphenated']])]
+    #[TestWith(['URN', ['format' => 'URN']])]
+    #[TestWith(['invalid', null])]
     public function testAttributes(?string $format, ?array $data): void
     {
         if (null === $data) {

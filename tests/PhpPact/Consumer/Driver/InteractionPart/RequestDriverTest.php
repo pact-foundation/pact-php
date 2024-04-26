@@ -22,10 +22,16 @@ class RequestDriverTest extends TestCase
     private int $interactionHandle = 123;
     private string $method = 'POST';
     private string $path = '/items/item';
+    /**
+     * @var array<string, string[]>
+     */
     private array $query = [
         'query1' => ['query-value-1', 'query-value-2'],
         'query2' => ['query-value-3'],
     ];
+    /**
+     * @var array<string, string[]>
+     */
     private array $headers = [
         'header1' => ['header-value-1'],
         'header2' => ['header-value-2', 'header-value-3'],

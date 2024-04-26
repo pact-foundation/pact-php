@@ -32,6 +32,9 @@ class InteractionBodyDriverTest extends TestCase
     private Binary $binary;
     private Text $text;
     private Multipart $multipart;
+    /**
+     * @var Part[]
+     */
     private array $parts;
     private string $boundary = 'abcde12345';
     private CData $failed;
