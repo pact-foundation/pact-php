@@ -19,6 +19,7 @@ class BinaryDataTest extends TestCase
     {
         $path = __DIR__ . '/../../../_resources/image.jpg';
         $contents = file_get_contents($path);
+        $this->assertIsString($contents);
         $length = \strlen($contents);
 
         $binaryData = BinaryData::createFrom($contents);
