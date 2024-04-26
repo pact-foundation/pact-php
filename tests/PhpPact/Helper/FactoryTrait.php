@@ -7,7 +7,7 @@ use ReflectionProperty;
 trait FactoryTrait
 {
     /**
-     * @param array<string, string> $properties
+     * @param array<string, class-string<object>> $properties
      */
     private function assertPropertiesInstanceOf(object $object, ?string $class, array $properties): void
     {
