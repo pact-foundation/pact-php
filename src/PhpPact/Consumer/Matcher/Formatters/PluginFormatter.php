@@ -42,7 +42,12 @@ class PluginFormatter implements FormatterInterface
             return $this->formatMatchersWithConfig($matcher);
         }
 
-        throw new MatcherNotSupportedException(sprintf("Matcher '%s' is not supported by plugin", $matcher->getType()));
+        return match (true) {
+            $matcher instanceof MatchingField => $this->formatMatchingFieldMatcher($matcher),
+            $matcher instanceof NotEmpty => $this->formatNotEmptyMatcher($matcher),
+            $matcher instanceof Regex => $this->formatRegexMatcher($matcher),
+            default => throw new MatcherNotSupportedException(sprintf("Matcher '%s' is not supported by plugin", $matcher->getType())),
+        };
     }
 
     public function formatMatchingFieldMatcher(MatchingField $matcher): string

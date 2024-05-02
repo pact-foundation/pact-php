@@ -77,9 +77,6 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new MatchingField('product')])]
-    #[TestWith([new NotEmpty('test')])]
-    #[TestWith([new Regex('\\w{3}\\d+', 'abc123')])]
     #[TestWith([new Values([1, 2, 3])])]
     #[TestWith([new ArrayContains([new Equality(1)])])]
     #[TestWith([new StatusCode('clientError', 405)])]
