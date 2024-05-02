@@ -79,6 +79,7 @@ class PluginFormatterTest extends TestCase
 
     #[TestWith([new MatchingField('product')])]
     #[TestWith([new NotEmpty('test')])]
+    #[TestWith([new ContentType('application/xml')])]
     #[TestWith([new Values([1, 2, 3])])]
     #[TestWith([new ArrayContains([new Equality(1)])])]
     #[TestWith([new StatusCode('clientError', 405)])]
@@ -103,7 +104,6 @@ class PluginFormatterTest extends TestCase
     #[TestWith([new Date('yyyy-MM-dd', '2012-04-12'), '"matching(date, \'yyyy-MM-dd\', \'2012-04-12\')"'])]
     #[TestWith([new Time('HH:mm', '22:04'), '"matching(time, \'HH:mm\', \'22:04\')"'])]
     #[TestWith([new Regex('\\w{3}\\d+', 'abc123'), '"matching(regex, \'\\\\w{3}\\\\d+\', \'abc123\')"'])]
-    #[TestWith([new ContentType('application/xml'), '"matching(contentType, \'application\/xml\', \'application\/xml\')"'])]
     #[TestWith([new NullValue(), '"matching(type, null)"'])]
     public function testFormat(MatcherInterface $matcher, string $json): void
     {
@@ -123,6 +123,14 @@ class PluginFormatterTest extends TestCase
         $this->assertSame(
             "notEmpty('simple text')",
             $this->formatter->formatNotEmptyMatcher(new NotEmpty('simple text'))
+        );
+    }
+
+    public function testFormatContentTypeMatcher(): void
+    {
+        $this->assertSame(
+            "matching(contentType, 'application/xml', 'application/xml')",
+            $this->formatter->formatContentTypeMatcher(new ContentType('application/xml'))
         );
     }
 }
