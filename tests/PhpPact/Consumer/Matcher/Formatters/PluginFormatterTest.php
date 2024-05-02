@@ -78,6 +78,7 @@ class PluginFormatterTest extends TestCase
     }
 
     #[TestWith([new MatchingField('product')])]
+    #[TestWith([new NotEmpty('test')])]
     #[TestWith([new Values([1, 2, 3])])]
     #[TestWith([new ArrayContains([new Equality(1)])])]
     #[TestWith([new StatusCode('clientError', 405)])]
@@ -88,7 +89,6 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new NotEmpty('test'), '"notEmpty(\'test\')"'])]
     #[TestWith([new EachKey(["doesn't matter"], [new Regex('\$(\.\w+)+', '$.test.one')]), '"eachKey(matching(regex, \'\\\\$(\\\\.\\\\w+)+\', \'$.test.one\'))"'])]
     #[TestWith([new EachValue(["doesn't matter"], [new Type(100)]), '"eachValue(matching(type, 100))"'])]
     #[TestWith([new Equality('Example value'), '"matching(equalTo, \'Example value\')"'])]
@@ -115,6 +115,14 @@ class PluginFormatterTest extends TestCase
         $this->assertSame(
             "matching($'product')",
             $this->formatter->formatMatchingFieldMatcher(new MatchingField('product'))
+        );
+    }
+
+    public function testFormatNotEmptyMatcher(): void
+    {
+        $this->assertSame(
+            "notEmpty('simple text')",
+            $this->formatter->formatNotEmptyMatcher(new NotEmpty('simple text'))
         );
     }
 }
