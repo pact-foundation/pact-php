@@ -38,7 +38,7 @@ class PluginFormatter implements FormatterInterface
         if (in_array($matcher->getType(), self::MATCHERS_WITHOUT_CONFIG)) {
             return $this->formatMatchersWithoutConfig($matcher);
         }
-        if ($matcher instanceof AbstractDateTime || $matcher instanceof Regex || $matcher instanceof ContentType) {
+        if ($matcher instanceof AbstractDateTime || $matcher instanceof ContentType) {
             return $this->formatMatchersWithConfig($matcher);
         }
 
@@ -94,5 +94,10 @@ class PluginFormatter implements FormatterInterface
             'NULL' => 'null',
             default => throw new MatchingExpressionException(sprintf("Plugin formatter doesn't support value of type %s", gettype($value))),
         };
+    }
+
+    public function formatRegexMatcher(Regex $matcher): string
+    {
+        return sprintf("matching(%s, %s, %s)", $matcher->getType(), $this->normalize($matcher->getRegex()), $this->normalize($matcher->getValue()));
     }
 }

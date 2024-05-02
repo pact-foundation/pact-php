@@ -3,6 +3,7 @@
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidRegexException;
+use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
 use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
 use PhpPact\Consumer\Matcher\Matchers\Regex;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -38,5 +39,15 @@ class RegexTest extends GeneratorAwareMatcherTestCase
         }
         $matcher = new Regex($this->regex, $values);
         $this->assertSame($json, json_encode($matcher));
+    }
+
+    public function testSerializeIntoExpression(): void
+    {
+        $matcher = new Regex('\d-\w', '1-a');
+        $matcher->setFormatter(new PluginFormatter());
+        $this->assertSame(
+            '"matching(regex, \'\\\\d-\\\\w\', \'1-a\')"',
+            json_encode($matcher)
+        );
     }
 }

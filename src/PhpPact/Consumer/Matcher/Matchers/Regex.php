@@ -3,6 +3,7 @@
 namespace PhpPact\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidRegexException;
+use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
 use PhpPact\Consumer\Matcher\Generators\Regex as RegexGenerator;
 
 use function preg_last_error;
@@ -30,6 +31,11 @@ class Regex extends GeneratorAwareMatcher
     {
         if (null !== $this->values) {
             $this->validateRegex();
+        }
+
+        $formatter = $this->getFormatter();
+        if ($formatter instanceof PluginFormatter) {
+            return $formatter->formatRegexMatcher($this);
         }
 
         return parent::jsonSerialize();

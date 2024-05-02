@@ -79,6 +79,7 @@ class PluginFormatterTest extends TestCase
 
     #[TestWith([new MatchingField('product')])]
     #[TestWith([new NotEmpty('test')])]
+    #[TestWith([new Regex('\\w{3}\\d+', 'abc123')])]
     #[TestWith([new Values([1, 2, 3])])]
     #[TestWith([new ArrayContains([new Equality(1)])])]
     #[TestWith([new StatusCode('clientError', 405)])]
@@ -102,7 +103,6 @@ class PluginFormatterTest extends TestCase
     #[TestWith([new DateTime('yyyy-MM-dd HH:mm:ssZZZZZ', '2020-05-21 16:44:32+10:00'), '"matching(datetime, \'yyyy-MM-dd HH:mm:ssZZZZZ\', \'2020-05-21 16:44:32+10:00\')"'])]
     #[TestWith([new Date('yyyy-MM-dd', '2012-04-12'), '"matching(date, \'yyyy-MM-dd\', \'2012-04-12\')"'])]
     #[TestWith([new Time('HH:mm', '22:04'), '"matching(time, \'HH:mm\', \'22:04\')"'])]
-    #[TestWith([new Regex('\\w{3}\\d+', 'abc123'), '"matching(regex, \'\\\\w{3}\\\\d+\', \'abc123\')"'])]
     #[TestWith([new ContentType('application/xml'), '"matching(contentType, \'application\/xml\', \'application\/xml\')"'])]
     #[TestWith([new NullValue(), '"matching(type, null)"'])]
     public function testFormat(MatcherInterface $matcher, string $json): void
@@ -123,6 +123,14 @@ class PluginFormatterTest extends TestCase
         $this->assertSame(
             "notEmpty('simple text')",
             $this->formatter->formatNotEmptyMatcher(new NotEmpty('simple text'))
+        );
+    }
+
+    public function testFormatRegexMatcher(): void
+    {
+        $this->assertSame(
+            "matching(regex, '\\w{3}\\d+', 'abc123')",
+            $this->formatter->formatRegexMatcher(new Regex('\\w{3}\\d+', 'abc123'))
         );
     }
 }
