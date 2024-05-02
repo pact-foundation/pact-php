@@ -2,6 +2,8 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
+
 /**
  * Value must be present and not empty (not null or the empty string)
  */
@@ -31,5 +33,18 @@ class NotEmpty extends AbstractMatcher
     public function getType(): string
     {
         return 'notEmpty';
+    }
+
+    /**
+     * @return string|array<string, mixed>
+     */
+    public function jsonSerialize(): string|array
+    {
+        $formatter = $this->getFormatter();
+        if ($formatter instanceof PluginFormatter) {
+            return $formatter->formatNotEmptyMatcher($this);
+        }
+
+        return parent::jsonSerialize();
     }
 }

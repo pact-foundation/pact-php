@@ -28,9 +28,6 @@ class PluginFormatter implements FormatterInterface
             throw new GeneratorNotRequiredException('Generator is not support in plugin');
         }
 
-        if ($matcher instanceof NotEmpty) {
-            return $this->formatNotEmptyMatcher($matcher);
-        }
         if ($matcher instanceof EachKey || $matcher instanceof EachValue) {
             return $this->formatEachKeyAndEachValueMatchers($matcher);
         }
@@ -71,7 +68,7 @@ class PluginFormatter implements FormatterInterface
         return sprintf("matching(%s, %s, %s)", $matcher->getType(), $this->normalize($config), $this->normalize($matcher->getValue()));
     }
 
-    private function formatNotEmptyMatcher(NotEmpty $matcher): string
+    public function formatNotEmptyMatcher(NotEmpty $matcher): string
     {
         return sprintf('notEmpty(%s)', $this->normalize($matcher->getValue()));
     }
