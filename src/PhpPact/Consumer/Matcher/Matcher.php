@@ -3,7 +3,6 @@
 namespace PhpPact\Consumer\Matcher;
 
 use PhpPact\Consumer\Matcher\Exception\MatcherException;
-use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
 use PhpPact\Consumer\Matcher\Generators\MockServerURL;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
@@ -334,15 +333,9 @@ class Matcher
 
     /**
      * Generates a value that is looked up from the provider state context using the given expression
-     *
-     * @throws MatcherNotSupportedException
      */
-    public function fromProviderState(MatcherInterface $matcher, string $expression): MatcherInterface
+    public function fromProviderState(MatcherInterface&GeneratorAwareInterface $matcher, string $expression): MatcherInterface
     {
-        if (!$matcher instanceof GeneratorAwareInterface) {
-            throw new MatcherNotSupportedException(sprintf("Matcher '%s' must be generator aware", $matcher->getType()));
-        }
-
         $matcher->setGenerator(new ProviderState($expression));
 
         return $matcher;
