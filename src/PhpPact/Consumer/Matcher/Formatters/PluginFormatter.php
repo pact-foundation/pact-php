@@ -28,9 +28,6 @@ class PluginFormatter implements FormatterInterface
             throw new GeneratorNotRequiredException('Generator is not support in plugin');
         }
 
-        if ($matcher instanceof EachKey || $matcher instanceof EachValue) {
-            return $this->formatEachKeyAndEachValueMatchers($matcher);
-        }
         if ($matcher instanceof NullValue) {
             return $this->formatMatchersWithoutConfig(new Type(null));
         }
@@ -73,7 +70,7 @@ class PluginFormatter implements FormatterInterface
         return sprintf('notEmpty(%s)', $this->normalize($matcher->getValue()));
     }
 
-    private function formatEachKeyAndEachValueMatchers(EachKey|EachValue $matcher): string
+    private function formatMapMatchers(EachKey|EachValue $matcher): string
     {
         $rules = $matcher->getRules();
         if (count($rules) === 0 || count($rules) > 1) {
@@ -82,6 +79,16 @@ class PluginFormatter implements FormatterInterface
         $rule = reset($rules);
 
         return sprintf('%s(%s)', $matcher->getType(), $this->format($rule));
+    }
+
+    public function formatEachKeyMatcher(EachKey $matcher): string
+    {
+        return $this->formatMapMatchers($matcher);
+    }
+
+    public function formatEachValueMatcher(EachValue $matcher): string
+    {
+        return $this->formatMapMatchers($matcher);
     }
 
     private function normalize(mixed $value): string

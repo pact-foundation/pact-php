@@ -2,6 +2,7 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 
 /**
@@ -45,5 +46,18 @@ class EachValue extends AbstractMatcher
     public function getRules(): array
     {
         return $this->rules;
+    }
+
+    /**
+     * @return string|array<string, mixed>
+     */
+    public function jsonSerialize(): string|array
+    {
+        $formatter = $this->getFormatter();
+        if ($formatter instanceof PluginFormatter) {
+            return $formatter->formatEachValueMatcher($this);
+        }
+
+        return parent::jsonSerialize();
     }
 }

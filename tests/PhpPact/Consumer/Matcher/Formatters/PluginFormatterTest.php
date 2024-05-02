@@ -62,7 +62,11 @@ class PluginFormatterTest extends TestCase
     {
         $this->expectException(MatchingExpressionException::class);
         $this->expectExceptionMessage(sprintf("Matcher '%s' only support 1 rule, %d provided", $matcher->getType(), count($matcher->getRules())));
-        $this->formatter->format($matcher);
+        if ($matcher instanceof EachKey) {
+            $this->formatter->formatEachKeyMatcher($matcher);
+        } else {
+            $this->formatter->formatEachValueMatcher($matcher);
+        }
     }
 
     #[TestWith([new Type(new \stdClass()), 'object'])]
@@ -79,6 +83,8 @@ class PluginFormatterTest extends TestCase
 
     #[TestWith([new MatchingField('product')])]
     #[TestWith([new NotEmpty('test')])]
+    #[TestWith([new EachKey(["doesn't matter"], [])])]
+    #[TestWith([new EachValue(["doesn't matter"], [])])]
     #[TestWith([new Values([1, 2, 3])])]
     #[TestWith([new ArrayContains([new Equality(1)])])]
     #[TestWith([new StatusCode('clientError', 405)])]
@@ -89,8 +95,6 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new EachKey(["doesn't matter"], [new Regex('\$(\.\w+)+', '$.test.one')]), '"eachKey(matching(regex, \'\\\\$(\\\\.\\\\w+)+\', \'$.test.one\'))"'])]
-    #[TestWith([new EachValue(["doesn't matter"], [new Type(100)]), '"eachValue(matching(type, 100))"'])]
     #[TestWith([new Equality('Example value'), '"matching(equalTo, \'Example value\')"'])]
     #[TestWith([new Type('Example value'), '"matching(type, \'Example value\')"'])]
     #[TestWith([new Number(100.09), '"matching(number, 100.09)"'])]
@@ -123,6 +127,22 @@ class PluginFormatterTest extends TestCase
         $this->assertSame(
             "notEmpty('simple text')",
             $this->formatter->formatNotEmptyMatcher(new NotEmpty('simple text'))
+        );
+    }
+
+    public function testFormatEachKeyMatcher(): void
+    {
+        $this->assertSame(
+            "eachKey(matching(regex, '\\$(\\.\\w+)+', '$.test.one'))",
+            $this->formatter->formatEachKeyMatcher(new EachKey(["doesn't matter"], [new Regex('\$(\.\w+)+', '$.test.one')]))
+        );
+    }
+
+    public function testFormatEachValueMatcher(): void
+    {
+        $this->assertSame(
+            'eachValue(matching(type, 100))',
+            $this->formatter->formatEachValueMatcher(new EachValue(["doesn't matter"], [new Type(100)]))
         );
     }
 }
