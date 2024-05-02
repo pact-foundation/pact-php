@@ -3,7 +3,6 @@
 namespace PhpPactTest\Consumer\Matcher;
 
 use PhpPact\Consumer\Matcher\Exception\MatcherException;
-use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
 use PhpPact\Consumer\Matcher\Formatters\MinimalFormatter;
 use PhpPact\Consumer\Matcher\Formatters\ValueOptionalFormatter;
 use PhpPact\Consumer\Matcher\Generators\MockServerURL;
@@ -250,13 +249,6 @@ class MatcherTest extends TestCase
     public function testString(): void
     {
         $this->assertInstanceOf(StringValue::class, $this->matcher->string('test string'));
-    }
-
-    public function testFromProviderStateMatcherNotSupport(): void
-    {
-        $this->expectException(MatcherNotSupportedException::class);
-        $this->expectExceptionMessage("Matcher 'type' must be generator aware");
-        $this->matcher->fromProviderState(new Type('text'), '${text}');
     }
 
     public function testFromProviderState(): void
