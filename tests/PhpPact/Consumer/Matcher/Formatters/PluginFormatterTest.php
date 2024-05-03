@@ -3,6 +3,7 @@
 namespace PhpPactTest\Consumer\Matcher\Formatters;
 
 use PhpPact\Consumer\Matcher\Exception\GeneratorNotRequiredException;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
 use PhpPact\Consumer\Matcher\Exception\MatchingExpressionException;
 use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
@@ -18,6 +19,7 @@ use PhpPact\Consumer\Matcher\Matchers\EachValue;
 use PhpPact\Consumer\Matcher\Matchers\Equality;
 use PhpPact\Consumer\Matcher\Matchers\Includes;
 use PhpPact\Consumer\Matcher\Matchers\Integer;
+use PhpPact\Consumer\Matcher\Matchers\MatchAll;
 use PhpPact\Consumer\Matcher\Matchers\MatchingField;
 use PhpPact\Consumer\Matcher\Matchers\MaxType;
 use PhpPact\Consumer\Matcher\Matchers\MinMaxType;
@@ -68,14 +70,20 @@ class PluginFormatterTest extends TestCase
 
     #[TestWith([new Type(new \stdClass()), 'object'])]
     #[TestWith([new Type(['key' => 'value']), 'array'])]
-    #[TestWith([new MinType(['Example value'], 1), 'array'])]
-    #[TestWith([new MaxType(['Example value'], 2), 'array'])]
     #[TestWith([new MinMaxType(['Example value'], 1, 2), 'array'])]
     public function testInvalidValue(MatcherInterface $matcher, string $type): void
     {
         $this->expectException(MatchingExpressionException::class);
         $this->expectExceptionMessage(sprintf("Plugin formatter doesn't support value of type %s", $type));
         $this->formatter->format($matcher);
+    }
+
+    public function testInvalidString(): void
+    {
+        $value = "string contains single quote (')";
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage(sprintf('String value "%s" should not contains single quote', $value));
+        $this->formatter->format(new Type($value));
     }
 
     #[TestWith([new Values([1, 2, 3])])]
@@ -106,6 +114,9 @@ class PluginFormatterTest extends TestCase
     #[TestWith([new Regex('\\w{3}\\d+', 'abc123'), '"matching(regex, \'\\\\w{3}\\\\d+\', \'abc123\')"'])]
     #[TestWith([new ContentType('application/xml'), '"matching(contentType, \'application\/xml\', \'application\/xml\')"'])]
     #[TestWith([new NullValue(), '"matching(type, null)"'])]
+    #[TestWith([new MinType(['Example value'], 1), '"atLeast(1)"'])]
+    #[TestWith([new MaxType(['Example value'], 2), '"atMost(2)"'])]
+    #[TestWith([new MatchAll(['abc' => 1, 'def' => 234], [new MinType([null], 1), new MaxType([null], 2), new EachKey(["doesn't matter"], [new Regex('\w+', 'abc')]), new EachValue(["doesn't matter"], [new Type(100)])]), '"atLeast(1), atMost(2), eachKey(matching(regex, \'\\\\w+\', \'abc\')), eachValue(matching(type, 100))"'])]
     public function testFormat(MatcherInterface $matcher, string $json): void
     {
         $this->assertSame($json, json_encode($this->formatter->format($matcher)));

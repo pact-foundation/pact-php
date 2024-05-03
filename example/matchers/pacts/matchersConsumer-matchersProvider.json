@@ -186,6 +186,9 @@
             "likeInt": 13,
             "likeNull": null,
             "likeString": "some string",
+            "matchAll": {
+              "desktop": "2000 usd"
+            },
             "notEmpty": [
               "1",
               "2",
@@ -526,6 +529,43 @@
               "matchers": [
                 {
                   "match": "type"
+                }
+              ]
+            },
+            "$.matchAll": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "eachKey",
+                  "rules": [
+                    {
+                      "match": "regex",
+                      "regex": "laptop|desktop|mobile|tablet"
+                    }
+                  ],
+                  "value": "{\"laptop\":\"1500 usd\"}"
+                },
+                {
+                  "match": "eachValue",
+                  "rules": [
+                    {
+                      "match": "include",
+                      "value": "usd"
+                    },
+                    {
+                      "match": "regex",
+                      "regex": "\\d+ \\w{3}"
+                    }
+                  ],
+                  "value": "{\"mobile\":\"500 usd\"}"
+                },
+                {
+                  "match": "type",
+                  "min": 2
+                },
+                {
+                  "match": "type",
+                  "max": 3
                 }
               ]
             },

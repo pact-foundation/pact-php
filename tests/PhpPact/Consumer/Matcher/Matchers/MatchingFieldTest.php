@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
 use PhpPact\Consumer\Matcher\Formatters\MinimalFormatter;
 use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
@@ -16,14 +17,21 @@ use PHPUnit\Framework\TestCase;
 
 class MatchingFieldTest extends TestCase
 {
-    #[TestWith(['person', "\"matching($'person')\""])]
-    #[TestWith(["probably doesn't work", "\"matching($'probably doesn\\\\'t work')\""])]
-    public function testSerialize(string $fieldName, string $json): void
+    public function testInvalidField(): void
     {
-        $matcher = new MatchingField($fieldName);
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('String value "probably doesn\'t work" should not contains single quote');
+        $matcher = new MatchingField("probably doesn't work");
+        $matcher->setFormatter(new PluginFormatter());
+        json_encode($matcher);
+    }
+
+    public function testSerialize(): void
+    {
+        $matcher = new MatchingField('person');
         $matcher->setFormatter(new PluginFormatter());
         $this->assertSame(
-            $json,
+            "\"matching($'person')\"",
             json_encode($matcher)
         );
     }

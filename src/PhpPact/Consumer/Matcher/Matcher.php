@@ -18,6 +18,7 @@ use PhpPact\Consumer\Matcher\Matchers\EachValue;
 use PhpPact\Consumer\Matcher\Matchers\Equality;
 use PhpPact\Consumer\Matcher\Matchers\Includes;
 use PhpPact\Consumer\Matcher\Matchers\Integer;
+use PhpPact\Consumer\Matcher\Matchers\MatchAll;
 use PhpPact\Consumer\Matcher\Matchers\MatchingField;
 use PhpPact\Consumer\Matcher\Matchers\MaxType;
 use PhpPact\Consumer\Matcher\Matchers\MinMaxType;
@@ -426,7 +427,7 @@ class Matcher
      * Allows defining matching rules to apply to the keys in a map
      *
      * @param array<string, mixed> $values
-     * @param array<mixed>         $rules
+     * @param MatcherInterface[]   $rules
      */
     public function eachKey(array $values, array $rules): MatcherInterface
     {
@@ -437,7 +438,7 @@ class Matcher
      * Allows defining matching rules to apply to the values in a collection. For maps, delgates to the Values matcher.
      *
      * @param array<string, mixed> $values
-     * @param array<mixed>         $rules
+     * @param MatcherInterface[]   $rules
      */
     public function eachValue(array $values, array $rules): MatcherInterface
     {
@@ -464,6 +465,24 @@ class Matcher
     public function matchingField(string $fieldName): MatcherInterface
     {
         return $this->withFormatter(new MatchingField($fieldName));
+    }
+
+    /**
+     * @param MatcherInterface[] $matchers
+     */
+    public function matchAll(mixed $value, array $matchers): MatcherInterface
+    {
+        return $this->withFormatter(new MatchAll($value, $matchers));
+    }
+
+    public function atLeast(int $min): MatcherInterface
+    {
+        return $this->atLeastLike(null, $min);
+    }
+
+    public function atMost(int $max): MatcherInterface
+    {
+        return $this->atMostLike(null, $max);
     }
 
     private function withFormatter(MatcherInterface&FormatterAwareInterface $matcher): MatcherInterface
