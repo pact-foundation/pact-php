@@ -466,9 +466,9 @@ class Matcher
         return $this->withFormatter(new MatchingField($fieldName));
     }
 
-    private function withFormatter(MatcherInterface $matcher): MatcherInterface
+    private function withFormatter(MatcherInterface&FormatterAwareInterface $matcher): MatcherInterface
     {
-        if ($matcher instanceof FormatterAwareInterface && $this->formatter) {
+        if ($this->formatter) {
             $matcher->setFormatter($this->formatter);
         }
 
