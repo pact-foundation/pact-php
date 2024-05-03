@@ -3,7 +3,6 @@
 namespace PhpPact\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
-use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
 
 class MatchingField extends AbstractMatcher
 {
@@ -35,11 +34,11 @@ class MatchingField extends AbstractMatcher
 
     public function jsonSerialize(): string
     {
-        $formatter = $this->getFormatter();
-        if (!$formatter instanceof PluginFormatter) {
+        $result = parent::jsonSerialize();
+        if (is_array($result)) {
             throw new MatcherNotSupportedException(self::MATCHER_NOT_SUPPORTED_EXCEPTION_MESSAGE);
         }
 
-        return $formatter->formatMatchingFieldMatcher($this);
+        return $result;
     }
 }

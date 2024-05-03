@@ -32,13 +32,14 @@ use PhpPact\Consumer\Matcher\Matchers\StringValue;
 use PhpPact\Consumer\Matcher\Matchers\Time;
 use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Consumer\Matcher\Matchers\Values;
+use PhpPact\Consumer\Matcher\Model\FormatterInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class PluginFormatterTest extends TestCase
 {
-    private PluginFormatter $formatter;
+    private FormatterInterface $formatter;
 
     protected function setUp(): void
     {
@@ -77,7 +78,6 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new MatchingField('product')])]
     #[TestWith([new Values([1, 2, 3])])]
     #[TestWith([new ArrayContains([new Equality(1)])])]
     #[TestWith([new StatusCode('clientError', 405)])]
@@ -88,6 +88,7 @@ class PluginFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
+    #[TestWith([new MatchingField('product'), '"matching($\'product\')"'])]
     #[TestWith([new NotEmpty('test'), '"notEmpty(\'test\')"'])]
     #[TestWith([new EachKey(["doesn't matter"], [new Regex('\$(\.\w+)+', '$.test.one')]), '"eachKey(matching(regex, \'\\\\$(\\\\.\\\\w+)+\', \'$.test.one\'))"'])]
     #[TestWith([new EachValue(["doesn't matter"], [new Type(100)]), '"eachValue(matching(type, 100))"'])]
@@ -108,13 +109,5 @@ class PluginFormatterTest extends TestCase
     public function testFormat(MatcherInterface $matcher, string $json): void
     {
         $this->assertSame($json, json_encode($this->formatter->format($matcher)));
-    }
-
-    public function testFormatMatchingFieldMatcher(): void
-    {
-        $this->assertSame(
-            "matching($'product')",
-            $this->formatter->formatMatchingFieldMatcher(new MatchingField('product'))
-        );
     }
 }
