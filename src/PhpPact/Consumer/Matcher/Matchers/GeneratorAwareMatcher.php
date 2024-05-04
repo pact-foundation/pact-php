@@ -5,21 +5,11 @@ namespace PhpPact\Consumer\Matcher\Matchers;
 use PhpPact\Consumer\Matcher\Exception\GeneratorNotRequiredException;
 use PhpPact\Consumer\Matcher\Exception\GeneratorRequiredException;
 use PhpPact\Consumer\Matcher\Model\GeneratorAwareInterface;
-use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
+use PhpPact\Consumer\Matcher\Trait\GeneratorAwareTrait;
 
 abstract class GeneratorAwareMatcher extends AbstractMatcher implements GeneratorAwareInterface
 {
-    private ?GeneratorInterface $generator = null;
-
-    public function setGenerator(?GeneratorInterface $generator): void
-    {
-        $this->generator = $generator;
-    }
-
-    public function getGenerator(): ?GeneratorInterface
-    {
-        return $this->generator;
-    }
+    use GeneratorAwareTrait;
 
     /**
      * @return string|array<string, mixed>
