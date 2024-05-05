@@ -3,8 +3,9 @@
 namespace PhpPactTest\Consumer\Matcher;
 
 use PhpPact\Consumer\Matcher\Exception\MatcherException;
-use PhpPact\Consumer\Matcher\Formatters\MinimalFormatter;
-use PhpPact\Consumer\Matcher\Formatters\ValueOptionalFormatter;
+use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\RegexFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
 use PhpPact\Consumer\Matcher\Generators\MockServerURL;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
@@ -350,9 +351,17 @@ class MatcherTest extends TestCase
         }
     }
 
+    public function testMatchingFieldWithNotSupportedFormat(): void
+    {
+        $this->expectException(MatcherNotSupportedException::class);
+        $this->expectExceptionMessage("MatchingField matcher doesn't support json formatter");
+        $this->matcher->matchingField('address');
+    }
+
     public function testMatchingField(): void
     {
-        $this->assertInstanceOf(MatchingField::class, $this->matcher->matchingField('address'));
+        $matcher = new Matcher(plugin: true);
+        $this->assertInstanceOf(MatchingField::class, $matcher->matchingField('address'));
     }
 
     public function testMatchAll(): void
@@ -373,9 +382,9 @@ class MatcherTest extends TestCase
     public function testWithFormatter(): void
     {
         $uuid = $this->matcher->uuid();
-        $this->assertInstanceOf(ValueOptionalFormatter::class, $uuid->getFormatter());
-        $matcher = new Matcher($formatter = new MinimalFormatter());
+        $this->assertInstanceOf(HasGeneratorFormatter::class, $uuid->getFormatter());
+        $matcher = new Matcher(plugin: true);
         $uuid = $matcher->uuid();
-        $this->assertSame($formatter, $uuid->getFormatter());
+        $this->assertInstanceOf(RegexFormatter::class, $uuid->getFormatter());
     }
 }

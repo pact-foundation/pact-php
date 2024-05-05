@@ -1,8 +1,8 @@
 <?php
 
-namespace PhpPactTest\Consumer\Matcher\Formatters;
+namespace PhpPactTest\Consumer\Matcher\Formatters\Xml;
 
-use PhpPact\Consumer\Matcher\Formatters\XmlContentFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Xml\XmlContentFormatter;
 use PhpPact\Consumer\Matcher\Generators\RandomString;
 use PhpPact\Consumer\Matcher\Matchers\Date;
 use PHPUnit\Framework\Attributes\TestWith;

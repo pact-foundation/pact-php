@@ -3,6 +3,8 @@
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidRegexException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\RegexFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
 use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
 use PhpPact\Consumer\Matcher\Matchers\Regex;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -38,5 +40,17 @@ class RegexTest extends GeneratorAwareMatcherTestCase
         }
         $matcher = new Regex($this->regex, $values);
         $this->assertSame($json, json_encode($matcher));
+    }
+
+    public function testCreateJsonFormatter(): void
+    {
+        $matcher = new Regex($this->regex);
+        $this->assertInstanceOf(HasGeneratorFormatter::class, $matcher->createJsonFormatter());
+    }
+
+    public function testCreateExpressionFormatter(): void
+    {
+        $matcher = new Regex($this->regex);
+        $this->assertInstanceOf(RegexFormatter::class, $matcher->createExpressionFormatter());
     }
 }

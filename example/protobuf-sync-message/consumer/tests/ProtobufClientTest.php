@@ -2,7 +2,6 @@
 
 namespace ProtobufSyncMessageConsumer\Tests;
 
-use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
 use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Plugins\Protobuf\Factory\ProtobufSyncMessageDriverFactory;
@@ -17,7 +16,7 @@ class ProtobufClientTest extends TestCase
 {
     public function testCalculateArea(): void
     {
-        $matcher = new Matcher(new PluginFormatter());
+        $matcher = new Matcher(plugin: true);
         $protoPath = __DIR__ . '/../../library/proto/area_calculator.proto';
 
         $config = new MockServerConfig();

@@ -2,22 +2,21 @@
 
 namespace PhpPactTest\Xml;
 
-use PhpPact\Consumer\Matcher\Formatters\XmlContentFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Xml\XmlContentFormatter;
 use PhpPact\Consumer\Matcher\Generators\RandomInt;
 use PhpPact\Consumer\Matcher\Matchers\Integer;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use PhpPact\Xml\XmlText;
 
 class XmlTextTest extends TestCase
 {
-    /**
-     * @testWith ["example text"]
-     *           [1.23]
-     *           [481]
-     *           [false]
-     *           [true]
-     *           [null]
-     */
+    #[TestWith(['example text'])]
+    #[TestWith([1.23])]
+    #[TestWith([481])]
+    #[TestWith([false])]
+    #[TestWith([true])]
+    #[TestWith([null])]
     public function testJsonSerializePredefinedTypes(mixed $content): void
     {
         $text = new XmlText($content);

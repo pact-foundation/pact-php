@@ -3,7 +3,11 @@
 namespace PhpPact\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidRegexException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\RegexFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
 use PhpPact\Consumer\Matcher\Generators\Regex as RegexGenerator;
+use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
 
 use function preg_last_error;
 use function preg_match;
@@ -72,5 +76,15 @@ class Regex extends GeneratorAwareMatcher
     public function getRegex(): string
     {
         return $this->regex;
+    }
+
+    public function createJsonFormatter(): JsonFormatterInterface
+    {
+        return new HasGeneratorFormatter();
+    }
+
+    public function createExpressionFormatter(): ExpressionFormatterInterface
+    {
+        return new RegexFormatter();
     }
 }

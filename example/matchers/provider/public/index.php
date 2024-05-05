@@ -26,9 +26,10 @@ $app->get('/matchers', function (Request $request, Response $response) {
         'likeBool' => false,
         'likeInt' => 34,
         'likeDecimal' => 24.12,
+        // 'likeDecimal' => 24, // Becareful, int is accepted
         'boolean' => true,
         'integer' => 11,
-        'decimal' => 25.1,
+        'decimal' => 25.1, // int is not accepted
         'hexadecimal' => '20AC',
         'uuid' => 'e9d2f3a5-6ecc-4bff-8935-84bb6141325a',
         'ipv4Address' => '192.168.1.1',

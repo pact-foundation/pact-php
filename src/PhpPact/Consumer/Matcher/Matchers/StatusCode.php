@@ -3,8 +3,12 @@
 namespace PhpPact\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidHttpStatusException;
+use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
+use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
 use PhpPact\Consumer\Matcher\Generators\RandomInt;
 use PhpPact\Consumer\Matcher\HttpStatus;
+use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
 
 /**
  * Matches the response status code.
@@ -50,5 +54,15 @@ class StatusCode extends GeneratorAwareMatcher
     public function getValue(): ?int
     {
         return $this->value;
+    }
+
+    public function createJsonFormatter(): JsonFormatterInterface
+    {
+        return new HasGeneratorFormatter();
+    }
+
+    public function createExpressionFormatter(): ExpressionFormatterInterface
+    {
+        throw new MatcherNotSupportedException("StatusCode matcher doesn't support expression formatter");
     }
 }

@@ -33,8 +33,6 @@ use PhpPact\Consumer\Matcher\Matchers\StringValue;
 use PhpPact\Consumer\Matcher\Matchers\Time;
 use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Consumer\Matcher\Matchers\Values;
-use PhpPact\Consumer\Matcher\Model\FormatterAwareInterface;
-use PhpPact\Consumer\Matcher\Model\FormatterInterface;
 use PhpPact\Consumer\Matcher\Model\GeneratorAwareInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 
@@ -55,7 +53,7 @@ class Matcher
     public const IPV6_FORMAT                         = '^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$';
     public const HEX_FORMAT                          = '^[0-9a-fA-F]+$';
 
-    public function __construct(private ?FormatterInterface $formatter = null)
+    public function __construct(private bool $plugin = false)
     {
     }
 
@@ -485,11 +483,14 @@ class Matcher
         return $this->atMostLike(null, $max);
     }
 
-    private function withFormatter(MatcherInterface&FormatterAwareInterface $matcher): MatcherInterface
+    private function withFormatter(MatcherInterface $matcher): MatcherInterface
     {
-        if ($this->formatter) {
-            $matcher->setFormatter($this->formatter);
+        if ($this->plugin) {
+            $formatter = $matcher->createExpressionFormatter();
+        } else {
+            $formatter = $matcher->createJsonFormatter();
         }
+        $matcher->setFormatter($formatter);
 
         return $matcher;
     }

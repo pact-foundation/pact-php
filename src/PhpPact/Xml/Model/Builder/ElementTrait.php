@@ -2,7 +2,7 @@
 
 namespace PhpPact\Xml\Model\Builder;
 
-use PhpPact\Consumer\Matcher\Formatters\XmlElementFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Xml\XmlElementFormatter;
 use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PhpPact\Xml\XmlElement;
