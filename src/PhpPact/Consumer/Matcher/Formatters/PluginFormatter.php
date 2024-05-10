@@ -3,13 +3,17 @@
 namespace PhpPact\Consumer\Matcher\Formatters;
 
 use PhpPact\Consumer\Matcher\Exception\GeneratorNotRequiredException;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
 use PhpPact\Consumer\Matcher\Exception\MatchingExpressionException;
 use PhpPact\Consumer\Matcher\Matchers\AbstractDateTime;
 use PhpPact\Consumer\Matcher\Matchers\ContentType;
 use PhpPact\Consumer\Matcher\Matchers\EachKey;
 use PhpPact\Consumer\Matcher\Matchers\EachValue;
+use PhpPact\Consumer\Matcher\Matchers\MatchAll;
 use PhpPact\Consumer\Matcher\Matchers\MatchingField;
+use PhpPact\Consumer\Matcher\Matchers\MaxType;
+use PhpPact\Consumer\Matcher\Matchers\MinType;
 use PhpPact\Consumer\Matcher\Matchers\NotEmpty;
 use PhpPact\Consumer\Matcher\Matchers\NullValue;
 use PhpPact\Consumer\Matcher\Matchers\Regex;
@@ -40,12 +44,21 @@ class PluginFormatter implements FormatterInterface
         if ($matcher instanceof NullValue) {
             return $this->formatMatchersWithoutConfig(new Type(null));
         }
+        if ($matcher instanceof MinType) {
+            return $this->formatMinTypeMatcher($matcher);
+        }
+        if ($matcher instanceof MaxType) {
+            return $this->formatMaxTypeMatcher($matcher);
+        }
 
         if (in_array($matcher->getType(), self::MATCHERS_WITHOUT_CONFIG)) {
             return $this->formatMatchersWithoutConfig($matcher);
         }
         if ($matcher instanceof AbstractDateTime || $matcher instanceof Regex || $matcher instanceof ContentType) {
             return $this->formatMatchersWithConfig($matcher);
+        }
+        if ($matcher instanceof MatchAll) {
+            return $this->formatMatchAllMatchers($matcher);
         }
 
         throw new MatcherNotSupportedException(sprintf("Matcher '%s' is not supported by plugin", $matcher->getType()));
@@ -90,10 +103,28 @@ class PluginFormatter implements FormatterInterface
         return sprintf('%s(%s)', $matcher->getType(), $this->format($rule));
     }
 
+    private function formatMatchAllMatchers(MatchAll $matcher): string
+    {
+        return implode(', ', array_map(fn (MatcherInterface $rule) => $this->format($rule), $matcher->getMatchers()));
+    }
+
+    private function formatMinTypeMatcher(MinType $matcher): string
+    {
+        return sprintf('atLeast(%s)', $this->normalize($matcher->getAttributes()->get('min')));
+    }
+
+    private function formatMaxTypeMatcher(MaxType $matcher): string
+    {
+        return sprintf('atMost(%s)', $this->normalize($matcher->getAttributes()->get('max')));
+    }
+
     private function normalize(mixed $value): string
     {
+        if (is_string($value) && str_contains($value, "'")) {
+            throw new InvalidValueException(sprintf('String value "%s" should not contains single quote', $value));
+        }
         return match (gettype($value)) {
-            'string' => sprintf("'%s'", str_replace("'", "\\'", $value)),
+            'string' => sprintf("'%s'", $value),
             'boolean' => $value ? 'true' : 'false',
             'integer' => (string) $value,
             'double' => (string) $value,

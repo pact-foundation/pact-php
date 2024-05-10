@@ -74,6 +74,10 @@ $app->get('/matchers', function (Request $request, Response $response) {
             'item 2' => 'motorbike',
         ],
         'url' => 'https://www.example.com/users/1234/posts/latest',
+        'matchAll' => [
+            'tablet' => '300 usd',
+            'laptop' => '1200 usd',
+        ],
         'query' => $request->getQueryParams(),
     ]));
 

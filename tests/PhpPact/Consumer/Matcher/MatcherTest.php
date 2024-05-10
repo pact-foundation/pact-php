@@ -22,6 +22,7 @@ use PhpPact\Consumer\Matcher\Matchers\EachValue;
 use PhpPact\Consumer\Matcher\Matchers\Equality;
 use PhpPact\Consumer\Matcher\Matchers\Includes;
 use PhpPact\Consumer\Matcher\Matchers\Integer;
+use PhpPact\Consumer\Matcher\Matchers\MatchAll;
 use PhpPact\Consumer\Matcher\Matchers\MatchingField;
 use PhpPact\Consumer\Matcher\Matchers\MaxType;
 use PhpPact\Consumer\Matcher\Matchers\MinMaxType;
@@ -352,6 +353,21 @@ class MatcherTest extends TestCase
     public function testMatchingField(): void
     {
         $this->assertInstanceOf(MatchingField::class, $this->matcher->matchingField('address'));
+    }
+
+    public function testMatchAll(): void
+    {
+        $this->assertInstanceOf(MatchAll::class, $this->matcher->matchAll(['key' => 'value'], []));
+    }
+
+    public function testAtLeast(): void
+    {
+        $this->assertInstanceOf(MinType::class, $this->matcher->atLeast(123));
+    }
+
+    public function testAtMost(): void
+    {
+        $this->assertInstanceOf(MaxType::class, $this->matcher->atMost(123));
     }
 
     public function testWithFormatter(): void

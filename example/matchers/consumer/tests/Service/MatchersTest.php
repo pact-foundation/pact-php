@@ -113,6 +113,24 @@ class MatchersTest extends TestCase
                     [$this->matcher->regex(null, 'car|bike|motorbike')]
                 ),
                 'url' => $this->matcher->url('http://localhost:8080/users/1234/posts/latest', '.*(\\/users\\/\\d+\\/posts\\/latest)$', false),
+                'matchAll' => $this->matcher->matchAll(
+                    ['desktop' => '2000 usd'],
+                    [
+                        $this->matcher->eachKey(
+                            ['laptop' => '1500 usd'],
+                            [$this->matcher->regex(null, 'laptop|desktop|mobile|tablet')]
+                        ),
+                        $this->matcher->eachValue(
+                            ['mobile' => '500 usd'],
+                            [
+                                $this->matcher->includes('usd'),
+                                $this->matcher->regex(null, '\d+ \w{3}')
+                            ],
+                        ),
+                        $this->matcher->atLeast(2),
+                        $this->matcher->atMost(3),
+                    ],
+                ),
 
                 // Don't mind this. This is for demonstrating what query values provider will received.
                 'query' => [
@@ -199,6 +217,7 @@ class MatchersTest extends TestCase
                 'vehicle 1' => 'car',
             ],
             'url' => 'http://localhost:8080/users/1234/posts/latest',
+            'matchAll' => ['desktop' => '2000 usd'],
 
             // Don't mind this. This is for demonstrating what query values provider will received.
             'query' => [
