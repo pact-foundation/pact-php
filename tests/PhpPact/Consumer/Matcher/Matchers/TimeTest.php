@@ -4,8 +4,9 @@ namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
 use PhpPact\Consumer\Matcher\Matchers\Time;
+use PHPUnit\Framework\Attributes\TestWith;
 
-class TimeTest extends GeneratorAwareMatcherTestCase
+class TimeTest extends AbstractDateTimeTestCase
 {
     protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
     {
@@ -17,10 +18,8 @@ class TimeTest extends GeneratorAwareMatcherTestCase
         return new Time('HH:mm', '21:15');
     }
 
-    /**
-     * @testWith [null,        "{\"pact:matcher:type\":\"time\",\"pact:generator:type\":\"Time\",\"format\":\"HH:mm:ss\"}"]
-     *           ["12:02::34", "{\"pact:matcher:type\":\"time\",\"format\":\"HH:mm:ss\",\"value\":\"12:02::34\"}"]
-     */
+    #[TestWith([null, '{"pact:matcher:type":"time","pact:generator:type":"Time","format":"HH:mm:ss"}'])]
+    #[TestWith(['12:02::34', '{"pact:matcher:type":"time","format":"HH:mm:ss","value":"12:02::34"}'])]
     public function testSerialize(?string $value, string $json): void
     {
         $format = 'HH:mm:ss';

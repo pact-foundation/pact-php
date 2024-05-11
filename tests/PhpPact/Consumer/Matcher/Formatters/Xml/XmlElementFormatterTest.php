@@ -1,9 +1,9 @@
 <?php
 
-namespace PhpPactTest\Consumer\Matcher\Formatters;
+namespace PhpPactTest\Consumer\Matcher\Formatters\Xml;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
-use PhpPact\Consumer\Matcher\Formatters\XmlElementFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Xml\XmlElementFormatter;
 use PhpPact\Consumer\Matcher\Generators\RandomString;
 use PhpPact\Consumer\Matcher\Matchers\StringValue;
 use PhpPact\Consumer\Matcher\Matchers\Type;

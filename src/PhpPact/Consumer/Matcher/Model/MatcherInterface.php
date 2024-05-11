@@ -4,7 +4,7 @@ namespace PhpPact\Consumer\Matcher\Model;
 
 use JsonSerializable;
 
-interface MatcherInterface extends JsonSerializable, FormatterAwareInterface
+interface MatcherInterface extends JsonSerializable, FormatterAwareInterface, FormatterFactoryInterface
 {
     public function getType(): string;
 

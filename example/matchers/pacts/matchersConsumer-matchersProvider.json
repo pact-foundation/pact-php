@@ -135,12 +135,19 @@
               111,
               "2fbd41cc-4bbc-44ea-a419-67f767691407"
             ],
+            "atLeast": [
+              null,
+              null
+            ],
             "atLeastLike": [
               1,
               1,
               1,
               1,
               1
+            ],
+            "atMost": [
+              null
             ],
             "atMostLike": [
               1
@@ -278,12 +285,30 @@
                 }
               ]
             },
+            "$.atLeast": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 2
+                }
+              ]
+            },
             "$.atLeastLike": {
               "combine": "AND",
               "matchers": [
                 {
                   "match": "type",
                   "min": 5
+                }
+              ]
+            },
+            "$.atMost": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type",
+                  "max": 4
                 }
               ]
             },

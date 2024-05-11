@@ -2,6 +2,10 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Formatters\Expression\EachKeyFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 
 /**
@@ -45,5 +49,15 @@ class EachKey extends AbstractMatcher
     public function getRules(): array
     {
         return $this->rules;
+    }
+
+    public function createJsonFormatter(): JsonFormatterInterface
+    {
+        return new NoGeneratorFormatter();
+    }
+
+    public function createExpressionFormatter(): ExpressionFormatterInterface
+    {
+        return new EachKeyFormatter();
     }
 }

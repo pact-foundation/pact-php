@@ -5,7 +5,6 @@ namespace CsvConsumer\Tests\Service;
 use CsvConsumer\Service\HttpClientService;
 use PhpPact\Consumer\Driver\Enum\InteractionPart;
 use PhpPact\Consumer\InteractionBuilder;
-use PhpPact\Consumer\Matcher\Formatters\PluginFormatter;
 use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Consumer\Model\ConsumerRequest;
@@ -18,7 +17,7 @@ class HttpClientServiceTest extends TestCase
 {
     public function testGetCsvFile(): void
     {
-        $matcher = new Matcher(new PluginFormatter());
+        $matcher = new Matcher(plugin: true);
 
         $request = new ConsumerRequest();
         $request

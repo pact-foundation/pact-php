@@ -2,8 +2,11 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\ValueRequiredFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Expression\StringValueFormatter as ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Json\StringValueFormatter as JsonFormatter;
 use PhpPact\Consumer\Matcher\Generators\RandomString;
+use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
 
 /**
  * There is no matcher for string. We re-use `type` matcher.
@@ -17,7 +20,7 @@ class StringValue extends GeneratorAwareMatcher
         if ($value === null) {
             $this->setGenerator(new RandomString());
         }
-        $this->setFormatter(new ValueRequiredFormatter());
+        parent::__construct();
     }
 
     public function getType(): string
@@ -41,5 +44,15 @@ class StringValue extends GeneratorAwareMatcher
     public function getValue(): string
     {
         return $this->value ?? self::DEFAULT_VALUE;
+    }
+
+    public function createJsonFormatter(): JsonFormatterInterface
+    {
+        return new JsonFormatter();
+    }
+
+    public function createExpressionFormatter(): ExpressionFormatterInterface
+    {
+        return new ExpressionFormatter();
     }
 }

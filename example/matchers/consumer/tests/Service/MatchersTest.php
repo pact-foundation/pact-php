@@ -131,6 +131,8 @@ class MatchersTest extends TestCase
                         $this->matcher->atMost(3),
                     ],
                 ),
+                'atLeast' => $this->matcher->atLeast(2), // Not useful when outside of `matchAll`
+                'atMost' => $this->matcher->atMost(4), // Not useful when outside of `matchAll`
 
                 // Don't mind this. This is for demonstrating what query values provider will received.
                 'query' => [
@@ -218,6 +220,8 @@ class MatchersTest extends TestCase
             ],
             'url' => 'http://localhost:8080/users/1234/posts/latest',
             'matchAll' => ['desktop' => '2000 usd'],
+            'atLeast' => [null, null],
+            'atMost' => [null],
 
             // Don't mind this. This is for demonstrating what query values provider will received.
             'query' => [

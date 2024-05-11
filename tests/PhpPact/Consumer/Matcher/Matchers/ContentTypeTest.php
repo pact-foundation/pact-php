@@ -2,6 +2,8 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Formatters\Expression\ContentTypeFormatter as ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Json\ContentTypeFormatter as JsonFormatter;
 use PhpPact\Consumer\Matcher\Matchers\ContentType;
 use PHPUnit\Framework\TestCase;
 
@@ -16,5 +18,17 @@ class ContentTypeTest extends TestCase
             '{"value":"text\/csv","pact:matcher:type":"contentType"}',
             $jsonEncoded
         );
+    }
+
+    public function testCreateJsonFormatter(): void
+    {
+        $matcher = new ContentType('text/plain');
+        $this->assertInstanceOf(JsonFormatter::class, $matcher->createJsonFormatter());
+    }
+
+    public function testCreateExpressionFormatter(): void
+    {
+        $matcher = new ContentType('text/plain');
+        $this->assertInstanceOf(ExpressionFormatter::class, $matcher->createExpressionFormatter());
     }
 }

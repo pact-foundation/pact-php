@@ -10,6 +10,11 @@ abstract class AbstractMatcher implements MatcherInterface
 {
     use FormatterAwareTrait;
 
+    public function __construct()
+    {
+        $this->setFormatter($this->createJsonFormatter());
+    }
+
     /**
      * @return string|array<string, mixed>
      */

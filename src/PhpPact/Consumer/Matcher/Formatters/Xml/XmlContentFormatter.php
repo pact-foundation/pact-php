@@ -1,12 +1,13 @@
 <?php
 
-namespace PhpPact\Consumer\Matcher\Formatters;
+namespace PhpPact\Consumer\Matcher\Formatters\Xml;
 
 use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\FormatterInterface;
 use PhpPact\Consumer\Matcher\Model\GeneratorAwareInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 
-class XmlContentFormatter extends ValueOptionalFormatter
+class XmlContentFormatter implements FormatterInterface
 {
     /**
      * @return array<string, mixed>

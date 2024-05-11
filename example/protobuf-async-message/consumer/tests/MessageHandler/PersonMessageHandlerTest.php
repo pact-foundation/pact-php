@@ -3,6 +3,7 @@
 namespace ProtobufAsyncMessageConsumer\Tests\MessageHandler;
 
 use Library\Person;
+use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\MessageBuilder;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Plugins\Protobuf\Factory\ProtobufMessageDriverFactory;
@@ -16,9 +17,11 @@ class PersonMessageHandlerTest extends TestCase
     private SayHelloService $service;
     private string $given = 'Given';
     private string $surname = 'Surname';
+    private Matcher $matcher;
 
     protected function setUp(): void
     {
+        $this->matcher = new Matcher(plugin: true);
         $service = $this->createMock(SayHelloService::class);
         $service
             ->expects($this->once())
@@ -50,10 +53,10 @@ class PersonMessageHandlerTest extends TestCase
                     'pact:proto' => __DIR__ . '/../../../library/proto/say_hello.proto',
                     'pact:message-type' => 'Person',
                     'pact:content-type' => 'application/protobuf',
-                    'id' => "matching(regex, '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$', '{$id}')",
+                    'id' => $this->matcher->regex($id, '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$'),
                     'name' => [
-                        'given' => "matching(type, '{$this->given}')",
-                        'surname' => "matching(type, '{$this->surname}')"
+                        'given' => $this->matcher->like($this->given),
+                        'surname' => $this->matcher->like($this->surname),
                     ],
                 ]),
                 'application/protobuf'

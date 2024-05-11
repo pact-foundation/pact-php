@@ -3,7 +3,6 @@
 namespace PhpPact\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
-use PhpPact\Consumer\Matcher\Formatters\CombinedMatchersFormatter;
 use PhpPact\Consumer\Matcher\Model\CombinedMatchersInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PhpPact\Consumer\Matcher\Trait\MatchersTrait;
@@ -24,7 +23,7 @@ abstract class CombinedMatchers extends AbstractMatcher implements CombinedMatch
             }
             $this->addMatcher($matcher);
         }
-        $this->setFormatter(new CombinedMatchersFormatter());
+        parent::__construct();
     }
 
     protected function getAttributesData(): array
