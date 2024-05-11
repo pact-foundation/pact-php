@@ -28,6 +28,7 @@ class MaxTypeFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
+    #[TestWith([new MaxType([], 2), '"atMost(2)"'])]
     #[TestWith([new MaxType(['example value'], 2), '"atMost(2)"'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
