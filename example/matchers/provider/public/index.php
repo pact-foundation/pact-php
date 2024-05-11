@@ -79,6 +79,15 @@ $app->get('/matchers', function (Request $request, Response $response) {
             'tablet' => '300 usd',
             'laptop' => '1200 usd',
         ],
+        'atLeast' => [
+            null,
+            null,
+        ],
+        'atMost' => [
+            null,
+        ],
+
+        // Don't mind this. This is for demonstrating what query values provider will received.
         'query' => $request->getQueryParams(),
     ]));
 
