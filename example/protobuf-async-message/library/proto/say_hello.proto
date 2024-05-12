@@ -5,6 +5,7 @@ package library;
 message Person {
   string id = 1;
   Name name = 2;
+  map<string, int32> children = 3;
 }
 
 message Name {
