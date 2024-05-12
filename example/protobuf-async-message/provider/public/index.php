@@ -18,6 +18,11 @@ $app->post('/', function (ServerRequestInterface $request) {
         $name->setGiven('Hettie');
         $name->setSurname('Toy');
         $person->setName($name);
+        $person->setChildren([
+            'Tom Velez' => 23,
+            'Rachel Long' => 14,
+            'Edmund Doherty' => 4,
+        ]);
 
         $response = new Response(200);
         $response->getBody()->write($person->serializeToString());
