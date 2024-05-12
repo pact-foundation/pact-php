@@ -131,7 +131,7 @@ class MatchersTest extends TestCase
                         $this->matcher->atMost(3),
                         // These matchers are allowed, but are not recommend
                         // $this->matcher->atLeastLike('any thing, will be ignored', 2),
-                        // $this->matcher->atMostLike('any thing, will be ignored, 3),
+                        // $this->matcher->atMostLike('any thing, will be ignored', 3),
                     ],
                 ),
                 'atLeast' => $this->matcher->atLeast(2), // Not useful when outside of `matchAll`
