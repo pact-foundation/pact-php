@@ -2,36 +2,33 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Expression\MinMaxTypeFormatter as ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Json\MinMaxTypeFormatter as JsonFormatter;
 use PhpPact\Consumer\Matcher\Matchers\MinMaxType;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class MinMaxTypeTest extends TestCase
 {
-    public function testSerialize(): void
+    #[TestWith([-2, 5, '{"pact:matcher:type":"type","min":0,"max":5,"value":[1.23]}'])]
+    #[TestWith([-2, -5, '{"pact:matcher:type":"type","min":0,"max":0,"value":[1.23]}'])]
+    #[TestWith([2, 5, '{"pact:matcher:type":"type","min":2,"max":5,"value":[1.23,1.23]}'])]
+    #[TestWith([2, -5, '{"pact:matcher:type":"type","min":2,"max":0,"value":[1.23,1.23]}'])]
+    public function testSerialize(int $min, int $max, string $json): void
     {
-        $values = [
-            1.23,
-            2.34,
-        ];
-        $array = new MinMaxType($values, 2, 5);
-        $this->assertSame(
-            '{"pact:matcher:type":"type","min":2,"max":5,"value":[1.23,2.34]}',
-            json_encode($array)
-        );
+        $matcher = new MinMaxType(1.23, $min, $max);
+        $this->assertSame($json, json_encode($matcher));
     }
 
     public function testCreateJsonFormatter(): void
     {
-        $matcher = new MinMaxType([], 0, 1);
-        $this->assertInstanceOf(NoGeneratorFormatter::class, $matcher->createJsonFormatter());
+        $matcher = new MinMaxType(null, 0, 1);
+        $this->assertInstanceOf(JsonFormatter::class, $matcher->createJsonFormatter());
     }
 
     public function testCreateExpressionFormatter(): void
     {
-        $matcher = new MinMaxType([], 0, 1);
-        $this->expectExceptionObject(new MatcherNotSupportedException("MinMaxType matcher doesn't support expression formatter"));
-        $matcher->createExpressionFormatter();
+        $matcher = new MinMaxType(null, 0, 1);
+        $this->assertInstanceOf(ExpressionFormatter::class, $matcher->createExpressionFormatter());
     }
 }

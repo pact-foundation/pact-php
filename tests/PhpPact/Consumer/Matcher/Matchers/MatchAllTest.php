@@ -24,8 +24,8 @@ class MatchAllTest extends TestCase
 
     public function testSerialize(): void
     {
-        $matcher = new MatchAll(['key' => 123], [new MinType([], 1), new MaxType([], 2), new EachKey([], [new Type('test')]), new EachValue([], [new Type(123)])]);
-        $this->assertSame('{"pact:matcher:type":[{"pact:matcher:type":"type","min":1,"value":[]},{"pact:matcher:type":"type","max":2,"value":[]},{"pact:matcher:type":"eachKey","rules":[{"pact:matcher:type":"type","value":"test"}],"value":[]},{"pact:matcher:type":"eachValue","rules":[{"pact:matcher:type":"type","value":123}],"value":[]}],"value":{"key":123}}', json_encode($matcher));
+        $matcher = new MatchAll(['key' => 123], [new MinType(null, 1), new MaxType(null, 2), new EachKey([], [new Type('test')]), new EachValue([], [new Type(123)])]);
+        $this->assertSame('{"pact:matcher:type":[{"pact:matcher:type":"type","min":1,"value":[null]},{"pact:matcher:type":"type","max":2,"value":[null]},{"pact:matcher:type":"eachKey","rules":[{"pact:matcher:type":"type","value":"test"}],"value":[]},{"pact:matcher:type":"eachValue","rules":[{"pact:matcher:type":"type","value":123}],"value":[]}],"value":{"key":123}}', json_encode($matcher));
     }
 
     public function testCreateJsonFormatter(): void

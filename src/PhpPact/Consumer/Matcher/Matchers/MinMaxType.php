@@ -2,8 +2,8 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Expression\MinMaxTypeFormatter as ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Json\MinMaxTypeFormatter as JsonFormatter;
 use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
 use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
 
@@ -13,14 +13,19 @@ use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
  */
 class MinMaxType extends AbstractMatcher
 {
-    /**
-     * @param array<mixed> $values
-     */
     public function __construct(
-        private array $values,
+        private mixed $value,
         private int $min,
         private int $max,
     ) {
+        if ($min < 0) {
+            trigger_error("[WARN] min value to an array matcher can't be less than zero", E_USER_WARNING);
+            $this->min = 0;
+        }
+        if ($max < 0) {
+            trigger_error("[WARN] max value to an array matcher can't be less than zero", E_USER_WARNING);
+            $this->max = 0;
+        }
         parent::__construct();
     }
 
@@ -35,12 +40,9 @@ class MinMaxType extends AbstractMatcher
         ];
     }
 
-    /**
-     * @return array<int, mixed>
-     */
-    public function getValue(): array
+    public function getValue(): mixed
     {
-        return array_values($this->values);
+        return $this->value;
     }
 
     public function getType(): string
@@ -48,13 +50,23 @@ class MinMaxType extends AbstractMatcher
         return 'type';
     }
 
+    public function getMin(): int
+    {
+        return $this->min;
+    }
+
+    public function getMax(): int
+    {
+        return $this->max;
+    }
+
     public function createJsonFormatter(): JsonFormatterInterface
     {
-        return new NoGeneratorFormatter();
+        return new JsonFormatter();
     }
 
     public function createExpressionFormatter(): ExpressionFormatterInterface
     {
-        throw new MatcherNotSupportedException("MinMaxType matcher doesn't support expression formatter");
+        return new ExpressionFormatter();
     }
 }

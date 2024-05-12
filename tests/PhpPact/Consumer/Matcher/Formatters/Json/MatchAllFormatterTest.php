@@ -34,13 +34,14 @@ class MatchAllFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new MatchAll(['abc' => 1, 'def' => 234], [new MinType([null], 2)]), <<<JSON
+    #[TestWith([new MatchAll(['abc' => 1, 'def' => 234], [new MinType(null, 2)]), <<<JSON
         {
             "pact:matcher:type": [
                 {
                     "min": 2,
                     "pact:matcher:type": "type",
                     "value": [
+                        null,
                         null
                     ]
                 }
@@ -52,7 +53,7 @@ class MatchAllFormatterTest extends TestCase
         }
         JSON
     ])]
-    #[TestWith([new MatchAll(['abc' => 1, 'def' => 234], [new MinType([null], 1), new MaxType([null], 2), new EachKey(["doesn't matter"], [new Regex('\w+', 'abc')]), new EachValue(["doesn't matter"], [new Type(100)])]), <<<JSON
+    #[TestWith([new MatchAll(['abc' => 1, 'def' => 234], [new MinType(null, 1), new MaxType(null, 2), new EachKey(["doesn't matter"], [new Regex('\w+', 'abc')]), new EachValue(["doesn't matter"], [new Type(100)])]), <<<JSON
         {
             "pact:matcher:type": [
                 {

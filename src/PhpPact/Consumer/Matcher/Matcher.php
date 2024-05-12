@@ -74,7 +74,7 @@ class Matcher
     }
 
     /**
-     * Expect an array of similar data as the value passed in.
+     * Array where each element must match the given value
      */
     public function eachLike(mixed $value): MatcherInterface
     {
@@ -82,45 +82,35 @@ class Matcher
     }
 
     /**
-     * @param mixed $value example of what the expected data would be
-     * @param int   $min   minimum number of objects to verify against
+     * An array that has to have at least one element and each element must match the given value
      */
-    public function atLeastLike(mixed $value, int $min): MatcherInterface
+    public function atLeastOneLike(mixed $value): MatcherInterface
     {
-        return $this->withFormatter(new MinType(array_fill(0, $min, $value), $min));
-    }
-
-    public function atMostLike(mixed $value, int $max): MatcherInterface
-    {
-        return $this->withFormatter(new MaxType([$value], $max));
+        return $this->atLeastLike($value, 1);
     }
 
     /**
-     * @param mixed    $value example of what the expected data would be
-     * @param int      $min   minimum number of objects to verify against
-     * @param int      $max   maximum number of objects to verify against
-     * @param int|null $count number of examples to generate, defaults to one
-     *
-     * @throws MatcherException
+     * An array that has to have at least the required number of elements and each element must match the given value
      */
-    public function constrainedArrayLike(mixed $value, int $min, int $max, ?int $count = null): MatcherInterface
+    public function atLeastLike(mixed $value, int $min): MatcherInterface
     {
-        $elements = $count ?? $min;
-        if ($count !== null) {
-            if ($count < $min) {
-                throw new MatcherException(
-                    "constrainedArrayLike has a minimum of {$min} but {$count} elements where requested." .
-                    ' Make sure the count is greater than or equal to the min.'
-                );
-            } elseif ($count > $max) {
-                throw new MatcherException(
-                    "constrainedArrayLike has a maximum of {$max} but {$count} elements where requested." .
-                    ' Make sure the count is less than or equal to the max.'
-                );
-            }
-        }
+        return $this->withFormatter(new MinType($value, $min));
+    }
 
-        return $this->withFormatter(new MinMaxType(array_fill(0, $elements, $value), $min, $max));
+    /**
+     * An array that has to have at most the required number of elements and each element must match the given value
+     */
+    public function atMostLike(mixed $value, int $max): MatcherInterface
+    {
+        return $this->withFormatter(new MaxType($value, $max));
+    }
+
+    /**
+     * An array whose size is constrained to the minimum and maximum number of elements and each element must match the given value
+     */
+    public function constrainedArrayLike(mixed $value, int $min, int $max): MatcherInterface
+    {
+        return $this->withFormatter(new MinMaxType($value, $min, $max));
     }
 
     /**
@@ -473,14 +463,20 @@ class Matcher
         return $this->withFormatter(new MatchAll($value, $matchers));
     }
 
+    /**
+     * An array that has to have at least the required number of elements
+     */
     public function atLeast(int $min): MatcherInterface
     {
-        return $this->atLeastLike(null, $min);
+        return $this->withFormatter(new MinType(null, $min, false));
     }
 
+    /**
+     * An array that has to have at most the required number of elements
+     */
     public function atMost(int $max): MatcherInterface
     {
-        return $this->atMostLike(null, $max);
+        return $this->withFormatter(new MaxType(null, $max, false));
     }
 
     private function withFormatter(MatcherInterface $matcher): MatcherInterface

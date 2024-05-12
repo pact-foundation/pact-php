@@ -2,8 +2,8 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\MinTypeFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Expression\MinTypeFormatter as ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Json\MinTypeFormatter as JsonFormatter;
 use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
 use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
 
@@ -13,13 +13,15 @@ use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
  */
 class MinType extends AbstractMatcher
 {
-    /**
-     * @param array<mixed> $values
-     */
     public function __construct(
-        private array $values,
+        private mixed $value,
         private int $min,
+        private bool $matchingType = true
     ) {
+        if ($min < 0) {
+            trigger_error("[WARN] min value to an array matcher can't be less than zero", E_USER_WARNING);
+            $this->min = 0;
+        }
         parent::__construct();
     }
 
@@ -36,12 +38,9 @@ class MinType extends AbstractMatcher
         return ['min' => $this->min];
     }
 
-    /**
-     * @return array<int, mixed>
-     */
-    public function getValue(): array
+    public function getValue(): mixed
     {
-        return array_values($this->values);
+        return $this->value;
     }
 
     public function getMin(): int
@@ -49,13 +48,18 @@ class MinType extends AbstractMatcher
         return $this->min;
     }
 
+    public function isMatchingType(): bool
+    {
+        return $this->matchingType;
+    }
+
     public function createJsonFormatter(): JsonFormatterInterface
     {
-        return new NoGeneratorFormatter();
+        return new JsonFormatter();
     }
 
     public function createExpressionFormatter(): ExpressionFormatterInterface
     {
-        return new MinTypeFormatter();
+        return new ExpressionFormatter();
     }
 }

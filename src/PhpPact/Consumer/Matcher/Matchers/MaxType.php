@@ -2,8 +2,8 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\MaxTypeFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Expression\MaxTypeFormatter as ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Json\MaxTypeFormatter as JsonFormatter;
 use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
 use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
 
@@ -13,13 +13,15 @@ use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
  */
 class MaxType extends AbstractMatcher
 {
-    /**
-     * @param array<mixed> $values
-     */
     public function __construct(
-        private array $values,
+        private mixed $value,
         private int $max,
+        private bool $matchingType = true
     ) {
+        if ($max < 0) {
+            trigger_error("[WARN] max value to an array matcher can't be less than zero", E_USER_WARNING);
+            $this->max = 0;
+        }
         parent::__construct();
     }
 
@@ -31,12 +33,9 @@ class MaxType extends AbstractMatcher
         return ['max' => $this->max];
     }
 
-    /**
-     * @return array<int, mixed>
-     */
-    public function getValue(): array
+    public function getValue(): mixed
     {
-        return array_values($this->values);
+        return $this->value;
     }
 
     public function getType(): string
@@ -49,13 +48,18 @@ class MaxType extends AbstractMatcher
         return $this->max;
     }
 
+    public function isMatchingType(): bool
+    {
+        return $this->matchingType;
+    }
+
     public function createJsonFormatter(): JsonFormatterInterface
     {
-        return new NoGeneratorFormatter();
+        return new JsonFormatter();
     }
 
     public function createExpressionFormatter(): ExpressionFormatterInterface
     {
-        return new MaxTypeFormatter();
+        return new ExpressionFormatter();
     }
 }
