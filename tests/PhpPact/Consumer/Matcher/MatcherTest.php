@@ -62,38 +62,38 @@ class MatcherTest extends TestCase
 
     public function testEachLike(): void
     {
-        $this->assertInstanceOf(MinType::class, $this->matcher->eachLike('test'));
+        $this->assertInstanceOf(MinType::class, $result = $this->matcher->eachLike('test'));
+        $this->assertSame('test', $result->getValue());
+        $this->assertSame(1, $result->getMin());
+    }
+
+    public function testAtLeastOneLike(): void
+    {
+        $this->assertInstanceOf(MinType::class, $result = $this->matcher->atLeastOneLike('test'));
+        $this->assertSame('test', $result->getValue());
+        $this->assertSame(1, $result->getMin());
     }
 
     public function testAtLeastLike(): void
     {
-        $this->assertInstanceOf(MinType::class, $this->matcher->atLeastLike('test', 2));
+        $this->assertInstanceOf(MinType::class, $result = $this->matcher->atLeastLike('test', 2));
+        $this->assertSame('test', $result->getValue());
+        $this->assertSame(2, $result->getMin());
     }
 
     public function testAtMostLike(): void
     {
-        $this->assertInstanceOf(MaxType::class, $this->matcher->atMostLike('test', 2));
-    }
-
-    public function testConstrainedArrayLikeCountLessThanMin(): void
-    {
-        $this->expectException(MatcherException::class);
-        $this->expectExceptionMessage('constrainedArrayLike has a minimum of 2 but 1 elements where requested.' .
-        ' Make sure the count is greater than or equal to the min.');
-        $this->matcher->constrainedArrayLike('text', 2, 4, 1);
-    }
-
-    public function testConstrainedArrayLikeCountLargerThanMax(): void
-    {
-        $this->expectException(MatcherException::class);
-        $this->expectExceptionMessage('constrainedArrayLike has a maximum of 5 but 7 elements where requested.' .
-        ' Make sure the count is less than or equal to the max.');
-        $this->matcher->constrainedArrayLike('text', 3, 5, 7);
+        $this->assertInstanceOf(MaxType::class, $result = $this->matcher->atMostLike('test', 2));
+        $this->assertSame('test', $result->getValue());
+        $this->assertSame(2, $result->getMax());
     }
 
     public function testConstrainedArrayLike(): void
     {
-        $this->assertInstanceOf(MinMaxType::class, $this->matcher->constrainedArrayLike('test', 2, 4, 3));
+        $this->assertInstanceOf(MinMaxType::class, $result = $this->matcher->constrainedArrayLike('test', 2, 4));
+        $this->assertSame('test', $result->getValue());
+        $this->assertSame(2, $result->getMin());
+        $this->assertSame(4, $result->getMax());
     }
 
     public function testTerm(): void

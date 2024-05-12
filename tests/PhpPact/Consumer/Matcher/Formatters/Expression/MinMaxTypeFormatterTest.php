@@ -3,21 +3,21 @@
 namespace PhpPactTest\Consumer\Matcher\Formatters\Expression;
 
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
-use PhpPact\Consumer\Matcher\Formatters\Expression\MinTypeFormatter;
-use PhpPact\Consumer\Matcher\Matchers\MinType;
+use PhpPact\Consumer\Matcher\Formatters\Expression\MinMaxTypeFormatter;
+use PhpPact\Consumer\Matcher\Matchers\MinMaxType;
 use PhpPact\Consumer\Matcher\Matchers\NullValue;
 use PhpPact\Consumer\Matcher\Model\FormatterInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-class MinTypeFormatterTest extends TestCase
+class MinMaxTypeFormatterTest extends TestCase
 {
     private FormatterInterface $formatter;
 
     protected function setUp(): void
     {
-        $this->formatter = new MinTypeFormatter();
+        $this->formatter = new MinMaxTypeFormatter();
     }
 
     public function testNotSupportedMatcher(): void
@@ -28,10 +28,8 @@ class MinTypeFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new MinType(null, 1, false), '"atLeast(1)"'])]
-    #[TestWith([new MinType('example value', 1, false), '"atLeast(1)"'])]
-    #[TestWith([new MinType(null, 1), '"atLeast(1), eachValue(matching(type, null)"'])]
-    #[TestWith([new MinType('example value', 1), '"atLeast(1), eachValue(matching(type, \'example value\')"'])]
+    #[TestWith([new MinMaxType(null, 2, 3), '"atLeast(2), atMost(3), eachValue(matching(type, null)"'])]
+    #[TestWith([new MinMaxType('example value', 2, 3), '"atLeast(2), atMost(3), eachValue(matching(type, \'example value\')"'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $this->assertSame($expression, json_encode($this->formatter->format($matcher)));

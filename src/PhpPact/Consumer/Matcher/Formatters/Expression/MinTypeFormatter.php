@@ -12,6 +12,9 @@ class MinTypeFormatter extends AbstractExpressionFormatter
         if (!$matcher instanceof MinType) {
             throw $this->getMatcherNotSupportedException($matcher);
         }
+        if ($matcher->isMatchingType()) {
+            return sprintf('atLeast(%u), eachValue(matching(type, %s)', $matcher->getMin(), $this->normalize($matcher->getValue()));
+        }
 
         return sprintf('atLeast(%u)', $matcher->getMin());
     }

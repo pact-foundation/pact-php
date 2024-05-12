@@ -2,34 +2,31 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\MaxTypeFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Expression\MaxTypeFormatter as ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Json\MaxTypeFormatter as JsonFormatter;
 use PhpPact\Consumer\Matcher\Matchers\MaxType;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class MaxTypeTest extends TestCase
 {
-    public function testSerialize(): void
+    #[TestWith([-3, '{"pact:matcher:type":"type","max":0,"value":["string value"]}'])]
+    #[TestWith([3, '{"pact:matcher:type":"type","max":3,"value":["string value"]}'])]
+    public function testSerialize(int $max, string $json): void
     {
-        $values = [
-            'string value',
-        ];
-        $array = new MaxType($values, 3);
-        $this->assertSame(
-            '{"pact:matcher:type":"type","max":3,"value":["string value"]}',
-            json_encode($array)
-        );
+        $matcher = new MaxType('string value', $max);
+        $this->assertSame($json, json_encode($matcher));
     }
 
     public function testCreateJsonFormatter(): void
     {
-        $matcher = new MaxType([], 0);
-        $this->assertInstanceOf(NoGeneratorFormatter::class, $matcher->createJsonFormatter());
+        $matcher = new MaxType(null, 0);
+        $this->assertInstanceOf(JsonFormatter::class, $matcher->createJsonFormatter());
     }
 
     public function testCreateExpressionFormatter(): void
     {
-        $matcher = new MaxType([], 0);
-        $this->assertInstanceOf(MaxTypeFormatter::class, $matcher->createExpressionFormatter());
+        $matcher = new MaxType(null, 0);
+        $this->assertInstanceOf(ExpressionFormatter::class, $matcher->createExpressionFormatter());
     }
 }
