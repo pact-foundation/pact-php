@@ -34,14 +34,14 @@ final class MatchingRuleConverter implements MatchingRuleConverterInterface
             case 'type':
                 $min = $rule->getMatcherAttribute('min');
                 $max = $rule->getMatcherAttribute('max');
-                if (null !== $min && null !== $max) {
-                    return new MinMaxType($value, $min, $max);
+                if (null !== $min && null !== $max && is_array($value)) {
+                    return new MinMaxType(reset($value), $min, $max);
                 }
-                if (null !== $min) {
-                    return new MinType($value, $min);
+                if (null !== $min && is_array($value)) {
+                    return new MinType(reset($value), $min);
                 }
-                if (null !== $max) {
-                    return new MaxType($value, $max);
+                if (null !== $max && is_array($value)) {
+                    return new MaxType(reset($value), $max);
                 }
                 return new Type($value);
 
