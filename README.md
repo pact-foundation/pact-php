@@ -62,7 +62,7 @@ Watch our [series](https://www.youtube.com/playlist?list=PLwy9Bnco-IpfZ72VQ7hce8
 
 ## Documentation
 
-This readme offers a basic introduction to the library. The full documentation for Pact JS and the rest of the framework is available at https://docs.pact.io/.
+This readme offers a basic introduction to the library. The full documentation for Pact PHP and the rest of the framework is available at https://docs.pact.io/.
 
 - [Installation](#installation)
 - [Consumer Testing](/docs/consumer.md)
@@ -275,7 +275,7 @@ _\*_ v3 support is limited to the subset of functionality required to enable lan
 
 ## Roadmap
 
-The [roadmap](https://docs.pact.io/roadmap/) for Pact and Pact JS is outlined on our main website.
+The [roadmap](https://docs.pact.io/roadmap/) for Pact and Pact PHP is outlined on our main website.
 ## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md).
