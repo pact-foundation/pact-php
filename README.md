@@ -7,6 +7,7 @@
 <!-- Please use absolute URLs for all links as the content of this page is synced to docs.pact.io -->
 
 ![Code Analysis & Test](https://github.com/pact-foundation/pact-php/actions/workflows/build.yml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/pact-foundation/pact-php/badge.svg?branch=HEAD)](https://coveralls.io/github/pact-foundation/pact-php?branch=HEAD)
 ![Compatibility Suite](https://github.com/pact-foundation/pact-php/actions/workflows/compatibility-suite.yml/badge.svg)
 [![Packagist](https://img.shields.io/packagist/v/pact-foundation/pact-php?style=flat-square)](https://packagist.org/packages/pact-foundation/pact-php)
 

@@ -156,3 +156,20 @@ jobs:
         run: vendor/bin/phpunit --testsuite unit
         env:
           PACT_DO_NOT_TRACK: true
+
+      - name: Coveralls Parallel
+        uses: coverallsapp/github-action@v2
+        with:
+          flag-name: ${{ matrix.php }}-${{ matrix.dependencies }}
+          parallel: true
+          file: test_results/reports/test_coverage_results.xml
+
+  finish:
+    needs: unit
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
