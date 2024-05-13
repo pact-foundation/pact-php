@@ -281,7 +281,7 @@ The [roadmap](https://docs.pact.io/roadmap/) for Pact and Pact JS is outlined on
 See [CONTRIBUTING](CONTRIBUTING.md).
 
 <a href="https://github.com/pact-foundation/pact-php/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=pact-foundation/pact-pact" />
+  <img src="https://contrib.rocks/image?repo=pact-foundation/pact-php" />
 </a>
 <br />
 
