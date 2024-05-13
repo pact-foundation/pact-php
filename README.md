@@ -287,4 +287,5 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 
 [spec]: https://github.com/pact-foundation/pact-specification
 [9xx]: https://github.com/pact-foundation/pact-php/tree/release/9.x
+[installation]: #installation
 [message support]: https://github.com/pact-foundation/pact-specification/tree/version-3#introduces-messages-for-services-that-communicate-via-event-streams-and-message-queues
