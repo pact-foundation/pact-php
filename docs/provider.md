@@ -1,4 +1,3 @@
-
 # Basic Provider Usage
 
 All of the following code will be used exclusively for Providers. This will run the Pacts against the real Provider and either verify or fail validation on the Pact Broker.
