@@ -1,4 +1,3 @@
-
 # Basic Consumer Usage
 
 All of the following code will be used exclusively for the Consumer.

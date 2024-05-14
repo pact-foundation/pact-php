@@ -1,4 +1,3 @@
-
 # Message support
 
 The goal is not to test the transmission of an object over a bus but instead vet the contents of the message.
