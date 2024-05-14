@@ -25,7 +25,7 @@
         "composer/semver": "^1.4.0|^3.2.0",
         "symfony/process": "^5.4|^6.0|^7.0",
         "guzzlehttp/psr7": "^2.4.5",
-        "pact-foundation/composer-downloads-plugin": "^2.0"
+        "pact-foundation/composer-downloads-plugin": "^2.1"
     },
     "require-dev": {
         "ext-sockets": "*",
@@ -123,9 +123,10 @@
                     "{$prefix}": "PHP_OS_FAMILY === 'Windows' ? 'pact_ffi' : 'libpact_ffi'",
                     "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
                     "{$architecture}": "in_array(php_uname('m'), ['arm64', 'aarch64']) ? (PHP_OS === 'Darwin' ? 'aarch64-apple-darwin' : 'aarch64') : 'x86_64'",
+                    "{$musl}": "PHP_OS === 'Linux' && musl() === true ? '-musl' : ''",
                     "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'dll' : (PHP_OS === 'Darwin' ? 'dylib' : 'so')"
                 },
-                "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/{$prefix}-{$os}-{$architecture}.{$extension}.gz",
+                "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/{$prefix}-{$os}-{$architecture}{$musl}.{$extension}.gz",
                 "path": "bin/pact-ffi-lib/pact.{$extension}"
             },
             "pact-stub-server": {

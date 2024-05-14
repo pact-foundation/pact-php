@@ -173,3 +173,37 @@ jobs:
       uses: coverallsapp/github-action@v2
       with:
         parallel-finished: true
+
+  test-alpine:
+    runs-on: ubuntu-latest
+    needs:
+      - php-cs
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [ amd64, arm64 ]
+
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout repository
+      - name: Set up QEMU
+        if: matrix.arch == 'arm64'
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        if: matrix.arch == 'arm64'
+        uses: docker/setup-buildx-action@v3
+      # - name: Build and cache
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     push: false
+      #     tags: "alpine-base:${{ matrix.arch }}"
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
+      #     platforms: linux/${{ matrix.arch }}
+      - name: run musl # If shared-mime-info not installed - Expected binary contents to have content type 'image/jpeg' but detected contents was 'application/octet-stream'
+        if: matrix.arch == 'amd64'
+        run: docker run --platform=linux/${{ matrix.arch }} --rm -v $PWD:/home you54f/pact-php:alpine-base-${{ matrix.arch }} /bin/sh -c 'apk add --no-cache shared-mime-info && cd /home && composer install && composer gen-lib && composer test'
+      - name: run musl # If shared-mime-info installed - Expected binary contents to have content type 'image/jpeg' but detected contents was 'application/octet-stream'
+        if: matrix.arch == 'arm64'
+        run: docker run --platform=linux/${{ matrix.arch }} --rm -v $PWD:/home you54f/pact-php:alpine-base-${{ matrix.arch }} /bin/sh -c 'apk add --no-cache shared-mime-info && cd /home && composer install && composer gen-lib && composer test'

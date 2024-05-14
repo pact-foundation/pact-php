@@ -270,6 +270,8 @@ _\*_ v3 support is limited to the subset of functionality required to enable lan
 | Linux   | arm64        | ✅         | 9.x +            |
 | Windows | x86_64       | ✅         | All              |
 | Windows | x86          | ✅         | 9.x -            |
+| Alpine  | x86_64       | ✅         | 10.x +           |
+| Alpine  | arm64        | ✅         | 10.x +           |
 
 </details>
 
