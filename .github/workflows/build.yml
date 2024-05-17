@@ -192,18 +192,9 @@ jobs:
       - name: Set up Docker Buildx
         if: matrix.arch == 'arm64'
         uses: docker/setup-buildx-action@v3
-      # - name: Build and cache
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     push: false
-      #     tags: "alpine-base:${{ matrix.arch }}"
-      #     cache-from: type=gha
-      #     cache-to: type=gha,mode=max
-      #     platforms: linux/${{ matrix.arch }}
-      - name: run musl # If shared-mime-info not installed - Expected binary contents to have content type 'image/jpeg' but detected contents was 'application/octet-stream'
+      - name: run musl ${{ matrix.arch }} # If shared-mime-info not installed - Expected binary contents to have content type 'image/jpeg' but detected contents was 'application/octet-stream'
         if: matrix.arch == 'amd64'
-        run: docker run --platform=linux/${{ matrix.arch }} --rm -v $PWD:/home you54f/pact-php:alpine-base-${{ matrix.arch }} /bin/sh -c 'apk add --no-cache shared-mime-info && cd /home && composer install && composer gen-lib && composer test'
-      - name: run musl # If shared-mime-info installed - Expected binary contents to have content type 'image/jpeg' but detected contents was 'application/octet-stream'
+        run: docker run --env PACT_DO_NOT_TRACK=1 --platform=linux/${{ matrix.arch }} --rm -v $PWD:/home alpine:3.19 /bin/sh -c 'apk add --no-cache shared-mime-info php82-dev php82-ffi php82-pecl-grpc php82-sockets php82-tokenizer php82-dom php82-xml php82-xmlwriter php82-simplexml composer protoc protobuf-dev && cd /home && composer install && composer gen-lib && composer test'
+      - name: run musl ${{ matrix.arch }} # If shared-mime-info not installed - Expected binary contents to have content type 'image/jpeg' but detected contents was 'application/octet-stream'
         if: matrix.arch == 'arm64'
-        run: docker run --platform=linux/${{ matrix.arch }} --rm -v $PWD:/home you54f/pact-php:alpine-base-${{ matrix.arch }} /bin/sh -c 'apk add --no-cache shared-mime-info && cd /home && composer install && composer gen-lib && composer test'
+        run: docker run --env PACT_DO_NOT_TRACK=1 --platform=linux/${{ matrix.arch }} --rm -v $PWD:/home alpine:3.19 /bin/sh -c 'apk add --no-cache shared-mime-info php82-dev php82-ffi php82-pecl-grpc php82-sockets php82-tokenizer php82-dom php82-xml php82-xmlwriter php82-simplexml composer protoc protobuf-dev  curl && curl -LO https://github.com/pact-foundation/pact-plugins/releases/download/pact-plugin-cli-v0.1.2/pact-plugin-cli-linux-aarch64.gz && gunzip pact-plugin-cli-linux-aarch64.gz && mv pact-plugin-cli-linux-aarch64 /usr/bin/pact-plugin-cli && chmod +x /usr/bin/pact-plugin-cli && pact-plugin-cli install -y https://github.com/pact-foundation/pact-plugins/releases/tag/csv-plugin-0.0.6 && cd /home && composer install && composer gen-lib && composer test'
