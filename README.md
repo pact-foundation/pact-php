@@ -270,8 +270,10 @@ _\*_ v3 support is limited to the subset of functionality required to enable lan
 | Linux   | arm64        | ✅         | 9.x +            |
 | Windows | x86_64       | ✅         | All              |
 | Windows | x86          | ✅         | 9.x -            |
-| Alpine  | x86_64       | ✅         | 10.x +           |
-| Alpine  | arm64        | ✅         | 10.x +           |
+| Alpine  | x86_64       | ✅         | All \*           |
+| Alpine  | arm64        | ✅         | All \*           |
+
+_\*_ For 9.x and below, supported with a workaround [Ruby Standalone with Alpine].
 
 </details>
 
@@ -291,3 +293,4 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 [9xx]: https://github.com/pact-foundation/pact-php/tree/release/9.x
 [installation]: #installation
 [message support]: https://github.com/pact-foundation/pact-specification/tree/version-3#introduces-messages-for-services-that-communicate-via-event-streams-and-message-queues
+[Ruby Standalone with Alpine]: https://github.com/pact-foundation/pact-ruby-standalone/wiki/Using-the-pact-ruby-standalone-with-Alpine-Linux-Docker
