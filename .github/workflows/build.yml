@@ -173,3 +173,24 @@ jobs:
       uses: coverallsapp/github-action@v2
       with:
         parallel-finished: true
+
+  test-alpine:
+    runs-on: ubuntu-latest
+    needs:
+      - php-cs
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [ amd64, arm64 ]
+
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout repository
+      - name: Set up QEMU
+        if: matrix.arch == 'arm64'
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        if: matrix.arch == 'arm64'
+        uses: docker/setup-buildx-action@v3
+      - name: run musl # If shared-mime-info not installed - Expected binary contents to have content type 'image/jpeg' but detected contents was 'application/octet-stream'
+        run: docker run --env PACT_DO_NOT_TRACK=1 --platform=linux/${{ matrix.arch }} --rm -v $PWD:/home alpine:3.19 /bin/sh -c 'apk add --no-cache shared-mime-info php82-dev php82-ffi php82-pecl-grpc php82-sockets php82-tokenizer php82-dom php82-xml php82-xmlwriter php82-simplexml composer protoc protobuf-dev && cd /home && composer install && composer gen-lib && composer test'

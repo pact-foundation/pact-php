@@ -26,7 +26,7 @@ class HttpClientServiceTest extends TestCase
         $response
             ->setStatus(200)
             ->addHeader('Content-Type', 'image/jpeg')
-            ->setBody(new Binary($path, in_array(php_uname('m'), ['AMD64', 'arm64', 'aarch64']) ? 'application/octet-stream' : 'image/jpeg'));
+            ->setBody(new Binary($path, PHP_OS_FAMILY === 'Windows' || (PHP_OS_FAMILY === 'Darwin' && php_uname('m') === 'arm64') ? 'application/octet-stream' : 'image/jpeg'));
 
         $config = new MockServerConfig();
         $config
