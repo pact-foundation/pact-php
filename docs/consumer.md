@@ -94,6 +94,28 @@ $builder
     ->willRespondWith($response); // This has to be last. This is what makes FFI calls to register the interaction and start the mock server.
 ```
 
+### Multiple Interactions
+
+There might be cases where we need multiple interactions with the mock server to have a useful test. For that case we have to:
+1. Set the second parameter (`$startMockServer`) of `willRespondWith()` to `false` for every interaction, except the last one. Otherwise, the mock-server will be started already on the first interaction and there will be no way to register more interactions.
+2. Run `newInteraction()` on every interaction, except the first one.
+
+   Example:
+   ```php
+   $builder = new InteractionBuilder($config);
+   $builder
+       ->uponReceiving('a get request to /hello/{name}')
+       ->with($firstRequest)
+       ->willRespondWith($firstResponse, false); // set $startMockServer to 'false'
+   $builder->newInteraction(); // create a new interaction
+   $builder
+       ->uponReceiving('a get request to /goodbye/{name}')
+       ->with($secondRequest)
+       ->willRespondWith($secondResponse); // this will start the mock server
+   ```
+
+[Click here](../example/json/consumer/tests/Service/ConsumerServiceMultipleInteractionsTest.php) to see full sample file for multiple interactions.
+
 ## Make the Request
 
 ```php
