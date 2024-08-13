@@ -4,6 +4,30 @@
   },
   "interactions": [
     {
+      "description": "A get request to /goodbye/{name}",
+      "providerStates": [
+        {
+          "name": "Get Goodbye"
+        }
+      ],
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "GET",
+        "path": "/goodbye/Bob"
+      },
+      "response": {
+        "body": {
+          "message": "Goodbye, Bob"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
       "description": "A get request to /hello/{name}",
       "request": {
         "headers": {
@@ -64,9 +88,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.14",
-      "mockserver": "1.2.5",
-      "models": "1.1.17"
+      "ffi": "0.4.21",
+      "mockserver": "1.2.8",
+      "models": "1.2.2"
     },
     "pactSpecification": {
       "version": "3.0.0"
