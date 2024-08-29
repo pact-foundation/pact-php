@@ -24,6 +24,9 @@ final class ResponseBuilder implements ResponseBuilderInterface
 
                 case 'body':
                     $response->setBody($this->parser->parseBody($data['body'], $response->getBody()?->getContentType()));
+                    if ($contentType = $response->getBody()?->getContentType()) {
+                        $response->addHeader('Content-Type', $contentType);
+                    }
                     break;
 
                 case 'content-type':

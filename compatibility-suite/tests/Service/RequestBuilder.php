@@ -36,6 +36,9 @@ final class RequestBuilder implements RequestBuilderInterface
 
                 case 'body':
                     $request->setBody($this->parser->parseBody($data['body'], $request->getBody()?->getContentType()));
+                    if ($contentType = $request->getBody()?->getContentType()) {
+                        $request->addHeader('Content-Type', $contentType);
+                    }
                     break;
 
                 case 'content type':
