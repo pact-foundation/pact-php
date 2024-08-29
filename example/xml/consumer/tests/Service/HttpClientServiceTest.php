@@ -3,6 +3,7 @@
 namespace XmlConsumer\Tests\Service;
 
 use PhpPact\Consumer\Matcher\Matcher;
+use PhpPact\Consumer\Model\Body\Text;
 use PhpPact\Xml\XmlBuilder;
 use XmlConsumer\Service\HttpClientService;
 use PhpPact\Consumer\InteractionBuilder;
@@ -83,9 +84,7 @@ class HttpClientServiceTest extends TestCase
         $response
             ->setStatus(200)
             ->addHeader('Content-Type', $matcher->regex('application/xml', 'application\/.*xml'))
-            ->setBody(
-                json_encode($xmlBuilder)
-            );
+            ->setBody(new Text(json_encode($xmlBuilder), 'application/xml'));
 
         $config = new MockServerConfig();
         $config

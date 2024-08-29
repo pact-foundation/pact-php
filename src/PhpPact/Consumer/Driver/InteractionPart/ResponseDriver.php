@@ -9,10 +9,8 @@ class ResponseDriver extends AbstractInteractionPartDriver implements ResponseDr
 {
     public function registerResponse(Interaction $interaction): void
     {
-        // @todo Fix 'Exception: String could not be parsed as XML' in xml's consumer test
-        // when calling `withBody` before `withHeaders`
-        $this->withHeaders($interaction, InteractionPart::RESPONSE);
         $this->withBody($interaction, InteractionPart::RESPONSE);
+        $this->withHeaders($interaction, InteractionPart::RESPONSE);
         $this->withResponse($interaction);
     }
 
