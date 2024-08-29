@@ -32,6 +32,10 @@ final class Server implements ServerInterface
             ->setPactSpecificationVersion($specificationVersion)
             ->setPactFileWriteMode(PactConfigInterface::MODE_OVERWRITE);
 
+        if ($level = \getenv('PACT_LOGLEVEL')) {
+            $this->config->setLogLevel($level);
+        }
+
         $this->driver = (new InteractionDriverFactory())->create($this->config);
     }
 
