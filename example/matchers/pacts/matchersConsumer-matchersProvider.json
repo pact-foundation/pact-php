@@ -726,9 +726,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.19",
-      "mockserver": "1.2.6",
-      "models": "1.1.19"
+      "ffi": "0.4.21",
+      "mockserver": "1.2.8",
+      "models": "1.2.2"
     },
     "pactSpecification": {
       "version": "4.0"

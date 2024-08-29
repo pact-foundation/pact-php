@@ -6,7 +6,7 @@
     {
       "contents": {
         "content": "CiRkMWYwNzdiNS0wZjkxLTQwYWEtYjhmOS01NjhiNTBlZTRkZDkSEAoFR2l2ZW4SB1N1cm5hbWU=",
-        "contentType": "application/protobuf;message=Person",
+        "contentType": "application/protobuf;message=.library.Person",
         "contentTypeHint": "BINARY",
         "encoded": "base64"
       },
@@ -45,13 +45,13 @@
         }
       },
       "metadata": {
-        "contentType": "application/protobuf;message=Person"
+        "contentType": "application/protobuf;message=.library.Person"
       },
       "pending": false,
       "pluginConfiguration": {
         "protobuf": {
           "descriptorKey": "f77f40284a5ed1f38188ed943aca6938",
-          "message": "Person"
+          "message": ".library.Person"
         }
       },
       "providerStates": [
@@ -68,8 +68,8 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.14",
-      "models": "1.1.17"
+      "ffi": "0.4.21",
+      "models": "1.2.2"
     },
     "pactSpecification": {
       "version": "4.0"
@@ -83,7 +83,7 @@
           }
         },
         "name": "protobuf",
-        "version": "0.3.13"
+        "version": "0.5.2"
       }
     ]
   },

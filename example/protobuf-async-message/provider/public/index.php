@@ -23,7 +23,7 @@ $app->post('/', function (Request $request, Response $response) {
         $response->getBody()->write($person->serializeToString());
 
         return $response
-            ->withHeader('Content-Type', 'application/protobuf;message=Person')
+            ->withHeader('Content-Type', 'application/protobuf;message=.library.Person')
             ->withHeader('Pact-Message-Metadata', \base64_encode(\json_encode([])));
     }
 
