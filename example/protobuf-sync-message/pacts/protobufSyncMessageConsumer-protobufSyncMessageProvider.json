@@ -13,13 +13,13 @@
       "pluginConfiguration": {
         "protobuf": {
           "descriptorKey": "6b90c212dfe22dc3c119d1c3fe42b5e1",
-          "service": "Calculator/calculate"
+          "service": ".plugins.Calculator/calculate"
         }
       },
       "request": {
         "contents": {
           "content": "EgoNAABAQBUAAIBA",
-          "contentType": "application/protobuf;message=ShapeMessage",
+          "contentType": "application/protobuf;message=.plugins.ShapeMessage",
           "contentTypeHint": "BINARY",
           "encoded": "base64"
         },
@@ -44,14 +44,14 @@
           }
         },
         "metadata": {
-          "contentType": "application/protobuf;message=ShapeMessage"
+          "contentType": "application/protobuf;message=.plugins.ShapeMessage"
         }
       },
       "response": [
         {
           "contents": {
             "content": "DQAAQEE=",
-            "contentType": "application/protobuf;message=AreaResponse",
+            "contentType": "application/protobuf;message=.plugins.AreaResponse",
             "contentTypeHint": "BINARY",
             "encoded": "base64"
           },
@@ -68,7 +68,7 @@
             }
           },
           "metadata": {
-            "contentType": "application/protobuf;message=AreaResponse"
+            "contentType": "application/protobuf;message=.plugins.AreaResponse"
           }
         }
       ],
@@ -78,9 +78,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.14",
-      "mockserver": "1.2.5",
-      "models": "1.1.17"
+      "ffi": "0.4.21",
+      "mockserver": "1.2.8",
+      "models": "1.2.2"
     },
     "pactSpecification": {
       "version": "4.0"
@@ -94,7 +94,7 @@
           }
         },
         "name": "protobuf",
-        "version": "0.3.13"
+        "version": "0.5.2"
       }
     ]
   },
