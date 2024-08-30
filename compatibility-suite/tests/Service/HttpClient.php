@@ -41,7 +41,7 @@ final class HttpClient implements HttpClientInterface
     {
         $result = [];
 
-        foreach($query as $key => $values) {
+        foreach ($query as $key => $values) {
             foreach ($values as $value) {
                 $result[] = urlencode($key) . '=' . urlencode($value);
             }

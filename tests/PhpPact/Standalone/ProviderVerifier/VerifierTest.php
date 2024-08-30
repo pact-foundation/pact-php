@@ -79,6 +79,8 @@ class VerifierTest extends TestCase
         $this->config->setPublishOptions($publishOptions);
         $this->config->getConsumerFilters()
             ->setFilterConsumerNames($filterConsumerNames = $hasFilterConsumerNames ? ['http-consumer-1', 'http-consumer-2', 'message-consumer-2'] : []);
+        $this->config->getCustomHeaders()
+            ->setHeaders($customHeaders = ['name-1' => 'value-1', 'name-2' => 'value-2']);
         $this->config->setLogLevel($logLevel = 'info');
         $this->calls = [
             ['pactffi_verifier_new_for_application', $callingAppName, $callingAppVersion, $this->handle],
@@ -103,6 +105,20 @@ class VerifierTest extends TestCase
                 $hasFilterConsumerNames ? $this->isInstanceOf(CData::class) : null,
                 $hasFilterConsumerNames ? count($filterConsumerNames) : null,
                 null
+            ],
+            [
+                'pactffi_verifier_add_custom_header',
+                $this->handle,
+                'name-1',
+                $customHeaders['name-1'],
+                null,
+            ],
+            [
+                'pactffi_verifier_add_custom_header',
+                $this->handle,
+                'name-2',
+                $customHeaders['name-2'],
+                null,
             ],
             ['pactffi_init_with_log_level', strtoupper($logLevel), null],
         ];

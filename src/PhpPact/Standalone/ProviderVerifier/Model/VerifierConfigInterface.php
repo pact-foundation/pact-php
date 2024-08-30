@@ -4,6 +4,7 @@ namespace PhpPact\Standalone\ProviderVerifier\Model;
 
 use PhpPact\Standalone\ProviderVerifier\Model\Config\CallingAppInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ConsumerFiltersInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\CustomHeadersInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\FilterInfoInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderInfoInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderStateInterface;
@@ -58,4 +59,8 @@ interface VerifierConfigInterface
     public function getLogLevel(): ?string;
 
     public function setLogLevel(string $logLevel): self;
+
+    public function setCustomHeaders(CustomHeadersInterface $customHeaders): self;
+
+    public function getCustomHeaders(): CustomHeadersInterface;
 }

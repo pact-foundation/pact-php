@@ -27,6 +27,7 @@ class Verifier
         $this->setVerificationOptions($config);
         $this->setPublishOptions($config);
         $this->setConsumerFilters($config);
+        $this->setCustomHeaders($config);
         $this->setLogLevel($config);
     }
 
@@ -123,6 +124,18 @@ class Verifier
             $filterConsumerNames?->getItems(),
             $filterConsumerNames?->getSize()
         );
+    }
+
+    private function setCustomHeaders(VerifierConfigInterface $config): void
+    {
+        foreach ($config->getCustomHeaders()->getHeaders() as $name => $value) {
+            $this->client->call(
+                'pactffi_verifier_add_custom_header',
+                $this->handle,
+                $name,
+                $value
+            );
+        }
     }
 
     private function setLogLevel(VerifierConfigInterface $config): void
