@@ -60,6 +60,22 @@ public function testPactVerifyConsumers(): void
 }
 ```
 
+## Add Custom Headers Prior to Verification
+
+Sometimes you may need to add custom headers to the requests that can't be persisted in a pact file.
+e.g. an OAuth bearer token: `Authorization: Bearer 1a2b3c4d5e6f7g8h9i0k`
+
+```php
+$config->getCustomHeaders()
+    ->addHeader('Authorization', 'Bearer 1a2b3c4d5e6f7g8h9i0k');
+```
+
+The requests will have custom headers added before being sent to the Provider API.
+
+> Note: Custom headers are not the only approach for authentication and authorization. For other approaches, please refer to this [documentation](https://docs.pact.io/provider/handling_auth#4-modify-the-request-to-use-real-credentials).
+
+> **Important Note:** You should only use this feature for headers that can not be persisted in the pact file. By modifying the request, you are potentially modifying the contract from the consumer tests!
+
 ## Verification Sources
 
 There are four ways to verify Pact files. See the examples below.

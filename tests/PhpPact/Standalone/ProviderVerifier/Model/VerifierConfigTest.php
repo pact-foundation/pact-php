@@ -4,6 +4,7 @@ namespace PhpPactTest\Standalone\ProviderVerifier\Model;
 
 use PhpPact\Standalone\ProviderVerifier\Model\Config\CallingApp;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ConsumerFilters;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\CustomHeaders;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\FilterInfo;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderInfo;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderState;
@@ -29,6 +30,7 @@ class VerifierConfigTest extends TestCase
             new ProviderTransport(),
             new ProviderTransport(),
         ];
+        $customHeaders = new CustomHeaders();
 
         $subject = new VerifierConfig();
         $subject->setCallingApp($callingApp);
@@ -39,6 +41,7 @@ class VerifierConfigTest extends TestCase
         $subject->setPublishOptions($publishOptions);
         $subject->setConsumerFilters($consumerFilters);
         $subject->setProviderTransports($providerTransports);
+        $subject->setCustomHeaders($customHeaders);
 
         $this->assertSame($callingApp, $subject->getCallingApp());
         $this->assertSame($providerInfo, $subject->getProviderInfo());
@@ -49,5 +52,6 @@ class VerifierConfigTest extends TestCase
         $this->assertSame($publishOptions, $subject->getPublishOptions());
         $this->assertSame($consumerFilters, $subject->getConsumerFilters());
         $this->assertSame($providerTransports, $subject->getProviderTransports());
+        $this->assertSame($customHeaders, $subject->getCustomHeaders());
     }
 }

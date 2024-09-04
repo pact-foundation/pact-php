@@ -45,6 +45,7 @@ This migrates from a CLI driven process for the Pact Framework, to an FFI proces
       - `addUrl` - Verify Provider by Pact Url retrieved by Broker (Webhooks)
       - `addBroker` Verify Provider by dynamically fetched Pacts (Provider change)
       - `addFile` / `addDir` - Verify Provider by local file or directory
+  - `$config->addCustomProviderHeader("headerName", "headerValue")` is now available via `$config->getCustomHeaders()->addHeader("headerName", "headerValue")`
 
   Example Usage:
 

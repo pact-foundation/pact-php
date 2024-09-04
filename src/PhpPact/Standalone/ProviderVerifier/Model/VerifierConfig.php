@@ -7,6 +7,8 @@ use PhpPact\Standalone\ProviderVerifier\Model\Config\CallingApp;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\CallingAppInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ConsumerFilters;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ConsumerFiltersInterface;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\CustomHeaders;
+use PhpPact\Standalone\ProviderVerifier\Model\Config\CustomHeadersInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\FilterInfo;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\FilterInfoInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderInfo;
@@ -35,6 +37,7 @@ class VerifierConfig implements VerifierConfigInterface
     private VerificationOptionsInterface $verificationOptions;
     private ?PublishOptionsInterface $publishOptions = null;
     private ConsumerFiltersInterface $consumerFilters;
+    private CustomHeadersInterface $customHeaders;
 
     public function __construct()
     {
@@ -44,6 +47,7 @@ class VerifierConfig implements VerifierConfigInterface
         $this->providerState = new ProviderState();
         $this->verificationOptions = new VerificationOptions();
         $this->consumerFilters = new ConsumerFilters();
+        $this->customHeaders = new CustomHeaders();
     }
 
     public function setCallingApp(CallingAppInterface $callingApp): self
@@ -161,5 +165,17 @@ class VerifierConfig implements VerifierConfigInterface
     public function getVerificationOptions(): VerificationOptionsInterface
     {
         return $this->verificationOptions;
+    }
+
+    public function setCustomHeaders(CustomHeadersInterface $customHeaders): self
+    {
+        $this->customHeaders = $customHeaders;
+
+        return $this;
+    }
+
+    public function getCustomHeaders(): CustomHeadersInterface
+    {
+        return $this->customHeaders;
     }
 }

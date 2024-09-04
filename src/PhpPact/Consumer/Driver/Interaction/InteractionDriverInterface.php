@@ -3,7 +3,6 @@
 namespace PhpPact\Consumer\Driver\Interaction;
 
 use PhpPact\Consumer\Model\Interaction;
-
 use PhpPact\Standalone\MockService\Model\VerifyResult;
 
 interface InteractionDriverInterface extends DriverInterface
