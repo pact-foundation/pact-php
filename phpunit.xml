@@ -43,6 +43,9 @@
     <testsuite name="stub-server-example">
       <directory>./example/stub-server</directory>
     </testsuite>
+    <testsuite name="form-urlencoded-example">
+      <directory>./example/form-urlencoded</directory>
+    </testsuite>
   </testsuites>
   <logging>
     <junit outputFile="./test_results/reports/unit_test_results.xml"/>
