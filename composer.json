@@ -75,7 +75,8 @@
             "composer run-example:protobuf-sync-message",
             "composer run-example:stub-server",
             "composer run-example:xml",
-            "composer run-example:graphql"
+            "composer run-example:graphql",
+            "composer run-example:form-urlencoded"
         ],
         "run-example:binary": [
             "rm -f example/binary/pacts/binaryConsumer-binaryProvider.json",
@@ -136,6 +137,11 @@
             "rm -f example/graphql/pacts/graphqlConsumer-graphqlProvider.json",
             "cd example/graphql/consumer && phpunit",
             "cd example/graphql/provider && phpunit"
+        ],
+        "run-example:form-urlencoded": [
+            "rm -f example/graphql/pacts/formUrlEncodedConsumer-formUrlEncodedProvider.json",
+            "cd example/form-urlencoded/consumer && phpunit",
+            "cd example/form-urlencoded/provider && phpunit"
         ]
     },
     "extra": {

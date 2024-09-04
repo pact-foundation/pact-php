@@ -1,0 +1,253 @@
+{
+  "consumer": {
+    "name": "formUrlEncodedConsumer"
+  },
+  "interactions": [
+    {
+      "description": "A post request to /users",
+      "providerStates": [
+        {
+          "name": "Endpoint is protected"
+        }
+      ],
+      "request": {
+        "body": "=first&=second&=third&%26=ampersand&%2F=slash&%3D=equals-sign&%3F=question-mark&age=27&agree=false&ampersand=%26&email=user%40email.test&empty=&equals-sign=%3D&fullname=User+name&orders%5B%5D=DESC&orders%5B%5D=ASC&orders%5B%5D=&password=user%40password111&question-mark=%3F&roles%5B%5D=User&slash=%2F",
+        "headers": {
+          "Accept": "application/x-www-form-urlencoded",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "matchingRules": {
+          "body": {
+            "$.age": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.agree": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "true|false"
+                }
+              ]
+            },
+            "$.ampersand": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.email": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$"
+                }
+              ]
+            },
+            "$.empty": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.fullname": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.password": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[\\w\\d@$!%*#?&^_-]{8,}$"
+                }
+              ]
+            },
+            "$['orders[]']": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "arrayContains",
+                  "variants": [
+                    {
+                      "index": 0,
+                      "rules": {
+                        "$": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "equality"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "index": 1,
+                      "rules": {
+                        "$": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "equality"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "index": 2,
+                      "rules": {
+                        "$": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "equality"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "$['roles[]']": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "eachValue",
+                  "rules": [
+                    {
+                      "match": "regex",
+                      "regex": "Admin|User|Manager"
+                    }
+                  ],
+                  "value": "[\"User\"]"
+                }
+              ]
+            }
+          }
+        },
+        "method": "POST",
+        "path": "/users"
+      },
+      "response": {
+        "body": "age=13&id=&name%5B%5D=&name%5B%5D=&name%5B%5D=&name%5B%5D=",
+        "generators": {
+          "body": {
+            "$.age": {
+              "max": 130,
+              "min": 0,
+              "type": "RandomInt"
+            },
+            "$.id": {
+              "type": "Uuid"
+            },
+            "$['name[]'][0]": {
+              "regex": "Mr\\.|Mrs\\.|Miss|Ms\\.",
+              "type": "Regex"
+            },
+            "$['name[]'][1]": {
+              "size": 10,
+              "type": "RandomString"
+            },
+            "$['name[]'][2]": {
+              "size": 10,
+              "type": "RandomString"
+            },
+            "$['name[]'][3]": {
+              "size": 10,
+              "type": "RandomString"
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "matchingRules": {
+          "body": {
+            "$.age": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$['name[]'][0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "Mr\\.|Mrs\\.|Miss|Ms\\."
+                }
+              ]
+            },
+            "$['name[]'][1]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$['name[]'][2]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$['name[]'][3]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          }
+        },
+        "status": 201
+      }
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.25",
+      "mockserver": "1.2.10",
+      "models": "1.2.6"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "formUrlEncodedProvider"
+  }
+}
