@@ -1,0 +1,137 @@
+{
+  "consumer": {
+    "name": "formUrlEncodedConsumer"
+  },
+  "interactions": [
+    {
+      "description": "A post request to /users",
+      "providerStates": [
+        {
+          "name": "Endpoint is protected"
+        }
+      ],
+      "request": {
+        "body": "age=27&agree=false&email=user%40email.test&empty=&fullname=User+name&password=user%40password111&roles%5B%5D=User",
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "matchingRules": {
+          "body": {
+            "$.age": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.agree": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "true|false"
+                }
+              ]
+            },
+            "$.email": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$"
+                }
+              ]
+            },
+            "$.empty": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.fullname": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.null": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "null"
+                }
+              ]
+            },
+            "$.password": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[\\w\\d@$!%*#?&^_-]{8,}$"
+                }
+              ]
+            },
+            "$['roles[]']": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "eachValue",
+                  "rules": [
+                    {
+                      "match": "regex",
+                      "regex": "Admin|User|Manager"
+                    }
+                  ],
+                  "value": "[\"User\"]"
+                }
+              ]
+            }
+          }
+        },
+        "method": "POST",
+        "path": "/users"
+      },
+      "response": {
+        "body": {
+          "id": "6e58b1df-ff80-4031-b7b9-5191e4c74ee8"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            }
+          }
+        },
+        "status": 201
+      }
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.24",
+      "mockserver": "1.2.10",
+      "models": "1.2.5"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "formUrlEncodedProvider"
+  }
+}

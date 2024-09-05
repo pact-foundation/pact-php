@@ -69,6 +69,8 @@ jobs:
             example: 'protobuf-async-message'
           - os: windows-latest
             example: 'stub-server'
+          - os: windows-latest
+            example: 'form-urlencoded-message'
     timeout-minutes: 5
 
     steps:

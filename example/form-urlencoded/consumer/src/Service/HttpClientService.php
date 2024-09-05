@@ -1,0 +1,40 @@
+<?php
+
+namespace FormUrlEncodedConsumer\Service;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Uri;
+
+class HttpClientService
+{
+    private Client $httpClient;
+
+    private string $baseUri;
+
+    public function __construct(string $baseUri)
+    {
+        $this->httpClient = new Client();
+        $this->baseUri    = $baseUri;
+    }
+
+    public function createUser(): string
+    {
+        $response = $this->httpClient->post(new Uri("{$this->baseUri}/users"), [
+            'body' => http_build_query([
+                'empty' => '',
+                'agree' => 'true',
+                'fullname' => 'First Last Name',
+                'email' => 'user@example.test',
+                'password' => 'very@secure&password123',
+                'age' => 41,
+            ]) .
+            '&roles[]=User&roles[]=Manager',
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
+        ]);
+
+        return $response->getBody();
+    }
+}

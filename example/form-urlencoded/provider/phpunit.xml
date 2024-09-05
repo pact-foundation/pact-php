@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="../../../vendor/autoload.php" colors="true">
+    <testsuites>
+        <testsuite name="PhpPact Example Tests">
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="PACT_LOGLEVEL" value="DEBUG"/>
+    </php>
+</phpunit>

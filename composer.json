@@ -92,7 +92,10 @@
             "ProtobufAsyncMessageConsumer\\Tests\\": "example/protobuf-async-message/consumer/tests",
             "ProtobufAsyncMessageProvider\\Tests\\": "example/protobuf-async-message/provider/tests",
             "StubServerConsumer\\": "example/stub-server/consumer/src",
-            "StubServerConsumer\\Tests\\": "example/stub-server/consumer/tests"
+            "StubServerConsumer\\Tests\\": "example/stub-server/consumer/tests",
+            "FormUrlEncodedConsumer\\": "example/form-urlencoded/consumer/src",
+            "FormUrlEncodedConsumer\\Tests\\": "example/form-urlencoded/consumer/tests",
+            "FormUrlEncodedProvider\\Tests\\": "example/form-urlencoded/provider/tests"
         }
     },
     "scripts": {
