@@ -1,0 +1,97 @@
+{
+  "consumer": {
+    "name": "graphqlConsumer"
+  },
+  "interactions": [
+    {
+      "description": "A mutation request to /api",
+      "request": {
+        "body": {
+          "query": "mutation { sum(x: 2, y: 2) }"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api"
+      },
+      "response": {
+        "body": {
+          "data": {
+            "sum": 4
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.data.sum": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "A query request to /api",
+      "providerStates": [
+        {
+          "name": "User exist"
+        }
+      ],
+      "request": {
+        "body": {
+          "query": "query {\n    echo(message: \"Hello World\")\n}"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/api"
+      },
+      "response": {
+        "body": {
+          "data": {
+            "echo": "Greetings Universe"
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.data.echo": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.23",
+      "mockserver": "1.2.10",
+      "models": "1.2.5"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "graphqlProvider"
+  }
+}
