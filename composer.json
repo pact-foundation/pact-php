@@ -73,48 +73,48 @@
             "composer run-example:xml"
         ],
         "run-example:binary": [
-            "rm example/binary/pacts/binaryConsumer-binaryProvider.json",
+            "rm -f example/binary/pacts/binaryConsumer-binaryProvider.json",
             "cd example/binary/consumer && phpunit",
             "cd example/binary/provider && phpunit"
         ],
         "run-example:csv": [
-            "rm example/csv/pacts/csvConsumer-csvProvider.json",
+            "rm -f example/csv/pacts/csvConsumer-csvProvider.json",
             "cd example/csv/consumer && phpunit",
             "cd example/csv/provider && phpunit"
         ],
         "run-example:generators": [
-            "rm example/generators/pacts/generatorsConsumer-generatorsProvider.json",
+            "rm -f example/generators/pacts/generatorsConsumer-generatorsProvider.json",
             "cd example/generators/consumer && phpunit",
             "cd example/generators/provider && phpunit"
         ],
         "run-example:json": [
-            "rm example/json/pacts/jsonConsumer-jsonProvider.json",
+            "rm -f example/json/pacts/jsonConsumer-jsonProvider.json",
             "cd example/json/consumer && phpunit",
             "cd example/json/provider && phpunit"
         ],
         "run-example:matchers": [
-            "rm example/matchers/pacts/matchersConsumer-matchersProvider.json",
+            "rm -f example/matchers/pacts/matchersConsumer-matchersProvider.json",
             "cd example/matchers/consumer && phpunit",
             "cd example/matchers/provider && phpunit"
         ],
         "run-example:message": [
-            "rm example/message/pacts/messageConsumer-messageProvider.json",
+            "rm -f example/message/pacts/messageConsumer-messageProvider.json",
             "cd example/message/consumer && phpunit",
             "cd example/message/provider && phpunit"
         ],
         "run-example:multipart": [
-            "rm example/multipart/pacts/multipartConsumer-multipartProvider.json",
+            "rm -f example/multipart/pacts/multipartConsumer-multipartProvider.json",
             "cd example/multipart/consumer && phpunit",
             "cd example/multipart/provider && phpunit"
         ],
         "run-example:protobuf-async-message": [
-            "rm example/protobuf-async-message/pacts/protobufAsyncMessageConsumer-protobufAsyncMessageProvider.json",
+            "rm -f example/protobuf-async-message/pacts/protobufAsyncMessageConsumer-protobufAsyncMessageProvider.json",
             "protoc --php_out=example/protobuf-async-message/library/src example/protobuf-async-message/library/proto/say_hello.proto",
             "cd example/protobuf-async-message/consumer && phpunit",
             "cd example/protobuf-async-message/provider && phpunit"
         ],
         "run-example:protobuf-sync-message": [
-            "rm example/protobuf-sync-message/pacts/protobufSyncMessageConsumer-protobufSyncMessageProvider.json",
+            "rm -f example/protobuf-sync-message/pacts/protobufSyncMessageConsumer-protobufSyncMessageProvider.json",
             "protoc --php_out=example/protobuf-sync-message/library/src example/protobuf-sync-message/library/proto/area_calculator.proto",
             "cd example/protobuf-sync-message/consumer && phpunit",
             "cd example/protobuf-sync-message/provider && phpunit"
@@ -123,7 +123,7 @@
             "cd example/stub-server/consumer && phpunit"
         ],
         "run-example:xml": [
-            "rm example/xml/pacts/xmlConsumer-xmlProvider.json",
+            "rm -f example/xml/pacts/xmlConsumer-xmlProvider.json",
             "cd example/xml/consumer && phpunit",
             "cd example/xml/provider && phpunit"
         ]
