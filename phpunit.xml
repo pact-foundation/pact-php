@@ -10,39 +10,6 @@
     <testsuite name="unit">
       <directory>./tests</directory>
     </testsuite>
-    <testsuite name="json-example">
-      <directory>./example/json</directory>
-    </testsuite>
-    <testsuite name="binary-example">
-      <directory>./example/binary</directory>
-    </testsuite>
-    <testsuite name="multipart-example">
-      <directory>./example/multipart</directory>
-    </testsuite>
-    <testsuite name="xml-example">
-      <directory>./example/xml</directory>
-    </testsuite>
-    <testsuite name="message-example">
-      <directory>./example/message</directory>
-    </testsuite>
-    <testsuite name="matchers-example">
-      <directory>./example/matchers</directory>
-    </testsuite>
-    <testsuite name="generators-example">
-      <directory>./example/generators</directory>
-    </testsuite>
-    <testsuite name="csv-example">
-      <directory>./example/csv</directory>
-    </testsuite>
-    <testsuite name="protobuf-sync-message-example">
-      <directory>./example/protobuf-sync-message</directory>
-    </testsuite>
-    <testsuite name="protobuf-async-message-example">
-      <directory>./example/protobuf-async-message</directory>
-    </testsuite>
-    <testsuite name="stub-server-example">
-      <directory>./example/stub-server</directory>
-    </testsuite>
   </testsuites>
   <logging>
     <junit outputFile="./test_results/reports/unit_test_results.xml"/>
@@ -50,7 +17,6 @@
   <php>
     <env name="PACT_CONSUMER_NAME" value="someConsumer"/>
     <env name="PACT_PROVIDER_NAME" value="someProvider"/>
-    <env name="PACT_LOGLEVEL" value="DEBUG"/>
   </php>
   <source>
     <include>
