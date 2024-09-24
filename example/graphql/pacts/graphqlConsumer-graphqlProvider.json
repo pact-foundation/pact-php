@@ -7,10 +7,34 @@
       "description": "A mutation request to /api",
       "request": {
         "body": {
-          "query": "mutation { sum(x: 2, y: 2) }"
+          "query": "mutation($x: Int!, $y: Int!) {\n    sum(\n        x: $x,\n        y: $y\n    )\n}",
+          "variables": {
+            "x": 2,
+            "y": 2
+          }
         },
         "headers": {
           "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.variables.x": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.variables.y": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          }
         },
         "method": "POST",
         "path": "/api"
@@ -48,10 +72,25 @@
       ],
       "request": {
         "body": {
-          "query": "query {\n    echo(message: \"Hello World\")\n}"
+          "query": "query($message: String!) {\n    echo(message: $message)\n}",
+          "variables": {
+            "message": "Hello World"
+          }
         },
         "headers": {
           "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.variables.message": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          }
         },
         "method": "POST",
         "path": "/api"

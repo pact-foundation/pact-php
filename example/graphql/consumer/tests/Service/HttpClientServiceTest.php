@@ -23,10 +23,13 @@ class HttpClientServiceTest extends TestCase
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
                 'query' => <<<GRAPHQL
-                query {
-                    echo(message: "Hello World")
+                query(\$message: String!) {
+                    echo(message: \$message)
                 }
-                GRAPHQL
+                GRAPHQL,
+                'variables' => [
+                    'message' => $matcher->string('Hello World'),
+                ],
             ]);
 
         $response = new ProviderResponse();
@@ -78,8 +81,17 @@ class HttpClientServiceTest extends TestCase
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
                 'query' => <<<GRAPHQL
-                mutation { sum(x: 2, y: 2) }
-                GRAPHQL
+                mutation(\$x: Int!, \$y: Int!) {
+                    sum(
+                        x: \$x,
+                        y: \$y
+                    )
+                }
+                GRAPHQL,
+                'variables' => [
+                    'x' => $matcher->integerV3(2),
+                    'y' => $matcher->integerV3(2),
+                ],
             ]);
 
         $response = new ProviderResponse();
