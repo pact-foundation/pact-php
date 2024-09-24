@@ -40,7 +40,8 @@
         "galbar/jsonpath": "^3.0",
         "ramsey/uuid": "^4.7",
         "pact-foundation/example-protobuf-sync-message-provider": "@dev",
-        "webonyx/graphql-php": "^15.14"
+        "webonyx/graphql-php": "^15.14",
+        "rector/rector": "^1.2"
     },
     "autoload": {
         "psr-4": {
@@ -60,6 +61,7 @@
         "fix": "php-cs-fixer fix",
         "test": "phpunit --no-coverage",
         "check-compatibility": "behat",
+        "refactor": "rector",
         "run-examples": [
             "composer run-example:binary",
             "composer run-example:csv",

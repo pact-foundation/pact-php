@@ -59,7 +59,7 @@ $app->get('/has-state', function (Request $request, Response $response) use ($ge
 
 $app->post('/pact-change-state', $stateChangeHandler);
 
-$app->post('/failed-pact-change-state', function (Request $request, Response $response) use ($stateChangeHandler) {
+$app->post('/failed-pact-change-state', function (Request $request, Response $response) use ($stateChangeHandler): void {
     $stateChangeHandler($request, $response);
 
     throw new \Exception('Cant do it');
