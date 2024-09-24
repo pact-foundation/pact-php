@@ -13,7 +13,7 @@ class MockServerEnvConfigTest extends TestCase
     #[TestWith(['PACT_MOCK_SERVER_HOST=example.test', 'example.test'])]
     public function testHost(string $assignment, string $host): void
     {
-        $this->preserveEnv('PACT_MOCK_SERVER_PORT', $assignment, function () use ($host) {
+        $this->preserveEnv('PACT_MOCK_SERVER_PORT', $assignment, function () use ($host): void {
             $config = new MockServerEnvConfig();
             $this->assertSame($host, $config->getHost());
         });
@@ -23,7 +23,7 @@ class MockServerEnvConfigTest extends TestCase
     #[TestWith(['PACT_MOCK_SERVER_PORT=123', 123])]
     public function testPort(string $assignment, int $port): void
     {
-        $this->preserveEnv('PACT_MOCK_SERVER_PORT', $assignment, function () use ($port) {
+        $this->preserveEnv('PACT_MOCK_SERVER_PORT', $assignment, function () use ($port): void {
             $config = new MockServerEnvConfig();
             $this->assertSame($port, $config->getPort());
         });
@@ -33,7 +33,7 @@ class MockServerEnvConfigTest extends TestCase
     #[TestWith(['PACT_CONSUMER_NAME=consumer', 'consumer'])]
     public function testConsumer(string $assignment, ?string $consumer): void
     {
-        $this->preserveEnv('PACT_CONSUMER_NAME', $assignment, function () use ($consumer) {
+        $this->preserveEnv('PACT_CONSUMER_NAME', $assignment, function () use ($consumer): void {
             if (!$consumer) {
                 $this->expectException(MissingEnvVariableException::class);
                 $this->expectExceptionMessage('Please provide required environmental variable PACT_CONSUMER_NAME!');
@@ -47,7 +47,7 @@ class MockServerEnvConfigTest extends TestCase
     #[TestWith(['PACT_PROVIDER_NAME=provider', 'provider'])]
     public function testProvider(string $assignment, ?string $provider): void
     {
-        $this->preserveEnv('PACT_PROVIDER_NAME', $assignment, function () use ($provider) {
+        $this->preserveEnv('PACT_PROVIDER_NAME', $assignment, function () use ($provider): void {
             if (!$provider) {
                 $this->expectException(MissingEnvVariableException::class);
                 $this->expectExceptionMessage('Please provide required environmental variable PACT_PROVIDER_NAME!');
@@ -61,7 +61,7 @@ class MockServerEnvConfigTest extends TestCase
     #[TestWith(['PACT_OUTPUT_DIR=/path/to/pact/dir', '/path/to/pact/dir'])]
     public function testPactDir(string $assignment, ?string $pactDir): void
     {
-        $this->preserveEnv('PACT_OUTPUT_DIR', $assignment, function () use ($pactDir) {
+        $this->preserveEnv('PACT_OUTPUT_DIR', $assignment, function () use ($pactDir): void {
             $pactDir ??= \sys_get_temp_dir();
             $config = new MockServerEnvConfig();
             $this->assertSame($pactDir, $config->getPactDir());
@@ -72,7 +72,7 @@ class MockServerEnvConfigTest extends TestCase
     #[TestWith(['PACT_LOG=/path/to/log/dir', '/path/to/log/dir'])]
     public function testLog(string $assignment, ?string $logDir): void
     {
-        $this->preserveEnv('PACT_LOG', $assignment, function () use ($logDir) {
+        $this->preserveEnv('PACT_LOG', $assignment, function () use ($logDir): void {
             $config = new MockServerEnvConfig();
             $this->assertSame($logDir, $config->getLog());
         });
@@ -82,7 +82,7 @@ class MockServerEnvConfigTest extends TestCase
     #[TestWith(['PACT_LOGLEVEL=trace', 'TRACE'])]
     public function testLogLevel(string $assignment, ?string $logLevel): void
     {
-        $this->preserveEnv('PACT_LOGLEVEL', $assignment, function () use ($logLevel) {
+        $this->preserveEnv('PACT_LOGLEVEL', $assignment, function () use ($logLevel): void {
             $config = new MockServerEnvConfig();
             $this->assertSame($logLevel, $config->getLogLevel());
         });
@@ -92,7 +92,7 @@ class MockServerEnvConfigTest extends TestCase
     #[TestWith(['PACT_SPECIFICATION_VERSION=1.1.0', '1.1.0'])]
     public function testPactSpecificationVersion(string $assignment, ?string $specificationVersion): void
     {
-        $this->preserveEnv('PACT_SPECIFICATION_VERSION', $assignment, function () use ($specificationVersion) {
+        $this->preserveEnv('PACT_SPECIFICATION_VERSION', $assignment, function () use ($specificationVersion): void {
             $config = new MockServerEnvConfig();
             $this->assertSame($specificationVersion, $config->getPactSpecificationVersion());
         });

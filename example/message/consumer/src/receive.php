@@ -12,7 +12,7 @@ $channel    = $connection->channel();
 $channel->queue_declare('myKey', false, false, false, false);
 echo ' [*] Waiting for messages. To exit press CTRL+C', "\n";
 
-$callback = function ($msg) {
+$callback = function ($msg): void {
     // process that invokes the use of the message
     $processor = new MessageConsumer\ExampleMessageConsumer();
     $processor->processMessage($msg->body);
