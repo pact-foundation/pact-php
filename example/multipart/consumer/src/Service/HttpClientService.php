@@ -11,12 +11,9 @@ class HttpClientService
 {
     private Client $httpClient;
 
-    private string $baseUri;
-
-    public function __construct(string $baseUri)
+    public function __construct(private string $baseUri)
     {
         $this->httpClient = new Client();
-        $this->baseUri = $baseUri;
     }
 
     public function updateUserProfile(): string
