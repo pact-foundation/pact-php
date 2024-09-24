@@ -24,7 +24,7 @@ $app->post('/return-provider-state-values', function (Request $request, Response
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->any('{path:.*}', function ($request, $response, array $args) {
+$app->any('{path:.*}', function (Request $request, Response $response, array $args) {
     file_put_contents(__DIR__ . '/path.txt', $args['path']);
 
     return $response;
