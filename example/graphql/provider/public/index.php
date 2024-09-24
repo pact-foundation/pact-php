@@ -12,6 +12,7 @@ use Slim\Factory\AppFactory;
 require __DIR__ . '/../autoload.php';
 
 $app = AppFactory::create();
+$app->addBodyParsingMiddleware();
 
 $app->post('/api', function (Request $request, Response $response) {
     try {
@@ -50,14 +51,9 @@ $app->post('/api', function (Request $request, Response $response) {
             ->setMutation($mutationType)
         );
 
-        $rawInput = file_get_contents('php://input');
-        if ($rawInput === false) {
-            throw new RuntimeException('Failed to get php://input');
-        }
-
-        $input = json_decode($rawInput, true);
-        $query = $input['query'];
-        $variableValues = $input['variables'] ?? null;
+        $body = $request->getParsedBody();
+        $query = $body['query'];
+        $variableValues = $body['variables'] ?? null;
 
         $rootValue = ['prefix' => 'You said: '];
         $result = GraphQL::executeQuery($schema, $query, $rootValue, null, $variableValues);
