@@ -39,7 +39,8 @@
         "behat/behat": "^3.13",
         "galbar/jsonpath": "^3.0",
         "ramsey/uuid": "^4.7",
-        "pact-foundation/example-protobuf-sync-message-provider": "@dev"
+        "pact-foundation/example-protobuf-sync-message-provider": "@dev",
+        "webonyx/graphql-php": "^15.14"
     },
     "autoload": {
         "psr-4": {
@@ -70,7 +71,8 @@
             "composer run-example:protobuf-async-message",
             "composer run-example:protobuf-sync-message",
             "composer run-example:stub-server",
-            "composer run-example:xml"
+            "composer run-example:xml",
+            "composer run-example:graphql"
         ],
         "run-example:binary": [
             "rm -f example/binary/pacts/binaryConsumer-binaryProvider.json",
@@ -126,6 +128,11 @@
             "rm -f example/xml/pacts/xmlConsumer-xmlProvider.json",
             "cd example/xml/consumer && phpunit",
             "cd example/xml/provider && phpunit"
+        ],
+        "run-example:graphql": [
+            "rm -f example/graphql/pacts/graphqlConsumer-graphqlProvider.json",
+            "cd example/graphql/consumer && phpunit",
+            "cd example/graphql/provider && phpunit"
         ]
     },
     "extra": {
