@@ -22,10 +22,13 @@ class HttpClientService
         $response = $this->httpClient->post(new Uri("{$this->baseUri}/api"), [
             'json' => [
                 'query' => <<<GRAPHQL
-                query {
-                    echo(message: "Hello World")
+                query(\$message: String!) {
+                    echo(message: \$message)
                 }
                 GRAPHQL,
+                'variables' => [
+                    'message' => 'Hi everyone!',
+                ],
             ],
             'headers' => ['Content-Type' => 'application/json']
         ]);
@@ -38,8 +41,17 @@ class HttpClientService
         $response = $this->httpClient->post(new Uri("{$this->baseUri}/api"), [
             'json' => [
                 'query' => <<<GRAPHQL
-                mutation { sum(x: 2, y: 2) }
+                mutation(\$x: Int!, \$y: Int!) {
+                    sum(
+                        x: \$x,
+                        y: \$y
+                    )
+                }
                 GRAPHQL,
+                'variables' => [
+                    'x' => 3,
+                    'y' => 5,
+                ],
             ],
             'headers' => ['Content-Type' => 'application/json']
         ]);
