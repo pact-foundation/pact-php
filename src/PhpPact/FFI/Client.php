@@ -35,6 +35,16 @@ class Client implements ClientInterface
         return $result;
     }
 
+    public function withBody(int $interaction, int $part, string $contentType, string $contents): bool
+    {
+        $method = 'pactffi_with_body';
+        $result = $this->call($method, $interaction, $part, $contentType, $contents);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
     public function withMultipartFileV2(int $interaction, int $part, string $contentType, string $path, string $name, string $boundary): Result
     {
         $method = 'pactffi_with_multipart_file_v2';
