@@ -2,8 +2,6 @@
 
 namespace PhpPact\Consumer\Driver\Body;
 
-use FFI;
-use FFI\CData;
 use PhpPact\Consumer\Driver\Enum\InteractionPart;
 use PhpPact\Consumer\Driver\Exception\InteractionBodyNotAddedException;
 use PhpPact\Consumer\Driver\Exception\PartNotAddedException;
@@ -23,8 +21,8 @@ class InteractionBodyDriver implements InteractionBodyDriverInterface
     {
         $body = $interaction->getBody($interactionPart);
         $partId = match ($interactionPart) {
-            InteractionPart::REQUEST => $this->client->get('InteractionPart_Request'),
-            InteractionPart::RESPONSE => $this->client->get('InteractionPart_Response'),
+            InteractionPart::REQUEST => $this->client->getInteractionPartRequest(),
+            InteractionPart::RESPONSE => $this->client->getInteractionPartResponse(),
         };
         switch (true) {
             case $body instanceof Binary:
@@ -38,9 +36,9 @@ class InteractionBodyDriver implements InteractionBodyDriverInterface
 
             case $body instanceof Multipart:
                 foreach ($body->getParts() as $part) {
-                    $result = $this->client->call('pactffi_with_multipart_file_v2', $interaction->getHandle(), $partId, $part->getContentType(), $part->getPath(), $part->getName(), $body->getBoundary());
-                    if ($result->failed instanceof CData) {
-                        throw new PartNotAddedException(sprintf("Can not add part '%s': %s", $part->getName(), FFI::string($result->failed)));
+                    $result = $this->client->withMultipartFileV2($interaction->getHandle(), $partId, $part->getContentType(), $part->getPath(), $part->getName(), $body->getBoundary());
+                    if (!$result->success) {
+                        throw new PartNotAddedException(sprintf("Can not add part '%s': %s", $part->getName(), $result->message));
                     }
                 }
                 $success = true;
