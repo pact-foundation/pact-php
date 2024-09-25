@@ -7,8 +7,6 @@ use FFI\CData;
 use PhpPact\FFI\Exception\HeaderNotReadException;
 use PhpPact\FFI\Exception\InvalidEnumException;
 use PhpPact\FFI\Exception\InvalidResultException;
-use PhpPact\FFI\Exception\MethodNotExistException;
-use PhpPact\FFI\Exception\PropertyNotExistException;
 use PhpPact\FFI\Model\Result;
 use PhpPact\Standalone\Installer\Model\Scripts;
 

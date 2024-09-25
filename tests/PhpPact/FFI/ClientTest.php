@@ -2,7 +2,6 @@
 
 namespace PhpPactTest\FFI;
 
-use FFI;
 use PhpPact\FFI\Client;
 use PhpPact\FFI\ClientInterface;
 use PHPUnit\Framework\Attributes\TestWith;
