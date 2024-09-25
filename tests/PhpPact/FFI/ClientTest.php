@@ -17,6 +17,23 @@ class ClientTest extends TestCase
         $this->client = new Client();
     }
 
+    public function testWithMultipartFileV2(): void
+    {
+        $result = $this->client->withMultipartFileV2(1, 2, 'text/plain', './path/to/file.txt', 'text', 'abc123');
+        $this->assertFalse($result->success);
+        $this->assertSame('with_multipart_file: Interaction handle is invalid', $result->message);
+    }
+
+    public function testGetInteractionPartRequest(): void
+    {
+        $this->assertSame(0, $this->client->getInteractionPartRequest());
+    }
+
+    public function testGetInteractionPartResponse(): void
+    {
+        $this->assertSame(1, $this->client->getInteractionPartResponse());
+    }
+
     public function testGet(): void
     {
         $this->assertSame(5, $this->client->get('LevelFilter_Trace'));
