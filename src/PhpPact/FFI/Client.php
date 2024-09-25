@@ -33,11 +33,11 @@ class Client implements ClientInterface
         if (!$result instanceof CData) {
             throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "%s", but got "%s"', $method, CData::class, get_debug_type($result)));
         }
-        if ($result->tag === $this->getEnum('StringResult_Ok') && $result->ok instanceof CData) { // @phpstan-ignore-line
-            return new Result(true, FFI::string($result->ok));
+        if ($result->tag === $this->getEnum('StringResult_Ok')) { // @phpstan-ignore-line
+            return new Result(true, $result->ok instanceof CData ? FFI::string($result->ok) : ''); // @phpstan-ignore-line
         }
-        if ($result->tag === $this->getEnum('StringResult_Failed') && $result->failed instanceof CData) { // @phpstan-ignore-line
-            return new Result(false, FFI::string($result->failed));
+        if ($result->tag === $this->getEnum('StringResult_Failed')) { // @phpstan-ignore-line
+            return new Result(false, $result->failed instanceof CData ? FFI::string($result->failed) : ''); // @phpstan-ignore-line
         }
         throw new InvalidResultException(sprintf('Invalid result of "%s". Neither ok or failed', $method));
     }
