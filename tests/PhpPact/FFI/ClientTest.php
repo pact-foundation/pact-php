@@ -4,6 +4,7 @@ namespace PhpPactTest\FFI;
 
 use PhpPact\FFI\Client;
 use PhpPact\FFI\ClientInterface;
+use PhpPact\FFI\Model\BinaryData;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
@@ -14,6 +15,12 @@ class ClientTest extends TestCase
     public function setUp(): void
     {
         $this->client = new Client();
+    }
+
+    public function testWithBinaryFile(): void
+    {
+        $result = $this->client->withBinaryFile(1, 2, 'image/png', BinaryData::createFrom('hello'));
+        $this->assertFalse($result);
     }
 
     public function testWithMultipartFileV2(): void

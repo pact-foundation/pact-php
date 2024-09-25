@@ -26,8 +26,7 @@ class InteractionBodyDriver implements InteractionBodyDriverInterface
         };
         switch (true) {
             case $body instanceof Binary:
-                $data = $body->getData();
-                $success = $this->client->call('pactffi_with_binary_file', $interaction->getHandle(), $partId, $body->getContentType(), $data->getValue(), $data->getSize());
+                $success = $this->client->withBinaryFile($interaction->getHandle(), $partId, $body->getContentType(), $body->getData());
                 break;
 
             case $body instanceof Text:
