@@ -29,8 +29,7 @@ class MessageBodyDriverTest extends TestCase
         $this->driver = new MessageBodyDriver($this->client);
         $this->client
             ->expects($this->once())
-            ->method('get')
-            ->with('InteractionPart_Request')
+            ->method('getInteractionPartRequest')
             ->willReturn($this->requestPartId);
         $this->message = new Message();
         $this->message->setHandle($this->messageId);
@@ -42,12 +41,11 @@ class MessageBodyDriverTest extends TestCase
     #[TestWith([false])]
     public function testMessageBinaryBody(bool $success): void
     {
-        $data = $this->binary->getData();
         $this->message->setContents($this->binary);
         $this->client
             ->expects($this->once())
-            ->method('call')
-            ->with('pactffi_with_binary_file', $this->messageId, $this->requestPartId, $this->binary->getContentType(), $data->getValue(), $data->getSize())
+            ->method('withBinaryFile')
+            ->with($this->messageId, $this->requestPartId, $this->binary->getContentType(), $this->binary->getData())
             ->willReturn($success);
         if (!$success) {
             $this->expectException(MessageContentsNotAddedException::class);
@@ -62,8 +60,8 @@ class MessageBodyDriverTest extends TestCase
         $this->message->setContents($this->text);
         $this->client
             ->expects($this->once())
-            ->method('call')
-            ->with('pactffi_with_body', $this->messageId, $this->requestPartId, $this->text->getContentType(), $this->text->getContents())
+            ->method('withBody')
+            ->with($this->messageId, $this->requestPartId, $this->text->getContentType(), $this->text->getContents())
             ->willReturn($success);
         if (!$success) {
             $this->expectException(MessageContentsNotAddedException::class);
@@ -75,7 +73,10 @@ class MessageBodyDriverTest extends TestCase
     {
         $this->client
             ->expects($this->never())
-            ->method('call');
+            ->method('withBody');
+        $this->client
+            ->expects($this->never())
+            ->method('withBinaryFile');
         $this->driver->registerBody($this->message);
     }
 }

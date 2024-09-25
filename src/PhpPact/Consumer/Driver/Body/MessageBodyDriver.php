@@ -17,21 +17,21 @@ class MessageBodyDriver implements MessageBodyDriverInterface
     public function registerBody(Message $message): void
     {
         $body = $message->getContents();
-        $partId = $this->client->get('InteractionPart_Request');
+        $partId = $this->client->getInteractionPartRequest();
         switch (true) {
             case $body instanceof Binary:
-                $data = $body->getData();
-                $success = $this->client->call('pactffi_with_binary_file', $message->getHandle(), $partId, $body->getContentType(), $data->getValue(), $data->getSize());
+                $success = $this->client->withBinaryFile($message->getHandle(), $partId, $body->getContentType(), $body->getData());
                 break;
 
             case $body instanceof Text:
-                $success = $this->client->call('pactffi_with_body', $message->getHandle(), $partId, $body->getContentType(), $body->getContents());
+                $success = $this->client->withBody($message->getHandle(), $partId, $body->getContentType(), $body->getContents());
                 break;
 
             default:
+                $success = true;
                 break;
         };
-        if (isset($success) && false === $success) {
+        if (!$success) {
             throw new MessageContentsNotAddedException();
         }
     }
