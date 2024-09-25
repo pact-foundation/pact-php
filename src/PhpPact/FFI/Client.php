@@ -71,6 +71,36 @@ class Client implements ClientInterface
         return $this->getEnum('InteractionPart_Response');
     }
 
+    public function getPactSpecificationV1(): int
+    {
+        return $this->getEnum('PactSpecification_V1');
+    }
+
+    public function getPactSpecificationV1_1(): int
+    {
+        return $this->getEnum('PactSpecification_V1_1');
+    }
+
+    public function getPactSpecificationV2(): int
+    {
+        return $this->getEnum('PactSpecification_V2');
+    }
+
+    public function getPactSpecificationV3(): int
+    {
+        return $this->getEnum('PactSpecification_V3');
+    }
+
+    public function getPactSpecificationV4(): int
+    {
+        return $this->getEnum('PactSpecification_V4');
+    }
+
+    public function getPactSpecificationUnknown(): int
+    {
+        return $this->getEnum('PactSpecification_Unknown');
+    }
+
     private function getEnum(string $name): int
     {
         $value = $this->get($name);
