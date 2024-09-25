@@ -7,6 +7,7 @@ use FFI\CData;
 use PhpPact\FFI\Exception\HeaderNotReadException;
 use PhpPact\FFI\Exception\InvalidEnumException;
 use PhpPact\FFI\Exception\InvalidResultException;
+use PhpPact\FFI\Model\BinaryData;
 use PhpPact\FFI\Model\Result;
 use PhpPact\Standalone\Installer\Model\Scripts;
 
@@ -22,6 +23,16 @@ class Client implements ClientInterface
             throw new HeaderNotReadException(sprintf('Can not read header file "%s"', $headerFile));
         }
         $this->ffi = FFI::cdef($code, Scripts::getLibrary());
+    }
+
+    public function withBinaryFile(int $interaction, int $part, string $contentType, BinaryData $data): bool
+    {
+        $method = 'pactffi_with_binary_file';
+        $result = $this->call($method, $interaction, $part, $contentType, $data->getValue(), $data->getSize());
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
     }
 
     public function withMultipartFileV2(int $interaction, int $part, string $contentType, string $path, string $name, string $boundary): Result

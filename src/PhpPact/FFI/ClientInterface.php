@@ -2,10 +2,13 @@
 
 namespace PhpPact\FFI;
 
+use PhpPact\FFI\Model\BinaryData;
 use PhpPact\FFI\Model\Result;
 
 interface ClientInterface
 {
+    public function withBinaryFile(int $interaction, int $part, string $contentType, BinaryData $data): bool;
+
     public function withMultipartFileV2(int $interaction, int $part, string $contentType, string $path, string $name, string $boundary): Result;
 
     public function getInteractionPartRequest(): int;

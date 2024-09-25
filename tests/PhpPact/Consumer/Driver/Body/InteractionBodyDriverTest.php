@@ -65,8 +65,8 @@ class InteractionBodyDriverTest extends TestCase
         $this->interaction->getRequest()->setBody($this->binary);
         $this->client
             ->expects($this->once())
-            ->method('call')
-            ->with('pactffi_with_binary_file', $this->interactionHandle, $this->requestPartId, $this->binary->getContentType(), $data->getValue(), $data->getSize())
+            ->method('withBinaryFile')
+            ->with($this->interactionHandle, $this->requestPartId, $this->binary->getContentType(), $data)
             ->willReturn($success);
         if (!$success) {
             $this->expectException(InteractionBodyNotAddedException::class);
@@ -83,8 +83,8 @@ class InteractionBodyDriverTest extends TestCase
         $this->interaction->getResponse()->setBody($this->binary);
         $this->client
             ->expects($this->once())
-            ->method('call')
-            ->with('pactffi_with_binary_file', $this->interactionHandle, $this->responsePartId, $this->binary->getContentType(), $data->getValue(), $data->getSize())
+            ->method('withBinaryFile')
+            ->with($this->interactionHandle, $this->responsePartId, $this->binary->getContentType(), $data)
             ->willReturn($success);
         if (!$success) {
             $this->expectException(InteractionBodyNotAddedException::class);
