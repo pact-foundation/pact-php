@@ -34,17 +34,7 @@ class PactDriverTest extends TestCase
     {
         $this->client = $this->createMock(ClientInterface::class);
         $this->config = $this->createMock(PactConfigInterface::class);
-        $this->client
-            ->expects($this->any())
-            ->method('get')
-            ->willReturnMap([
-                ['PactSpecification_Unknown', self::SPEC_UNKNOWN],
-                ['PactSpecification_V1', self::SPEC_V1],
-                ['PactSpecification_V1_1', self::SPEC_V1_1],
-                ['PactSpecification_V2', self::SPEC_V2],
-                ['PactSpecification_V3', self::SPEC_V3],
-                ['PactSpecification_V4', self::SPEC_V4],
-            ]);
+        $this->expectsGetSpecificationEnumMethods();
         $this->driver = new PactDriver($this->client, $this->config);
     }
 
@@ -189,5 +179,33 @@ class PactDriverTest extends TestCase
             ->expects($this->once())
             ->method('getProvider')
             ->willReturn($this->provider);
+    }
+
+    private function expectsGetSpecificationEnumMethods(): void
+    {
+        $this->client
+            ->expects($this->any())
+            ->method('getPactSpecificationV1')
+            ->willReturn(self::SPEC_V1);
+        $this->client
+            ->expects($this->any())
+            ->method('getPactSpecificationV1_1')
+            ->willReturn(self::SPEC_V1_1);
+        $this->client
+            ->expects($this->any())
+            ->method('getPactSpecificationV2')
+            ->willReturn(self::SPEC_V2);
+        $this->client
+            ->expects($this->any())
+            ->method('getPactSpecificationV3')
+            ->willReturn(self::SPEC_V3);
+        $this->client
+            ->expects($this->any())
+            ->method('getPactSpecificationV4')
+            ->willReturn(self::SPEC_V4);
+        $this->client
+            ->expects($this->any())
+            ->method('getPactSpecificationUnknown')
+            ->willReturn(self::SPEC_UNKNOWN);
     }
 }

@@ -46,6 +46,36 @@ class ClientTest extends TestCase
         $this->assertSame(1, $this->client->getInteractionPartResponse());
     }
 
+    public function testGetPactSpecificationV1(): void
+    {
+        $this->assertSame(1, $this->client->getPactSpecificationV1());
+    }
+
+    public function testGetPactSpecificationV1_1(): void
+    {
+        $this->assertSame(2, $this->client->getPactSpecificationV1_1());
+    }
+
+    public function testGetPactSpecificationV2(): void
+    {
+        $this->assertSame(3, $this->client->getPactSpecificationV2());
+    }
+
+    public function testGetPactSpecificationV3(): void
+    {
+        $this->assertSame(4, $this->client->getPactSpecificationV3());
+    }
+
+    public function testGetPactSpecificationV4(): void
+    {
+        $this->assertSame(5, $this->client->getPactSpecificationV4());
+    }
+
+    public function testGetPactSpecificationUnknown(): void
+    {
+        $this->assertSame(0, $this->client->getPactSpecificationUnknown());
+    }
+
     public function testGet(): void
     {
         $this->assertSame(5, $this->client->get('LevelFilter_Trace'));

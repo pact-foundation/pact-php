@@ -17,6 +17,18 @@ interface ClientInterface
 
     public function getInteractionPartResponse(): int;
 
+    public function getPactSpecificationV1(): int;
+
+    public function getPactSpecificationV1_1(): int;
+
+    public function getPactSpecificationV2(): int;
+
+    public function getPactSpecificationV3(): int;
+
+    public function getPactSpecificationV4(): int;
+
+    public function getPactSpecificationUnknown(): int;
+
     /**
      * @param array<int, mixed> $arguments
      */

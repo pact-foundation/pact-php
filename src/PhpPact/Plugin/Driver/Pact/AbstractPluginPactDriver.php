@@ -29,7 +29,7 @@ abstract class AbstractPluginPactDriver extends PactDriver
 
     private function usingPlugin(): self
     {
-        if ($this->getSpecification() < $this->client->get('PactSpecification_V4')) {
+        if ($this->getSpecification() < $this->client->getPactSpecificationV4()) {
             throw new PluginNotSupportedBySpecificationException($this->config->getPactSpecificationVersion());
         }
 
