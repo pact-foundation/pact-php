@@ -23,6 +23,12 @@ class ClientTest extends TestCase
         $this->assertFalse($result);
     }
 
+    public function testWithBody(): void
+    {
+        $result = $this->client->withBody(1, 2, 'text/plain', 'test');
+        $this->assertFalse($result);
+    }
+
     public function testWithMultipartFileV2(): void
     {
         $result = $this->client->withMultipartFileV2(1, 2, 'text/plain', './path/to/file.txt', 'text', 'abc123');

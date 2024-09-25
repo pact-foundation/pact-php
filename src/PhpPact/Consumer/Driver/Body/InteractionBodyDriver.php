@@ -30,7 +30,7 @@ class InteractionBodyDriver implements InteractionBodyDriverInterface
                 break;
 
             case $body instanceof Text:
-                $success = $this->client->call('pactffi_with_body', $interaction->getHandle(), $partId, $body->getContentType(), $body->getContents());
+                $success = $this->client->withBody($interaction->getHandle(), $partId, $body->getContentType(), $body->getContents());
                 break;
 
             case $body instanceof Multipart:
@@ -44,9 +44,10 @@ class InteractionBodyDriver implements InteractionBodyDriverInterface
                 break;
 
             default:
+                $success = true;
                 break;
         };
-        if (isset($success) && false === $success) {
+        if (!$success) {
             throw new InteractionBodyNotAddedException();
         }
     }

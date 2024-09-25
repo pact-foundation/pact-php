@@ -100,8 +100,8 @@ class InteractionBodyDriverTest extends TestCase
         $this->interaction->getRequest()->setBody($this->text);
         $this->client
             ->expects($this->once())
-            ->method('call')
-            ->with('pactffi_with_body', $this->interactionHandle, $this->requestPartId, $this->text->getContentType(), $this->text->getContents())
+            ->method('withBody')
+            ->with($this->interactionHandle, $this->requestPartId, $this->text->getContentType(), $this->text->getContents())
             ->willReturn($success);
         if (!$success) {
             $this->expectException(InteractionBodyNotAddedException::class);
@@ -117,8 +117,8 @@ class InteractionBodyDriverTest extends TestCase
         $this->interaction->getResponse()->setBody($this->text);
         $this->client
             ->expects($this->once())
-            ->method('call')
-            ->with('pactffi_with_body', $this->interactionHandle, $this->responsePartId, $this->text->getContentType(), $this->text->getContents())
+            ->method('withBody')
+            ->with($this->interactionHandle, $this->responsePartId, $this->text->getContentType(), $this->text->getContents())
             ->willReturn($success);
         if (!$success) {
             $this->expectException(InteractionBodyNotAddedException::class);
@@ -213,7 +213,10 @@ class InteractionBodyDriverTest extends TestCase
         $this->expectsGetEnumMethods($part);
         $this->client
             ->expects($this->never())
-            ->method('call');
+            ->method('withBinaryFile');
+        $this->client
+            ->expects($this->never())
+            ->method('withBody');
         $this->client
             ->expects($this->never())
             ->method('withMultipartFileV2');
