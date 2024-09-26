@@ -3,6 +3,7 @@
 namespace PhpPact\SyncMessage\Driver\Interaction;
 
 use PhpPact\Consumer\Driver\Body\MessageBodyDriverInterface;
+use PhpPact\Consumer\Driver\Exception\InteractionNotModifiedException;
 use PhpPact\Consumer\Driver\Interaction\AbstractMessageDriver;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Model\Message;
@@ -48,9 +49,15 @@ class SyncMessageDriver extends AbstractMessageDriver implements SyncMessageDriv
     protected function given(Message $message): void
     {
         foreach ($message->getProviderStates() as $providerState) {
-            $this->client->call('pactffi_given', $message->getHandle(), $providerState->getName());
+            $success = $this->client->given($message->getHandle(), $providerState->getName());
+            if (!$success) {
+                throw new InteractionNotModifiedException();
+            }
             foreach ($providerState->getParams() as $key => $value) {
-                $this->client->call('pactffi_given_with_param', $message->getHandle(), $providerState->getName(), (string) $key, (string) $value);
+                $success = $this->client->givenWithParam($message->getHandle(), $providerState->getName(), (string) $key, (string) $value);
+                if (!$success) {
+                    throw new InteractionNotModifiedException();
+                }
             }
         }
     }

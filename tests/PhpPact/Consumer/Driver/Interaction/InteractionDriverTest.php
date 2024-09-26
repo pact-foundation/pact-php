@@ -2,9 +2,6 @@
 
 namespace PhpPactTest\Consumer\Driver\Interaction;
 
-use PhpPact\Consumer\Driver\Exception\InteractionCommentNotSetException;
-use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
-use PhpPact\Consumer\Driver\Exception\InteractionPendingNotSetException;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriver;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
 use PhpPact\Consumer\Driver\InteractionPart\RequestDriverInterface;
@@ -96,13 +93,12 @@ class InteractionDriverTest extends TestCase
             ->method('registerResponse')
             ->with($this->interaction);
         $this->expectsNewInteraction($this->pactHandle, $this->description, $this->interactionHandle);
-        $calls = [
-            ['pactffi_given', $this->interactionHandle, 'item exist', null],
-            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'id', '12', null],
-            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
-            ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
-        ];
-        $this->assertClientCalls($calls);
+        $this->expectsGiven($this->interactionHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->interactionHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], true);
+        $this->expectsUponReceiving($this->interactionHandle, $this->description, true);
         $this->mockServer
             ->expects($startMockServer ? $this->once() : $this->never())
             ->method('start');
@@ -122,14 +118,13 @@ class InteractionDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewInteraction($this->pactHandle, $this->description, $this->interactionHandle);
-        $calls = [
-            ['pactffi_given', $this->interactionHandle, 'item exist', null],
-            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'id', '12', null],
-            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
-            ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
-        ];
+        $this->expectsGiven($this->interactionHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->interactionHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], true);
+        $this->expectsUponReceiving($this->interactionHandle, $this->description, true);
         $this->expectsSetInteractionKey($this->interactionHandle, $this->description, $key, $success);
-        $this->assertClientCalls($calls);
         $this->driver->registerInteraction($this->interaction, false);
     }
 
@@ -147,14 +142,13 @@ class InteractionDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewInteraction($this->pactHandle, $this->description, $this->interactionHandle);
-        $calls = [
-            ['pactffi_given', $this->interactionHandle, 'item exist', null],
-            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'id', '12', null],
-            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
-            ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
-        ];
+        $this->expectsGiven($this->interactionHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->interactionHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], true);
+        $this->expectsUponReceiving($this->interactionHandle, $this->description, true);
         $this->expectsSetInteractionPending($this->interactionHandle, $this->description, $pending, $success);
-        $this->assertClientCalls($calls);
         $this->driver->registerInteraction($this->interaction, false);
     }
 
@@ -176,14 +170,13 @@ class InteractionDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewInteraction($this->pactHandle, $this->description, $this->interactionHandle);
-        $calls = [
-            ['pactffi_given', $this->interactionHandle, 'item exist', null],
-            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'id', '12', null],
-            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
-            ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
-        ];
+        $this->expectsGiven($this->interactionHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->interactionHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], true);
+        $this->expectsUponReceiving($this->interactionHandle, $this->description, true);
         $this->expectsSetComments($this->interactionHandle, $this->description, $comments, $success);
-        $this->assertClientCalls($calls);
         $this->driver->registerInteraction($this->interaction, false);
     }
 
@@ -202,14 +195,55 @@ class InteractionDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewInteraction($this->pactHandle, $this->description, $this->interactionHandle);
-        $calls = [
-            ['pactffi_given', $this->interactionHandle, 'item exist', null],
-            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'id', '12', null],
-            ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
-            ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
-        ];
+        $this->expectsGiven($this->interactionHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->interactionHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], true);
+        $this->expectsUponReceiving($this->interactionHandle, $this->description, true);
         $this->expectsAddTextComments($this->interactionHandle, $this->description, $comments, $success);
-        $this->assertClientCalls($calls);
+        $this->driver->registerInteraction($this->interaction, false);
+    }
+
+    public function testGivenCanNotModifyInteraction(): void
+    {
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $this->expectsNewInteraction($this->pactHandle, $this->description, $this->interactionHandle);
+        $this->expectsGiven($this->interactionHandle, 'item exist', false);
+        $this->driver->registerInteraction($this->interaction, false);
+    }
+
+    public function testGivenWithParamCanNotModifyInteraction(): void
+    {
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $this->expectsNewInteraction($this->pactHandle, $this->description, $this->interactionHandle);
+        $this->expectsGiven($this->interactionHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->interactionHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], false);
+        $this->driver->registerInteraction($this->interaction, false);
+    }
+
+    public function testUponReceivingCanNotModifyInteraction(): void
+    {
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $this->expectsNewInteraction($this->pactHandle, $this->description, $this->interactionHandle);
+        $this->expectsGiven($this->interactionHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->interactionHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], true);
+        $this->expectsUponReceiving($this->interactionHandle, $this->description, false);
         $this->driver->registerInteraction($this->interaction, false);
     }
 }

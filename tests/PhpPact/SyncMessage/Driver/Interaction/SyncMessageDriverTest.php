@@ -3,9 +3,6 @@
 namespace PhpPactTest\SyncMessage\Driver\Interaction;
 
 use PhpPact\Consumer\Driver\Body\MessageBodyDriverInterface;
-use PhpPact\Consumer\Driver\Exception\InteractionCommentNotSetException;
-use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
-use PhpPact\Consumer\Driver\Exception\InteractionPendingNotSetException;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Consumer\Model\Pact\Pact;
@@ -95,10 +92,12 @@ class SyncMessageDriverTest extends TestCase
             ->method('registerBody')
             ->with($this->message);
         $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
+        $this->expectsGiven($this->messageHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], true);
         $calls = [
-            ['pactffi_given', $this->messageHandle, 'item exist', null],
-            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
-            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
             ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
@@ -120,10 +119,12 @@ class SyncMessageDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
+        $this->expectsGiven($this->messageHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], true);
         $calls = [
-            ['pactffi_given', $this->messageHandle, 'item exist', null],
-            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
-            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
             ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
@@ -147,10 +148,12 @@ class SyncMessageDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
+        $this->expectsGiven($this->messageHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], true);
         $calls = [
-            ['pactffi_given', $this->messageHandle, 'item exist', null],
-            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
-            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
             ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
@@ -178,10 +181,12 @@ class SyncMessageDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
+        $this->expectsGiven($this->messageHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], true);
         $calls = [
-            ['pactffi_given', $this->messageHandle, 'item exist', null],
-            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
-            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
             ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
@@ -206,16 +211,44 @@ class SyncMessageDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
+        $this->expectsGiven($this->messageHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], true);
         $calls = [
-            ['pactffi_given', $this->messageHandle, 'item exist', null],
-            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
-            ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
             ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
         ];
         $this->expectsAddTextComments($this->messageHandle, $this->description, $comments, $success);
         $this->assertClientCalls($calls);
+        $this->driver->registerMessage($this->message);
+    }
+
+    public function testGivenCanNotModifyInteraction(): void
+    {
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
+        $this->expectsGiven($this->messageHandle, 'item exist', false);
+        $this->driver->registerMessage($this->message);
+    }
+
+    public function testGivenWithParamCanNotModifyInteraction(): void
+    {
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
+        $this->expectsGiven($this->messageHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], false);
         $this->driver->registerMessage($this->message);
     }
 }

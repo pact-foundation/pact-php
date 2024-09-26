@@ -2,6 +2,7 @@
 
 namespace PhpPact\Consumer\Driver\Interaction;
 
+use PhpPact\Consumer\Driver\Exception\InteractionNotModifiedException;
 use PhpPact\Consumer\Driver\InteractionPart\RequestDriver;
 use PhpPact\Consumer\Driver\InteractionPart\RequestDriverInterface;
 use PhpPact\Consumer\Driver\InteractionPart\ResponseDriver;
@@ -67,15 +68,24 @@ class InteractionDriver extends AbstractDriver implements InteractionDriverInter
 
     private function uponReceiving(Interaction $interaction): void
     {
-        $this->client->call('pactffi_upon_receiving', $interaction->getHandle(), $interaction->getDescription());
+        $success = $this->client->uponReceiving($interaction->getHandle(), $interaction->getDescription());
+        if (!$success) {
+            throw new InteractionNotModifiedException();
+        }
     }
 
     private function given(Interaction $interaction): void
     {
         foreach ($interaction->getProviderStates() as $providerState) {
-            $this->client->call('pactffi_given', $interaction->getHandle(), $providerState->getName());
+            $success = $this->client->given($interaction->getHandle(), $providerState->getName());
+            if (!$success) {
+                throw new InteractionNotModifiedException();
+            }
             foreach ($providerState->getParams() as $key => $value) {
-                $this->client->call('pactffi_given_with_param', $interaction->getHandle(), $providerState->getName(), (string) $key, (string) $value);
+                $success = $this->client->givenWithParam($interaction->getHandle(), $providerState->getName(), (string) $key, (string) $value);
+                if (!$success) {
+                    throw new InteractionNotModifiedException();
+                }
             }
         }
     }

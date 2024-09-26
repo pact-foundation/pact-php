@@ -78,6 +78,24 @@ class ClientTest extends TestCase
         $this->assertIsInt($result);
     }
 
+    public function testGiven(): void
+    {
+        $result = $this->client->given(1, 'test');
+        $this->assertFalse($result);
+    }
+
+    public function testGivenWithParam(): void
+    {
+        $result = $this->client->givenWithParam(1, 'test', 'key', 'value');
+        $this->assertFalse($result);
+    }
+
+    public function testUponReceiving(): void
+    {
+        $result = $this->client->uponReceiving(1, 'test');
+        $this->assertFalse($result);
+    }
+
     public function testGetInteractionPartRequest(): void
     {
         $this->assertSame(0, $this->client->getInteractionPartRequest());

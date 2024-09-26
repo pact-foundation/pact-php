@@ -27,6 +27,12 @@ interface ClientInterface
 
     public function newSyncMessageInteraction(int $pact, string $description): int;
 
+    public function given(int $interaction, string $name): bool;
+
+    public function givenWithParam(int $interaction, string $name, string $key, string $value): bool;
+
+    public function uponReceiving(int $interaction, string $description): bool;
+
     public function getInteractionPartRequest(): int;
 
     public function getInteractionPartResponse(): int;
