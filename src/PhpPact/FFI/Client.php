@@ -101,6 +101,36 @@ class Client implements ClientInterface
         return $result;
     }
 
+    public function newInteraction(int $pact, string $description): int
+    {
+        $method = 'pactffi_new_interaction';
+        $result = $this->call($method, $pact, $description);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function newMessageInteraction(int $pact, string $description): int
+    {
+        $method = 'pactffi_new_message_interaction';
+        $result = $this->call($method, $pact, $description);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function newSyncMessageInteraction(int $pact, string $description): int
+    {
+        $method = 'pactffi_new_sync_message_interaction';
+        $result = $this->call($method, $pact, $description);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
     public function getInteractionPartRequest(): int
     {
         return $this->getEnum('InteractionPart_Request');

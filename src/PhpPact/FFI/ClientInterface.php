@@ -21,6 +21,12 @@ interface ClientInterface
 
     public function addTextComment(int $interaction, string $value): bool;
 
+    public function newInteraction(int $pact, string $description): int;
+
+    public function newMessageInteraction(int $pact, string $description): int;
+
+    public function newSyncMessageInteraction(int $pact, string $description): int;
+
     public function getInteractionPartRequest(): int;
 
     public function getInteractionPartResponse(): int;

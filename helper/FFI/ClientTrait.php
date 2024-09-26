@@ -114,4 +114,31 @@ trait ClientTrait
             $this->expectExceptionMessage("Can not add text comment '$comment' to the interaction '{$description}'");
         }
     }
+
+    protected function expectsNewInteraction(int $pact, string $description, int $interaction): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('newInteraction')
+            ->with($pact, $description)
+            ->willReturn($interaction);
+    }
+
+    protected function expectsNewMessageInteraction(int $pact, string $description, int $interaction): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('newMessageInteraction')
+            ->with($pact, $description)
+            ->willReturn($interaction);
+    }
+
+    protected function expectsNewSyncMessageInteraction(int $pact, string $description, int $interaction): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('newSyncMessageInteraction')
+            ->with($pact, $description)
+            ->willReturn($interaction);
+    }
 }

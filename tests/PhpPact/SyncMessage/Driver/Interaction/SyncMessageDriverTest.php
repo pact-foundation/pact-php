@@ -94,8 +94,8 @@ class SyncMessageDriverTest extends TestCase
             ->expects($this->once())
             ->method('registerBody')
             ->with($this->message);
+        $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
         $calls = [
-            ['pactffi_new_sync_message_interaction', $this->pactHandle, $this->description, $this->messageHandle],
             ['pactffi_given', $this->messageHandle, 'item exist', null],
             ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
             ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
@@ -119,8 +119,8 @@ class SyncMessageDriverTest extends TestCase
             ->expects($this->once())
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
+        $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
         $calls = [
-            ['pactffi_new_sync_message_interaction', $this->pactHandle, $this->description, $this->messageHandle],
             ['pactffi_given', $this->messageHandle, 'item exist', null],
             ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
             ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
@@ -146,8 +146,8 @@ class SyncMessageDriverTest extends TestCase
             ->expects($this->once())
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
+        $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
         $calls = [
-            ['pactffi_new_sync_message_interaction', $this->pactHandle, $this->description, $this->messageHandle],
             ['pactffi_given', $this->messageHandle, 'item exist', null],
             ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
             ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
@@ -177,8 +177,8 @@ class SyncMessageDriverTest extends TestCase
             ->expects($this->once())
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
+        $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
         $calls = [
-            ['pactffi_new_sync_message_interaction', $this->pactHandle, $this->description, $this->messageHandle],
             ['pactffi_given', $this->messageHandle, 'item exist', null],
             ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
             ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
@@ -205,8 +205,8 @@ class SyncMessageDriverTest extends TestCase
             ->expects($this->once())
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
+        $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
         $calls = [
-            ['pactffi_new_sync_message_interaction', $this->pactHandle, $this->description, $this->messageHandle],
             ['pactffi_given', $this->messageHandle, 'item exist', null],
             ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
             ['pactffi_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
