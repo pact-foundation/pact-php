@@ -2,7 +2,6 @@
 
 namespace PhpPactTest\Helper;
 
-use PhpPactTest\Helper\Exception\NoPortAvailableException;
 use Symfony\Component\Process\Process;
 
 abstract class AbstractProcess
