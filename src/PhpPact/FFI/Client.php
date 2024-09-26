@@ -115,7 +115,7 @@ class Client implements ClientInterface
         return $this->ffi->{$name}(...$arguments);
     }
 
-    public function get(string $name): mixed
+    private function get(string $name): mixed
     {
         return $this->ffi->{$name};
     }
