@@ -225,4 +225,30 @@ class SyncMessageDriverTest extends TestCase
         $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
+
+    public function testGivenCanNotModifyInteraction(): void
+    {
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
+        $this->expectsGiven($this->messageHandle, 'item exist', false);
+        $this->driver->registerMessage($this->message);
+    }
+
+    public function testGivenWithParamCanNotModifyInteraction(): void
+    {
+        $this->pactDriver
+            ->expects($this->once())
+            ->method('getPact')
+            ->willReturn(new Pact($this->pactHandle));
+        $this->expectsNewSyncMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
+        $this->expectsGiven($this->messageHandle, 'item exist', true);
+        $this->expectsGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ], false);
+        $this->driver->registerMessage($this->message);
+    }
 }
