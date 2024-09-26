@@ -51,7 +51,8 @@
     "autoload-dev": {
         "psr-4": {
             "PhpPactTest\\": "tests/PhpPact",
-            "PhpPactTest\\CompatibilitySuite\\": "compatibility-suite/tests"
+            "PhpPactTest\\CompatibilitySuite\\": "compatibility-suite/tests",
+            "PhpPactTest\\Helper\\": "helper"
         }
     },
     "scripts": {
