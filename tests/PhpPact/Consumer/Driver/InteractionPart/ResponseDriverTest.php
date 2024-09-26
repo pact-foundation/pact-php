@@ -46,8 +46,7 @@ class ResponseDriverTest extends TestCase
     {
         $this->client
             ->expects($this->once())
-            ->method('get')
-            ->with('InteractionPart_Response')
+            ->method('getInteractionPartResponse')
             ->willReturn($this->responsePartId);
         $calls = [
             ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header1', 0, 'header-value-1'],

@@ -28,8 +28,8 @@ abstract class AbstractInteractionPartDriver
     {
         $headers = $interaction->getHeaders($interactionPart);
         $partId = match ($interactionPart) {
-            InteractionPart::REQUEST => $this->client->get('InteractionPart_Request'),
-            InteractionPart::RESPONSE => $this->client->get('InteractionPart_Response'),
+            InteractionPart::REQUEST => $this->client->getInteractionPartRequest(),
+            InteractionPart::RESPONSE => $this->client->getInteractionPartResponse(),
         };
         foreach ($headers as $header => $values) {
             foreach (array_values($values) as $index => $value) {

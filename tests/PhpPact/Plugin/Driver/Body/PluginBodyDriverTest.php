@@ -15,7 +15,6 @@ use PhpPact\FFI\ClientInterface;
 use PhpPact\Plugin\Driver\Body\PluginBodyDriver;
 use PhpPact\Plugin\Driver\Body\PluginBodyDriverInterface;
 use PhpPact\Plugin\Exception\PluginBodyNotAddedException;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -38,13 +37,6 @@ class PluginBodyDriverTest extends TestCase
     public function setUp(): void
     {
         $this->client = $this->createMock(ClientInterface::class);
-        $this->client
-            ->expects($this->once())
-            ->method('get')
-            ->willReturnMap([
-                ['InteractionPart_Request', $this->requestPartId],
-                ['InteractionPart_Response', $this->responsePartId],
-            ]);
         $this->driver = new PluginBodyDriver($this->client);
         $this->interaction = new Interaction();
         $this->interaction->setHandle($this->interactionId);
@@ -62,6 +54,7 @@ class PluginBodyDriverTest extends TestCase
     #[TestWith([InteractionPart::RESPONSE])]
     public function testInteractionBinaryBody(InteractionPart $part): void
     {
+        $this->expectsGetInteractionPartEnumMethods($part);
         if ($part === InteractionPart::REQUEST) {
             $this->interaction->getRequest()->setBody($this->binary);
         } else {
@@ -79,6 +72,7 @@ class PluginBodyDriverTest extends TestCase
     #[TestWith([InteractionPart::RESPONSE])]
     public function testMessageBinaryBody(InteractionPart $part): void
     {
+        $this->expectsGetInteractionPartEnumMethods(InteractionPart::REQUEST);
         $this->message->setContents($this->binary);
         $this->client
             ->expects($this->never())
@@ -92,6 +86,7 @@ class PluginBodyDriverTest extends TestCase
     #[TestWith([InteractionPart::RESPONSE])]
     public function testInteractionPlainTextBody(InteractionPart $part): void
     {
+        $this->expectsGetInteractionPartEnumMethods($part);
         if ($part === InteractionPart::REQUEST) {
             $this->interaction->getRequest()->setBody($this->text);
         } else {
@@ -109,6 +104,7 @@ class PluginBodyDriverTest extends TestCase
     #[TestWith([InteractionPart::RESPONSE])]
     public function testMessagePlainTextBody(InteractionPart $part): void
     {
+        $this->expectsGetInteractionPartEnumMethods(InteractionPart::REQUEST);
         $this->message->setContents($this->text);
         $this->client
             ->expects($this->never())
@@ -141,6 +137,7 @@ class PluginBodyDriverTest extends TestCase
     #[TestWith([7])]
     public function testRequestJsonBody(int $error): void
     {
+        $this->expectsGetInteractionPartEnumMethods(InteractionPart::REQUEST);
         $this->interaction->getRequest()->setBody($this->json);
         $this->client
             ->expects($this->once())
@@ -164,6 +161,7 @@ class PluginBodyDriverTest extends TestCase
     #[TestWith([7])]
     public function testResponseJsonBody(int $error): void
     {
+        $this->expectsGetInteractionPartEnumMethods(InteractionPart::RESPONSE);
         $this->interaction->getResponse()->setBody($this->json);
         $this->client
             ->expects($this->once())
@@ -187,6 +185,7 @@ class PluginBodyDriverTest extends TestCase
     #[TestWith([7])]
     public function testMessageJsonBody(int $error): void
     {
+        $this->expectsGetInteractionPartEnumMethods(InteractionPart::REQUEST);
         $this->message->setContents($this->json);
         $this->client
             ->expects($this->once())
@@ -204,6 +203,7 @@ class PluginBodyDriverTest extends TestCase
     #[TestWith([InteractionPart::RESPONSE])]
     public function testInteractionMultipartBody(InteractionPart $part): void
     {
+        $this->expectsGetInteractionPartEnumMethods($part);
         if ($part === InteractionPart::REQUEST) {
             $this->interaction->getRequest()->setBody($this->multipart);
         } else {
@@ -221,6 +221,7 @@ class PluginBodyDriverTest extends TestCase
     #[TestWith([InteractionPart::RESPONSE])]
     public function testEmptyInteractionBody(InteractionPart $part): void
     {
+        $this->expectsGetInteractionPartEnumMethods($part);
         $this->client
             ->expects($this->never())
             ->method('call');
@@ -235,5 +236,22 @@ class PluginBodyDriverTest extends TestCase
             ->expects($this->never())
             ->method('call');
         $this->driver->registerBody($this->message, $part);
+    }
+
+    private function expectsGetInteractionPartEnumMethods(InteractionPart $part): void
+    {
+        if ($part === InteractionPart::REQUEST) {
+            $this->client
+                ->expects($this->once())
+                ->method('getInteractionPartRequest')
+                ->willReturn($this->requestPartId);
+            $this->client->expects($this->never())->method('getInteractionPartResponse');
+        } else {
+            $this->client->expects($this->never())->method('getInteractionPartRequest');
+            $this->client
+                ->expects($this->once())
+                ->method('getInteractionPartResponse')
+                ->willReturn($this->responsePartId);
+        }
     }
 }

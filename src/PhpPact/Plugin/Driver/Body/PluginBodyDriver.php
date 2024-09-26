@@ -21,9 +21,9 @@ class PluginBodyDriver implements PluginBodyDriverInterface
     public function registerBody(Interaction|Message $interaction, InteractionPart $interactionPart): void
     {
         $body = $interaction instanceof Message ? $interaction->getContents() : $interaction->getBody($interactionPart);
-        $partId = $interaction instanceof Message ? $this->client->get('InteractionPart_Request') : match ($interactionPart) {
-            InteractionPart::REQUEST => $this->client->get('InteractionPart_Request'),
-            InteractionPart::RESPONSE => $this->client->get('InteractionPart_Response'),
+        $partId = $interaction instanceof Message ? $this->client->getInteractionPartRequest() : match ($interactionPart) {
+            InteractionPart::REQUEST => $this->client->getInteractionPartRequest(),
+            InteractionPart::RESPONSE => $this->client->getInteractionPartResponse(),
         };
         switch (true) {
             case $body instanceof Binary:
