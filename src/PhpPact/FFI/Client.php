@@ -161,6 +161,30 @@ class Client implements ClientInterface
         return $result;
     }
 
+    public function messageExpectsToReceive(int $message, string $description): void
+    {
+        $method = 'pactffi_message_expects_to_receive';
+        $this->call($method, $message, $description);
+    }
+
+    public function messageWithMetadataV2(int $message, string $key, string $value): void
+    {
+        $method = 'pactffi_message_with_metadata_v2';
+        $this->call($method, $message, $key, $value);
+    }
+
+    public function messageGiven(int $message, string $name): void
+    {
+        $method = 'pactffi_message_given';
+        $this->call($method, $message, $name);
+    }
+
+    public function messageGivenWithParam(int $message, string $name, string $key, string $value): void
+    {
+        $method = 'pactffi_message_given_with_param';
+        $this->call($method, $message, $name, $key, $value);
+    }
+
     public function getInteractionPartRequest(): int
     {
         return $this->getEnum('InteractionPart_Request');

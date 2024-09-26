@@ -196,4 +196,60 @@ trait ClientTrait
             $this->expectExceptionMessage("The interaction or Pact can't be modified (i.e. the mock server for it has already started)");
         }
     }
+
+    protected function expectsMessageExpectsToReceive(int $message, string $description): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('messageExpectsToReceive')
+            ->with($message, $description);
+    }
+
+    /**
+     * @param array<string, string> $metadata
+     */
+    protected function expectsMessageWithMetadataV2(int $message, array $metadata): void
+    {
+        $calls = [];
+        foreach ($metadata as $key => $value) {
+            $calls[] = [$message, $key, $value];
+        }
+        $this->client
+            ->expects($this->exactly(count($calls)))
+            ->method('messageWithMetadataV2')
+            ->willReturnCallback(function (...$args) use (&$calls) {
+                $call = array_shift($calls);
+                foreach ($args as $key => $arg) {
+                    $this->assertThat($arg, $call[$key] instanceof Constraint ? $call[$key] : new IsIdentical($call[$key]));
+                }
+            });
+    }
+
+    protected function expectsMessageGiven(int $message, string $name): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('messageGiven')
+            ->with($message, $name);
+    }
+
+    /**
+     * @param array<string, string> $params
+     */
+    protected function expectsMessageGivenWithParam(int $message, string $name, array $params): void
+    {
+        $calls = [];
+        foreach ($params as $key => $value) {
+            $calls[] = [$message, $name, $key, $value];
+        }
+        $this->client
+            ->expects($this->exactly(count($calls)))
+            ->method('messageGivenWithParam')
+            ->willReturnCallback(function (...$args) use (&$calls) {
+                $call = array_shift($calls);
+                foreach ($args as $key => $arg) {
+                    $this->assertThat($arg, $call[$key] instanceof Constraint ? $call[$key] : new IsIdentical($call[$key]));
+                }
+            });
+    }
 }

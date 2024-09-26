@@ -93,15 +93,13 @@ class MessageDriverTest extends TestCase
             ->method('registerBody')
             ->with($this->message);
         $this->expectsNewMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
-        $calls = [
-            ['pactffi_message_given', $this->messageHandle, 'item exist', null],
-            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
-            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
-            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
-        ];
-        $this->assertClientCalls($calls);
+        $this->expectsMessageGiven($this->messageHandle, 'item exist');
+        $this->expectsMessageGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ]);
+        $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
+        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
         $this->driver->registerMessage($this->message);
         $this->assertSame($this->messageHandle, $this->message->getHandle());
     }
@@ -118,16 +116,14 @@ class MessageDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
-        $calls = [
-            ['pactffi_message_given', $this->messageHandle, 'item exist', null],
-            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
-            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
-            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
-        ];
+        $this->expectsMessageGiven($this->messageHandle, 'item exist');
+        $this->expectsMessageGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ]);
+        $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
+        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
         $this->expectsSetInteractionKey($this->messageHandle, $this->description, $key, $success);
-        $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
 
@@ -145,16 +141,14 @@ class MessageDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
-        $calls = [
-            ['pactffi_message_given', $this->messageHandle, 'item exist', null],
-            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
-            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
-            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
-        ];
+        $this->expectsMessageGiven($this->messageHandle, 'item exist');
+        $this->expectsMessageGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ]);
+        $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
+        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
         $this->expectsSetInteractionPending($this->messageHandle, $this->description, $pending, $success);
-        $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
 
@@ -176,16 +170,14 @@ class MessageDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
-        $calls = [
-            ['pactffi_message_given', $this->messageHandle, 'item exist', null],
-            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
-            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
-            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
-        ];
+        $this->expectsMessageGiven($this->messageHandle, 'item exist');
+        $this->expectsMessageGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ]);
+        $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
+        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
         $this->expectsSetComments($this->messageHandle, $this->description, $comments, $success);
-        $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
 
@@ -204,16 +196,14 @@ class MessageDriverTest extends TestCase
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
         $this->expectsNewMessageInteraction($this->pactHandle, $this->description, $this->messageHandle);
-        $calls = [
-            ['pactffi_message_given', $this->messageHandle, 'item exist', null],
-            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'id', '12', null],
-            ['pactffi_message_given_with_param', $this->messageHandle, 'item exist', 'name', 'abc', null],
-            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
-        ];
+        $this->expectsMessageGiven($this->messageHandle, 'item exist');
+        $this->expectsMessageGivenWithParam($this->messageHandle, 'item exist', [
+            'id' => '12',
+            'name' => 'abc',
+        ]);
+        $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
+        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
         $this->expectsAddTextComments($this->messageHandle, $this->description, $comments, $success);
-        $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
 }
