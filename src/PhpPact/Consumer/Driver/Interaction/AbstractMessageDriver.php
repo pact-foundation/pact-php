@@ -42,7 +42,7 @@ abstract class AbstractMessageDriver extends AbstractDriver implements SharedMes
 
     protected function newInteraction(Message $message): void
     {
-        $handle = $this->client->call('pactffi_new_message_interaction', $this->pactDriver->getPact()->handle, $message->getDescription());
+        $handle = $this->client->newMessageInteraction($this->pactDriver->getPact()->handle, $message->getDescription());
         $message->setHandle($handle);
     }
 

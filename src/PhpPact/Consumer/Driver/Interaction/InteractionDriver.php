@@ -61,7 +61,7 @@ class InteractionDriver extends AbstractDriver implements InteractionDriverInter
 
     protected function newInteraction(Interaction $interaction): void
     {
-        $handle = $this->client->call('pactffi_new_interaction', $this->pactDriver->getPact()->handle, $interaction->getDescription());
+        $handle = $this->client->newInteraction($this->pactDriver->getPact()->handle, $interaction->getDescription());
         $interaction->setHandle($handle);
     }
 

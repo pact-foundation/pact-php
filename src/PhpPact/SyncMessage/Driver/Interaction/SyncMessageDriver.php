@@ -41,7 +41,7 @@ class SyncMessageDriver extends AbstractMessageDriver implements SyncMessageDriv
 
     protected function newInteraction(Message $message): void
     {
-        $handle = $this->client->call('pactffi_new_sync_message_interaction', $this->pactDriver->getPact()->handle, $message->getDescription());
+        $handle = $this->client->newSyncMessageInteraction($this->pactDriver->getPact()->handle, $message->getDescription());
         $message->setHandle($handle);
     }
 

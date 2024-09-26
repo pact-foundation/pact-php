@@ -60,6 +60,24 @@ class ClientTest extends TestCase
         $this->assertFalse($result);
     }
 
+    public function testNewInteraction(): void
+    {
+        $result = $this->client->newInteraction(1, 'test');
+        $this->assertIsInt($result);
+    }
+
+    public function testNewMessageInteraction(): void
+    {
+        $result = $this->client->newMessageInteraction(1, 'test');
+        $this->assertIsInt($result);
+    }
+
+    public function testNewSyncMessageInteraction(): void
+    {
+        $result = $this->client->newSyncMessageInteraction(1, 'test');
+        $this->assertIsInt($result);
+    }
+
     public function testGetInteractionPartRequest(): void
     {
         $this->assertSame(0, $this->client->getInteractionPartRequest());
