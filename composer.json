@@ -61,6 +61,7 @@
         "lint": "php-cs-fixer fix --dry-run",
         "fix": "php-cs-fixer fix",
         "test": "phpunit --no-coverage",
+        "test-coverage": "phpunit",
         "check-compatibility": "behat",
         "refactor": "rector",
         "run-examples": [

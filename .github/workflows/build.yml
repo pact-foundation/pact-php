@@ -109,7 +109,7 @@ jobs:
           dependency-versions: ${{ matrix.dependencies }}
 
       - name: Test Unit
-        run: vendor/bin/phpunit --testsuite unit
+        run: composer test-coverage
         env:
           PACT_DO_NOT_TRACK: true
 
