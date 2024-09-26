@@ -22,7 +22,7 @@ abstract class AbstractDriver
         if (null === $key) {
             return;
         }
-        $success = $this->client->call('pactffi_set_key', $interaction->getHandle(), $key);
+        $success = $this->client->setKey($interaction->getHandle(), $key);
         if (!$success) {
             throw new InteractionKeyNotSetException(sprintf("Can not set the key '%s' for the interaction '%s'", $key, $interaction->getDescription()));
         }
@@ -34,7 +34,7 @@ abstract class AbstractDriver
         if (null === $pending) {
             return;
         }
-        $success = $this->client->call('pactffi_set_pending', $interaction->getHandle(), $pending);
+        $success = $this->client->setPending($interaction->getHandle(), $pending);
         if (!$success) {
             throw new InteractionPendingNotSetException(sprintf("Can not mark interaction '%s' as pending", $interaction->getDescription()));
         }
@@ -44,13 +44,16 @@ abstract class AbstractDriver
     {
         foreach ($interaction->getComments() as $key => $value) {
             $value = (is_string($value) || is_null($value)) ? $value : json_encode($value);
-            $success = $this->client->call('pactffi_set_comment', $interaction->getHandle(), $key, $value);
+            if (is_bool($value)) {
+                throw new InteractionCommentNotSetException(sprintf("Can not json encode value of comment '%s'", $key));
+            }
+            $success = $this->client->setComment($interaction->getHandle(), $key, $value);
             if (!$success) {
                 throw new InteractionCommentNotSetException(sprintf("Can not add comment '%s' to the interaction '%s'", $key, $interaction->getDescription()));
             }
         }
         foreach ($interaction->getTextComments() as $value) {
-            $success = $this->client->call('pactffi_add_text_comment', $interaction->getHandle(), $value);
+            $success = $this->client->addTextComment($interaction->getHandle(), $value);
             if (!$success) {
                 throw new InteractionCommentNotSetException(sprintf("Can not add text comment '%s' to the interaction '%s'", $value, $interaction->getDescription()));
             }

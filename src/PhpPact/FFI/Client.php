@@ -61,6 +61,46 @@ class Client implements ClientInterface
         throw new InvalidResultException(sprintf('Invalid result of "%s". Neither ok or failed', $method));
     }
 
+    public function setKey(int $interaction, string $key): bool
+    {
+        $method = 'pactffi_set_key';
+        $result = $this->call($method, $interaction, $key);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function setPending(int $interaction, bool $pending): bool
+    {
+        $method = 'pactffi_set_pending';
+        $result = $this->call($method, $interaction, $pending);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function setComment(int $interaction, string $key, ?string $value): bool
+    {
+        $method = 'pactffi_set_comment';
+        $result = $this->call($method, $interaction, $key, $value);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function addTextComment(int $interaction, string $value): bool
+    {
+        $method = 'pactffi_add_text_comment';
+        $result = $this->call($method, $interaction, $value);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
     public function getInteractionPartRequest(): int
     {
         return $this->getEnum('InteractionPart_Request');

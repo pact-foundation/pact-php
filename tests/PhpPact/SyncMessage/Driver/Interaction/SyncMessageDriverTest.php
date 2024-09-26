@@ -128,13 +128,7 @@ class SyncMessageDriverTest extends TestCase
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
         ];
-        if (is_string($key)) {
-            $calls[] = ['pactffi_set_key', $this->messageHandle, $key, $success];
-        }
-        if (!$success) {
-            $this->expectException(InteractionKeyNotSetException::class);
-            $this->expectExceptionMessage("Can not set the key '$key' for the interaction '{$this->description}'");
-        }
+        $this->expectsSetInteractionKey($this->messageHandle, $this->description, $key, $success);
         $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
@@ -161,13 +155,7 @@ class SyncMessageDriverTest extends TestCase
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
         ];
-        if (is_bool($pending)) {
-            $calls[] = ['pactffi_set_pending', $this->messageHandle, $pending, $success];
-        }
-        if (!$success) {
-            $this->expectException(InteractionPendingNotSetException::class);
-            $this->expectExceptionMessage("Can not mark interaction '{$this->description}' as pending");
-        }
+        $this->expectsSetInteractionPending($this->messageHandle, $this->description, $pending, $success);
         $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
@@ -198,22 +186,21 @@ class SyncMessageDriverTest extends TestCase
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
         ];
-        foreach ($comments as $key => $value) {
-            $calls[] = ['pactffi_set_comment', $this->messageHandle, $key, (is_string($value) || is_null($value)) ? $value : json_encode($value), $success];
-            if (!$success) {
-                $this->expectException(InteractionCommentNotSetException::class);
-                $this->expectExceptionMessage("Can not add comment '$key' to the interaction '{$this->description}'");
-            }
-        }
+        $this->expectsSetComments($this->messageHandle, $this->description, $comments, $success);
         $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
 
-    #[TestWith(['comment 1', false])]
-    #[TestWith(['comment 2', true])]
-    public function testAddTextComment(string $comment, bool $success): void
+    /**
+     * @param string[] $comments
+     */
+    #[TestWith([['comment 1', 'comment 2'], false])]
+    #[TestWith([['comment 1', 'comment 2'], true])]
+    public function testAddTextComment(array $comments, bool $success): void
     {
-        $this->message->addTextComment($comment);
+        foreach ($comments as $comment) {
+            $this->message->addTextComment($comment);
+        }
         $this->pactDriver
             ->expects($this->once())
             ->method('getPact')
@@ -226,12 +213,8 @@ class SyncMessageDriverTest extends TestCase
             ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
             ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
-            ['pactffi_add_text_comment', $this->messageHandle, $comment, $success],
         ];
-        if (!$success) {
-            $this->expectException(InteractionCommentNotSetException::class);
-            $this->expectExceptionMessage("Can not add text comment '$comment' to the interaction '{$this->description}'");
-        }
+        $this->expectsAddTextComments($this->messageHandle, $this->description, $comments, $success);
         $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }

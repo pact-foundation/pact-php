@@ -128,13 +128,7 @@ class InteractionDriverTest extends TestCase
             ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
             ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
         ];
-        if (is_string($key)) {
-            $calls[] = ['pactffi_set_key', $this->interactionHandle, $key, $success];
-        }
-        if (!$success) {
-            $this->expectException(InteractionKeyNotSetException::class);
-            $this->expectExceptionMessage("Can not set the key '$key' for the interaction '{$this->description}'");
-        }
+        $this->expectsSetInteractionKey($this->interactionHandle, $this->description, $key, $success);
         $this->assertClientCalls($calls);
         $this->driver->registerInteraction($this->interaction, false);
     }
@@ -159,13 +153,7 @@ class InteractionDriverTest extends TestCase
             ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
             ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
         ];
-        if (is_bool($pending)) {
-            $calls[] = ['pactffi_set_pending', $this->interactionHandle, $pending, $success];
-        }
-        if (!$success) {
-            $this->expectException(InteractionPendingNotSetException::class);
-            $this->expectExceptionMessage("Can not mark interaction '{$this->description}' as pending");
-        }
+        $this->expectsSetInteractionPending($this->interactionHandle, $this->description, $pending, $success);
         $this->assertClientCalls($calls);
         $this->driver->registerInteraction($this->interaction, false);
     }
@@ -194,22 +182,21 @@ class InteractionDriverTest extends TestCase
             ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
             ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
         ];
-        foreach ($comments as $key => $value) {
-            $calls[] = ['pactffi_set_comment', $this->interactionHandle, $key, (is_string($value) || is_null($value)) ? $value : json_encode($value), $success];
-            if (!$success) {
-                $this->expectException(InteractionCommentNotSetException::class);
-                $this->expectExceptionMessage("Can not add comment '$key' to the interaction '{$this->description}'");
-            }
-        }
+        $this->expectsSetComments($this->interactionHandle, $this->description, $comments, $success);
         $this->assertClientCalls($calls);
         $this->driver->registerInteraction($this->interaction, false);
     }
 
-    #[TestWith(['comment 1', false])]
-    #[TestWith(['comment 2', true])]
-    public function testAddTextComment(string $comment, bool $success): void
+    /**
+     * @param string[] $comments
+     */
+    #[TestWith([['comment 1', 'comment 2'], false])]
+    #[TestWith([['comment 1', 'comment 2'], true])]
+    public function testAddTextComment(array $comments, bool $success): void
     {
-        $this->interaction->addTextComment($comment);
+        foreach ($comments as $comment) {
+            $this->interaction->addTextComment($comment);
+        }
         $this->pactDriver
             ->expects($this->once())
             ->method('getPact')
@@ -220,12 +207,8 @@ class InteractionDriverTest extends TestCase
             ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'id', '12', null],
             ['pactffi_given_with_param', $this->interactionHandle, 'item exist', 'name', 'abc', null],
             ['pactffi_upon_receiving', $this->interactionHandle, $this->description, null],
-            ['pactffi_add_text_comment', $this->interactionHandle, $comment, $success],
         ];
-        if (!$success) {
-            $this->expectException(InteractionCommentNotSetException::class);
-            $this->expectExceptionMessage("Can not add text comment '$comment' to the interaction '{$this->description}'");
-        }
+        $this->expectsAddTextComments($this->interactionHandle, $this->description, $comments, $success);
         $this->assertClientCalls($calls);
         $this->driver->registerInteraction($this->interaction, false);
     }

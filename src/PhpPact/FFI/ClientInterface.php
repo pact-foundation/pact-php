@@ -13,6 +13,14 @@ interface ClientInterface
 
     public function withMultipartFileV2(int $interaction, int $part, string $contentType, string $path, string $name, string $boundary): Result;
 
+    public function setKey(int $interaction, string $key): bool;
+
+    public function setPending(int $interaction, bool $pending): bool;
+
+    public function setComment(int $interaction, string $key, ?string $value): bool;
+
+    public function addTextComment(int $interaction, string $value): bool;
+
     public function getInteractionPartRequest(): int;
 
     public function getInteractionPartResponse(): int;
