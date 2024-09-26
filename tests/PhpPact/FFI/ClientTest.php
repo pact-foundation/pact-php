@@ -36,6 +36,30 @@ class ClientTest extends TestCase
         $this->assertSame('with_multipart_file: Interaction handle is invalid', $result->message);
     }
 
+    public function testSetKey(): void
+    {
+        $result = $this->client->setKey(1, 'test');
+        $this->assertFalse($result);
+    }
+
+    public function testSetPending(): void
+    {
+        $result = $this->client->setPending(1, true);
+        $this->assertFalse($result);
+    }
+
+    public function testSetComment(): void
+    {
+        $result = $this->client->setComment(1, 'key', 'value');
+        $this->assertFalse($result);
+    }
+
+    public function testAddTextComment(): void
+    {
+        $result = $this->client->addTextComment(1, 'test');
+        $this->assertFalse($result);
+    }
+
     public function testGetInteractionPartRequest(): void
     {
         $this->assertSame(0, $this->client->getInteractionPartRequest());
