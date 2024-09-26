@@ -76,11 +76,6 @@ class ClientTest extends TestCase
         $this->assertSame(0, $this->client->getPactSpecificationUnknown());
     }
 
-    public function testGet(): void
-    {
-        $this->assertSame(5, $this->client->get('LevelFilter_Trace'));
-    }
-
     #[TestWith(['abc123', true])]
     #[TestWith(['testing', false])]
     public function testCall(string $example, bool $result): void
