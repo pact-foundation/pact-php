@@ -131,6 +131,36 @@ class Client implements ClientInterface
         return $result;
     }
 
+    public function given(int $interaction, string $name): bool
+    {
+        $method = 'pactffi_given';
+        $result = $this->call($method, $interaction, $name);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function givenWithParam(int $interaction, string $name, string $key, string $value): bool
+    {
+        $method = 'pactffi_given_with_param';
+        $result = $this->call($method, $interaction, $name, $key, $value);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function uponReceiving(int $interaction, string $description): bool
+    {
+        $method = 'pactffi_upon_receiving';
+        $result = $this->call($method, $interaction, $description);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
     public function getInteractionPartRequest(): int
     {
         return $this->getEnum('InteractionPart_Request');

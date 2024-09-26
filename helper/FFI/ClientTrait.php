@@ -4,6 +4,7 @@ namespace PhpPactTest\Helper\FFI;
 
 use PhpPact\Consumer\Driver\Exception\InteractionCommentNotSetException;
 use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
+use PhpPact\Consumer\Driver\Exception\InteractionNotModifiedException;
 use PhpPact\Consumer\Driver\Exception\InteractionPendingNotSetException;
 use PhpPact\FFI\ClientInterface;
 use PHPUnit\Framework\Constraint\Constraint;
@@ -140,5 +141,59 @@ trait ClientTrait
             ->method('newSyncMessageInteraction')
             ->with($pact, $description)
             ->willReturn($interaction);
+    }
+
+    protected function expectsGiven(int $interaction, string $name, bool $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('given')
+            ->with($interaction, $name)
+            ->willReturn($result);
+        if (!$result) {
+            $this->expectException(InteractionNotModifiedException::class);
+            $this->expectExceptionMessage("The interaction or Pact can't be modified (i.e. the mock server for it has already started)");
+        }
+    }
+
+    /**
+     * @param array<string, string> $params
+     */
+    protected function expectsGivenWithParam(int $interaction, string $name, array $params, bool $result): void
+    {
+        $calls = [];
+        $lastKey = array_key_last($params);
+        foreach ($params as $key => $value) {
+            $calls[] = [$interaction, $name, $key, $value, $key === $lastKey ? $result : true];
+        }
+        $this->client
+            ->expects($this->exactly(count($calls)))
+            ->method('givenWithParam')
+            ->willReturnCallback(function (...$args) use (&$calls) {
+                $call = array_shift($calls);
+                $return = array_pop($call);
+                foreach ($args as $key => $arg) {
+                    $this->assertThat($arg, $call[$key] instanceof Constraint ? $call[$key] : new IsIdentical($call[$key]));
+                }
+
+                return $return;
+            });
+        if (!$result) {
+            $this->expectException(InteractionNotModifiedException::class);
+            $this->expectExceptionMessage("The interaction or Pact can't be modified (i.e. the mock server for it has already started)");
+        }
+    }
+
+    protected function expectsUponReceiving(int $interaction, string $description, bool $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('uponReceiving')
+            ->with($interaction, $description)
+            ->willReturn($result);
+        if (!$result) {
+            $this->expectException(InteractionNotModifiedException::class);
+            $this->expectExceptionMessage("The interaction or Pact can't be modified (i.e. the mock server for it has already started)");
+        }
     }
 }
