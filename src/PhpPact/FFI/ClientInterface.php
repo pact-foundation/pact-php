@@ -33,6 +33,14 @@ interface ClientInterface
 
     public function uponReceiving(int $interaction, string $description): bool;
 
+    public function messageExpectsToReceive(int $message, string $description): void;
+
+    public function messageWithMetadataV2(int $message, string $key, string $value): void;
+
+    public function messageGiven(int $message, string $name): void;
+
+    public function messageGivenWithParam(int $message, string $name, string $key, string $value): void;
+
     public function getInteractionPartRequest(): int;
 
     public function getInteractionPartResponse(): int;

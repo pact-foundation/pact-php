@@ -53,15 +53,15 @@ abstract class AbstractMessageDriver extends AbstractDriver implements SharedMes
 
     private function expectsToReceive(Message $message): void
     {
-        $this->client->call('pactffi_message_expects_to_receive', $message->getHandle(), $message->getDescription());
+        $this->client->messageExpectsToReceive($message->getHandle(), $message->getDescription());
     }
 
     protected function given(Message $message): void
     {
         foreach ($message->getProviderStates() as $providerState) {
-            $this->client->call('pactffi_message_given', $message->getHandle(), $providerState->getName());
+            $this->client->messageGiven($message->getHandle(), $providerState->getName());
             foreach ($providerState->getParams() as $key => $value) {
-                $this->client->call('pactffi_message_given_with_param', $message->getHandle(), $providerState->getName(), (string) $key, (string) $value);
+                $this->client->messageGivenWithParam($message->getHandle(), $providerState->getName(), (string) $key, (string) $value);
             }
         }
     }
@@ -69,7 +69,7 @@ abstract class AbstractMessageDriver extends AbstractDriver implements SharedMes
     private function withMetadata(Message $message): void
     {
         foreach ($message->getMetadata() as $key => $value) {
-            $this->client->call('pactffi_message_with_metadata_v2', $message->getHandle(), (string) $key, (string) $value);
+            $this->client->messageWithMetadataV2($message->getHandle(), (string) $key, (string) $value);
         }
     }
 }

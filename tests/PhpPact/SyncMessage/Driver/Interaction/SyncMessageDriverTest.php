@@ -97,12 +97,8 @@ class SyncMessageDriverTest extends TestCase
             'id' => '12',
             'name' => 'abc',
         ], true);
-        $calls = [
-            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
-        ];
-        $this->assertClientCalls($calls);
+        $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
+        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
         $this->driver->registerMessage($this->message);
         $this->assertSame($this->messageHandle, $this->message->getHandle());
     }
@@ -124,13 +120,9 @@ class SyncMessageDriverTest extends TestCase
             'id' => '12',
             'name' => 'abc',
         ], true);
-        $calls = [
-            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
-        ];
+        $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
+        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
         $this->expectsSetInteractionKey($this->messageHandle, $this->description, $key, $success);
-        $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
 
@@ -153,13 +145,9 @@ class SyncMessageDriverTest extends TestCase
             'id' => '12',
             'name' => 'abc',
         ], true);
-        $calls = [
-            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
-        ];
+        $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
+        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
         $this->expectsSetInteractionPending($this->messageHandle, $this->description, $pending, $success);
-        $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
 
@@ -186,13 +174,9 @@ class SyncMessageDriverTest extends TestCase
             'id' => '12',
             'name' => 'abc',
         ], true);
-        $calls = [
-            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
-        ];
+        $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
+        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
         $this->expectsSetComments($this->messageHandle, $this->description, $comments, $success);
-        $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
 
@@ -216,13 +200,9 @@ class SyncMessageDriverTest extends TestCase
             'id' => '12',
             'name' => 'abc',
         ], true);
-        $calls = [
-            ['pactffi_message_expects_to_receive', $this->messageHandle, $this->description, null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key1', 'value1', null],
-            ['pactffi_message_with_metadata_v2', $this->messageHandle, 'key2', 'value2', null],
-        ];
+        $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
+        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
         $this->expectsAddTextComments($this->messageHandle, $this->description, $comments, $success);
-        $this->assertClientCalls($calls);
         $this->driver->registerMessage($this->message);
     }
 

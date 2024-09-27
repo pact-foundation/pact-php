@@ -96,6 +96,30 @@ class ClientTest extends TestCase
         $this->assertFalse($result);
     }
 
+    public function testMessageExpectsToReceive(): void
+    {
+        $this->client->messageExpectsToReceive(1, 'test');
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testMessageWithMetadataV2(): void
+    {
+        $this->client->messageWithMetadataV2(1, 'key', 'value');
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testMessageGiven(): void
+    {
+        $this->client->messageGiven(1, 'test');
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testMessageGivenWithParam(): void
+    {
+        $this->client->messageGivenWithParam(1, 'test', 'key', 'value');
+        $this->expectNotToPerformAssertions();
+    }
+
     public function testGetInteractionPartRequest(): void
     {
         $this->assertSame(0, $this->client->getInteractionPartRequest());
