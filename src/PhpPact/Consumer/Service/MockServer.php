@@ -22,8 +22,7 @@ class MockServer implements MockServerInterface
 
     public function start(): void
     {
-        $port = $this->client->call(
-            'pactffi_create_mock_server_for_transport',
+        $port = $this->client->createMockServerForTransport(
             $this->pactDriver->getPact()->handle,
             $this->config->getHost(),
             $this->config->getPort(),
@@ -66,8 +65,7 @@ class MockServer implements MockServerInterface
 
     public function writePact(): void
     {
-        $error = $this->client->call(
-            'pactffi_write_pact_file',
+        $error = $this->client->writePactFile(
             $this->config->getPort(),
             $this->config->getPactDir(),
             $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
@@ -79,19 +77,20 @@ class MockServer implements MockServerInterface
 
     public function cleanUp(): void
     {
-        $this->client->call('pactffi_cleanup_mock_server', $this->config->getPort());
+        $success = $this->client->cleanupMockServer($this->config->getPort());
+        if (!$success) {
+            trigger_error(sprintf("Can not clean up mock server: Mock server with the given port number '%s' does not exist, or the function panics", $this->config->getPort()), E_USER_WARNING);
+        }
         $this->pactDriver->cleanUp();
     }
 
     private function isMatched(): bool
     {
-        return $this->client->call('pactffi_mock_server_matched', $this->config->getPort());
+        return $this->client->mockServerMatched($this->config->getPort());
     }
 
     private function getMismatches(): string
     {
-        $cData = $this->client->call('pactffi_mock_server_mismatches', $this->config->getPort());
-
-        return FFI::string($cData);
+        return $this->client->mockServerMismatches($this->config->getPort());
     }
 }

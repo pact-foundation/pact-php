@@ -2,10 +2,8 @@
 
 namespace PhpPactTest\Consumer\Service;
 
-use FFI;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
-use PhpPact\Consumer\Exception\MockServerNotStartedException;
 use PhpPact\Consumer\Exception\MockServerPactFileNotWrittenException;
 use PhpPact\Consumer\Model\Pact\Pact;
 use PhpPact\Consumer\Service\MockServer;
@@ -56,21 +54,7 @@ class MockServerTest extends TestCase
             ->expects($this->once())
             ->method('getPact')
             ->willReturn(new Pact($this->pactHandle));
-        $calls = [
-            ['pactffi_create_mock_server_for_transport', $this->pactHandle, $this->host, $this->port, $this->getTransport($secure), null, $returnedPort],
-        ];
-        $this->assertClientCalls($calls);
-        if ($returnedPort < 0) {
-            $this->expectException(MockServerNotStartedException::class);
-            $this->expectExceptionMessage(match ($returnedPort) {
-                -1 => 'An invalid handle was received. Handles should be created with `pactffi_new_pact`',
-                -2 => 'Transport_config is not valid JSON',
-                -3 => 'The mock server could not be started',
-                -4 => 'The method panicked',
-                -5 => 'The address is not valid',
-                default => 'Unknown error',
-            });
-        }
+        $this->expectsCreateMockServerForTransport($this->pactHandle, $this->host, $this->port, $this->getTransport($secure), null, $returnedPort);
         $this->mockServer->start();
         $this->assertSame($returnedPort, $this->config->getPort());
     }
@@ -81,16 +65,10 @@ class MockServerTest extends TestCase
     {
         $this->config->setPort($this->port);
         $this->config->setPactDir($this->pactDir);
-        $calls = $matched ? [
-            ['pactffi_mock_server_matched', $this->port, $matched],
-            ['pactffi_write_pact_file', $this->port, $this->pactDir, false, 0],
-            ['pactffi_cleanup_mock_server', $this->port, null],
-        ] : [
-            ['pactffi_mock_server_matched', $this->port, $matched],
-            ['pactffi_mock_server_mismatches', $this->port, FFI::new('char[1]')],
-            ['pactffi_cleanup_mock_server', $this->port, null],
-        ];
-        $this->assertClientCalls($calls);
+        $this->expectsMockServerMatched($this->port, $matched);
+        $this->expectsWritePactFile($this->port, $this->pactDir, false, 0, $matched);
+        $this->expectsMockServerMismatches($this->port, '', $matched);
+        $this->expectsCleanupMockServer($this->port, true);
         $this->pactDriver
             ->expects($this->once())
             ->method('cleanUp');
@@ -114,10 +92,7 @@ class MockServerTest extends TestCase
         $this->config->setPort($this->port);
         $this->config->setPactDir($this->pactDir);
         $this->config->setPactFileWriteMode($writeMode);
-        $calls = [
-            ['pactffi_write_pact_file', $this->port, $this->pactDir, $writeMode === PactConfigInterface::MODE_OVERWRITE, $error],
-        ];
-        $this->assertClientCalls($calls);
+        $this->expectsWritePactFile($this->port, $this->pactDir, $writeMode === PactConfigInterface::MODE_OVERWRITE, $error, true);
         if ($error) {
             $this->expectException(MockServerPactFileNotWrittenException::class);
             $this->expectExceptionMessage(match ($error) {
@@ -130,13 +105,12 @@ class MockServerTest extends TestCase
         $this->mockServer->writePact();
     }
 
-    public function testCleanUp(): void
+    #[TestWith([true])]
+    #[TestWith([false])]
+    public function testCleanUp(bool $success): void
     {
         $this->config->setPort($this->port);
-        $calls = [
-            ['pactffi_cleanup_mock_server', $this->port, null],
-        ];
-        $this->assertClientCalls($calls);
+        $this->expectsCleanupMockServer($this->port, $success);
         $this->pactDriver
             ->expects($this->once())
             ->method('cleanUp');
