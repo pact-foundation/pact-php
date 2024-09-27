@@ -94,7 +94,7 @@ PHP 8.1+ as of pact-php v10
 
 ### Do Not Track
 
-In order to get better statistics as to who is using Pact, we have an anonymous tracking event that triggers when Pact installs for the first time. The only things we [track](https://docs.pact.io/metrics) are your type of OS, and the version information for the package being installed. No PII data is sent as part of this request. You can disable tracking by setting the environment variable `PACT_DO_NOT_TRACK=1`:
+In order to get better statistics as to who is using Pact, we have an anonymous tracking event that triggers when Pact installs for the first time. The only things we [track](https://docs.pact.io/metrics) are your type of OS, and the version information for the package being installed. No PII data is sent as part of this request. You can disable tracking by setting the environment variable `PACT_DO_NOT_TRACK=true`:
 
 ![----------](https://user-images.githubusercontent.com/53900/182992715-aa63e421-170b-41cf-8f95-82fe4b0846c2.png)
 
