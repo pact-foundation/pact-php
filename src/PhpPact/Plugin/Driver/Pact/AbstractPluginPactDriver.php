@@ -3,6 +3,7 @@
 namespace PhpPact\Plugin\Driver\Pact;
 
 use PhpPact\Consumer\Driver\Pact\PactDriver;
+use PhpPact\Plugin\Exception\PluginNotLoadedException;
 use PhpPact\Plugin\Exception\PluginNotSupportedBySpecificationException;
 
 abstract class AbstractPluginPactDriver extends PactDriver
@@ -10,7 +11,7 @@ abstract class AbstractPluginPactDriver extends PactDriver
     public function cleanUp(): void
     {
         $this->validatePact();
-        $this->client->call('pactffi_cleanup_plugins', $this->pact->handle);
+        $this->client->cleanupPlugins($this->pact->handle);
         parent::cleanUp();
     }
 
@@ -33,7 +34,10 @@ abstract class AbstractPluginPactDriver extends PactDriver
             throw new PluginNotSupportedBySpecificationException($this->config->getPactSpecificationVersion());
         }
 
-        $this->client->call('pactffi_using_plugin', $this->pact->handle, $this->getPluginName(), $this->getPluginVersion());
+        $error = $this->client->usingPlugin($this->pact->handle, $this->getPluginName(), $this->getPluginVersion());
+        if ($error) {
+            throw new PluginNotLoadedException($error);
+        }
 
         return $this;
     }

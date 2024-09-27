@@ -6,6 +6,7 @@ use Composer\Semver\Comparator;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Driver\Exception\MissingPactException;
 use PhpPact\Consumer\Driver\Exception\PactFileNotWrittenException;
+use PhpPact\Consumer\Driver\Exception\PactNotModifiedException;
 use PhpPact\Consumer\Model\Pact\Pact;
 use PhpPact\FFI\ClientInterface;
 
@@ -22,15 +23,17 @@ class PactDriver implements PactDriverInterface
     public function cleanUp(): void
     {
         $this->validatePact();
-        $this->client->call('pactffi_free_pact_handle', $this->pact->handle);
+        $success = $this->client->freePactHandle($this->pact->handle) === 0;
+        if (!$success) {
+            trigger_error('Can not free pact handle. The handle is not valid or does not refer to a valid Pact. Could be that it was previously deleted.', E_USER_WARNING);
+        }
         $this->pact = null;
     }
 
     public function writePact(): void
     {
         $this->validatePact();
-        $error = $this->client->call(
-            'pactffi_pact_handle_write_file',
+        $error = $this->client->pactHandleWriteFile(
             $this->pact->handle,
             $this->config->getPactDir(),
             $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
@@ -89,17 +92,20 @@ class PactDriver implements PactDriverInterface
     {
         $logLevel = $this->config->getLogLevel();
         if ($logLevel) {
-            $this->client->call('pactffi_init_with_log_level', $logLevel);
+            $this->client->initWithLogLevel($logLevel);
         }
     }
 
     private function newPact(): void
     {
-        $this->pact = new Pact($this->client->call('pactffi_new_pact', $this->config->getConsumer(), $this->config->getProvider()));
+        $this->pact = new Pact($this->client->newPact($this->config->getConsumer(), $this->config->getProvider()));
     }
 
     private function withSpecification(): void
     {
-        $this->client->call('pactffi_with_specification', $this->pact->handle, $this->getSpecification());
+        $success = $this->client->withSpecification($this->pact->handle, $this->getSpecification());
+        if (!$success) {
+            throw new PactNotModifiedException("The pact can't be modified (i.e. the mock server for it has already started, or the version is invalid)");
+        }
     }
 }

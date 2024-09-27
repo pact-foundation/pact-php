@@ -141,7 +141,7 @@ class Verifier
     private function setLogLevel(VerifierConfigInterface $config): void
     {
         if ($logLevel = $config->getLogLevel()) {
-            $this->client->call('pactffi_init_with_log_level', $logLevel);
+            $this->client->initWithLogLevel($logLevel);
         }
     }
 

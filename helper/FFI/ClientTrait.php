@@ -6,7 +6,10 @@ use PhpPact\Consumer\Driver\Exception\InteractionCommentNotSetException;
 use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
 use PhpPact\Consumer\Driver\Exception\InteractionNotModifiedException;
 use PhpPact\Consumer\Driver\Exception\InteractionPendingNotSetException;
+use PhpPact\Consumer\Driver\Exception\PactFileNotWrittenException;
+use PhpPact\Consumer\Driver\Exception\PactNotModifiedException;
 use PhpPact\FFI\ClientInterface;
+use PhpPact\Plugin\Exception\PluginNotLoadedException;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsIdentical;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -152,7 +155,7 @@ trait ClientTrait
             ->willReturn($result);
         if (!$result) {
             $this->expectException(InteractionNotModifiedException::class);
-            $this->expectExceptionMessage("The interaction or Pact can't be modified (i.e. the mock server for it has already started)");
+            $this->expectExceptionMessage("The interaction can't be modified (i.e. the mock server for it has already started)");
         }
     }
 
@@ -180,7 +183,7 @@ trait ClientTrait
             });
         if (!$result) {
             $this->expectException(InteractionNotModifiedException::class);
-            $this->expectExceptionMessage("The interaction or Pact can't be modified (i.e. the mock server for it has already started)");
+            $this->expectExceptionMessage("The interaction can't be modified (i.e. the mock server for it has already started)");
         }
     }
 
@@ -193,7 +196,7 @@ trait ClientTrait
             ->willReturn($result);
         if (!$result) {
             $this->expectException(InteractionNotModifiedException::class);
-            $this->expectExceptionMessage("The interaction or Pact can't be modified (i.e. the mock server for it has already started)");
+            $this->expectExceptionMessage("The interaction can't be modified (i.e. the mock server for it has already started)");
         }
     }
 
@@ -251,5 +254,99 @@ trait ClientTrait
                     $this->assertThat($arg, $call[$key] instanceof Constraint ? $call[$key] : new IsIdentical($call[$key]));
                 }
             });
+    }
+
+    protected function expectsFreePactHandle(int $pact): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('freePactHandle')
+            ->with($pact);
+    }
+
+    protected function expectsNewPact(string $consumer, string $provider, int $pact): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('newPact')
+            ->with($consumer, $provider)
+            ->willReturn($pact);
+    }
+
+    protected function expectsWithSpecification(int $pact, int $specification, bool $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('withSpecification')
+            ->with($pact, $specification)
+            ->willReturn($result);
+        if (!$result) {
+            $this->expectException(PactNotModifiedException::class);
+            $this->expectExceptionMessage("The pact can't be modified (i.e. the mock server for it has already started, or the version is invalid)");
+        }
+    }
+
+    protected function expectsInitWithLogLevel(?string $logLevel): void
+    {
+        if ($logLevel) {
+            $this->client
+                ->expects($this->once())
+                ->method('initWithLogLevel')
+                ->with($logLevel);
+        } else {
+            $this->client
+                ->expects($this->never())
+                ->method('initWithLogLevel');
+        }
+    }
+
+    protected function expectsPactHandleWriteFile(int $pact, string $directory, bool $overwrite, int $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('pactHandleWriteFile')
+            ->with($pact, $directory, $overwrite)
+            ->willReturn($result);
+        if ($result) {
+            $this->expectException(PactFileNotWrittenException::class);
+            $this->expectExceptionMessage(match ($result) {
+                1 => 'The function panicked.',
+                2 => 'The pact file was not able to be written.',
+                3 => 'The pact for the given handle was not found.',
+                default => 'Unknown error',
+            });
+        }
+    }
+
+    protected function expectsCleanupPlugins(int $pact): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('cleanupPlugins')
+            ->with($pact);
+    }
+
+    protected function expectsUsingPlugin(int $pact, string $name, ?string $version, int $result, bool $supported): void
+    {
+        if ($supported) {
+            $this->client
+                ->expects($this->once())
+                ->method('usingPlugin')
+                ->with($pact, $name, $version)
+                ->willReturn($result);
+        } else {
+            $this->client
+                ->expects($this->never())
+                ->method('usingPlugin');
+        }
+        if ($supported && $result) {
+            $this->expectException(PluginNotLoadedException::class);
+            $this->expectExceptionMessage(match ($result) {
+                1 => 'A general panic was caught.',
+                2 => 'Failed to load the plugin.',
+                3 => 'Pact Handle is not valid.',
+                default => 'Unknown error',
+            });
+        }
     }
 }

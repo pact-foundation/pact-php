@@ -185,6 +185,68 @@ class Client implements ClientInterface
         $this->call($method, $message, $name, $key, $value);
     }
 
+    public function freePactHandle(int $pact): int
+    {
+        $method = 'pactffi_free_pact_handle';
+        $result = $this->call($method, $pact);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function newPact(string $consumer, string $provider): int
+    {
+        $method = 'pactffi_new_pact';
+        $result = $this->call($method, $consumer, $provider);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function withSpecification(int $pact, int $specification): bool
+    {
+        $method = 'pactffi_with_specification';
+        $result = $this->call($method, $pact, $specification);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function initWithLogLevel(string $logLevel): void
+    {
+        $method = 'pactffi_init_with_log_level';
+        $this->call($method, $logLevel);
+    }
+
+    public function pactHandleWriteFile(int $pact, string $directory, bool $overwrite): int
+    {
+        $method = 'pactffi_pact_handle_write_file';
+        $result = $this->call($method, $pact, $directory, $overwrite);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function cleanupPlugins(int $pact): void
+    {
+        $method = 'pactffi_cleanup_plugins';
+        $this->call($method, $pact);
+    }
+
+    public function usingPlugin(int $pact, string $name, ?string $version): int
+    {
+        $method = 'pactffi_using_plugin';
+        $result = $this->call($method, $pact, $name, $version);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
     public function getInteractionPartRequest(): int
     {
         return $this->getEnum('InteractionPart_Request');

@@ -41,6 +41,20 @@ interface ClientInterface
 
     public function messageGivenWithParam(int $message, string $name, string $key, string $value): void;
 
+    public function freePactHandle(int $pact): int;
+
+    public function newPact(string $consumer, string $provider): int;
+
+    public function withSpecification(int $pact, int $specification): bool;
+
+    public function initWithLogLevel(string $logLevel): void;
+
+    public function pactHandleWriteFile(int $pact, string $directory, bool $overwrite): int;
+
+    public function cleanupPlugins(int $pact): void;
+
+    public function usingPlugin(int $pact, string $name, ?string $version): int;
+
     public function getInteractionPartRequest(): int;
 
     public function getInteractionPartResponse(): int;
