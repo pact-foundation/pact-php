@@ -143,6 +143,14 @@ class PactDriverTest extends TestCase
         $this->driver->writePact();
     }
 
+    public function testWithSpecificationCanNotModifyPact(): void
+    {
+        $this->assertConfig(null, 'x.y.z');
+        $this->expectsNewPact($this->consumer, $this->provider, $this->pactHandle);
+        $this->expectsWithSpecification($this->pactHandle, self::SPEC_UNKNOWN, false);
+        $this->driver->setUp();
+    }
+
     protected function assertConfig(?string $logLevel, string $version): void
     {
         $this->config
