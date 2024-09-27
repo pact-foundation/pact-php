@@ -73,7 +73,7 @@ class PactDriverTest extends TestCase
         $this->assertConfig(null, '1.0.0');
         $this->expectsNewPact($this->consumer, $this->provider, $this->pactHandle);
         $this->expectsWithSpecification($this->pactHandle, self::SPEC_V1, true);
-        $this->expectsFreePactHandle($this->pactHandle);
+        $this->expectsFreePactHandle($this->pactHandle, 0);
         $this->driver->setUp();
         $this->driver->cleanUp();
     }
@@ -81,6 +81,16 @@ class PactDriverTest extends TestCase
     public function testCleanUpWithoutPact(): void
     {
         $this->expectException(MissingPactException::class);
+        $this->driver->cleanUp();
+    }
+
+    public function testCanNotCleanUpPact(): void
+    {
+        $this->assertConfig(null, '1.0.0');
+        $this->expectsNewPact($this->consumer, $this->provider, $this->pactHandle);
+        $this->expectsWithSpecification($this->pactHandle, self::SPEC_V1, true);
+        $this->expectsFreePactHandle($this->pactHandle, 1);
+        $this->driver->setUp();
         $this->driver->cleanUp();
     }
 

@@ -256,12 +256,13 @@ trait ClientTrait
             });
     }
 
-    protected function expectsFreePactHandle(int $pact): void
+    protected function expectsFreePactHandle(int $pact, int $result): void
     {
         $this->client
             ->expects($this->once())
             ->method('freePactHandle')
-            ->with($pact);
+            ->with($pact)
+            ->willReturn($result);
     }
 
     protected function expectsNewPact(string $consumer, string $provider, int $pact): void

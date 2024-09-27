@@ -43,7 +43,7 @@ abstract class AbstractPluginPactDriverTestCase extends PactDriverTest
         $this->expectsWithSpecification($this->pactHandle, self::SPEC_V4, true);
         $this->expectsUsingPlugin($this->pactHandle, $this->getPluginName(), null, 0, true);
         $this->expectsCleanupPlugins($this->pactHandle);
-        $this->expectsFreePactHandle($this->pactHandle);
+        $this->expectsFreePactHandle($this->pactHandle, 0);
         $this->driver = $this->createPactDriver();
         $this->driver->setUp();
         $this->driver->cleanUp();
