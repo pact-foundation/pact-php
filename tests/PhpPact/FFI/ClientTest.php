@@ -154,10 +154,9 @@ class ClientTest extends TestCase
     public function testUsingPlugin(): void
     {
         putenv('PACT_DO_NOT_TRACK=true');
-        // putenv(sprintf('PACT_PLUGIN_DIR=%s', __DIR__ . '/../../_resources/plugins'));
+        putenv(sprintf('PACT_PLUGIN_DIR=%s', __DIR__ . '/../../_resources/plugins'));
         $result = $this->client->usingPlugin(1, 'test', null);
         $this->assertSame(2, $result);
-        // putenv('PACT_PLUGIN_DIR=');
     }
 
     public function testGetInteractionPartRequest(): void
