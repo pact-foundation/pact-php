@@ -133,6 +133,12 @@ class ClientTest extends TestCase
         $this->client->freePactHandle($result);
     }
 
+    public function testWithSpecification(): void
+    {
+        $result = $this->client->withSpecification(1, 123);
+        $this->assertFalse($result);
+    }
+
     public function testInitWithLogLevel(): void
     {
         $this->client->initWithLogLevel('test');
