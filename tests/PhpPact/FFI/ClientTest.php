@@ -120,6 +120,51 @@ class ClientTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    public function testFreePactHandle(): void
+    {
+        $result = $this->client->freePactHandle(1);
+        $this->assertSame(1, $result);
+    }
+
+    public function testNewPact(): void
+    {
+        $result = $this->client->newPact('consumer', 'provider');
+        $this->assertIsInt($result);
+        $this->client->freePactHandle($result);
+    }
+
+    public function testWithSpecification(): void
+    {
+        $result = $this->client->withSpecification(1, 123);
+        $this->assertFalse($result);
+    }
+
+    public function testInitWithLogLevel(): void
+    {
+        $this->client->initWithLogLevel('test');
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testPactHandleWriteFile(): void
+    {
+        $result = $this->client->pactHandleWriteFile(1, 'test', true);
+        $this->assertSame(3, $result);
+    }
+
+    public function testCleanupPlugins(): void
+    {
+        $this->client->cleanupPlugins(1);
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testUsingPlugin(): void
+    {
+        putenv('PACT_DO_NOT_TRACK=true');
+        putenv(sprintf('PACT_PLUGIN_DIR=%s', __DIR__ . '/../../_resources/plugins'));
+        $result = $this->client->usingPlugin(1, 'test', null);
+        $this->assertSame(2, $result);
+    }
+
     public function testGetInteractionPartRequest(): void
     {
         $this->assertSame(0, $this->client->getInteractionPartRequest());

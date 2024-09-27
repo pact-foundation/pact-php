@@ -120,8 +120,8 @@ class VerifierTest extends TestCase
                 $customHeaders['name-2'],
                 null,
             ],
-            ['pactffi_init_with_log_level', strtoupper($logLevel), null],
         ];
+        $this->expectsInitWithLogLevel(strtoupper($logLevel));
     }
 
     #[TestWith([true,  true])]

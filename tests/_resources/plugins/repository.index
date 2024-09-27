@@ -1,0 +1,23 @@
+index_version = 1
+format_version = 0
+timestamp = "2023-03-10T05:36:45.725083896Z"
+
+[entries.test]
+name = "test"
+latest_version = "0.0.0"
+
+[[entries.test.versions]]
+version = "0.0.0"
+
+[entries.test.versions.source]
+
+[entries.test.versions.manifest]
+pluginInterfaceVersion = 1
+name = "test"
+version = "0.0.0"
+executableType = "exec"
+entryPoint = "pact-test-plugin"
+
+[entries.test.versions.manifest.entryPoints]
+
+[entries.test.versions.manifest.pluginConfig]

@@ -51,15 +51,9 @@ class PactDriverTest extends TestCase
     public function testSetUp(?string $logLevel, string $version, int $specificationHandle): void
     {
         $this->assertConfig($logLevel, $version);
-        $calls = $logLevel ? [
-            ['pactffi_init_with_log_level', $logLevel, null],
-            ['pactffi_new_pact', $this->consumer, $this->provider, $this->pactHandle],
-            ['pactffi_with_specification', $this->pactHandle, $specificationHandle, null],
-        ] : [
-            ['pactffi_new_pact', $this->consumer, $this->provider, $this->pactHandle],
-            ['pactffi_with_specification', $this->pactHandle, $specificationHandle, null],
-        ];
-        $this->assertClientCalls($calls);
+        $this->expectsInitWithLogLevel($logLevel);
+        $this->expectsNewPact($this->consumer, $this->provider, $this->pactHandle);
+        $this->expectsWithSpecification($this->pactHandle, $specificationHandle, true);
         $this->driver->setUp();
         $this->assertSame($this->pactHandle, $this->driver->getPact()->handle);
     }
@@ -67,11 +61,8 @@ class PactDriverTest extends TestCase
     public function testSetUpMultipleTimes(): void
     {
         $this->assertConfig(null, '1.0.0');
-        $calls = [
-            ['pactffi_new_pact', $this->consumer, $this->provider, $this->pactHandle],
-            ['pactffi_with_specification', $this->pactHandle, self::SPEC_V1, null],
-        ];
-        $this->assertClientCalls($calls);
+        $this->expectsNewPact($this->consumer, $this->provider, $this->pactHandle);
+        $this->expectsWithSpecification($this->pactHandle, self::SPEC_V1, true);
         $this->driver->setUp();
         $this->driver->setUp();
         $this->driver->setUp();
@@ -80,12 +71,9 @@ class PactDriverTest extends TestCase
     public function testCleanUp(): void
     {
         $this->assertConfig(null, '1.0.0');
-        $calls = [
-            ['pactffi_new_pact', $this->consumer, $this->provider, $this->pactHandle],
-            ['pactffi_with_specification', $this->pactHandle, self::SPEC_V1, null],
-            ['pactffi_free_pact_handle', $this->pactHandle, null],
-        ];
-        $this->assertClientCalls($calls);
+        $this->expectsNewPact($this->consumer, $this->provider, $this->pactHandle);
+        $this->expectsWithSpecification($this->pactHandle, self::SPEC_V1, true);
+        $this->expectsFreePactHandle($this->pactHandle, 0);
         $this->driver->setUp();
         $this->driver->cleanUp();
     }
@@ -96,14 +84,21 @@ class PactDriverTest extends TestCase
         $this->driver->cleanUp();
     }
 
+    public function testCanNotCleanUpPact(): void
+    {
+        $this->assertConfig(null, '1.0.0');
+        $this->expectsNewPact($this->consumer, $this->provider, $this->pactHandle);
+        $this->expectsWithSpecification($this->pactHandle, self::SPEC_V1, true);
+        $this->expectsFreePactHandle($this->pactHandle, 1);
+        $this->driver->setUp();
+        $this->driver->cleanUp();
+    }
+
     public function testGetPact(): void
     {
         $this->assertConfig(null, '1.0.0');
-        $calls = [
-            ['pactffi_new_pact', $this->consumer, $this->provider, $this->pactHandle],
-            ['pactffi_with_specification', $this->pactHandle, self::SPEC_V1, null],
-        ];
-        $this->assertClientCalls($calls);
+        $this->expectsNewPact($this->consumer, $this->provider, $this->pactHandle);
+        $this->expectsWithSpecification($this->pactHandle, self::SPEC_V1, true);
         $this->driver->setUp();
         $pact = $this->driver->getPact();
         $this->assertSame($this->pactHandle, $pact->handle);
@@ -136,12 +131,9 @@ class PactDriverTest extends TestCase
             ->expects($this->once())
             ->method('getPactFileWriteMode')
             ->willReturn($writeMode);
-        $calls = [
-            ['pactffi_new_pact', $this->consumer, $this->provider, $this->pactHandle],
-            ['pactffi_with_specification', $this->pactHandle, self::SPEC_V1, null],
-            ['pactffi_pact_handle_write_file', $this->pactHandle, $this->pactDir, $writeMode === PactConfigInterface::MODE_OVERWRITE, $error],
-        ];
-        $this->assertClientCalls($calls);
+        $this->expectsNewPact($this->consumer, $this->provider, $this->pactHandle);
+        $this->expectsWithSpecification($this->pactHandle, self::SPEC_V1, true);
+        $this->expectsPactHandleWriteFile($this->pactHandle, $this->pactDir, $writeMode === PactConfigInterface::MODE_OVERWRITE, $error);
         $this->driver->setUp();
         if ($error) {
             $this->expectException(PactFileNotWrittenException::class);
@@ -159,6 +151,14 @@ class PactDriverTest extends TestCase
     {
         $this->expectException(MissingPactException::class);
         $this->driver->writePact();
+    }
+
+    public function testWithSpecificationCanNotModifyPact(): void
+    {
+        $this->assertConfig(null, 'x.y.z');
+        $this->expectsNewPact($this->consumer, $this->provider, $this->pactHandle);
+        $this->expectsWithSpecification($this->pactHandle, self::SPEC_UNKNOWN, false);
+        $this->driver->setUp();
     }
 
     protected function assertConfig(?string $logLevel, string $version): void
