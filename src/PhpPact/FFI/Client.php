@@ -247,6 +247,59 @@ class Client implements ClientInterface
         return $result;
     }
 
+    public function cleanupMockServer(int $port): bool
+    {
+        $method = 'pactffi_cleanup_mock_server';
+        $result = $this->call($method, $port);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function mockServerMatched(int $port): bool
+    {
+        $method = 'pactffi_mock_server_matched';
+        $result = $this->call($method, $port);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function mockServerMismatches(int $port): string
+    {
+        $method = 'pactffi_mock_server_mismatches';
+        $result = $this->call($method, $port);
+        if ($result === null) {
+            return '';
+        }
+        if (!$result instanceof CData) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "%s", but got "%s"', $method, CData::class, get_debug_type($result)));
+        }
+        return FFI::string($result);
+    }
+
+    public function writePactFile(int $port, string $directory, bool $overwrite): int
+    {
+        $method = 'pactffi_write_pact_file';
+        $result = $this->call($method, $port, $directory, $overwrite);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function createMockServerForTransport(int $pact, string $host, int $port, string $transport, ?string $transportConfig): int
+    {
+        $method = 'pactffi_create_mock_server_for_transport';
+        $result = $this->call($method, $pact, $host, $port, $transport, $transportConfig);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
     public function getInteractionPartRequest(): int
     {
         return $this->getEnum('InteractionPart_Request');

@@ -8,6 +8,8 @@ use PhpPact\Consumer\Driver\Exception\InteractionNotModifiedException;
 use PhpPact\Consumer\Driver\Exception\InteractionPendingNotSetException;
 use PhpPact\Consumer\Driver\Exception\PactFileNotWrittenException;
 use PhpPact\Consumer\Driver\Exception\PactNotModifiedException;
+use PhpPact\Consumer\Exception\MockServerNotStartedException;
+use PhpPact\Consumer\Exception\MockServerPactFileNotWrittenException;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\Plugin\Exception\PluginNotLoadedException;
 use PHPUnit\Framework\Constraint\Constraint;
@@ -346,6 +348,83 @@ trait ClientTrait
                 1 => 'A general panic was caught.',
                 2 => 'Failed to load the plugin.',
                 3 => 'Pact Handle is not valid.',
+                default => 'Unknown error',
+            });
+        }
+    }
+
+    protected function expectsCleanupMockServer(int $port, bool $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('cleanupMockServer')
+            ->with($port)
+            ->willReturn($result);
+    }
+
+    protected function expectsMockServerMatched(int $port, bool $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('mockServerMatched')
+            ->with($port)
+            ->willReturn($result);
+    }
+
+    protected function expectsMockServerMismatches(int $port, string $result, bool $matched): void
+    {
+        if (!$matched) {
+            $this->client
+                ->expects($this->once())
+                ->method('mockServerMismatches')
+                ->with($port)
+                ->willReturn($result);
+        } else {
+            $this->client
+                ->expects($this->never())
+                ->method('mockServerMismatches');
+        }
+    }
+
+    protected function expectsWritePactFile(int $port, string $directory, bool $overwrite, int $result, bool $matched): void
+    {
+        if ($matched) {
+            $this->client
+                ->expects($this->once())
+                ->method('writePactFile')
+                ->with($port, $directory, $overwrite)
+                ->willReturn($result);
+            if ($result) {
+                $this->expectException(MockServerPactFileNotWrittenException::class);
+                $this->expectExceptionMessage(match ($result) {
+                    1 => 'A general panic was caught',
+                    2 => 'The pact file was not able to be written',
+                    3 => 'A mock server with the provided port was not found',
+                    default => 'Unknown error',
+                });
+            }
+        } else {
+            $this->client
+                ->expects($this->never())
+                ->method('writePactFile');
+        }
+    }
+
+    protected function expectsCreateMockServerForTransport(int $pact, string $host, int $port, string $transport, ?string $transportConfig, int $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('createMockServerForTransport')
+            ->with($pact, $host, $port, $transport, $transportConfig)
+            ->willReturn($result);
+        if ($result < 0) {
+            $this->expectException(MockServerNotStartedException::class);
+            $this->expectExceptionMessage(match ($result) {
+                -1 => 'An invalid handle was received. Handles should be created with `pactffi_new_pact`',
+                -2 => 'Transport_config is not valid JSON',
+                -3 => 'The mock server could not be started',
+                -4 => 'The method panicked',
+                -5 => 'The address is not valid',
                 default => 'Unknown error',
             });
         }

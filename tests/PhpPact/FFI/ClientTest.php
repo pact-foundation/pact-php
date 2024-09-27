@@ -165,6 +165,36 @@ class ClientTest extends TestCase
         $this->assertSame(2, $result);
     }
 
+    public function testCleanupMockServer(): void
+    {
+        $result = $this->client->cleanupMockServer(1234);
+        $this->assertFalse($result);
+    }
+
+    public function testMockServerMatched(): void
+    {
+        $result = $this->client->mockServerMatched(1234);
+        $this->assertFalse($result);
+    }
+
+    public function testMockServerMismatches(): void
+    {
+        $result = $this->client->mockServerMismatches(1234);
+        $this->assertSame('', $result);
+    }
+
+    public function testWritePactFile(): void
+    {
+        $result = $this->client->writePactFile(1234, 'test', true);
+        $this->assertSame(3, $result);
+    }
+
+    public function testCreateMockServerForTransport(): void
+    {
+        $result = $this->client->createMockServerForTransport(1, 'localhost', 1234, 'http', null);
+        $this->assertSame(-1, $result);
+    }
+
     public function testGetInteractionPartRequest(): void
     {
         $this->assertSame(0, $this->client->getInteractionPartRequest());
