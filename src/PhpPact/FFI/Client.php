@@ -450,6 +450,66 @@ class Client implements ClientInterface
         $this->call($method, $handle);
     }
 
+    public function messageReify(int $message): string
+    {
+        $method = 'pactffi_message_reify';
+        $result = $this->call($method, $message);
+        if (!is_string($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "string", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function withHeaderV2(int $interaction, int $part, string $name, int $index, ?string $value): bool
+    {
+        $method = 'pactffi_with_header_v2';
+        $result = $this->call($method, $interaction, $part, $name, $index, $value);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function withQueryParameterV2(int $interaction, string $name, int $index, ?string $value): bool
+    {
+        $method = 'pactffi_with_query_parameter_v2';
+        $result = $this->call($method, $interaction, $name, $index, $value);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function withRequest(int $interaction, ?string $requestMethod, ?string $path): bool
+    {
+        $method = 'pactffi_with_request';
+        $result = $this->call($method, $interaction, $requestMethod, $path);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function responseStatusV2(int $interaction, ?string $status): bool
+    {
+        $method = 'pactffi_response_status_v2';
+        $result = $this->call($method, $interaction, $status);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function interactionContents(int $interaction, int $part, string $contentType, string $contents): int
+    {
+        $method = 'pactffi_interaction_contents';
+        $result = $this->call($method, $interaction, $part, $contentType, $contents);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
     public function getInteractionPartRequest(): int
     {
         return $this->getEnum('InteractionPart_Request');

@@ -9,13 +9,15 @@ use PhpPact\Consumer\Driver\InteractionPart\ResponseDriverInterface;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\FFI\ClientInterface;
+use PhpPactTest\Helper\FFI\ClientTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ResponseDriverTest extends TestCase
 {
+    use ClientTrait;
+
     private ResponseDriverInterface $driver;
-    private ClientInterface&MockObject $client;
     private InteractionBodyDriverInterface&MockObject $bodyDriver;
     private Interaction $interaction;
     private int $responsePartId = 2;
@@ -48,25 +50,8 @@ class ResponseDriverTest extends TestCase
             ->expects($this->once())
             ->method('getInteractionPartResponse')
             ->willReturn($this->responsePartId);
-        $calls = [
-            ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header1', 0, 'header-value-1'],
-            ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header2', 0, 'header-value-2'],
-            ['pactffi_with_header_v2', $this->interactionHandle, $this->responsePartId, 'header2', 1, 'header-value-3'],
-            ['pactffi_response_status_v2', $this->interactionHandle, (string) $this->status],
-        ];
-        $matcher = $this->exactly(count($calls));
-        $this->client
-            ->expects($matcher)
-            ->method('call')
-            ->willReturnCallback(
-                function (...$args) use ($calls, $matcher) {
-                    $index = $matcher->numberOfInvocations() - 1;
-                    $call = $calls[$index];
-                    $this->assertSame($call, $args);
-
-                    return null;
-                }
-            );
+        $this->expectsWithHeaderV2($this->interactionHandle, $this->responsePartId, $this->headers);
+        $this->expectsResponseStatusV2($this->interactionHandle, (string) $this->status, true);
         $this->bodyDriver
             ->expects($this->once())
             ->method('registerBody')

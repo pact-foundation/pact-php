@@ -9,13 +9,15 @@ use PhpPact\Consumer\Driver\InteractionPart\RequestDriverInterface;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\FFI\ClientInterface;
+use PhpPactTest\Helper\FFI\ClientTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class RequestDriverTest extends TestCase
 {
+    use ClientTrait;
+
     private RequestDriverInterface $driver;
-    private ClientInterface&MockObject $client;
     private InteractionBodyDriverInterface&MockObject $bodyDriver;
     private Interaction $interaction;
     private int $requestPartId = 1;
@@ -58,28 +60,9 @@ class RequestDriverTest extends TestCase
             ->expects($this->once())
             ->method('getInteractionPartRequest')
             ->willReturn($this->requestPartId);
-        $calls = [
-            ['pactffi_with_header_v2', $this->interactionHandle, $this->requestPartId, 'header1', 0, 'header-value-1'],
-            ['pactffi_with_header_v2', $this->interactionHandle, $this->requestPartId, 'header2', 0, 'header-value-2'],
-            ['pactffi_with_header_v2', $this->interactionHandle, $this->requestPartId, 'header2', 1, 'header-value-3'],
-            ['pactffi_with_query_parameter_v2', $this->interactionHandle, 'query1', 0, 'query-value-1'],
-            ['pactffi_with_query_parameter_v2', $this->interactionHandle, 'query1', 1, 'query-value-2'],
-            ['pactffi_with_query_parameter_v2', $this->interactionHandle, 'query2', 0, 'query-value-3'],
-            ['pactffi_with_request', $this->interactionHandle, $this->method, $this->path],
-        ];
-        $matcher = $this->exactly(count($calls));
-        $this->client
-            ->expects($matcher)
-            ->method('call')
-            ->willReturnCallback(
-                function (...$args) use ($calls, $matcher) {
-                    $index = $matcher->numberOfInvocations() - 1;
-                    $call = $calls[$index];
-                    $this->assertSame($call, $args);
-
-                    return null;
-                }
-            );
+        $this->expectsWithHeaderV2($this->interactionHandle, $this->requestPartId, $this->headers);
+        $this->expectsWithQueryParameterV2($this->interactionHandle, $this->query);
+        $this->expectsWithRequest($this->interactionHandle, $this->method, $this->path, true);
         $this->bodyDriver
             ->expects($this->once())
             ->method('registerBody')

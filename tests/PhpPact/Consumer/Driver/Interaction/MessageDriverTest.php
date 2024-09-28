@@ -63,11 +63,7 @@ class MessageDriverTest extends TestCase
     {
         $this->message->setHandle($this->messageHandle);
         $result = 'message';
-        $this->client
-            ->expects($this->once())
-            ->method('call')
-            ->with('pactffi_message_reify', $this->messageHandle)
-            ->willReturn($result);
+        $this->expectsMessageReify($this->messageHandle, $result);
         $this->assertSame($result, $this->driver->reify($this->message));
     }
 

@@ -8,6 +8,6 @@ class MessageDriver extends AbstractMessageDriver implements MessageDriverInterf
 {
     public function reify(Message $message): string
     {
-        return $this->client->call('pactffi_message_reify', $message->getHandle());
+        return $this->client->messageReify($message->getHandle());
     }
 }

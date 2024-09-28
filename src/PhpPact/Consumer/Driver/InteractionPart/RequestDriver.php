@@ -3,6 +3,7 @@
 namespace PhpPact\Consumer\Driver\InteractionPart;
 
 use PhpPact\Consumer\Driver\Enum\InteractionPart;
+use PhpPact\Consumer\Driver\Exception\QueryParameterNotAddedException;
 use PhpPact\Consumer\Model\Interaction;
 
 class RequestDriver extends AbstractInteractionPartDriver implements RequestDriverInterface
@@ -19,7 +20,10 @@ class RequestDriver extends AbstractInteractionPartDriver implements RequestDriv
     {
         foreach ($interaction->getRequest()->getQuery() as $key => $values) {
             foreach (array_values($values) as $index => $value) {
-                $this->client->call('pactffi_with_query_parameter_v2', $interaction->getHandle(), (string) $key, (int) $index, (string) $value);
+                $success = $this->client->withQueryParameterV2($interaction->getHandle(), (string) $key, (int) $index, (string) $value);
+                if (!$success) {
+                    throw new QueryParameterNotAddedException('Mock server has been started, interaction handle is invalid, or empty query parameter name');
+                }
             }
         }
     }
@@ -27,6 +31,9 @@ class RequestDriver extends AbstractInteractionPartDriver implements RequestDriv
     private function withRequest(Interaction $interaction): void
     {
         $request = $interaction->getRequest();
-        $this->client->call('pactffi_with_request', $interaction->getHandle(), $request->getMethod(), $request->getPath());
+        $success = $this->client->withRequest($interaction->getHandle(), $request->getMethod(), $request->getPath());
+        if (!$success) {
+            throw new QueryParameterNotAddedException('Mock server has been started, interaction handle is invalid, or empty query parameter name');
+        }
     }
 }

@@ -111,6 +111,18 @@ interface ClientInterface
 
     public function verifierShutdown(CData $handle): void;
 
+    public function messageReify(int $message): string;
+
+    public function withHeaderV2(int $interaction, int $part, string $name, int $index, ?string $value): bool;
+
+    public function withQueryParameterV2(int $interaction, string $name, int $index, ?string $value): bool;
+
+    public function withRequest(int $interaction, ?string $requestMethod, ?string $path): bool;
+
+    public function responseStatusV2(int $interaction, ?string $status): bool;
+
+    public function interactionContents(int $interaction, int $part, string $contentType, string $contents): int;
+
     public function getInteractionPartRequest(): int;
 
     public function getInteractionPartResponse(): int;

@@ -13,6 +13,7 @@ use PhpPact\Consumer\Exception\MockServerNotStartedException;
 use PhpPact\Consumer\Exception\MockServerPactFileNotWrittenException;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\FFI\Model\ArrayData;
+use PhpPact\Plugin\Exception\PluginBodyNotAddedException;
 use PhpPact\Plugin\Exception\PluginNotLoadedException;
 use PhpPact\Standalone\ProviderVerifier\Exception\VerifierNotCreatedException;
 use PhpPact\Standalone\ProviderVerifier\Model\ConsumerVersionSelectors;
@@ -624,5 +625,103 @@ trait ClientTrait
             ->expects($this->once())
             ->method('verifierShutdown')
             ->with($handle);
+    }
+
+    protected function expectsMessageReify(int $message, string $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('messageReify')
+            ->with($message)
+            ->willReturn($result);
+    }
+
+    /**
+     * @param array<string, string[]> $headers
+     */
+    protected function expectsWithHeaderV2(int $interaction, int $part, array $headers): void
+    {
+        $calls = [];
+        foreach ($headers as $name => $values) {
+            foreach ($values as $index => $value) {
+                $calls[] = [$interaction, $part, $name, $index, $value, true];
+            }
+        }
+        $this->client
+            ->expects($this->exactly(count($calls)))
+            ->method('withHeaderV2')
+            ->willReturnCallback(function (...$args) use (&$calls) {
+                $call = array_shift($calls);
+                $return = array_pop($call);
+                foreach ($args as $key => $arg) {
+                    $this->assertThat($arg, $call[$key] instanceof Constraint ? $call[$key] : new IsIdentical($call[$key]));
+                }
+
+                return $return;
+            });
+    }
+
+    /**
+     * @param array<string, string[]> $query
+     */
+    protected function expectsWithQueryParameterV2(int $interaction, array $query): void
+    {
+        $calls = [];
+        foreach ($query as $name => $values) {
+            foreach ($values as $index => $value) {
+                $calls[] = [$interaction, $name, $index, $value, true];
+            }
+        }
+        $this->client
+            ->expects($this->exactly(count($calls)))
+            ->method('withQueryParameterV2')
+            ->willReturnCallback(function (...$args) use (&$calls) {
+                $call = array_shift($calls);
+                $return = array_pop($call);
+                foreach ($args as $key => $arg) {
+                    $this->assertThat($arg, $call[$key] instanceof Constraint ? $call[$key] : new IsIdentical($call[$key]));
+                }
+
+                return $return;
+            });
+    }
+
+    protected function expectsWithRequest(int $interaction, ?string $method, ?string $path, bool $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('withRequest')
+            ->with($interaction, $method, $path)
+            ->willReturn($result);
+    }
+
+    protected function expectsResponseStatusV2(int $interaction, ?string $status, bool $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('responseStatusV2')
+            ->with($interaction, $status)
+            ->willReturn($result);
+    }
+
+    protected function expectsInteractionContents(int $interaction, int $part, string $contentType, string $contents, int $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('interactionContents')
+            ->with($interaction, $part, $contentType, $contents)
+            ->willReturn($result);
+        if ($result > 0) {
+            $this->expectException(PluginBodyNotAddedException::class);
+            $this->expectExceptionMessage(match ($result) {
+                1 => 'A general panic was caught.',
+                2 => 'The mock server has already been started.',
+                3 => 'The interaction handle is invalid.',
+                4 => 'The content type is not valid.',
+                5 => 'The contents JSON is not valid JSON.',
+                6 => 'The plugin returned an error.',
+                default => 'Unknown error',
+            });
+        }
     }
 }

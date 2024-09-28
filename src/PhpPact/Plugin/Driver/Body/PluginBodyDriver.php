@@ -34,7 +34,7 @@ class PluginBodyDriver implements PluginBodyDriverInterface
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     throw new BodyNotSupportedException('Plugin only support json body contents');
                 }
-                $error = $this->client->call('pactffi_interaction_contents', $interaction->getHandle(), $partId, $body->getContentType(), $body->getContents());
+                $error = $this->client->interactionContents($interaction->getHandle(), $partId, $body->getContentType(), $body->getContents());
                 if ($error) {
                     throw new PluginBodyNotAddedException($error);
                 }
