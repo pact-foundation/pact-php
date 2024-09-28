@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\Helper\FFI;
 
+use FFI\CData;
 use PhpPact\Consumer\Driver\Exception\InteractionCommentNotSetException;
 use PhpPact\Consumer\Driver\Exception\InteractionKeyNotSetException;
 use PhpPact\Consumer\Driver\Exception\InteractionNotModifiedException;
@@ -11,7 +12,10 @@ use PhpPact\Consumer\Driver\Exception\PactNotModifiedException;
 use PhpPact\Consumer\Exception\MockServerNotStartedException;
 use PhpPact\Consumer\Exception\MockServerPactFileNotWrittenException;
 use PhpPact\FFI\ClientInterface;
+use PhpPact\FFI\Model\ArrayData;
 use PhpPact\Plugin\Exception\PluginNotLoadedException;
+use PhpPact\Standalone\ProviderVerifier\Exception\VerifierNotCreatedException;
+use PhpPact\Standalone\ProviderVerifier\Model\ConsumerVersionSelectors;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsIdentical;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -428,5 +432,197 @@ trait ClientTrait
                 default => 'Unknown error',
             });
         }
+    }
+
+    protected function expectsVerifierNewForApplication(string $name, string $version, ?CData $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierNewForApplication')
+            ->with($name, $version)
+            ->willReturn($result);
+        if (!$result) {
+            $this->expectException(VerifierNotCreatedException::class);
+        }
+    }
+
+    protected function expectsVerifierSetProviderInfo(CData $handle, ?string $name, ?string $scheme, ?string $host, ?int $port, ?string $path): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierSetProviderInfo')
+            ->with($handle, $name, $scheme, $host, $port, $path);
+    }
+
+    protected function expectsVerifierAddProviderTransport(CData $handle, ?string $protocol, ?int $port, ?string $path, ?string $scheme): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierAddProviderTransport')
+            ->with($handle, $protocol, $port, $path, $scheme);
+    }
+
+    protected function expectsVerifierSetFilterInfo(CData $handle, ?string $filterDescription, ?string $filterState, bool $filterNoState): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierSetFilterInfo')
+            ->with($handle, $filterDescription, $filterState, $filterNoState);
+    }
+
+    protected function expectsVerifierSetProviderState(CData $handle, ?string $url, bool $teardown, bool $body): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierSetProviderState')
+            ->with($handle, $url, $teardown, $body);
+    }
+
+    protected function expectsVerifierSetVerificationOptions(CData $handle, bool $disableSslVerification, int $requestTimeout, int $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierSetVerificationOptions')
+            ->with($handle, $disableSslVerification, $requestTimeout)
+            ->willReturn($result);
+    }
+
+    /**
+     * @param string[] $providerTags
+     */
+    protected function expectsVerifierSetPublishOptions(CData $handle, string $providerVersion, ?string $buildUrl, array $providerTags, ?string $providerBranch, int $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierSetPublishOptions')
+            ->with(
+                $handle,
+                $providerVersion,
+                $buildUrl,
+                count($providerTags) > 0 ? $this->isInstanceOf(ArrayData::class) : null,
+                $providerBranch
+            )
+            ->willReturn($result);
+    }
+
+    /**
+     * @param string[] $consumerFilters
+     */
+    protected function expectsVerifierSetConsumerFilters(CData $handle, array $consumerFilters): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierSetConsumerFilters')
+            ->with(
+                $handle,
+                count($consumerFilters) > 0 ? $this->isInstanceOf(ArrayData::class) : null
+            );
+    }
+
+    /**
+     * @param array<string, string> $customHeaders
+     */
+    protected function expectsVerifierAddCustomHeader(CData $handle, array $customHeaders): void
+    {
+        $calls = [];
+        foreach ($customHeaders as $name => $value) {
+            $calls[] = [$handle, $name, $value];
+        }
+        $this->client
+            ->expects($this->exactly(count($calls)))
+            ->method('verifierAddCustomHeader')
+            ->willReturnCallback(function (...$args) use (&$calls) {
+                $call = array_shift($calls);
+                foreach ($args as $key => $arg) {
+                    $this->assertThat($arg, $call[$key] instanceof Constraint ? $call[$key] : new IsIdentical($call[$key]));
+                }
+            });
+    }
+
+    protected function expectsVerifierAddFileSource(CData $handle, string $file): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierAddFileSource')
+            ->with($handle, $file);
+    }
+
+    protected function expectsVerifierAddDirectorySource(CData $handle, string $directory): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierAddDirectorySource')
+            ->with($handle, $directory);
+    }
+
+    protected function expectsVerifierAddUrlSource(CData $handle, string $url, ?string $username, ?string $password, ?string $token): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierAddUrlSource')
+            ->with($handle, $url, $username, $password, $token);
+    }
+
+    protected function expectsVerifierBrokerSourceWithSelectors(
+        CData $handle,
+        string $url,
+        ?string $username,
+        ?string $password,
+        ?string $token,
+        bool $enablePending,
+        ?string $includeWipPactsSince,
+        array $providerTags,
+        ?string $providerBranch,
+        ConsumerVersionSelectors $consumerVersionSelectors,
+        array $consumerVersionTags
+    ): void {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierBrokerSourceWithSelectors')
+            ->with(
+                $handle,
+                $url,
+                $username,
+                $password,
+                $token,
+                $enablePending,
+                $includeWipPactsSince,
+                count($providerTags) > 0 ? $this->isInstanceOf(ArrayData::class) : null,
+                $providerBranch,
+                count($consumerVersionSelectors) > 0 ? $this->isInstanceOf(ArrayData::class) : null,
+                count($consumerVersionTags) > 0 ? $this->isInstanceOf(ArrayData::class) : null
+            );
+    }
+
+    protected function expectsVerifierExecute(CData $handle, int $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierExecute')
+            ->with($handle)
+            ->willReturn($result);
+    }
+
+    protected function expectsVerifierJson(CData $handle, bool $hasLogger, ?string $result): void
+    {
+        if ($hasLogger) {
+            $this->client
+                ->expects($this->once())
+                ->method('verifierJson')
+                ->with($handle)
+                ->willReturn($result);
+        } else {
+            $this->client
+                ->expects($this->never())
+                ->method('verifierJson');
+        }
+    }
+
+    protected function expectsVerifierShutdown(CData $handle): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierShutdown')
+            ->with($handle);
     }
 }

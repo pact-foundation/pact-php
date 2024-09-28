@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\FFI;
 
+use FFI\CData;
 use PhpPact\FFI\Client;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\FFI\Model\BinaryData;
@@ -193,6 +194,129 @@ class ClientTest extends TestCase
     {
         $result = $this->client->createMockServerForTransport(1, 'localhost', 1234, 'http', null);
         $this->assertSame(-1, $result);
+    }
+
+    public function testVerifierNewForApplication(): void
+    {
+        $result = $this->client->verifierNewForApplication('name', '1.1');
+        $this->assertInstanceOf(CData::class, $result);
+    }
+
+    public function testVerifierSetProviderInfo(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $this->client->verifierSetProviderInfo($handle, null, null, null, null, null);
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testVerifierAddProviderTransport(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $this->client->verifierAddProviderTransport($handle, null, null, null, null);
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testVerifierSetFilterInfo(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $this->client->verifierSetFilterInfo($handle, null, null, true);
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testVerifierSetProviderState(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $this->client->verifierSetProviderState($handle, null, true, true);
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testVerifierSetVerificationOptions(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $result = $this->client->verifierSetVerificationOptions($handle, true, 1);
+        $this->assertSame(0, $result);
+    }
+
+    public function testVerifierSetPublishOptions(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $result = $this->client->verifierSetPublishOptions($handle, '1.0.0', null, null, 'some-branch');
+        $this->assertSame(0, $result);
+    }
+
+    public function testVerifierSetConsumerFilters(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $this->client->verifierSetConsumerFilters($handle, null);
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testVerifierAddCustomHeader(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $this->client->verifierAddCustomHeader($handle, 'name', 'value');
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testVerifierAddFileSource(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $this->client->verifierAddFileSource($handle, '/path/to/file');
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testVerifierAddDirectorySource(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $this->client->verifierAddDirectorySource($handle, '/path/to/directory');
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testVerifierAddUrlSource(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $this->client->verifierAddUrlSource($handle, 'http://example.domain/file.ext', null, null, null);
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testVerifierBrokerSourceWithSelectors(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $this->client->verifierBrokerSourceWithSelectors(
+            $handle,
+            'http://example.domain/file.ext',
+            null,
+            null,
+            null,
+            true,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testVerifierExecute(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $result = $this->client->verifierExecute($handle);
+        $this->assertSame(0, $result);
+    }
+
+    public function testVerifierJson(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $result = $this->client->verifierJson($handle);
+        $this->assertSame('{"errors":[],"notices":[],"output":[],"pendingErrors":[],"result":true}', $result);
+    }
+
+    public function testVerifierShutdown(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        $this->client->verifierShutdown($handle);
+        $this->expectNotToPerformAssertions();
     }
 
     public function testGetInteractionPartRequest(): void

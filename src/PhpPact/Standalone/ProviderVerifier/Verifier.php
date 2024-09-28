@@ -7,6 +7,9 @@ use PhpPact\FFI\Client;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\FFI\Model\ArrayData;
 use PhpPact\Service\LoggerInterface;
+use PhpPact\Standalone\ProviderVerifier\Exception\InvalidVerifierHandleException;
+use PhpPact\Standalone\ProviderVerifier\Exception\InvalidVerifierJsonException;
+use PhpPact\Standalone\ProviderVerifier\Exception\VerifierNotCreatedException;
 use PhpPact\Standalone\ProviderVerifier\Model\Source\BrokerInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\Source\UrlInterface;
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfigInterface;
@@ -33,17 +36,19 @@ class Verifier
 
     private function newHandle(VerifierConfigInterface $config): void
     {
-        $this->handle = $this->client->call(
-            'pactffi_verifier_new_for_application',
+        $result = $this->client->verifierNewForApplication(
             $config->getCallingApp()->getName(),
             $config->getCallingApp()->getVersion()
         );
+        if (!$result) {
+            throw new VerifierNotCreatedException();
+        }
+        $this->handle = $result;
     }
 
     private function setProviderInfo(VerifierConfigInterface $config): void
     {
-        $this->client->call(
-            'pactffi_verifier_set_provider_info',
+        $this->client->verifierSetProviderInfo(
             $this->handle,
             $config->getProviderInfo()->getName(),
             $config->getProviderInfo()->getScheme(),
@@ -56,8 +61,7 @@ class Verifier
     private function setProviderTransports(VerifierConfigInterface $config): void
     {
         foreach ($config->getProviderTransports() as $transport) {
-            $this->client->call(
-                'pactffi_verifier_add_provider_transport',
+            $this->client->verifierAddProviderTransport(
                 $this->handle,
                 $transport->getProtocol(),
                 $transport->getPort(),
@@ -69,8 +73,7 @@ class Verifier
 
     private function setFilterInfo(VerifierConfigInterface $config): void
     {
-        $this->client->call(
-            'pactffi_verifier_set_filter_info',
+        $this->client->verifierSetFilterInfo(
             $this->handle,
             $config->getFilterInfo()->getFilterDescription(),
             $config->getFilterInfo()->getFilterState(),
@@ -80,8 +83,7 @@ class Verifier
 
     private function setProviderState(VerifierConfigInterface $config): void
     {
-        $this->client->call(
-            'pactffi_verifier_set_provider_state',
+        $this->client->verifierSetProviderState(
             $this->handle,
             $config->getProviderState()->getStateChangeUrl() ? (string) $config->getProviderState()->getStateChangeUrl() : null,
             $config->getProviderState()->isStateChangeTeardown(),
@@ -91,8 +93,7 @@ class Verifier
 
     private function setVerificationOptions(VerifierConfigInterface $config): void
     {
-        $this->client->call(
-            'pactffi_verifier_set_verification_options',
+        $this->client->verifierSetVerificationOptions(
             $this->handle,
             $config->getVerificationOptions()->isDisableSslVerification(),
             $config->getVerificationOptions()->getRequestTimeout()
@@ -103,13 +104,11 @@ class Verifier
     {
         if ($config->isPublishResults()) {
             $providerTags = ArrayData::createFrom($config->getPublishOptions()->getProviderTags());
-            $this->client->call(
-                'pactffi_verifier_set_publish_options',
+            $this->client->verifierSetPublishOptions(
                 $this->handle,
                 $config->getPublishOptions()->getProviderVersion(),
                 $config->getPublishOptions()->getBuildUrl(),
-                $providerTags?->getItems(),
-                $providerTags?->getSize(),
+                $providerTags,
                 $config->getPublishOptions()->getProviderBranch()
             );
         }
@@ -118,19 +117,16 @@ class Verifier
     private function setConsumerFilters(VerifierConfigInterface $config): void
     {
         $filterConsumerNames = ArrayData::createFrom($config->getConsumerFilters()->getFilterConsumerNames());
-        $this->client->call(
-            'pactffi_verifier_set_consumer_filters',
+        $this->client->verifierSetConsumerFilters(
             $this->handle,
-            $filterConsumerNames?->getItems(),
-            $filterConsumerNames?->getSize()
+            $filterConsumerNames
         );
     }
 
     private function setCustomHeaders(VerifierConfigInterface $config): void
     {
         foreach ($config->getCustomHeaders()->getHeaders() as $name => $value) {
-            $this->client->call(
-                'pactffi_verifier_add_custom_header',
+            $this->client->verifierAddCustomHeader(
                 $this->handle,
                 $name,
                 $value
@@ -147,22 +143,21 @@ class Verifier
 
     public function addFile(string $file): self
     {
-        $this->client->call('pactffi_verifier_add_file_source', $this->handle, $file);
+        $this->client->verifierAddFileSource($this->handle, $file);
 
         return $this;
     }
 
     public function addDirectory(string $directory): self
     {
-        $this->client->call('pactffi_verifier_add_directory_source', $this->handle, $directory);
+        $this->client->verifierAddDirectorySource($this->handle, $directory);
 
         return $this;
     }
 
     public function addUrl(UrlInterface $url): self
     {
-        $this->client->call(
-            'pactffi_verifier_url_source',
+        $this->client->verifierAddUrlSource(
             $this->handle,
             (string) $url->getUrl(),
             $url->getUsername(),
@@ -178,8 +173,7 @@ class Verifier
         $providerTags = ArrayData::createFrom($broker->getProviderTags());
         $consumerVersionSelectors = ArrayData::createFrom(iterator_to_array($broker->getConsumerVersionSelectors()));
         $consumerVersionTags = ArrayData::createFrom($broker->getConsumerVersionTags());
-        $this->client->call(
-            'pactffi_verifier_broker_source_with_selectors',
+        $this->client->verifierBrokerSourceWithSelectors(
             $this->handle,
             (string) $broker->getUrl(),
             $broker->getUsername(),
@@ -187,13 +181,10 @@ class Verifier
             $broker->getToken(),
             $broker->isEnablePending(),
             $broker->getIncludeWipPactSince(),
-            $providerTags?->getItems(),
-            $providerTags?->getSize(),
+            $providerTags,
             $broker->getProviderBranch(),
-            $consumerVersionSelectors?->getItems(),
-            $consumerVersionSelectors?->getSize(),
-            $consumerVersionTags?->getItems(),
-            $consumerVersionTags?->getSize()
+            $consumerVersionSelectors,
+            $consumerVersionTags
         );
 
         return $this;
@@ -201,11 +192,15 @@ class Verifier
 
     public function verify(): bool
     {
-        $error = $this->client->call('pactffi_verifier_execute', $this->handle);
+        $error = $this->client->verifierExecute($this->handle);
         if ($this->logger) {
-            $this->logger->log($this->client->call('pactffi_verifier_json', $this->handle));
+            $output = $this->client->verifierJson($this->handle);
+            if (is_null($output)) {
+                throw new InvalidVerifierHandleException();
+            }
+            $this->logger->log($output);
         }
-        $this->client->call('pactffi_verifier_shutdown', $this->handle);
+        $this->client->verifierShutdown($this->handle);
 
         return !$error;
     }
