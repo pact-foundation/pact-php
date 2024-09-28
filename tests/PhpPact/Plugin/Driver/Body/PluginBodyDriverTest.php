@@ -60,9 +60,6 @@ class PluginBodyDriverTest extends TestCase
         } else {
             $this->interaction->getResponse()->setBody($this->binary);
         }
-        $this->client
-            ->expects($this->never())
-            ->method('call');
         $this->expectException(BodyNotSupportedException::class);
         $this->expectExceptionMessage('Plugin does not support binary body');
         $this->driver->registerBody($this->interaction, $part);
@@ -74,9 +71,6 @@ class PluginBodyDriverTest extends TestCase
     {
         $this->expectsGetInteractionPartEnumMethods(InteractionPart::REQUEST);
         $this->message->setContents($this->binary);
-        $this->client
-            ->expects($this->never())
-            ->method('call');
         $this->expectException(BodyNotSupportedException::class);
         $this->expectExceptionMessage('Plugin does not support binary body');
         $this->driver->registerBody($this->message, $part);
@@ -92,9 +86,6 @@ class PluginBodyDriverTest extends TestCase
         } else {
             $this->interaction->getResponse()->setBody($this->text);
         }
-        $this->client
-            ->expects($this->never())
-            ->method('call');
         $this->expectException(BodyNotSupportedException::class);
         $this->expectExceptionMessage('Plugin only support json body contents');
         $this->driver->registerBody($this->interaction, $part);
@@ -106,9 +97,6 @@ class PluginBodyDriverTest extends TestCase
     {
         $this->expectsGetInteractionPartEnumMethods(InteractionPart::REQUEST);
         $this->message->setContents($this->text);
-        $this->client
-            ->expects($this->never())
-            ->method('call');
         $this->expectException(BodyNotSupportedException::class);
         $this->expectExceptionMessage('Plugin only support json body contents');
         $this->driver->registerBody($this->message, $part);
@@ -172,9 +160,6 @@ class PluginBodyDriverTest extends TestCase
         } else {
             $this->interaction->getResponse()->setBody($this->multipart);
         }
-        $this->client
-            ->expects($this->never())
-            ->method('call');
         $this->expectException(BodyNotSupportedException::class);
         $this->expectExceptionMessage('Plugin does not support multipart body');
         $this->driver->registerBody($this->interaction, $part);
@@ -185,9 +170,6 @@ class PluginBodyDriverTest extends TestCase
     public function testEmptyInteractionBody(InteractionPart $part): void
     {
         $this->expectsGetInteractionPartEnumMethods($part);
-        $this->client
-            ->expects($this->never())
-            ->method('call');
         $this->driver->registerBody($this->interaction, $part);
     }
 
@@ -195,9 +177,7 @@ class PluginBodyDriverTest extends TestCase
     #[TestWith([InteractionPart::RESPONSE])]
     public function testEmptyMessageBody(InteractionPart $part): void
     {
-        $this->client
-            ->expects($this->never())
-            ->method('call');
+        $this->expectsGetInteractionPartEnumMethods(InteractionPart::REQUEST);
         $this->driver->registerBody($this->message, $part);
     }
 

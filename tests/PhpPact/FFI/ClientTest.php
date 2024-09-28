@@ -394,11 +394,4 @@ class ClientTest extends TestCase
     {
         $this->assertSame(0, $this->client->getPactSpecificationUnknown());
     }
-
-    #[TestWith(['abc123', true])]
-    #[TestWith(['testing', false])]
-    public function testCall(string $example, bool $result): void
-    {
-        $this->assertSame($result, $this->client->call('pactffi_check_regex', '\w{3}\d+', $example));
-    }
 }
