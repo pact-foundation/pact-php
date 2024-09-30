@@ -7,6 +7,7 @@ use FFI\CData;
 use PhpPact\FFI\Exception\HeaderNotReadException;
 use PhpPact\FFI\Exception\InvalidEnumException;
 use PhpPact\FFI\Exception\InvalidResultException;
+use PhpPact\FFI\Model\ArrayData;
 use PhpPact\FFI\Model\BinaryData;
 use PhpPact\FFI\Model\Result;
 use PhpPact\Standalone\Installer\Model\Scripts;
@@ -298,6 +299,155 @@ class Client implements ClientInterface
             throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
         }
         return $result;
+    }
+
+    public function verifierNewForApplication(?string $name, ?string $version): ?CData
+    {
+        $method = 'pactffi_verifier_new_for_application';
+        $result = $this->call($method, $name, $version);
+        if ($result === null) {
+            return $result;
+        }
+        if (!$result instanceof CData) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "%s", but got "%s"', $method, CData::class, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function verifierSetProviderInfo(CData $handle, ?string $name, ?string $scheme, ?string $host, ?int $port, ?string $path): void
+    {
+        $method = 'pactffi_verifier_set_provider_info';
+        $this->call($method, $handle, $name, $scheme, $host, $port, $path);
+    }
+
+    public function verifierAddProviderTransport(CData $handle, ?string $protocol, ?int $port, ?string $path, ?string $scheme): void
+    {
+        $method = 'pactffi_verifier_add_provider_transport';
+        $this->call($method, $handle, $protocol, $port, $path, $scheme);
+    }
+
+    public function verifierSetFilterInfo(CData $handle, ?string $filterDescription, ?string $filterState, bool $filterNoState): void
+    {
+        $method = 'pactffi_verifier_set_filter_info';
+        $this->call($method, $handle, $filterDescription, $filterState, $filterNoState);
+    }
+
+    public function verifierSetProviderState(CData $handle, ?string $url, bool $teardown, bool $body): void
+    {
+        $method = 'pactffi_verifier_set_provider_state';
+        $this->call($method, $handle, $url, $teardown, $body);
+    }
+
+    public function verifierSetVerificationOptions(CData $handle, bool $disableSslVerification, int $requestTimeout): int
+    {
+        $method = 'pactffi_verifier_set_verification_options';
+        $result = $this->call($method, $handle, $disableSslVerification, $requestTimeout);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function verifierSetPublishOptions(CData $handle, string $providerVersion, ?string $buildUrl, ?ArrayData $providerTags, ?string $providerBranch): int
+    {
+        $method = 'pactffi_verifier_set_publish_options';
+        $result = $this->call($method, $handle, $providerVersion, $buildUrl, $providerTags?->getItems(), $providerTags?->getSize(), $providerBranch);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function verifierSetConsumerFilters(CData $handle, ?ArrayData $consumerFilters): void
+    {
+        $method = 'pactffi_verifier_set_consumer_filters';
+        $this->call($method, $handle, $consumerFilters?->getItems(), $consumerFilters?->getSize());
+    }
+
+    public function verifierAddCustomHeader(CData $handle, string $name, string $value): void
+    {
+        $method = 'pactffi_verifier_add_custom_header';
+        $this->call($method, $handle, $name, $value);
+    }
+
+    public function verifierAddFileSource(CData $handle, string $file): void
+    {
+        $method = 'pactffi_verifier_add_file_source';
+        $this->call($method, $handle, $file);
+    }
+
+    public function verifierAddDirectorySource(CData $handle, string $directory): void
+    {
+        $method = 'pactffi_verifier_add_directory_source';
+        $this->call($method, $handle, $directory);
+    }
+
+    public function verifierAddUrlSource(CData $handle, string $url, ?string $username, ?string $password, ?string $token): void
+    {
+        $method = 'pactffi_verifier_url_source';
+        $this->call($method, $handle, $url, $username, $password, $token);
+    }
+
+    public function verifierBrokerSourceWithSelectors(
+        CData $handle,
+        string $url,
+        ?string $username,
+        ?string $password,
+        ?string $token,
+        bool $enablePending,
+        ?string $includeWipPactsSince,
+        ?ArrayData $providerTags,
+        ?string $providerBranch,
+        ?ArrayData $consumerVersionSelectors,
+        ?ArrayData $consumerVersionTags
+    ): void {
+        $method = 'pactffi_verifier_broker_source_with_selectors';
+        $this->call(
+            $method,
+            $handle,
+            $url,
+            $username,
+            $password,
+            $token,
+            $enablePending,
+            $includeWipPactsSince,
+            $providerTags?->getItems(),
+            $providerTags?->getSize(),
+            $providerBranch,
+            $consumerVersionSelectors?->getItems(),
+            $consumerVersionSelectors?->getSize(),
+            $consumerVersionTags?->getItems(),
+            $consumerVersionTags?->getSize()
+        );
+    }
+
+    public function verifierExecute(CData $handle): int
+    {
+        $method = 'pactffi_verifier_execute';
+        $result = $this->call($method, $handle);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function verifierJson(CData $handle): ?string
+    {
+        $method = 'pactffi_verifier_json';
+        $result = $this->call($method, $handle);
+        if ($result === null) {
+            return null;
+        }
+        if (!is_string($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "string", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function verifierShutdown(CData $handle): void
+    {
+        $method = 'pactffi_verifier_shutdown';
+        $this->call($method, $handle);
     }
 
     public function getInteractionPartRequest(): int

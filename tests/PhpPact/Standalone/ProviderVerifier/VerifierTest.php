@@ -29,10 +29,6 @@ class VerifierTest extends TestCase
     private VerifierConfigInterface $config;
     private LoggerInterface&MockObject $logger;
     private CData $handle;
-    /**
-     * @var mixed[][]
-     */
-    private array $calls;
 
     protected function setUp(): void
     {
@@ -82,45 +78,22 @@ class VerifierTest extends TestCase
         $this->config->getCustomHeaders()
             ->setHeaders($customHeaders = ['name-1' => 'value-1', 'name-2' => 'value-2']);
         $this->config->setLogLevel($logLevel = 'info');
-        $this->calls = [
-            ['pactffi_verifier_new_for_application', $callingAppName, $callingAppVersion, $this->handle],
-            ['pactffi_verifier_set_provider_info', $this->handle, $providerName, $providerScheme, $providerHost, $providerPort, $providerPath, null],
-            ['pactffi_verifier_add_provider_transport', $this->handle, $transportProtocol, $transportPort, $transportPath, $transportScheme, null],
-            ['pactffi_verifier_set_filter_info', $this->handle, $filterDescription, $filterState, $filterNoState, null],
-            ['pactffi_verifier_set_provider_state', $this->handle, (string) $stateChangeUrl, $stateChangeTearDown, $stateChangeAsBody, null],
-            ['pactffi_verifier_set_verification_options', $this->handle, $disableSslVerification, $requestTimeout, null],
-            [
-                'pactffi_verifier_set_publish_options',
-                $this->handle,
-                $providerVersion,
-                $buildUrl,
-                $hasProviderTags ? $this->isInstanceOf(CData::class) : null,
-                $hasProviderTags ? count($providerTags) : null,
-                $providerBranch,
-                null
-            ],
-            [
-                'pactffi_verifier_set_consumer_filters',
-                $this->handle,
-                $hasFilterConsumerNames ? $this->isInstanceOf(CData::class) : null,
-                $hasFilterConsumerNames ? count($filterConsumerNames) : null,
-                null
-            ],
-            [
-                'pactffi_verifier_add_custom_header',
-                $this->handle,
-                'name-1',
-                $customHeaders['name-1'],
-                null,
-            ],
-            [
-                'pactffi_verifier_add_custom_header',
-                $this->handle,
-                'name-2',
-                $customHeaders['name-2'],
-                null,
-            ],
-        ];
+        $this->expectsVerifierNewForApplication($callingAppName, $callingAppVersion, $this->handle);
+        $this->expectsVerifierSetProviderInfo($this->handle, $providerName, $providerScheme, $providerHost, $providerPort, $providerPath);
+        $this->expectsVerifierAddProviderTransport($this->handle, $transportProtocol, $transportPort, $transportPath, $transportScheme);
+        $this->expectsVerifierSetFilterInfo($this->handle, $filterDescription, $filterState, $filterNoState);
+        $this->expectsVerifierSetProviderState($this->handle, (string) $stateChangeUrl, $stateChangeTearDown, $stateChangeAsBody);
+        $this->expectsVerifierSetVerificationOptions($this->handle, $disableSslVerification, $requestTimeout, 0);
+        $this->expectsVerifierSetPublishOptions(
+            $this->handle,
+            $providerVersion,
+            $buildUrl,
+            $providerTags,
+            $providerBranch,
+            0
+        );
+        $this->expectsVerifierSetConsumerFilters($this->handle, $filterConsumerNames);
+        $this->expectsVerifierAddCustomHeader($this->handle, $customHeaders);
         $this->expectsInitWithLogLevel(strtoupper($logLevel));
     }
 
@@ -131,7 +104,6 @@ class VerifierTest extends TestCase
     public function testConstruct(bool $hasProviderTags, bool $hasFilterConsumerNames): void
     {
         $this->setUpCalls($hasProviderTags, $hasFilterConsumerNames);
-        $this->assertClientCalls($this->calls);
         $this->verifier = new Verifier($this->config, $this->logger, $this->client);
     }
 
@@ -139,8 +111,7 @@ class VerifierTest extends TestCase
     {
         $this->setUpCalls();
         $file = '/path/to/file.json';
-        $this->calls[] = ['pactffi_verifier_add_file_source', $this->handle, $file, null];
-        $this->assertClientCalls($this->calls);
+        $this->expectsVerifierAddFileSource($this->handle, $file);
         $this->verifier = new Verifier($this->config, $this->logger, $this->client);
         $this->assertSame($this->verifier, $this->verifier->addFile($file));
     }
@@ -149,8 +120,7 @@ class VerifierTest extends TestCase
     {
         $this->setUpCalls();
         $directory = '/path/to/directory';
-        $this->calls[] = ['pactffi_verifier_add_directory_source', $this->handle, $directory, null];
-        $this->assertClientCalls($this->calls);
+        $this->expectsVerifierAddDirectorySource($this->handle, $directory);
         $this->verifier = new Verifier($this->config, $this->logger, $this->client);
         $this->assertSame($this->verifier, $this->verifier->addDirectory($directory));
     }
@@ -164,8 +134,7 @@ class VerifierTest extends TestCase
             ->setToken($token = 'secret token')
             ->setUsername($username = 'my username')
             ->setPassword($password = 'secret password');
-        $this->calls[] = ['pactffi_verifier_url_source', $this->handle, (string) $url, $username, $password, $token, null];
-        $this->assertClientCalls($this->calls);
+        $this->expectsVerifierAddUrlSource($this->handle, (string) $url, $username, $password, $token);
         $this->verifier = new Verifier($this->config, $this->logger, $this->client);
         $this->assertSame($this->verifier, $this->verifier->addUrl($source));
     }
@@ -191,52 +160,44 @@ class VerifierTest extends TestCase
             ->setUsername($username = 'my username')
             ->setPassword($password = 'secret password')
             ->setEnablePending($enablePending = true)
-            ->setIncludeWipPactSince($wipPactSince = '2020-01-30')
+            ->setIncludeWipPactSince($includeWipPactSince = '2020-01-30')
             ->setProviderTags($providerTags = $hasProviderTags ? ['prod', 'staging'] : [])
             ->setProviderBranch($providerBranch = 'main')
             ->setConsumerVersionSelectors($consumerVersionSelectors)
             ->setConsumerVersionTags($consumerVersionTags = $hasConsumerVersionTags ? ['dev'] : []);
-        $this->calls[] = [
-            'pactffi_verifier_broker_source_with_selectors',
+        $this->expectsVerifierBrokerSourceWithSelectors(
             $this->handle,
             (string) $url,
             $username,
             $password,
             $token,
             $enablePending,
-            $wipPactSince,
-            $hasProviderTags ? $this->isInstanceOf(CData::class) : null,
-            $hasProviderTags ? count($providerTags) : null,
+            $includeWipPactSince,
+            $providerTags,
             $providerBranch,
-            $hasVersionSelectors ? $this->isInstanceOf(CData::class) : null,
-            $hasVersionSelectors ? count($consumerVersionSelectors) : null,
-            $hasConsumerVersionTags ? $this->isInstanceOf(CData::class) : null,
-            $hasConsumerVersionTags ? count($consumerVersionTags) : null,
-            null
-        ];
-        $this->assertClientCalls($this->calls);
+            $consumerVersionSelectors,
+            $consumerVersionTags,
+        );
         $this->verifier = new Verifier($this->config, $this->logger, $this->client);
         $this->assertSame($this->verifier, $this->verifier->addBroker($source));
     }
 
-    #[TestWith([0, true,  false])]
-    #[TestWith([0, true,  true])]
-    #[TestWith([1, false, false])]
-    #[TestWith([2, false, false])]
-    public function testVerify(int $error, bool $success, bool $hasLogger): void
+    #[TestWith([0, true,  false, null])]
+    #[TestWith([0, true,  true,  null])]
+    #[TestWith([0, true,  true,  '{"key": "value"}'])]
+    #[TestWith([1, false, false, null])]
+    #[TestWith([2, false, false, null])]
+    public function testVerify(int $error, bool $success, bool $hasLogger, ?string $json): void
     {
         $this->setUpCalls();
         $json = '{"key": "value"}';
-        $this->calls[] = ['pactffi_verifier_execute', $this->handle, $error];
+        $this->expectsVerifierExecute($this->handle, $error);
+        $this->expectsVerifierJson($this->handle, $hasLogger, $json);
         $this->logger
             ->expects($hasLogger ? $this->once() : $this->never())
             ->method('log')
             ->with($json);
-        if ($hasLogger) {
-            $this->calls[] = ['pactffi_verifier_json', $this->handle, $json];
-        }
-        $this->calls[] = ['pactffi_verifier_shutdown', $this->handle, null];
-        $this->assertClientCalls($this->calls);
+        $this->expectsVerifierShutdown($this->handle);
         $this->verifier = new Verifier($this->config, $hasLogger ? $this->logger : null, $this->client);
         $this->assertSame($success, $this->verifier->verify());
     }

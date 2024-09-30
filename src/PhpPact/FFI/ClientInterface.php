@@ -2,6 +2,8 @@
 
 namespace PhpPact\FFI;
 
+use FFI\CData;
+use PhpPact\FFI\Model\ArrayData;
 use PhpPact\FFI\Model\BinaryData;
 use PhpPact\FFI\Model\Result;
 
@@ -64,6 +66,50 @@ interface ClientInterface
     public function writePactFile(int $port, string $directory, bool $overwrite): int;
 
     public function createMockServerForTransport(int $pact, string $host, int $port, string $transport, ?string $transportConfig): int;
+
+    public function verifierNewForApplication(?string $name, ?string $version): ?CData;
+
+    public function verifierSetProviderInfo(CData $handle, ?string $name, ?string $scheme, ?string $host, ?int $port, ?string $path): void;
+
+    public function verifierAddProviderTransport(CData $handle, ?string $protocol, ?int $port, ?string $path, ?string $scheme): void;
+
+    public function verifierSetFilterInfo(CData $handle, ?string $filterDescription, ?string $filterState, bool $filterNoState): void;
+
+    public function verifierSetProviderState(CData $handle, ?string $url, bool $teardown, bool $body): void;
+
+    public function verifierSetVerificationOptions(CData $handle, bool $disableSslVerification, int $requestTimeout): int;
+
+    public function verifierSetPublishOptions(CData $handle, string $providerVersion, ?string $buildUrl, ?ArrayData $providerTags, ?string $providerBranch): int;
+
+    public function verifierSetConsumerFilters(CData $handle, ?ArrayData $consumerFilters): void;
+
+    public function verifierAddCustomHeader(CData $handle, string $name, string $value): void;
+
+    public function verifierAddFileSource(CData $handle, string $file): void;
+
+    public function verifierAddDirectorySource(CData $handle, string $directory): void;
+
+    public function verifierAddUrlSource(CData $handle, string $url, ?string $username, ?string $password, ?string $token): void;
+
+    public function verifierBrokerSourceWithSelectors(
+        CData $handle,
+        string $url,
+        ?string $username,
+        ?string $password,
+        ?string $token,
+        bool $enablePending,
+        ?string $includeWipPactsSince,
+        ?ArrayData $providerTags,
+        ?string $providerBranch,
+        ?ArrayData $consumerVersionSelectors,
+        ?ArrayData $consumerVersionTags
+    ): void;
+
+    public function verifierExecute(CData $handle): int;
+
+    public function verifierJson(CData $handle): ?string;
+
+    public function verifierShutdown(CData $handle): void;
 
     public function getInteractionPartRequest(): int;
 
