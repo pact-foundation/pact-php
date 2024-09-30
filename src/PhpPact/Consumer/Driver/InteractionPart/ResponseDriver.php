@@ -16,6 +16,6 @@ class ResponseDriver extends AbstractInteractionPartDriver implements ResponseDr
 
     private function withResponse(Interaction $interaction): void
     {
-        $this->client->call('pactffi_response_status_v2', $interaction->getHandle(), $interaction->getResponse()->getStatus());
+        $this->client->responseStatusV2($interaction->getHandle(), $interaction->getResponse()->getStatus());
     }
 }

@@ -14,15 +14,15 @@ use PhpPact\Consumer\Model\ProviderResponse;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\Plugin\Driver\Body\PluginBodyDriver;
 use PhpPact\Plugin\Driver\Body\PluginBodyDriverInterface;
-use PhpPact\Plugin\Exception\PluginBodyNotAddedException;
+use PhpPactTest\Helper\FFI\ClientTrait;
 use PHPUnit\Framework\Attributes\TestWith;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PluginBodyDriverTest extends TestCase
 {
+    use ClientTrait;
+
     private PluginBodyDriverInterface $driver;
-    private ClientInterface&MockObject $client;
     private Interaction $interaction;
     private int $requestPartId = 1;
     private int $responsePartId = 2;
@@ -114,19 +114,6 @@ class PluginBodyDriverTest extends TestCase
         $this->driver->registerBody($this->message, $part);
     }
 
-    private function getPluginBodyErrorMessage(int $error): string
-    {
-        return match ($error) {
-            1 => 'A general panic was caught.',
-            2 => 'The mock server has already been started.',
-            3 => 'The interaction handle is invalid.',
-            4 => 'The content type is not valid.',
-            5 => 'The contents JSON is not valid JSON.',
-            6 => 'The plugin returned an error.',
-            default => 'Unknown error',
-        };
-    }
-
     #[TestWith([0])]
     #[TestWith([1])]
     #[TestWith([2])]
@@ -139,15 +126,7 @@ class PluginBodyDriverTest extends TestCase
     {
         $this->expectsGetInteractionPartEnumMethods(InteractionPart::REQUEST);
         $this->interaction->getRequest()->setBody($this->json);
-        $this->client
-            ->expects($this->once())
-            ->method('call')
-            ->with('pactffi_interaction_contents', $this->interactionId, $this->requestPartId, $this->json->getContentType(), $this->json->getContents())
-            ->willReturn($error);
-        if ($error) {
-            $this->expectException(PluginBodyNotAddedException::class);
-            $this->expectExceptionMessage($this->getPluginBodyErrorMessage($error));
-        }
+        $this->expectsInteractionContents($this->interactionId, $this->requestPartId, $this->json->getContentType(), $this->json->getContents(), $error);
         $this->driver->registerBody($this->interaction, InteractionPart::REQUEST);
     }
 
@@ -163,15 +142,7 @@ class PluginBodyDriverTest extends TestCase
     {
         $this->expectsGetInteractionPartEnumMethods(InteractionPart::RESPONSE);
         $this->interaction->getResponse()->setBody($this->json);
-        $this->client
-            ->expects($this->once())
-            ->method('call')
-            ->with('pactffi_interaction_contents', $this->interactionId, $this->responsePartId, $this->json->getContentType(), $this->json->getContents())
-            ->willReturn($error);
-        if ($error) {
-            $this->expectException(PluginBodyNotAddedException::class);
-            $this->expectExceptionMessage($this->getPluginBodyErrorMessage($error));
-        }
+        $this->expectsInteractionContents($this->interactionId, $this->responsePartId, $this->json->getContentType(), $this->json->getContents(), $error);
         $this->driver->registerBody($this->interaction, InteractionPart::RESPONSE);
     }
 
@@ -187,15 +158,7 @@ class PluginBodyDriverTest extends TestCase
     {
         $this->expectsGetInteractionPartEnumMethods(InteractionPart::REQUEST);
         $this->message->setContents($this->json);
-        $this->client
-            ->expects($this->once())
-            ->method('call')
-            ->with('pactffi_interaction_contents', $this->messageId, $this->requestPartId, $this->json->getContentType(), $this->json->getContents())
-            ->willReturn($error);
-        if ($error) {
-            $this->expectException(PluginBodyNotAddedException::class);
-            $this->expectExceptionMessage($this->getPluginBodyErrorMessage($error));
-        }
+        $this->expectsInteractionContents($this->messageId, $this->requestPartId, $this->json->getContentType(), $this->json->getContents(), $error);
         $this->driver->registerBody($this->message, InteractionPart::REQUEST);
     }
 

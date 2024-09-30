@@ -319,6 +319,42 @@ class ClientTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    public function testMessageReify(): void
+    {
+        $result = $this->client->messageReify(1);
+        $this->assertSame('', $result);
+    }
+
+    public function testWithHeaderV2(): void
+    {
+        $result = $this->client->withHeaderV2(1, 2, '', 0, null);
+        $this->assertFalse($result);
+    }
+
+    public function testWithQueryParameterV2(): void
+    {
+        $result = $this->client->withQueryParameterV2(1, '', 0, null);
+        $this->assertFalse($result);
+    }
+
+    public function testWithRequest(): void
+    {
+        $result = $this->client->withRequest(1, null, null);
+        $this->assertFalse($result);
+    }
+
+    public function testResponseStatusV2(): void
+    {
+        $result = $this->client->responseStatusV2(1, null);
+        $this->assertFalse($result);
+    }
+
+    public function testInteractionContents(): void
+    {
+        $result = $this->client->interactionContents(1, 2, 'text/plain', 'abc');
+        $this->assertSame(5, $result);
+    }
+
     public function testGetInteractionPartRequest(): void
     {
         $this->assertSame(0, $this->client->getInteractionPartRequest());

@@ -5,6 +5,7 @@ namespace PhpPact\Consumer\Driver\InteractionPart;
 use PhpPact\Consumer\Driver\Body\InteractionBodyDriver;
 use PhpPact\Consumer\Driver\Body\InteractionBodyDriverInterface;
 use PhpPact\Consumer\Driver\Enum\InteractionPart;
+use PhpPact\Consumer\Driver\Exception\HeaderNotAddedException;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPact\FFI\ClientInterface;
 
@@ -33,7 +34,10 @@ abstract class AbstractInteractionPartDriver
         };
         foreach ($headers as $header => $values) {
             foreach (array_values($values) as $index => $value) {
-                $this->client->call('pactffi_with_header_v2', $interaction->getHandle(), $partId, (string) $header, (int) $index, (string) $value);
+                $success = $this->client->withHeaderV2($interaction->getHandle(), $partId, (string) $header, (int) $index, (string) $value);
+                if (!$success) {
+                    throw new HeaderNotAddedException('Mock server has been started, interaction handle is invalid, or empty header name');
+                }
             }
         }
     }
