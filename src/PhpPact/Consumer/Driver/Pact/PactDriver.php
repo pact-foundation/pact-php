@@ -22,8 +22,7 @@ class PactDriver implements PactDriverInterface
 
     public function cleanUp(): void
     {
-        $this->validatePact();
-        $success = $this->client->freePactHandle($this->pact->handle) === 0;
+        $success = $this->client->freePactHandle($this->getPact()->handle) === 0;
         if (!$success) {
             trigger_error('Can not free pact handle. The handle is not valid or does not refer to a valid Pact. Could be that it was previously deleted.', E_USER_WARNING);
         }
@@ -32,9 +31,8 @@ class PactDriver implements PactDriverInterface
 
     public function writePact(): void
     {
-        $this->validatePact();
         $error = $this->client->pactHandleWriteFile(
-            $this->pact->handle,
+            $this->getPact()->handle,
             $this->config->getPactDir(),
             $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
         );
@@ -45,7 +43,9 @@ class PactDriver implements PactDriverInterface
 
     public function getPact(): Pact
     {
-        $this->validatePact();
+        if (!$this->pact) {
+            throw new MissingPactException();
+        }
 
         return $this->pact;
     }
@@ -76,13 +76,6 @@ class PactDriver implements PactDriverInterface
         };
     }
 
-    protected function validatePact(): void
-    {
-        if (!$this->pact) {
-            throw new MissingPactException();
-        }
-    }
-
     private function versionEqualTo(string $version): bool
     {
         return Comparator::equalTo($this->config->getPactSpecificationVersion(), $version);
@@ -103,7 +96,7 @@ class PactDriver implements PactDriverInterface
 
     private function withSpecification(): void
     {
-        $success = $this->client->withSpecification($this->pact->handle, $this->getSpecification());
+        $success = $this->client->withSpecification($this->getPact()->handle, $this->getSpecification());
         if (!$success) {
             throw new PactNotModifiedException("The pact can't be modified (i.e. the mock server for it has already started, or the version is invalid)");
         }
