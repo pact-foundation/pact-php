@@ -146,7 +146,9 @@ class SyncMessageBuilderTest extends TestCase
     private function getMessage(): Message
     {
         $reflection = new ReflectionProperty($this->builder, 'message');
+        $message = $reflection->getValue($this->builder);
+        $this->assertInstanceOf(Message::class, $message);
 
-        return $reflection->getValue($this->builder);
+        return $message;
     }
 }

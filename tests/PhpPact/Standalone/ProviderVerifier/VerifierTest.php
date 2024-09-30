@@ -35,7 +35,9 @@ class VerifierTest extends TestCase
         $this->config = new VerifierConfig();
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->client = $this->createMock(ClientInterface::class);
-        $this->handle = FFI::new('int');
+        $handle = FFI::new('int');
+        $this->assertInstanceOf(CData::class, $handle);
+        $this->handle = $handle;
     }
 
     private function setUpCalls(bool $hasProviderTags = true, bool $hasFilterConsumerNames = true): void

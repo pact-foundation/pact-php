@@ -17,11 +17,11 @@ class ArrayDataTest extends TestCase
     {
         $branches = ['feature-x', 'master', 'test', 'prod'];
         $arrayData = ArrayData::createFrom($branches);
-
+        $this->assertInstanceOf(ArrayData::class, $arrayData);
         $this->assertSame(count($branches), $arrayData->getSize());
         foreach ($branches as $index => $branch) {
             // @phpstan-ignore offsetAccess.nonOffsetAccessible
-            $this->assertSame($branch, FFI::string($arrayData->getItems()[$index])); // @phpstan-ignore-line
+            $this->assertSame($branch, FFI::string($arrayData->getItems()[$index]));
         }
     }
 }

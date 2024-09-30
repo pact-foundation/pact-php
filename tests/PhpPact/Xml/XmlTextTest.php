@@ -17,7 +17,7 @@ class XmlTextTest extends TestCase
     #[TestWith([false])]
     #[TestWith([true])]
     #[TestWith([null])]
-    public function testJsonSerializePredefinedTypes(mixed $content): void
+    public function testJsonSerializePredefinedTypes(string|float|int|bool|null $content): void
     {
         $text = new XmlText($content);
         $this->assertSame(json_encode(['content' => $content]), json_encode($text));

@@ -76,14 +76,18 @@ class CsvInteractionDriverFactoryTest extends TestCase
     private function getRequestDriver(InteractionDriverInterface $driver): RequestDriverInterface
     {
         $reflection = new ReflectionProperty($driver, 'requestDriver');
+        $requestDriver = $reflection->getValue($driver);
+        $this->assertInstanceOf(RequestDriverInterface::class, $requestDriver);
 
-        return $reflection->getValue($driver);
+        return $requestDriver;
     }
 
     private function getResponseDriver(InteractionDriverInterface $driver): ResponseDriverInterface
     {
         $reflection = new ReflectionProperty($driver, 'responseDriver');
+        $responseDriver = $reflection->getValue($driver);
+        $this->assertInstanceOf(ResponseDriverInterface::class, $responseDriver);
 
-        return $reflection->getValue($driver);
+        return $responseDriver;
     }
 }

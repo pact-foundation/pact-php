@@ -51,7 +51,7 @@ interface StubServerConfigInterface
     /**
      * @param string $logLevel Log level (defaults to info) [possible values: error, warn, info, debug, trace, none]
      */
-    public function setLogLevel(string $logLevel): self;
+    public function setLogLevel(?string $logLevel): self;
 
     /**
      * @return int the port of the stub service
