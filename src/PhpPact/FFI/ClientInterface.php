@@ -138,9 +138,4 @@ interface ClientInterface
     public function getPactSpecificationV4(): int;
 
     public function getPactSpecificationUnknown(): int;
-
-    /**
-     * @param array<int, mixed> $arguments
-     */
-    public function call(string $name, ...$arguments): mixed;
 }

@@ -25,25 +25,6 @@ trait ClientTrait
 {
     protected ClientInterface&MockObject $client;
 
-    /**
-     * @param mixed[][] $calls
-     */
-    protected function assertClientCalls(array $calls): void
-    {
-        $this->client
-            ->expects($this->exactly(count($calls)))
-            ->method('call')
-            ->willReturnCallback(function (...$args) use (&$calls) {
-                $call = array_shift($calls);
-                $return = array_pop($call);
-                foreach ($args as $key => $arg) {
-                    $this->assertThat($arg, $call[$key] instanceof Constraint ? $call[$key] : new IsIdentical($call[$key]));
-                }
-
-                return $return;
-            });
-    }
-
     protected function expectsSetInteractionKey(int $interaction, string $description, ?string $key, bool $result): void
     {
         $this->client
