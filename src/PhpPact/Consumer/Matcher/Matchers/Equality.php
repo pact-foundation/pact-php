@@ -12,10 +12,7 @@ use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
  */
 class Equality extends AbstractMatcher
 {
-    /**
-     * @param object|array<mixed>|string|float|int|bool|null $value
-     */
-    public function __construct(private object|array|string|float|int|bool|null $value)
+    public function __construct(private mixed $value)
     {
         parent::__construct();
     }
@@ -25,10 +22,7 @@ class Equality extends AbstractMatcher
         return [];
     }
 
-    /**
-     * @return object|array<mixed>|string|float|int|bool|null
-     */
-    public function getValue(): object|array|string|float|int|bool|null
+    public function getValue(): mixed
     {
         return $this->value;
     }

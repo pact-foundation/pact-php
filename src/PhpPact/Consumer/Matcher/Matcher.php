@@ -456,9 +456,10 @@ class Matcher
     }
 
     /**
+     * @param array<mixed>|object $value
      * @param MatcherInterface[] $matchers
      */
-    public function matchAll(mixed $value, array $matchers): MatcherInterface
+    public function matchAll(object|array $value, array $matchers): MatcherInterface
     {
         return $this->withFormatter(new MatchAll($value, $matchers));
     }
