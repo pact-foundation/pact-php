@@ -34,7 +34,10 @@ class XmlElement implements JsonSerializable
 
     public function setName(string $name): self
     {
-        $this->name = preg_replace('/(^[0-9]+|[^a-zA-Z0-9\-\_\:]+)/', '', $name);
+        if (preg_match('/^[0-9]+|[^a-zA-Z0-9\-\_\:]+/', $name) !== 0) {
+            throw new InvalidXmlElementException("Xml element's name is invalid");
+        }
+        $this->name = $name;
 
         return $this;
     }
