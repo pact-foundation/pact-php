@@ -1,23 +1,20 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+use React\Http\Message\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
 require __DIR__ . '/../autoload.php';
 
-$app = AppFactory::create();
-$app->addBodyParsingMiddleware();
+$app = new FrameworkX\App();
 
-$app->post('/user-profile', function (Request $request, Response $response) {
+$app->post('/user-profile', function (ServerRequestInterface $request) {
     $fileName = (string)$request->getUploadedFiles()['profile_image']->getClientFilename();
-    $response->getBody()->write(\json_encode([
+
+    return Response::json([
         'full_name' => (string)$request->getUploadedFiles()['full_name']->getStream(),
         'profile_image' => "http://example.test/$fileName",
         'personal_note' => (string)$request->getUploadedFiles()['personal_note']->getStream(),
-    ]));
-
-    return $response->withHeader('Content-Type', 'application/json');
+    ]);
 });
 
 $app->run();

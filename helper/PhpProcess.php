@@ -24,7 +24,7 @@ class PhpProcess extends AbstractProcess
 
     protected function getProcess(): Process
     {
-        return new Process(['php', '-S', '127.0.0.1:' . $this->getPort(), '-t', $this->publicPath]);
+        return new Process(['php', 'index.php'], $this->publicPath, ['X_LISTEN' => '127.0.0.1:' . $this->getPort()]);
     }
 
     private function findAvailablePort(): int

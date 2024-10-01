@@ -30,7 +30,6 @@
     "require-dev": {
         "ext-sockets": "*",
         "roave/security-advisories": "dev-latest",
-        "slim/slim": "^4.13",
         "friendsofphp/php-cs-fixer": "^3.0",
         "php-amqplib/php-amqplib": "^3.0",
         "phpstan/phpstan": "^1.9",
@@ -41,7 +40,8 @@
         "ramsey/uuid": "^4.7",
         "pact-foundation/example-protobuf-sync-message-provider": "@dev",
         "webonyx/graphql-php": "^15.14",
-        "rector/rector": "^1.2"
+        "rector/rector": "^1.2",
+        "clue/framework-x": "^0.16.0"
     },
     "autoload": {
         "psr-4": {

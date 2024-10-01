@@ -1,15 +1,14 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+use React\Http\Message\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
 require __DIR__ . '/../autoload.php';
 
-$app = AppFactory::create();
+$app = new FrameworkX\App();
 
-$app->get('/movies', function (Request $request, Response $response) {
-    $response->getBody()->write(
+$app->get('/movies', function (ServerRequestInterface $request) {
+    return Response::xml(
         <<<XML
         <?xml version='1.0' standalone='yes'?>
         <movies>
@@ -39,13 +38,12 @@ $app->get('/movies', function (Request $request, Response $response) {
             </movie>
         </movies>
         XML
-    );
-
-    return $response->withHeader('Content-Type', 'application/movies+xml');
+    )
+    ->withHeader('Content-Type', 'application/movies+xml');
 });
 
-$app->post('/pact-change-state', function (Request $request, Response $response) {
-    return $response;
+$app->post('/pact-change-state', function (ServerRequestInterface $request) {
+    return new Response();
 });
 
 $app->run();

@@ -1,36 +1,32 @@
 <?php
 
 use JsonProvider\ExampleProvider;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+use React\Http\Message\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
 require __DIR__ . '/../autoload.php';
 
-$app = AppFactory::create();
-$app->addBodyParsingMiddleware();
+$app = new FrameworkX\App();
 
 $provider = new ExampleProvider();
 
-$app->get('/hello/{name}', function (Request $request, Response $response) use ($provider) {
+$app->get('/hello/{name}', function (ServerRequestInterface $request) use ($provider) {
     $name = $request->getAttribute('name');
-    $response->getBody()->write(\json_encode(['message' => $provider->sayHello($name)]));
 
-    return $response->withHeader('Content-Type', 'application/json');
+    return Response::json(['message' => $provider->sayHello($name)]);
 });
 
-$app->get('/goodbye/{name}', function (Request $request, Response $response) use ($provider) {
+$app->get('/goodbye/{name}', function (ServerRequestInterface $request) use ($provider) {
     $name = $request->getAttribute('name');
-    $response->getBody()->write(\json_encode(['message' => $provider->sayGoodbye($name)]));
 
-    return $response->withHeader('Content-Type', 'application/json');
+    return Response::json(['message' => $provider->sayGoodbye($name)]);
 });
 
-$app->post('/pact-change-state', function (Request $request, Response $response) use ($provider) {
-    $body = $request->getParsedBody();
+$app->post('/pact-change-state', function (ServerRequestInterface $request) use ($provider) {
+    $body = json_decode((string) $request->getBody(), true);
     $provider->changeSate($body['action'], $body['state'], $body['params']);
 
-    return $response;
+    return new Response();
 });
 
 $app->run();

@@ -2,14 +2,19 @@
 
 require __DIR__.'/../autoload.php';
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+use React\Http\Message\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
-$app = AppFactory::create();
+require __DIR__ . '/../autoload.php';
 
-$app->post('/pact-change-state', function (Request $request, Response $response) {
-    return $response;
+$app = new FrameworkX\App();
+
+$app->get('/report.csv', function (ServerRequestInterface $request) {
+    return new Response(200, ['Content-Type' => 'text/csv;charset=utf-8'], file_get_contents(__DIR__.'/report.csv'));
+});
+
+$app->post('/pact-change-state', function (ServerRequestInterface $request) {
+    return new Response();
 });
 
 $app->run();

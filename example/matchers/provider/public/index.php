@@ -1,16 +1,14 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+use React\Http\Message\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
 require __DIR__ . '/../autoload.php';
 
-$app = AppFactory::create();
-$app->addBodyParsingMiddleware();
+$app = new FrameworkX\App();
 
-$app->get('/matchers', function (Request $request, Response $response) {
-    $response->getBody()->write(\json_encode([
+$app->get('/matchers', function (ServerRequestInterface $request) {
+    return Response::json([
         'like' => ['key' => 'another value'],
         'likeNull' => null,
         'eachLike' => ['item 1', 'item 2'],
@@ -89,24 +87,19 @@ $app->get('/matchers', function (Request $request, Response $response) {
 
         // Don't mind this. This is for demonstrating what query values provider will received.
         'query' => $request->getQueryParams(),
-    ]));
-
-    return $response
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(503)
-        ->withHeader('X-Powered-By', [
-            'PHP',
-            'Nginx',
-            'Slim',
-        ]);
+    ])
+    ->withStatus(503)
+    ->withHeader('X-Powered-By', [
+        'PHP',
+        'Nginx',
+        'Slim',
+    ]);
 });
 
-$app->post('/pact-change-state', function (Request $request, Response $response) {
-    $body = $request->getParsedBody();
+$app->post('/pact-change-state', function (ServerRequestInterface $request) {
+    $body = json_decode((string) $request->getBody(), true);
 
-    printf('%s provider state %s with params: %s', $body['action'], $body['state'], json_encode($body['params']));
-
-    return $response;
+    return Response::plaintext(sprintf('%s provider state %s with params: %s', $body['action'], $body['state'], json_encode($body['params'])));
 });
 
 $app->run();
