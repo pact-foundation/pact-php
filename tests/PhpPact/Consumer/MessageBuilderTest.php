@@ -235,17 +235,21 @@ class MessageBuilderTest extends TestCase
     private function getMessage(): Message
     {
         $reflection = new ReflectionProperty($this->builder, 'message');
+        $message = $reflection->getValue($this->builder);
+        $this->assertInstanceOf(Message::class, $message);
 
-        return $reflection->getValue($this->builder);
+        return $message;
     }
 
     /**
-     * @return array<string, callable>
+     * @return array<mixed, callable>
      */
     private function getCallbacks(): array
     {
         $reflection = new ReflectionProperty($this->builder, 'callback');
+        $callback = $reflection->getValue($this->builder);
+        $this->assertIsArray($callback);
 
-        return $reflection->getValue($this->builder);
+        return $callback;
     }
 }

@@ -194,7 +194,7 @@ class MatcherTest extends TestCase
         $hexadecimal = $this->matcher->hexadecimal($value);
         $this->assertInstanceOf(Regex::class, $hexadecimal);
         if ($hasGenerator) {
-            $this->assertSame(RandomHexadecimal::class, get_class($hexadecimal->getGenerator()));
+            $this->assertInstanceOf(RandomHexadecimal::class, $hexadecimal->getGenerator());
         } else {
             $this->assertNull($hexadecimal->getGenerator());
         }
@@ -207,7 +207,7 @@ class MatcherTest extends TestCase
         $uuid = $this->matcher->uuid($value);
         $this->assertInstanceOf(Regex::class, $uuid);
         if ($hasGenerator) {
-            $this->assertSame(Uuid::class, get_class($uuid->getGenerator()));
+            $this->assertInstanceOf(Uuid::class, $uuid->getGenerator());
         } else {
             $this->assertNull($uuid->getGenerator());
         }
@@ -257,9 +257,9 @@ class MatcherTest extends TestCase
     {
         $uuid = $this->matcher->uuid();
         $this->assertInstanceOf(Regex::class, $uuid);
-        $this->assertSame(Uuid::class, get_class($uuid->getGenerator()));
+        $this->assertInstanceOf(Uuid::class, $uuid->getGenerator());
         $this->assertSame($uuid, $this->matcher->fromProviderState($uuid, '${id}'));
-        $this->assertSame(ProviderState::class, get_class($uuid->getGenerator()));
+        $this->assertInstanceOf(ProviderState::class, $uuid->getGenerator());
     }
 
     public function testEqual(): void
@@ -345,7 +345,7 @@ class MatcherTest extends TestCase
         $url = $this->matcher->url('http://localhost:1234/path', '.*(/path)$', $useMockServerBasePath);
         $this->assertInstanceOf(Regex::class, $url);
         if ($hasGenerator) {
-            $this->assertSame(MockServerURL::class, get_class($url->getGenerator()));
+            $this->assertInstanceOf(MockServerURL::class, $url->getGenerator());
         } else {
             $this->assertNull($url->getGenerator());
         }
