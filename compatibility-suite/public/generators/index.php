@@ -1,33 +1,30 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+use React\Http\Message\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
-$app = AppFactory::create();
+$app = new FrameworkX\App();
 
-$app->put('/request-generators', function (Request $request, Response $response) {
+$app->put('/request-generators', function (ServerRequestInterface $request) {
     file_put_contents(__DIR__ . '/body.json', $request->getBody()->getContents());
     file_put_contents(__DIR__ . '/headers.json', json_encode($request->getHeaders()));
     file_put_contents(__DIR__ . '/queryParams.json', json_encode($request->getQueryParams()));
 
-    return $response;
+    return new Response();
 });
 
-$app->post('/return-provider-state-values', function (Request $request, Response $response) {
+$app->post('/return-provider-state-values', function (ServerRequestInterface $request) {
     $values = $request->getQueryParams();
 
-    $response->getBody()->write(json_encode($values));
-
-    return $response->withHeader('Content-Type', 'application/json');
+    return Response::json($values);
 });
 
-$app->any('{path:.*}', function (Request $request, Response $response, array $args) {
-    file_put_contents(__DIR__ . '/path.txt', $args['path']);
+$app->any('{path:.*}', function (ServerRequestInterface $request) {
+    file_put_contents(__DIR__ . '/path.txt', $request->getAttribute('path'));
 
-    return $response;
+    return new Response();
 });
 
 $app->run();

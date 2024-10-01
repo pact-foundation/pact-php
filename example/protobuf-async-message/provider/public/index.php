@@ -4,15 +4,13 @@ require __DIR__.'/../autoload.php';
 
 use Library\Name;
 use Library\Person;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+use React\Http\Message\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
-$app = AppFactory::create();
-$app->addBodyParsingMiddleware();
+$app = new FrameworkX\App();
 
-$app->post('/', function (Request $request, Response $response) {
-    $body = $request->getParsedBody();
+$app->post('/', function (ServerRequestInterface $request) {
+    $body = json_decode((string) $request->getBody(), true);
     if ($body['description'] === 'Person message sent') {
         $person = new Person();
         $person->setId('2d5554cd-22da-43ce-8842-2b42cf20661d');
@@ -20,6 +18,8 @@ $app->post('/', function (Request $request, Response $response) {
         $name->setGiven('Hettie');
         $name->setSurname('Toy');
         $person->setName($name);
+
+        $response = new Response(200);
         $response->getBody()->write($person->serializeToString());
 
         return $response
@@ -27,24 +27,17 @@ $app->post('/', function (Request $request, Response $response) {
             ->withHeader('Pact-Message-Metadata', \base64_encode(\json_encode([])));
     }
 
-    $response->getBody()->write('Hello world!');
-
-    return $response
-        ->withHeader('Content-Type', 'text/plain')
-    ;
+    return Response::plaintext('Hello world!');
 });
 
-$app->post('/pact-change-state', function (Request $request, Response $response) {
-    $body = $request->getParsedBody();
-    $response->getBody()->write(sprintf('State changed: %s', \json_encode([
+$app->post('/pact-change-state', function (ServerRequestInterface $request) {
+    $body = json_decode((string) $request->getBody(), true);
+
+    return Response::plaintext(sprintf('State changed: %s', \json_encode([
         'action' => $body['action'],
         'state' => $body['state'],
         'params' => $body['params'],
     ])));
-
-    return $response
-        ->withHeader('Content-Type', 'text/plain')
-    ;
 });
 
 $app->run();

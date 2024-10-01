@@ -1,17 +1,16 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+use React\Http\Message\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
 require __DIR__ . '/../autoload.php';
 
-$app = AppFactory::create();
-$app->addBodyParsingMiddleware();
+$app = new FrameworkX\App();
 
-$app->get('/generators', function (Request $request, Response $response) {
-    $body = $request->getParsedBody();
-    $response->getBody()->write(\json_encode([
+$app->get('/generators', function (ServerRequestInterface $request) {
+    $body = json_decode((string) $request->getBody(), true);
+
+    return Response::json([
         'regex' => '800 kilometers',
         'boolean' => true,
         'integer' => 11,
@@ -25,21 +24,14 @@ $app->get('/generators', function (Request $request, Response $response) {
         'number' => 112.3,
         'url' => 'https://www.example.com/users/1234/posts/latest',
         'requestId' => $body['id'],
-    ]));
-
-    return $response
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(400);
+    ])
+    ->withStatus(400);
 });
 
-$app->post('/pact-change-state', function (Request $request, Response $response) {
-    $response->getBody()->write(\json_encode([
+$app->post('/pact-change-state', function (ServerRequestInterface $request) {
+    return Response::json([
         'id' => 222,
-    ]));
-
-    return $response
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(200);
+    ]);
 });
 
 $app->run();

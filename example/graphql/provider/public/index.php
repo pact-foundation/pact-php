@@ -5,16 +5,14 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use GraphQL\Type\SchemaConfig;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+use React\Http\Message\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
 require __DIR__ . '/../autoload.php';
 
-$app = AppFactory::create();
-$app->addBodyParsingMiddleware();
+$app = new FrameworkX\App();
 
-$app->post('/api', function (Request $request, Response $response) {
+$app->post('/api', function (ServerRequestInterface $request) {
     try {
         $queryType = new ObjectType([
             'name' => 'Query',
@@ -51,7 +49,7 @@ $app->post('/api', function (Request $request, Response $response) {
             ->setMutation($mutationType)
         );
 
-        $body = $request->getParsedBody();
+        $body = json_decode((string) $request->getBody(), true);
         $query = $body['query'];
         $variableValues = $body['variables'] ?? null;
 
@@ -66,13 +64,11 @@ $app->post('/api', function (Request $request, Response $response) {
         ];
     }
 
-    $response->getBody()->write(json_encode($output, JSON_THROW_ON_ERROR));
-
-    return $response->withHeader('Content-Type', 'application/json; charset=UTF-8');
+    return Response::json($output);
 });
 
-$app->post('/pact-change-state', function (Request $request, Response $response) {
-    return $response;
+$app->post('/pact-change-state', function (ServerRequestInterface $request) {
+    return new Response();
 });
 
 $app->run();

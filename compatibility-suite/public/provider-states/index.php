@@ -1,13 +1,11 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+use React\Http\Message\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
-$app = AppFactory::create();
-$app->addBodyParsingMiddleware();
+$app = new FrameworkX\App();
 
 $path = __DIR__ . '/provider-states.json';
 $get = fn (): array => json_decode(file_get_contents($path), true);
@@ -17,29 +15,27 @@ if (!file_exists($path)) {
     $set([]);
 }
 
-$stateChangeHandler = function (Request $request, Response $response) use ($get, $set) {
-    $body = $request->getParsedBody();
+$stateChangeHandler = function (ServerRequestInterface $request) use ($get, $set) {
+    $body = json_decode((string) $request->getBody(), true);
 
     $providerStates = $get();
     $providerStates[] = $body;
     $set($providerStates);
 
-    return $response;
+    return new Response();
 };
 
-$app->get('/has-action', function (Request $request, Response $response) use ($get) {
+$app->get('/has-action', function (ServerRequestInterface $request) use ($get) {
     $action = $request->getQueryParams()['action'];
     $hasAction = !empty(array_filter(
         $get(),
         fn (array $providerState) => $providerState['action'] === $action
     ));
 
-    $response->getBody()->write((string) $hasAction);
-
-    return $response->withHeader('Content-Type', 'text/plain');
+    return Response::plaintext((string) $hasAction);
 });
 
-$app->get('/has-state', function (Request $request, Response $response) use ($get) {
+$app->get('/has-state', function (ServerRequestInterface $request) use ($get) {
     $params = $request->getQueryParams();
     $action = $params['action'];
     $state = $params['state'];
@@ -52,15 +48,13 @@ $app->get('/has-state', function (Request $request, Response $response) use ($ge
             && $providerState['params'] == $params
         ));
 
-    $response->getBody()->write((string) $hasState);
-
-    return $response->withHeader('Content-Type', 'text/plain');
+    return Response::plaintext((string) $hasState);
 });
 
 $app->post('/pact-change-state', $stateChangeHandler);
 
-$app->post('/failed-pact-change-state', function (Request $request, Response $response) use ($stateChangeHandler): void {
-    $stateChangeHandler($request, $response);
+$app->post('/failed-pact-change-state', function (ServerRequestInterface $request) use ($stateChangeHandler): void {
+    $stateChangeHandler($request);
 
     throw new \Exception('Cant do it');
 });
