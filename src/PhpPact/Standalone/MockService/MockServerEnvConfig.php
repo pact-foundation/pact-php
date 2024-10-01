@@ -14,27 +14,27 @@ class MockServerEnvConfig extends MockServerConfig
      */
     public function __construct()
     {
-        if ($host = $this->parseEnv('PACT_MOCK_SERVER_HOST', false)) {
+        if ($host = $this->parseEnv('PACT_MOCK_SERVER_HOST')) {
             $this->setHost($host);
         }
 
-        if ($port = $this->parseEnv('PACT_MOCK_SERVER_PORT', false)) {
+        if ($port = $this->parseEnv('PACT_MOCK_SERVER_PORT')) {
             $this->setPort((int) $port);
         }
 
-        $this->setConsumer($this->parseEnv('PACT_CONSUMER_NAME'));
-        $this->setProvider($this->parseEnv('PACT_PROVIDER_NAME'));
-        $this->setPactDir($this->parseEnv('PACT_OUTPUT_DIR', false));
+        $this->setConsumer($this->parseRequiredEnv('PACT_CONSUMER_NAME'));
+        $this->setProvider($this->parseRequiredEnv('PACT_PROVIDER_NAME'));
+        $this->setPactDir($this->parseEnv('PACT_OUTPUT_DIR'));
 
-        if ($logDir = $this->parseEnv('PACT_LOG', false)) {
+        if ($logDir = $this->parseEnv('PACT_LOG')) {
             $this->setLog($logDir);
         }
 
-        if ($logLevel = $this->parseEnv('PACT_LOGLEVEL', false)) {
+        if ($logLevel = $this->parseEnv('PACT_LOGLEVEL')) {
             $this->setLogLevel($logLevel);
         }
 
-        $version = $this->parseEnv('PACT_SPECIFICATION_VERSION', false);
+        $version = $this->parseEnv('PACT_SPECIFICATION_VERSION');
         if (!$version) {
             $version = static::DEFAULT_SPECIFICATION_VERSION;
         }
@@ -47,7 +47,7 @@ class MockServerEnvConfig extends MockServerConfig
      *
      * @throws MissingEnvVariableException
      */
-    private function parseEnv(string $variableName, bool $required = true): ?string
+    private function parseEnv(string $variableName): ?string
     {
         $result = \getenv($variableName);
 
@@ -55,7 +55,14 @@ class MockServerEnvConfig extends MockServerConfig
             $result = null;
         }
 
-        if ($required === true && $result === null) {
+        return $result;
+    }
+
+    private function parseRequiredEnv(string $variableName): string
+    {
+        $result = $this->parseEnv($variableName);
+
+        if ($result === null) {
             throw new MissingEnvVariableException($variableName);
         }
 
