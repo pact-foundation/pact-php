@@ -11,10 +11,7 @@ class XmlText implements JsonSerializable
     {
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): mixed
     {
         if ($this->content instanceof MatcherInterface) {
             return $this->content->jsonSerialize();
