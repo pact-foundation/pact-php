@@ -39,7 +39,9 @@ class StatusCodeTest extends GeneratorAwareMatcherTestCase
         $matcher = new StatusCode($status, $value);
         $jsonEncoded = json_encode($matcher);
         $this->assertIsString($jsonEncoded);
-        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
+        if ($json) {
+            $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
+        }
     }
 
     public function testCreateJsonFormatter(): void

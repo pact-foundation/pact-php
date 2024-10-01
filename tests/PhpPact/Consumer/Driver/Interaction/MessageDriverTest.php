@@ -29,11 +29,11 @@ class MessageDriverTest extends TestCase
     private int $pactHandle = 234;
     private string $description = 'Receiving message';
     /**
-     * @var array<string, array<string, mixed>>
+     * @var array<string, array<string, string>>
      */
     private array $providerStates = [
         'item exist' => [
-            'id' => 12,
+            'id' => '12',
             'name' => 'abc',
         ]
     ];

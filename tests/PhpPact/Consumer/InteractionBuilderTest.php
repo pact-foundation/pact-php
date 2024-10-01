@@ -142,7 +142,9 @@ class InteractionBuilderTest extends TestCase
     private function getInteraction(): Interaction
     {
         $reflection = new ReflectionProperty($this->builder, 'interaction');
+        $interaction = $reflection->getValue($this->builder);
+        $this->assertInstanceOf(Interaction::class, $interaction);
 
-        return $reflection->getValue($this->builder);
+        return $interaction;
     }
 }

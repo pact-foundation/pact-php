@@ -102,7 +102,7 @@ class Verifier
 
     private function setPublishOptions(VerifierConfigInterface $config): void
     {
-        if ($config->isPublishResults()) {
+        if ($config->isPublishResults() && $config->getPublishOptions()) {
             $providerTags = ArrayData::createFrom($config->getPublishOptions()->getProviderTags());
             $this->client->verifierSetPublishOptions(
                 $this->handle,

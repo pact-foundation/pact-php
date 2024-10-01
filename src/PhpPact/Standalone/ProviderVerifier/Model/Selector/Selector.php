@@ -32,6 +32,6 @@ class Selector implements SelectorInterface
      */
     public function jsonSerialize(): array
     {
-        return array_filter(get_object_vars($this), fn (null|string|bool $value) => null !== $value);
+        return array_filter(get_object_vars($this), fn (mixed $value) => is_bool($value) || is_string($value));
     }
 }
