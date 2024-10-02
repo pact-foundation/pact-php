@@ -14,7 +14,7 @@ use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
 class MaxType extends AbstractMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
     public function __construct(
-        private mixed $value,
+        private readonly mixed $value,
         private int $max,
     ) {
         if ($max < 0) {

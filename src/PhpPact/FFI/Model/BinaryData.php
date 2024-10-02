@@ -10,8 +10,8 @@ use PhpPact\FFI\Exception\EmptyBinaryFileNotSupportedException;
 class BinaryData
 {
     private function __construct(
-        private CData $value,
-        private int $size
+        private readonly CData $value,
+        private readonly int $size
     ) {
     }
 

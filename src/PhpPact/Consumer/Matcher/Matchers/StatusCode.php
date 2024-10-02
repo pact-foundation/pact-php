@@ -14,7 +14,7 @@ class StatusCode extends GeneratorAwareMatcher implements JsonFormattableInterfa
 {
     use JsonFormattableTrait;
 
-    public function __construct(private HttpStatus $status, private int $value = 0)
+    public function __construct(private readonly HttpStatus $status, private readonly int $value = 0)
     {
         parent::__construct();
     }

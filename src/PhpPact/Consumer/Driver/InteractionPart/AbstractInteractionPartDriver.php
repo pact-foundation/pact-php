@@ -14,7 +14,7 @@ abstract class AbstractInteractionPartDriver
     private InteractionBodyDriverInterface $bodyDriver;
 
     public function __construct(
-        protected ClientInterface $client,
+        protected readonly ClientInterface $client,
         ?InteractionBodyDriverInterface $bodyDriver = null
     ) {
         $this->bodyDriver = $bodyDriver ?? new InteractionBodyDriver($client);
