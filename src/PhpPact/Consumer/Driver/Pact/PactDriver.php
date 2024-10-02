@@ -3,6 +3,7 @@
 namespace PhpPact\Consumer\Driver\Pact;
 
 use Composer\Semver\Comparator;
+use PhpPact\Config\Enum\WriteMode;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Driver\Exception\MissingPactException;
 use PhpPact\Consumer\Driver\Exception\PactFileNotWrittenException;
@@ -34,7 +35,7 @@ class PactDriver implements PactDriverInterface
         $error = $this->client->pactHandleWriteFile(
             $this->getPact()->handle,
             $this->config->getPactDir(),
-            $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
+            $this->config->getPactFileWriteMode() === WriteMode::OVERWRITE
         );
         if ($error) {
             throw new PactFileNotWrittenException($error);

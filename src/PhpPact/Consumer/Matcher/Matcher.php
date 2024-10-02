@@ -2,6 +2,7 @@
 
 namespace PhpPact\Consumer\Matcher;
 
+use PhpPact\Consumer\Matcher\Enum\HttpStatus;
 use PhpPact\Consumer\Matcher\Exception\MatcherException;
 use PhpPact\Consumer\Matcher\Generators\MockServerURL;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
@@ -386,7 +387,7 @@ class Matcher
     /**
      * Matches the response status code.
      */
-    public function statusCode(string $status, ?int $value = null): MatcherInterface
+    public function statusCode(string|HttpStatus $status, ?int $value = null): MatcherInterface
     {
         return $this->withFormatter(new StatusCode($status, $value));
     }

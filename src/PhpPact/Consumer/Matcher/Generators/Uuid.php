@@ -2,6 +2,7 @@
 
 namespace PhpPact\Consumer\Matcher\Generators;
 
+use PhpPact\Consumer\Matcher\Enum\UuidFormat;
 use PhpPact\Consumer\Matcher\Exception\InvalidUuidFormatException;
 
 /**
@@ -14,23 +15,39 @@ use PhpPact\Consumer\Matcher\Exception\InvalidUuidFormatException;
  */
 class Uuid extends AbstractGenerator
 {
+    /**
+     * @deprecated Use UuidFormat::SIMPLE instead
+     */
     public const SIMPLE_FORMAT = 'simple';
+    /**
+     * @deprecated Use UuidFormat::LOWER_CASE_HYPHENATED instead
+     */
     public const LOWER_CASE_HYPHENATED_FORMAT = 'lower-case-hyphenated';
+    /**
+     * @deprecated Use UuidFormat::UPPER_CASE_HYPHENATED instead
+     */
     public const UPPER_CASE_HYPHENATED_FORMAT = 'upper-case-hyphenated';
+    /**
+     * @deprecated Use UuidFormat::URN instead
+     */
     public const URN_FORMAT = 'URN';
 
-    public const FORMATS = [
-        self::SIMPLE_FORMAT,
-        self::LOWER_CASE_HYPHENATED_FORMAT,
-        self::UPPER_CASE_HYPHENATED_FORMAT,
-        self::URN_FORMAT,
-    ];
+    private null|UuidFormat $format;
 
-    public function __construct(private ?string $format = null)
+    public function __construct(null|string|UuidFormat $format = null)
     {
-        if ($format && !in_array($format, self::FORMATS, true)) {
-            throw new InvalidUuidFormatException(sprintf('Format %s is not supported. Supported formats are: %s', $format, implode(', ', self::FORMATS)));
+        if (is_string($format)) {
+            try {
+                $format = UuidFormat::from($format);
+            } catch (\Throwable $th) {
+                $all = implode(', ', array_map(
+                    fn (UuidFormat $status) => $status->value,
+                    UuidFormat::cases()
+                ));
+                throw new InvalidUuidFormatException(sprintf('Format %s is not supported. Supported formats are: %s', $format, $all));
+            }
         }
+        $this->format = $format;
     }
 
     public function getType(): string
@@ -44,7 +61,7 @@ class Uuid extends AbstractGenerator
     protected function getAttributesData(): array
     {
         return $this->format !== null ? [
-            'format' => $this->format,
+            'format' => $this->format->value,
         ] : [];
     }
 }

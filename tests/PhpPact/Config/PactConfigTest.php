@@ -2,6 +2,8 @@
 
 namespace PhpPactTest\Config;
 
+use PhpPact\Config\Enum\WriteMode;
+use PhpPact\Config\Exception\InvalidWriteModeException;
 use PhpPact\Config\PactConfig;
 use PhpPact\Config\PactConfigInterface;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -41,7 +43,7 @@ class PactConfigTest extends TestCase
         static::assertSame($pactSpecificationVersion, $this->config->getPactSpecificationVersion());
         static::assertSame($log, $this->config->getLog());
         static::assertSame($logLevel, $this->config->getLogLevel());
-        static::assertSame($pactFileWriteMode, $this->config->getPactFileWriteMode());
+        static::assertSame(WriteMode::tryFrom($pactFileWriteMode), $this->config->getPactFileWriteMode());
     }
 
     public function testInvalidPactSpecificationVersion(): void
@@ -71,8 +73,8 @@ class PactConfigTest extends TestCase
 
     public function testInvalidPactFileWriteMode(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("Invalid PhpPact File Write Mode, value must be one of the following: overwrite, merge.");
+        $this->expectException(InvalidWriteModeException::class);
+        $this->expectExceptionMessage("Mode 'APPEND' is not supported. Supported modes are: overwrite, merge");
         $this->config->setPactFileWriteMode('APPEND');
     }
 }

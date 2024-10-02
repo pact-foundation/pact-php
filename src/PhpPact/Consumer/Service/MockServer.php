@@ -3,6 +3,7 @@
 namespace PhpPact\Consumer\Service;
 
 use FFI;
+use PhpPact\Config\Enum\WriteMode;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Exception\MockServerNotStartedException;
@@ -68,7 +69,7 @@ class MockServer implements MockServerInterface
         $error = $this->client->writePactFile(
             $this->config->getPort(),
             $this->config->getPactDir(),
-            $this->config->getPactFileWriteMode() === PactConfigInterface::MODE_OVERWRITE
+            $this->config->getPactFileWriteMode() === WriteMode::OVERWRITE
         );
         if ($error) {
             throw new MockServerPactFileNotWrittenException($error);

@@ -2,7 +2,7 @@
 
 namespace PhpPactTest\Consumer\Service;
 
-use PhpPact\Config\PactConfigInterface;
+use PhpPact\Config\Enum\WriteMode;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
 use PhpPact\Consumer\Exception\MockServerPactFileNotWrittenException;
 use PhpPact\Consumer\Model\Pact\Pact;
@@ -77,22 +77,22 @@ class MockServerTest extends TestCase
         $this->assertSame('', $result->mismatches);
     }
 
-    #[TestWith([0, PactConfigInterface::MODE_OVERWRITE])]
-    #[TestWith([1, PactConfigInterface::MODE_OVERWRITE])]
-    #[TestWith([2, PactConfigInterface::MODE_OVERWRITE])]
-    #[TestWith([3, PactConfigInterface::MODE_OVERWRITE])]
-    #[TestWith([4, PactConfigInterface::MODE_OVERWRITE])]
-    #[TestWith([0, PactConfigInterface::MODE_MERGE])]
-    #[TestWith([1, PactConfigInterface::MODE_MERGE])]
-    #[TestWith([2, PactConfigInterface::MODE_MERGE])]
-    #[TestWith([3, PactConfigInterface::MODE_MERGE])]
-    #[TestWith([4, PactConfigInterface::MODE_MERGE])]
-    public function testWritePact(int $error, string $writeMode): void
+    #[TestWith([0, WriteMode::OVERWRITE])]
+    #[TestWith([1, WriteMode::OVERWRITE])]
+    #[TestWith([2, WriteMode::OVERWRITE])]
+    #[TestWith([3, WriteMode::OVERWRITE])]
+    #[TestWith([4, WriteMode::OVERWRITE])]
+    #[TestWith([0, WriteMode::MERGE])]
+    #[TestWith([1, WriteMode::MERGE])]
+    #[TestWith([2, WriteMode::MERGE])]
+    #[TestWith([3, WriteMode::MERGE])]
+    #[TestWith([4, WriteMode::MERGE])]
+    public function testWritePact(int $error, WriteMode $writeMode): void
     {
         $this->config->setPort($this->port);
         $this->config->setPactDir($this->pactDir);
         $this->config->setPactFileWriteMode($writeMode);
-        $this->expectsWritePactFile($this->port, $this->pactDir, $writeMode === PactConfigInterface::MODE_OVERWRITE, $error, true);
+        $this->expectsWritePactFile($this->port, $this->pactDir, $writeMode === WriteMode::OVERWRITE, $error, true);
         if ($error) {
             $this->expectException(MockServerPactFileNotWrittenException::class);
             $this->expectExceptionMessage(match ($error) {

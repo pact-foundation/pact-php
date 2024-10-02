@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\Standalone\MockServer;
 
+use PhpPact\Config\Enum\WriteMode;
 use PhpPact\Standalone\MockService\MockServerConfig;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
@@ -38,7 +39,7 @@ class MockServerConfigTest extends TestCase
         static::assertSame($provider, $subject->getProvider());
         static::assertSame($consumer, $subject->getConsumer());
         static::assertSame($pactDir, $subject->getPactDir());
-        static::assertSame($pactFileWriteMode, $subject->getPactFileWriteMode());
+        static::assertSame(WriteMode::tryFrom($pactFileWriteMode), $subject->getPactFileWriteMode());
         static::assertSame($log, $subject->getLog());
         static::assertSame($logLevel, $subject->getLogLevel());
         static::assertSame($pactSpecificationVersion, $subject->getPactSpecificationVersion());

@@ -2,10 +2,10 @@
 
 namespace PhpPactTest\CompatibilitySuite\Service;
 
-use PhpPact\Config\PactConfigInterface;
+use PhpPact\Config\Enum\WriteMode;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 
 interface PactWriterInterface
 {
-    public function write(int $id, PactPath $pactPath, string $mode = PactConfigInterface::MODE_OVERWRITE): void;
+    public function write(int $id, PactPath $pactPath, WriteMode $mode = WriteMode::OVERWRITE): void;
 }
