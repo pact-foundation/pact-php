@@ -10,7 +10,7 @@ use PhpPact\FFI\ClientInterface;
 
 class MessageBodyDriver implements MessageBodyDriverInterface
 {
-    public function __construct(protected ClientInterface $client)
+    public function __construct(protected readonly ClientInterface $client)
     {
     }
 

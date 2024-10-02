@@ -12,7 +12,7 @@ use PhpPact\FFI\ClientInterface;
 abstract class AbstractDriver
 {
     public function __construct(
-        protected ClientInterface $client,
+        protected readonly ClientInterface $client,
     ) {
     }
 

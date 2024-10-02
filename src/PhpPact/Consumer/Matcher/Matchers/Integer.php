@@ -17,7 +17,7 @@ class Integer extends GeneratorAwareMatcher implements JsonFormattableInterface,
     use JsonFormattableTrait;
     use ExpressionFormattableTrait;
 
-    public function __construct(private int $value = 13)
+    public function __construct(private readonly int $value = 13)
     {
         parent::__construct();
     }
