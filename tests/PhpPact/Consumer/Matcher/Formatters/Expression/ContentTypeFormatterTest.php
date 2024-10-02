@@ -38,11 +38,13 @@ class ContentTypeFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new ContentType('plain/text'), '"matching(contentType, \'plain\/text\', \'\')"'])]
-    #[TestWith([new ContentType('application/json', '{"key":"value"}'), '"matching(contentType, \'application\/json\', \'{\"key\":\"value\"}\')"'])]
-    #[TestWith([new ContentType('application/xml', '<?xml?><test/>'), '"matching(contentType, \'application\/xml\', \'<?xml?><test\/>\')"'])]
+    #[TestWith([new ContentType('plain/text'), 'matching(contentType, \'plain/text\', \'\')'])]
+    #[TestWith([new ContentType('application/json', '{"key":"value"}'), 'matching(contentType, \'application/json\', \'{"key":"value"}\')'])]
+    #[TestWith([new ContentType('application/xml', '<?xml?><test/>'), 'matching(contentType, \'application/xml\', \'<?xml?><test/>\')'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
-        $this->assertSame($expression, json_encode($this->formatter->format($matcher)));
+        $result = $this->formatter->format($matcher);
+        $this->assertIsString($result);
+        $this->assertSame($expression, $result);
     }
 }

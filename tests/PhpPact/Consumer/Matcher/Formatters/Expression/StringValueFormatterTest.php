@@ -37,9 +37,11 @@ class StringValueFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new StringValue('value'), '"matching(type, \'value\')"'])]
+    #[TestWith([new StringValue('value'), 'matching(type, \'value\')'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
-        $this->assertSame($expression, json_encode($this->formatter->format($matcher)));
+        $result = $this->formatter->format($matcher);
+        $this->assertIsString($result);
+        $this->assertSame($expression, $result);
     }
 }

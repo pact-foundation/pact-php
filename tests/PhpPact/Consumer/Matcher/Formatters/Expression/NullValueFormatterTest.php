@@ -18,9 +18,11 @@ class NullValueFormatterTest extends TestCase
         $this->formatter = new NullValueFormatter();
     }
 
-    #[TestWith([new NullValue(), '"matching(type, null)"'])]
+    #[TestWith([new NullValue(), 'matching(type, null)'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
-        $this->assertSame($expression, json_encode($this->formatter->format($matcher)));
+        $result = $this->formatter->format($matcher);
+        $this->assertIsString($result);
+        $this->assertSame($expression, $result);
     }
 }

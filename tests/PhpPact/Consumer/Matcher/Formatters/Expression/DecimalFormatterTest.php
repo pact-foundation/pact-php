@@ -37,12 +37,14 @@ class DecimalFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Decimal(-99), '"matching(decimal, -99)"'])] // Provider verification will fail on this case
-    #[TestWith([new Decimal(100), '"matching(decimal, 100)"'])] // Provider verification will fail on this case
-    #[TestWith([new Decimal(100.01), '"matching(decimal, 100.01)"'])]
-    #[TestWith([new Decimal(-100.003), '"matching(decimal, -100.003)"'])]
+    #[TestWith([new Decimal(-99), 'matching(decimal, -99)'])] // Provider verification will fail on this case
+    #[TestWith([new Decimal(100), 'matching(decimal, 100)'])] // Provider verification will fail on this case
+    #[TestWith([new Decimal(100.01), 'matching(decimal, 100.01)'])]
+    #[TestWith([new Decimal(-100.003), 'matching(decimal, -100.003)'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
-        $this->assertSame($expression, json_encode($this->formatter->format($matcher)));
+        $result = $this->formatter->format($matcher);
+        $this->assertIsString($result);
+        $this->assertSame($expression, $result);
     }
 }

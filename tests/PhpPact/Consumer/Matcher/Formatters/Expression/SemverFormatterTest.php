@@ -45,9 +45,11 @@ class SemverFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Semver('1.0.0'), '"matching(semver, \'1.0.0\')"'])]
+    #[TestWith([new Semver('1.0.0'), 'matching(semver, \'1.0.0\')'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
-        $this->assertSame($expression, json_encode($this->formatter->format($matcher)));
+        $result = $this->formatter->format($matcher);
+        $this->assertIsString($result);
+        $this->assertSame($expression, $result);
     }
 }

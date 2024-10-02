@@ -48,16 +48,18 @@ class TypeFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Type('example value'), '"matching(type, \'example value\')"'])]
-    #[TestWith([new Type(100.09), '"matching(type, 100.09)"'])]
-    #[TestWith([new Type(-99.99), '"matching(type, -99.99)"'])]
-    #[TestWith([new Type(100), '"matching(type, 100)"'])]
-    #[TestWith([new Type(-99), '"matching(type, -99)"'])]
-    #[TestWith([new Type(true), '"matching(type, true)"'])]
-    #[TestWith([new Type(false), '"matching(type, false)"'])]
-    #[TestWith([new Type(null), '"matching(type, null)"'])]
+    #[TestWith([new Type('example value'), 'matching(type, \'example value\')'])]
+    #[TestWith([new Type(100.09), 'matching(type, 100.09)'])]
+    #[TestWith([new Type(-99.99), 'matching(type, -99.99)'])]
+    #[TestWith([new Type(100), 'matching(type, 100)'])]
+    #[TestWith([new Type(-99), 'matching(type, -99)'])]
+    #[TestWith([new Type(true), 'matching(type, true)'])]
+    #[TestWith([new Type(false), 'matching(type, false)'])]
+    #[TestWith([new Type(null), 'matching(type, null)'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
-        $this->assertSame($expression, json_encode($this->formatter->format($matcher)));
+        $result = $this->formatter->format($matcher);
+        $this->assertIsString($result);
+        $this->assertSame($expression, $result);
     }
 }
