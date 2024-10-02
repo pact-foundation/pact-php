@@ -46,13 +46,15 @@ class NotEmptyFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new NotEmpty('example value'), '"notEmpty(\'example value\')"'])]
-    #[TestWith([new NotEmpty(100.09), '"notEmpty(100.09)"'])]
-    #[TestWith([new NotEmpty(100), '"notEmpty(100)"'])]
-    #[TestWith([new NotEmpty(true), '"notEmpty(true)"'])]
-    #[TestWith([new NotEmpty(false), '"notEmpty(false)"'])]
+    #[TestWith([new NotEmpty('example value'), 'notEmpty(\'example value\')'])]
+    #[TestWith([new NotEmpty(100.09), 'notEmpty(100.09)'])]
+    #[TestWith([new NotEmpty(100), 'notEmpty(100)'])]
+    #[TestWith([new NotEmpty(true), 'notEmpty(true)'])]
+    #[TestWith([new NotEmpty(false), 'notEmpty(false)'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
-        $this->assertSame($expression, json_encode($this->formatter->format($matcher)));
+        $result = $this->formatter->format($matcher);
+        $this->assertIsString($result);
+        $this->assertSame($expression, $result);
     }
 }

@@ -37,12 +37,14 @@ class NumberFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Number(-99), '"matching(number, -99)"'])]
-    #[TestWith([new Number(100), '"matching(number, 100)"'])]
-    #[TestWith([new Number(100.01), '"matching(number, 100.01)"'])]
-    #[TestWith([new Number(-100.003), '"matching(number, -100.003)"'])]
+    #[TestWith([new Number(-99), 'matching(number, -99)'])]
+    #[TestWith([new Number(100), 'matching(number, 100)'])]
+    #[TestWith([new Number(100.01), 'matching(number, 100.01)'])]
+    #[TestWith([new Number(-100.003), 'matching(number, -100.003)'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
-        $this->assertSame($expression, json_encode($this->formatter->format($matcher)));
+        $result = $this->formatter->format($matcher);
+        $this->assertIsString($result);
+        $this->assertSame($expression, $result);
     }
 }

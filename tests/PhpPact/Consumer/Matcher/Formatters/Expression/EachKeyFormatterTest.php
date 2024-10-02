@@ -42,10 +42,12 @@ class EachKeyFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new EachKey(['value'], [new Integer(123)]), '"eachKey(matching(integer, 123))"'])]
-    #[TestWith([new EachKey(new stdClass(), [new Regex('\w+', 'example value')]), '"eachKey(matching(regex, \'\\\\w+\', \'example value\'))"'])]
+    #[TestWith([new EachKey(['value'], [new Integer(123)]), 'eachKey(matching(integer, 123))'])]
+    #[TestWith([new EachKey(new stdClass(), [new Regex('\w+', 'example value')]), 'eachKey(matching(regex, \'\w+\', \'example value\'))'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
-        $this->assertSame($expression, json_encode($this->formatter->format($matcher)));
+        $result = $this->formatter->format($matcher);
+        $this->assertIsString($result);
+        $this->assertSame($expression, $result);
     }
 }

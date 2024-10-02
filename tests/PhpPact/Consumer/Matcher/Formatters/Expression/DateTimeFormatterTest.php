@@ -48,11 +48,13 @@ class DateTimeFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new DateTime('yyyy-MM-dd HH:mm:ssZZZZZ', '2020-05-21 16:44:32+10:00'), '"matching(datetime, \'yyyy-MM-dd HH:mm:ssZZZZZ\', \'2020-05-21 16:44:32+10:00\')"'])]
-    #[TestWith([new Date('yyyy-MM-dd', '2012-04-12'), '"matching(date, \'yyyy-MM-dd\', \'2012-04-12\')"'])]
-    #[TestWith([new Time('HH:mm', '22:04'), '"matching(time, \'HH:mm\', \'22:04\')"'])]
+    #[TestWith([new DateTime('yyyy-MM-dd HH:mm:ssZZZZZ', '2020-05-21 16:44:32+10:00'), 'matching(datetime, \'yyyy-MM-dd HH:mm:ssZZZZZ\', \'2020-05-21 16:44:32+10:00\')'])]
+    #[TestWith([new Date('yyyy-MM-dd', '2012-04-12'), 'matching(date, \'yyyy-MM-dd\', \'2012-04-12\')'])]
+    #[TestWith([new Time('HH:mm', '22:04'), 'matching(time, \'HH:mm\', \'22:04\')'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
-        $this->assertSame($expression, json_encode($this->formatter->format($matcher)));
+        $result = $this->formatter->format($matcher);
+        $this->assertIsString($result);
+        $this->assertSame($expression, $result);
     }
 }
