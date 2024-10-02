@@ -11,8 +11,8 @@ abstract class AbstractExpressionFormatter implements ExpressionFormatterInterfa
 {
     protected function normalize(mixed $value): string
     {
-        if (is_string($value) && str_contains($value, "'")) {
-            throw new InvalidValueException(sprintf('String value "%s" should not contains single quote', $value));
+        if (is_string($value)) {
+            $value = addcslashes($value, "'");
         }
         return match (gettype($value)) {
             'string' => sprintf("'%s'", $value),

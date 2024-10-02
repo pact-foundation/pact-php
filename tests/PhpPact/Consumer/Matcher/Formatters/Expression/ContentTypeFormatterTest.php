@@ -29,15 +29,8 @@ class ContentTypeFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new ContentType("it's invalid type", 'testing'), "it's invalid type"])]
-    #[TestWith([new ContentType('plain/text', "it's invalid text"), "it's invalid text"])]
-    public function testInvalidString(MatcherInterface $matcher, string $value): void
-    {
-        $this->expectException(InvalidValueException::class);
-        $this->expectExceptionMessage(sprintf('String value "%s" should not contains single quote', $value));
-        $this->formatter->format($matcher);
-    }
-
+    #[TestWith([new ContentType("contains single quote '", 'testing'), 'matching(contentType, \'contains single quote \\\'\', \'testing\')'])]
+    #[TestWith([new ContentType('plain/text', "contains single quote '"), 'matching(contentType, \'plain/text\', \'contains single quote \\\'\')'])]
     #[TestWith([new ContentType('plain/text'), 'matching(contentType, \'plain/text\', \'\')'])]
     #[TestWith([new ContentType('application/json', '{"key":"value"}'), 'matching(contentType, \'application/json\', \'{"key":"value"}\')'])]
     #[TestWith([new ContentType('application/xml', '<?xml?><test/>'), 'matching(contentType, \'application/xml\', \'<?xml?><test/>\')'])]

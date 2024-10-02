@@ -37,14 +37,7 @@ class SemverFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Semver("it's invalid value"), "it's invalid value"])]
-    public function testInvalidString(MatcherInterface $matcher, string $value): void
-    {
-        $this->expectException(InvalidValueException::class);
-        $this->expectExceptionMessage(sprintf('String value "%s" should not contains single quote', $value));
-        $this->formatter->format($matcher);
-    }
-
+    #[TestWith([new Semver("contains single quote '"), 'matching(semver, \'contains single quote \\\'\')'])]
     #[TestWith([new Semver('1.0.0'), 'matching(semver, \'1.0.0\')'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {

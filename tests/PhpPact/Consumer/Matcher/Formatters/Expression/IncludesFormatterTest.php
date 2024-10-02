@@ -29,14 +29,7 @@ class IncludesFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Includes("it's invalid value"), "it's invalid value"])]
-    public function testInvalidString(MatcherInterface $matcher, string $value): void
-    {
-        $this->expectException(InvalidValueException::class);
-        $this->expectExceptionMessage(sprintf('String value "%s" should not contains single quote', $value));
-        $this->formatter->format($matcher);
-    }
-
+    #[TestWith([new Includes("contains single quote '"), 'matching(include, \'contains single quote \\\'\')'])]
     #[TestWith([new Includes('example value'), 'matching(include, \'example value\')'])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
