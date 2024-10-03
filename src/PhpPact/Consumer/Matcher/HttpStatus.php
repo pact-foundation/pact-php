@@ -2,6 +2,9 @@
 
 namespace PhpPact\Consumer\Matcher;
 
+/**
+ * @deprecated Use PhpPact\Consumer\Matcher\Enum\HttpStatus instead
+ */
 class HttpStatus
 {
     public const INFORMATION = 'info';
@@ -11,20 +14,4 @@ class HttpStatus
     public const SERVER_ERROR = 'serverError';
     public const NON_ERROR = 'nonError';
     public const ERROR = 'error';
-
-    /**
-     * @return array<int, string>
-     */
-    public static function all(): array
-    {
-        return [
-            self::INFORMATION,
-            self::SUCCESS,
-            self::REDIRECT,
-            self::CLIENT_ERROR,
-            self::SERVER_ERROR,
-            self::NON_ERROR,
-            self::ERROR,
-        ];
-    }
 }

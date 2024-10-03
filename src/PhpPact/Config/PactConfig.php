@@ -3,6 +3,8 @@
 namespace PhpPact\Config;
 
 use Composer\Semver\VersionParser;
+use PhpPact\Config\Enum\WriteMode;
+use PhpPact\Config\Exception\InvalidWriteModeException;
 
 class PactConfig implements PactConfigInterface
 {
@@ -40,7 +42,7 @@ class PactConfig implements PactConfigInterface
      * pact file is deleted before running tests when using this option so that
      * interactions deleted from the code are not maintained in the file.
      */
-    private string $pactFileWriteMode = self::MODE_MERGE;
+    private WriteMode $pactFileWriteMode = WriteMode::MERGE;
 
     /**
      * {@inheritdoc}
@@ -155,7 +157,7 @@ class PactConfig implements PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getPactFileWriteMode(): string
+    public function getPactFileWriteMode(): WriteMode
     {
         return $this->pactFileWriteMode;
     }
@@ -163,16 +165,19 @@ class PactConfig implements PactConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setPactFileWriteMode(string $pactFileWriteMode): self
+    public function setPactFileWriteMode(string|WriteMode $pactFileWriteMode): self
     {
-        $options = [self::MODE_OVERWRITE, self::MODE_MERGE];
-
-        if (!\in_array($pactFileWriteMode, $options)) {
-            $implodedOptions = \implode(', ', $options);
-
-            throw new \InvalidArgumentException("Invalid PhpPact File Write Mode, value must be one of the following: {$implodedOptions}.");
+        if (is_string($pactFileWriteMode)) {
+            try {
+                $pactFileWriteMode = WriteMode::from($pactFileWriteMode);
+            } catch (\Throwable $th) {
+                $all = implode(', ', array_map(
+                    fn (WriteMode $mode) => $mode->value,
+                    WriteMode::cases()
+                ));
+                throw new InvalidWriteModeException(sprintf("Mode '%s' is not supported. Supported modes are: %s", $pactFileWriteMode, $all));
+            }
         }
-
         $this->pactFileWriteMode = $pactFileWriteMode;
 
         return $this;

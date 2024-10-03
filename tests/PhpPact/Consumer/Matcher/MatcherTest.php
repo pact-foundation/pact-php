@@ -2,7 +2,7 @@
 
 namespace PhpPactTest\Consumer\Matcher;
 
-use PhpPact\Consumer\Matcher\Exception\MatcherException;
+use PhpPact\Consumer\Matcher\Enum\HttpStatus;
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\RegexFormatter;
 use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
@@ -10,7 +10,6 @@ use PhpPact\Consumer\Matcher\Generators\MockServerURL;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
 use PhpPact\Consumer\Matcher\Generators\Uuid;
-use PhpPact\Consumer\Matcher\HttpStatus;
 use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Matcher\Matchers\ArrayContains;
 use PhpPact\Consumer\Matcher\Matchers\Boolean;

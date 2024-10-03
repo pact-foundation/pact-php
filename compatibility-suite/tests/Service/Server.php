@@ -2,7 +2,7 @@
 
 namespace PhpPactTest\CompatibilitySuite\Service;
 
-use PhpPact\Config\PactConfigInterface;
+use PhpPact\Config\Enum\WriteMode;
 use PhpPact\Consumer\Driver\Interaction\InteractionDriverInterface;
 use PhpPact\Consumer\Factory\InteractionDriverFactory;
 use PhpPact\Standalone\MockService\MockServerConfig;
@@ -30,7 +30,7 @@ final class Server implements ServerInterface
             ->setProvider(PactPath::PROVIDER)
             ->setPactDir(Path::PACTS_PATH)
             ->setPactSpecificationVersion($specificationVersion)
-            ->setPactFileWriteMode(PactConfigInterface::MODE_OVERWRITE);
+            ->setPactFileWriteMode(WriteMode::OVERWRITE);
 
         if ($level = \getenv('PACT_LOGLEVEL')) {
             $this->config->setLogLevel($level);

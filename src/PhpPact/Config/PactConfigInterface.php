@@ -2,7 +2,8 @@
 
 namespace PhpPact\Config;
 
-use InvalidArgumentException;
+use PhpPact\Config\Exception\InvalidWriteModeException;
+use PhpPact\Config\Enum\WriteMode;
 use UnexpectedValueException;
 
 /**
@@ -12,8 +13,15 @@ interface PactConfigInterface
 {
     public const DEFAULT_SPECIFICATION_VERSION = '3.0.0';
 
+    /**
+     * @deprecated Use WriteMode::OVERWRITE instead
+     */
     public const MODE_OVERWRITE = 'overwrite';
+    /**
+     * @deprecated Use WriteMode::MERGE instead
+     */
     public const MODE_MERGE = 'merge';
+
 
     public function getConsumer(): string;
 
@@ -65,15 +73,10 @@ interface PactConfigInterface
 
     public function setLogLevel(string $logLevel): self;
 
-    /**
-     * @return string 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
-     */
-    public function getPactFileWriteMode(): string;
+    public function getPactFileWriteMode(): WriteMode;
 
     /**
-     * @param string $pactFileWriteMode 'merge' or 'overwrite' merge means that interactions are added and overwrite means that the entire file is overwritten
-     *
-     * @throws InvalidArgumentException If mode is incorrect.
+     * @throws InvalidWriteModeException If mode is incorrect.
      */
-    public function setPactFileWriteMode(string $pactFileWriteMode): self;
+    public function setPactFileWriteMode(string|WriteMode $pactFileWriteMode): self;
 }

@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\Consumer\Driver\Pact;
 
+use PhpPact\Config\Enum\WriteMode;
 use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Driver\Exception\MissingPactException;
 use PhpPact\Consumer\Driver\Exception\PactFileNotWrittenException;
@@ -110,17 +111,17 @@ class PactDriverTest extends TestCase
         $this->driver->getPact();
     }
 
-    #[TestWith([0, PactConfigInterface::MODE_OVERWRITE])]
-    #[TestWith([1, PactConfigInterface::MODE_OVERWRITE])]
-    #[TestWith([2, PactConfigInterface::MODE_OVERWRITE])]
-    #[TestWith([3, PactConfigInterface::MODE_OVERWRITE])]
-    #[TestWith([4, PactConfigInterface::MODE_OVERWRITE])]
-    #[TestWith([0, PactConfigInterface::MODE_MERGE])]
-    #[TestWith([1, PactConfigInterface::MODE_MERGE])]
-    #[TestWith([2, PactConfigInterface::MODE_MERGE])]
-    #[TestWith([3, PactConfigInterface::MODE_MERGE])]
-    #[TestWith([4, PactConfigInterface::MODE_MERGE])]
-    public function testWritePact(int $error, string $writeMode): void
+    #[TestWith([0, WriteMode::OVERWRITE])]
+    #[TestWith([1, WriteMode::OVERWRITE])]
+    #[TestWith([2, WriteMode::OVERWRITE])]
+    #[TestWith([3, WriteMode::OVERWRITE])]
+    #[TestWith([4, WriteMode::OVERWRITE])]
+    #[TestWith([0, WriteMode::MERGE])]
+    #[TestWith([1, WriteMode::MERGE])]
+    #[TestWith([2, WriteMode::MERGE])]
+    #[TestWith([3, WriteMode::MERGE])]
+    #[TestWith([4, WriteMode::MERGE])]
+    public function testWritePact(int $error, WriteMode $writeMode): void
     {
         $this->assertConfig(null, '1.0.0');
         $this->config
@@ -133,7 +134,7 @@ class PactDriverTest extends TestCase
             ->willReturn($writeMode);
         $this->expectsNewPact($this->consumer, $this->provider, $this->pactHandle);
         $this->expectsWithSpecification($this->pactHandle, self::SPEC_V1, true);
-        $this->expectsPactHandleWriteFile($this->pactHandle, $this->pactDir, $writeMode === PactConfigInterface::MODE_OVERWRITE, $error);
+        $this->expectsPactHandleWriteFile($this->pactHandle, $this->pactDir, $writeMode === WriteMode::OVERWRITE, $error);
         $this->driver->setUp();
         if ($error) {
             $this->expectException(PactFileNotWrittenException::class);

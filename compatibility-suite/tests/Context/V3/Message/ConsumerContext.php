@@ -5,7 +5,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V3\Message;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Exception;
-use PhpPact\Config\PactConfigInterface;
+use PhpPact\Config\Enum\WriteMode;
 use PhpPact\Consumer\MessageBuilder;
 use PhpPact\Standalone\PactMessage\PactMessageConfig;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
@@ -41,7 +41,7 @@ final class ConsumerContext implements Context
             ->setProvider(PactPath::PROVIDER)
             ->setPactDir(Path::PACTS_PATH)
             ->setPactSpecificationVersion($specificationVersion)
-            ->setPactFileWriteMode(PactConfigInterface::MODE_OVERWRITE);
+            ->setPactFileWriteMode(WriteMode::OVERWRITE);
         $this->builder = new MessageBuilder($config);
     }
 
