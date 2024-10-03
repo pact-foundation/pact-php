@@ -29,8 +29,8 @@ class StringValueFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new StringValue("contains single quote '"), 'matching(type, \'contains single quote \\\'\')'])]
-    #[TestWith([new StringValue('value'), 'matching(type, \'value\')'])]
+    #[TestWith([new StringValue("contains single quote '"), "matching(type, 'contains single quote \'')"])]
+    #[TestWith([new StringValue('value'), "matching(type, 'value')"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

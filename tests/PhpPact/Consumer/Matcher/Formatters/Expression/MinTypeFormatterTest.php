@@ -31,7 +31,7 @@ class MinTypeFormatterTest extends TestCase
     #[TestWith([new MinType(null, 1, false), 'atLeast(1)'])]
     #[TestWith([new MinType('example value', 1, false), 'atLeast(1)'])]
     #[TestWith([new MinType(null, 1), 'atLeast(1), eachValue(matching(type, null)'])]
-    #[TestWith([new MinType('example value', 1), 'atLeast(1), eachValue(matching(type, \'example value\')'])]
+    #[TestWith([new MinType('example value', 1), "atLeast(1), eachValue(matching(type, 'example value')"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

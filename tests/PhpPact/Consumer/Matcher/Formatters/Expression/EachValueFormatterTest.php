@@ -42,8 +42,8 @@ class EachValueFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new EachValue(['value'], [new StringValue('example value')]), 'eachValue(matching(type, \'example value\'))'])]
-    #[TestWith([new EachValue(new stdClass(), [new Regex('\w \d', 'a 1')]), 'eachValue(matching(regex, \'\w \d\', \'a 1\'))'])]
+    #[TestWith([new EachValue(['value'], [new StringValue('example value')]), "eachValue(matching(type, 'example value'))"])]
+    #[TestWith([new EachValue(new stdClass(), [new Regex('\w \d', 'a 1')]), "eachValue(matching(regex, '\w \d', 'a 1'))"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

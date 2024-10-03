@@ -43,7 +43,7 @@ class EachKeyFormatterTest extends TestCase
     }
 
     #[TestWith([new EachKey(['value'], [new Integer(123)]), 'eachKey(matching(integer, 123))'])]
-    #[TestWith([new EachKey(new stdClass(), [new Regex('\w+', 'example value')]), 'eachKey(matching(regex, \'\w+\', \'example value\'))'])]
+    #[TestWith([new EachKey(new stdClass(), [new Regex('\w+', 'example value')]), "eachKey(matching(regex, '\w+', 'example value'))"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

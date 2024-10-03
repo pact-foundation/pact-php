@@ -37,8 +37,8 @@ class SemverFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Semver("contains single quote '"), 'matching(semver, \'contains single quote \\\'\')'])]
-    #[TestWith([new Semver('1.0.0'), 'matching(semver, \'1.0.0\')'])]
+    #[TestWith([new Semver("contains single quote '"), "matching(semver, 'contains single quote \'')"])]
+    #[TestWith([new Semver('1.0.0'), "matching(semver, '1.0.0')"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

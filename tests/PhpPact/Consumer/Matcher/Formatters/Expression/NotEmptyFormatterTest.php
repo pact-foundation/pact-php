@@ -38,8 +38,8 @@ class NotEmptyFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new NotEmpty("contains single quote '"), 'notEmpty(\'contains single quote \\\'\')'])]
-    #[TestWith([new NotEmpty('example value'), 'notEmpty(\'example value\')'])]
+    #[TestWith([new NotEmpty("contains single quote '"), "notEmpty('contains single quote \'')"])]
+    #[TestWith([new NotEmpty('example value'), "notEmpty('example value')"])]
     #[TestWith([new NotEmpty(100.09), 'notEmpty(100.09)'])]
     #[TestWith([new NotEmpty(100), 'notEmpty(100)'])]
     #[TestWith([new NotEmpty(true), 'notEmpty(true)'])]

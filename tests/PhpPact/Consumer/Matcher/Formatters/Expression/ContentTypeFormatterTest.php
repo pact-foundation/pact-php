@@ -29,11 +29,11 @@ class ContentTypeFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new ContentType("contains single quote '", 'testing'), 'matching(contentType, \'contains single quote \\\'\', \'testing\')'])]
-    #[TestWith([new ContentType('plain/text', "contains single quote '"), 'matching(contentType, \'plain/text\', \'contains single quote \\\'\')'])]
-    #[TestWith([new ContentType('plain/text'), 'matching(contentType, \'plain/text\', \'\')'])]
-    #[TestWith([new ContentType('application/json', '{"key":"value"}'), 'matching(contentType, \'application/json\', \'{"key":"value"}\')'])]
-    #[TestWith([new ContentType('application/xml', '<?xml?><test/>'), 'matching(contentType, \'application/xml\', \'<?xml?><test/>\')'])]
+    #[TestWith([new ContentType("contains single quote '", 'testing'), "matching(contentType, 'contains single quote \'', 'testing')"])]
+    #[TestWith([new ContentType('plain/text', "contains single quote '"), "matching(contentType, 'plain/text', 'contains single quote \'')"])]
+    #[TestWith([new ContentType('plain/text'), "matching(contentType, 'plain/text', '')"])]
+    #[TestWith([new ContentType('application/json', '{"key":"value"}'), "matching(contentType, 'application/json', '{\"key\":\"value\"}')"])]
+    #[TestWith([new ContentType('application/xml', '<?xml?><test/>'), "matching(contentType, 'application/xml', '<?xml?><test/>')"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

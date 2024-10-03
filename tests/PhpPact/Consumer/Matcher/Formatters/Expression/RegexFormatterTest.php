@@ -38,9 +38,9 @@ class RegexFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Regex("contains single quote '", 'value'), 'matching(regex, \'contains single quote \\\'\', \'value\')'])]
-    #[TestWith([new Regex('\w \d', "contains single quote '"), 'matching(regex, \'\w \d\', \'contains single quote \\\'\')'])]
-    #[TestWith([new Regex('\w{3}\d+', 'abc123'), 'matching(regex, \'\w{3}\d+\', \'abc123\')'])]
+    #[TestWith([new Regex("contains single quote '", 'value'), "matching(regex, 'contains single quote \'', 'value')"])]
+    #[TestWith([new Regex('\w \d', "contains single quote '"), "matching(regex, '\w \d', 'contains single quote \'')"])]
+    #[TestWith([new Regex('\w{3}\d+', 'abc123'), "matching(regex, '\w{3}\d+', 'abc123')"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

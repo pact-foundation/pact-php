@@ -45,7 +45,7 @@ class MatchAllFormatterTest extends TestCase
     }
 
     #[TestWith([new MatchAll(['abc' => 1, 'def' => 234], [new MinType(null, 2, false)]), 'atLeast(2)'])]
-    #[TestWith([new MatchAll(['abc' => 1, 'def' => 234], [new MinType(null, 1, false), new MaxType(null, 2, false), new EachKey(["doesn't matter"], [new Regex('\w+', 'abc')]), new EachValue(["doesn't matter"], [new Type(100)])]), 'atLeast(1), atMost(2), eachKey(matching(regex, \'\w+\', \'abc\')), eachValue(matching(type, 100))'])]
+    #[TestWith([new MatchAll(['abc' => 1, 'def' => 234], [new MinType(null, 1, false), new MaxType(null, 2, false), new EachKey(["doesn't matter"], [new Regex('\w+', 'abc')]), new EachValue(["doesn't matter"], [new Type(100)])]), "atLeast(1), atMost(2), eachKey(matching(regex, '\w+', 'abc')), eachValue(matching(type, 100))"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

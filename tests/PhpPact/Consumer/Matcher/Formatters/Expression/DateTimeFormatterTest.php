@@ -39,11 +39,11 @@ class DateTimeFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Time("contains single quote '", '22:04'), 'matching(time, \'contains single quote \\\'\', \'22:04\')'])]
-    #[TestWith([new Time('HH:mm', "contains single quote '"), 'matching(time, \'HH:mm\', \'contains single quote \\\'\')'])]
-    #[TestWith([new DateTime('yyyy-MM-dd HH:mm:ssZZZZZ', '2020-05-21 16:44:32+10:00'), 'matching(datetime, \'yyyy-MM-dd HH:mm:ssZZZZZ\', \'2020-05-21 16:44:32+10:00\')'])]
-    #[TestWith([new Date('yyyy-MM-dd', '2012-04-12'), 'matching(date, \'yyyy-MM-dd\', \'2012-04-12\')'])]
-    #[TestWith([new Time('HH:mm', '22:04'), 'matching(time, \'HH:mm\', \'22:04\')'])]
+    #[TestWith([new Time("contains single quote '", '22:04'), "matching(time, 'contains single quote \'', '22:04')"])]
+    #[TestWith([new Time('HH:mm', "contains single quote '"), "matching(time, 'HH:mm', 'contains single quote \'')"])]
+    #[TestWith([new DateTime('yyyy-MM-dd HH:mm:ssZZZZZ', '2020-05-21 16:44:32+10:00'), "matching(datetime, 'yyyy-MM-dd HH:mm:ssZZZZZ', '2020-05-21 16:44:32+10:00')"])]
+    #[TestWith([new Date('yyyy-MM-dd', '2012-04-12'), "matching(date, 'yyyy-MM-dd', '2012-04-12')"])]
+    #[TestWith([new Time('HH:mm', '22:04'), "matching(time, 'HH:mm', '22:04')"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

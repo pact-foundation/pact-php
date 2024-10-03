@@ -29,8 +29,8 @@ class MatchingFieldFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new MatchingField("contains single quote '"), 'matching($\'contains single quote \\\'\')'])]
-    #[TestWith([new MatchingField('product'), 'matching($\'product\')'])]
+    #[TestWith([new MatchingField("contains single quote '"), "matching($'contains single quote \'')"])]
+    #[TestWith([new MatchingField('product'), "matching($'product')"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

@@ -29,8 +29,8 @@ class IncludesFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Includes("contains single quote '"), 'matching(include, \'contains single quote \\\'\')'])]
-    #[TestWith([new Includes('example value'), 'matching(include, \'example value\')'])]
+    #[TestWith([new Includes("contains single quote '"), "matching(include, 'contains single quote \'')"])]
+    #[TestWith([new Includes('example value'), "matching(include, 'example value')"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

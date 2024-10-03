@@ -29,7 +29,7 @@ class MinMaxTypeFormatterTest extends TestCase
     }
 
     #[TestWith([new MinMaxType(null, 2, 3), 'atLeast(2), atMost(3), eachValue(matching(type, null)'])]
-    #[TestWith([new MinMaxType('example value', 2, 3), 'atLeast(2), atMost(3), eachValue(matching(type, \'example value\')'])]
+    #[TestWith([new MinMaxType('example value', 2, 3), "atLeast(2), atMost(3), eachValue(matching(type, 'example value')"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);
