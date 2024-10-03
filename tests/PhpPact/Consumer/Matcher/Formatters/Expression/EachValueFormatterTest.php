@@ -42,6 +42,7 @@ class EachValueFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
+    #[TestWith([new EachValue(['value'], [new StringValue("contains single quote '")]), "eachValue(matching(type, 'contains single quote \''))"])]
     #[TestWith([new EachValue(['value'], [new StringValue('example value')]), "eachValue(matching(type, 'example value'))"])]
     #[TestWith([new EachValue(new stdClass(), [new Regex('\w \d', 'a 1')]), "eachValue(matching(regex, '\w \d', 'a 1'))"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void

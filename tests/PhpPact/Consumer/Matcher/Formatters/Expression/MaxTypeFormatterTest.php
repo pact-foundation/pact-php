@@ -28,6 +28,7 @@ class MaxTypeFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
+    #[TestWith([new MaxType("contains single quote '", 2), "atMost(2), eachValue(matching(type, 'contains single quote \'')"])]
     #[TestWith([new MaxType(null, 2, false), 'atMost(2)'])]
     #[TestWith([new MaxType('example value', 2, false), 'atMost(2)'])]
     #[TestWith([new MaxType(null, 2), 'atMost(2), eachValue(matching(type, null)'])]

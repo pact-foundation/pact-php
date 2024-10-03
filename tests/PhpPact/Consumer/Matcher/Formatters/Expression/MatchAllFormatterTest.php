@@ -12,6 +12,7 @@ use PhpPact\Consumer\Matcher\Matchers\MaxType;
 use PhpPact\Consumer\Matcher\Matchers\MinType;
 use PhpPact\Consumer\Matcher\Matchers\NullValue;
 use PhpPact\Consumer\Matcher\Matchers\Regex;
+use PhpPact\Consumer\Matcher\Matchers\StringValue;
 use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Consumer\Matcher\Model\FormatterInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
@@ -44,6 +45,7 @@ class MatchAllFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
+    #[TestWith([new MatchAll(['abc' => 'xyz'], [new EachKey(["doesn't matter"], [new StringValue("contains single quote '")]), new EachValue(["doesn't matter"], [new StringValue("contains single quote '")])]), "eachKey(matching(type, 'contains single quote \'')), eachValue(matching(type, 'contains single quote \''))"])]
     #[TestWith([new MatchAll(['abc' => 1, 'def' => 234], [new MinType(null, 2, false)]), 'atLeast(2)'])]
     #[TestWith([new MatchAll(['abc' => 1, 'def' => 234], [new MinType(null, 1, false), new MaxType(null, 2, false), new EachKey(["doesn't matter"], [new Regex('\w+', 'abc')]), new EachValue(["doesn't matter"], [new Type(100)])]), "atLeast(1), atMost(2), eachKey(matching(regex, '\w+', 'abc')), eachValue(matching(type, 100))"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void

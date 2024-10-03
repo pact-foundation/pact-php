@@ -28,6 +28,7 @@ class MinMaxTypeFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
+    #[TestWith([new MinMaxType("contains single quote '", 2, 3), "atLeast(2), atMost(3), eachValue(matching(type, 'contains single quote \'')"])]
     #[TestWith([new MinMaxType(null, 2, 3), 'atLeast(2), atMost(3), eachValue(matching(type, null)'])]
     #[TestWith([new MinMaxType('example value', 2, 3), "atLeast(2), atMost(3), eachValue(matching(type, 'example value')"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
