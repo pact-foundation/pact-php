@@ -17,4 +17,12 @@ trait GeneratorAwareTrait
     {
         return $this->generator;
     }
+
+    public function withGenerator(?GeneratorInterface $generator): static
+    {
+        $matcher = clone $this;
+        $matcher->setGenerator($generator);
+
+        return $matcher;
+    }
 }

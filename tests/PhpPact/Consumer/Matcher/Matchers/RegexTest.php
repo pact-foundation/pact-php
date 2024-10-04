@@ -3,54 +3,56 @@
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidRegexException;
-use PhpPact\Consumer\Matcher\Formatters\Expression\RegexFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
-use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Matchers\Regex;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\TestCase;
 
-class RegexTest extends GeneratorAwareMatcherTestCase
+class RegexTest extends TestCase
 {
     private string $regex = '\d+';
 
-    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
+    #[TestWith(['number', true])]
+    #[TestWith(['integer', false])]
+    public function testInvalidRegex(string $value, bool $isArray): void
     {
-        return new Regex($this->regex);
-    }
-
-    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
-    {
-        return new Regex($this->regex, ['1', '23']);
+        $values = $isArray ? [$value] : $value;
+        $this->expectException(InvalidRegexException::class);
+        $value = is_array($values) ? $values[0] : $values;
+        $this->expectExceptionMessage("The value '{$value}' doesn't match pattern '{$this->regex}'. Failed with error code 0.");
+        new Regex($this->regex, $values);
     }
 
     /**
      * @param string|string[]|null $values
      */
-    #[TestWith([null, '{"pact:matcher:type":"regex","pact:generator:type":"Regex","regex":"\\\\d+"}'])]
-    #[TestWith(['number', null])]
-    #[TestWith([['integer'], null])]
+    #[TestWith([null, '{"pact:matcher:type":"regex","pact:generator:type":"Regex","regex":"\\\\d+","value":null}'])]
     #[TestWith(['12+', '{"pact:matcher:type":"regex","regex":"\\\\d+","value":"12+"}'])]
     #[TestWith([['12.3', '456'], '{"pact:matcher:type":"regex","regex":"\\\\d+","value":["12.3","456"]}'])]
-    public function testSerialize(string|array|null $values, ?string $json): void
+    public function testFormatJson(string|array|null $values, string $json): void
     {
-        if (!$json && $values) {
-            $this->expectException(InvalidRegexException::class);
-            $value = is_array($values) ? $values[0] : $values;
-            $this->expectExceptionMessage("The pattern '{$this->regex}' is not valid for value '{$value}'. Failed with error code 0.");
-        }
         $matcher = new Regex($this->regex, $values);
-        $this->assertSame($json, json_encode($matcher));
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
-    public function testCreateJsonFormatter(): void
+    #[TestWith([new Regex('\w \d', ['key' => 'a 1']), 'array'])]
+    public function testInvalidValue(MatcherInterface $matcher, string $type): void
     {
-        $matcher = new Regex($this->regex);
-        $this->assertInstanceOf(HasGeneratorFormatter::class, $matcher->createJsonFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage(sprintf("Regex matching expression doesn't support value of type %s", $type));
+        json_encode($matcher);
     }
 
-    public function testCreateExpressionFormatter(): void
+    #[TestWith([new Regex("['\w]+", "contains single quote '"), "\"matching(regex, '[\\\\'\\\\w]+', 'contains single quote \\\\'')\""])]
+    #[TestWith([new Regex('\w{3}\d+', 'abc123'), "\"matching(regex, '\\\w{3}\\\d+', 'abc123')\""])]
+    public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
-        $matcher = new Regex($this->regex);
-        $this->assertInstanceOf(RegexFormatter::class, $matcher->createExpressionFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
     }
 }

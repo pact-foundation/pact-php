@@ -2,17 +2,21 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\BooleanFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Generators\RandomBoolean;
-use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
-use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Expression;
+use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 
 /**
  * Match if the value is a boolean value (booleans and the string values `true` and `false`)
  */
-class Boolean extends GeneratorAwareMatcher
+class Boolean extends GeneratorAwareMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
+    use JsonFormattableTrait;
+
     public function __construct(private ?bool $value = null)
     {
         if ($value === null) {
@@ -21,28 +25,20 @@ class Boolean extends GeneratorAwareMatcher
         parent::__construct();
     }
 
-    public function getType(): string
+    public function formatJson(): Attributes
     {
-        return 'boolean';
+        return $this->mergeJson(new Attributes([
+            'pact:matcher:type' => 'boolean',
+            'value' => $this->value,
+        ]));
     }
 
-    protected function getAttributesData(): array
+    public function formatExpression(): Expression
     {
-        return [];
-    }
+        if (!is_bool($this->value)) {
+            throw new InvalidValueException(sprintf("Boolean matching expression doesn't support value of type %s", gettype($this->value)));
+        }
 
-    public function getValue(): ?bool
-    {
-        return $this->value;
-    }
-
-    public function createJsonFormatter(): JsonFormatterInterface
-    {
-        return new HasGeneratorFormatter();
-    }
-
-    public function createExpressionFormatter(): ExpressionFormatterInterface
-    {
-        return new BooleanFormatter();
+        return new Expression('matching(boolean, %value%)', ['value' => $this->value]);
     }
 }

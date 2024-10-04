@@ -2,18 +2,21 @@
 
 namespace PhpPact\Consumer\Matcher\Generators;
 
-abstract class AbstractDateTime extends AbstractGenerator
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Generator\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
+
+abstract class AbstractDateTime implements GeneratorInterface, JsonFormattableInterface
 {
     public function __construct(private ?string $format = null, private ?string $expression = null)
     {
     }
 
-    /**
-     * @return array<string, string>
-     */
-    protected function getAttributesData(): array
+    public function formatJson(): Attributes
     {
-        $data = [];
+        $data = [
+            'pact:generator:type' => $this->getType(),
+        ];
         if ($this->format !== null) {
             $data['format'] = $this->format;
         }
@@ -22,6 +25,8 @@ abstract class AbstractDateTime extends AbstractGenerator
             $data['expression'] = $this->expression;
         }
 
-        return $data;
+        return new Attributes($data);
     }
+
+    abstract protected function getType(): string;
 }
