@@ -40,15 +40,8 @@ class TypeFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Type("it's invalid value"), "it's invalid value"])]
-    public function testInvalidString(MatcherInterface $matcher, string $value): void
-    {
-        $this->expectException(InvalidValueException::class);
-        $this->expectExceptionMessage(sprintf('String value "%s" should not contains single quote', $value));
-        $this->formatter->format($matcher);
-    }
-
-    #[TestWith([new Type('example value'), 'matching(type, \'example value\')'])]
+    #[TestWith([new Type("contains single quote '"), "matching(type, 'contains single quote \'')"])]
+    #[TestWith([new Type('example value'), "matching(type, 'example value')"])]
     #[TestWith([new Type(100.09), 'matching(type, 100.09)'])]
     #[TestWith([new Type(-99.99), 'matching(type, -99.99)'])]
     #[TestWith([new Type(100), 'matching(type, 100)'])]

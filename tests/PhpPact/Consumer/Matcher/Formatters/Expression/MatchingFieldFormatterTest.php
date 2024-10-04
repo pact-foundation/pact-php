@@ -29,15 +29,8 @@ class MatchingFieldFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new MatchingField("it's invalid field"), "it's invalid field"])]
-    public function testInvalidString(MatcherInterface $matcher, string $value): void
-    {
-        $this->expectException(InvalidValueException::class);
-        $this->expectExceptionMessage(sprintf('String value "%s" should not contains single quote', $value));
-        $this->formatter->format($matcher);
-    }
-
-    #[TestWith([new MatchingField('product'), 'matching($\'product\')'])]
+    #[TestWith([new MatchingField("contains single quote '"), "matching($'contains single quote \'')"])]
+    #[TestWith([new MatchingField('product'), "matching($'product')"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);

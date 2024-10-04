@@ -38,15 +38,8 @@ class EqualityFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new Equality("it's invalid value"), "it's invalid value"])]
-    public function testInvalidString(MatcherInterface $matcher, string $value): void
-    {
-        $this->expectException(InvalidValueException::class);
-        $this->expectExceptionMessage(sprintf('String value "%s" should not contains single quote', $value));
-        $this->formatter->format($matcher);
-    }
-
-    #[TestWith([new Equality('example value'), 'matching(equalTo, \'example value\')'])]
+    #[TestWith([new Equality("contains single quote '"), "matching(equalTo, 'contains single quote \'')"])]
+    #[TestWith([new Equality('example value'), "matching(equalTo, 'example value')"])]
     #[TestWith([new Equality(100.09), 'matching(equalTo, 100.09)'])]
     #[TestWith([new Equality(-99.99), 'matching(equalTo, -99.99)'])]
     #[TestWith([new Equality(100), 'matching(equalTo, 100)'])]

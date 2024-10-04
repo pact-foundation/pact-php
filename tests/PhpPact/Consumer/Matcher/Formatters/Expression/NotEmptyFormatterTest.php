@@ -38,15 +38,8 @@ class NotEmptyFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
-    #[TestWith([new NotEmpty("it's invalid value"), "it's invalid value"])]
-    public function testInvalidString(MatcherInterface $matcher, string $value): void
-    {
-        $this->expectException(InvalidValueException::class);
-        $this->expectExceptionMessage(sprintf('String value "%s" should not contains single quote', $value));
-        $this->formatter->format($matcher);
-    }
-
-    #[TestWith([new NotEmpty('example value'), 'notEmpty(\'example value\')'])]
+    #[TestWith([new NotEmpty("contains single quote '"), "notEmpty('contains single quote \'')"])]
+    #[TestWith([new NotEmpty('example value'), "notEmpty('example value')"])]
     #[TestWith([new NotEmpty(100.09), 'notEmpty(100.09)'])]
     #[TestWith([new NotEmpty(100), 'notEmpty(100)'])]
     #[TestWith([new NotEmpty(true), 'notEmpty(true)'])]

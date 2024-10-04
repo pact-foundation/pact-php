@@ -9,6 +9,7 @@ use PhpPact\Consumer\Matcher\Matchers\EachKey;
 use PhpPact\Consumer\Matcher\Matchers\Integer;
 use PhpPact\Consumer\Matcher\Matchers\NullValue;
 use PhpPact\Consumer\Matcher\Matchers\Regex;
+use PhpPact\Consumer\Matcher\Matchers\StringValue;
 use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Consumer\Matcher\Model\FormatterInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
@@ -42,8 +43,9 @@ class EachKeyFormatterTest extends TestCase
         $this->formatter->format($matcher);
     }
 
+    #[TestWith([new EachKey(['value'], [new StringValue("contains single quote '")]), "eachKey(matching(type, 'contains single quote \''))"])]
     #[TestWith([new EachKey(['value'], [new Integer(123)]), 'eachKey(matching(integer, 123))'])]
-    #[TestWith([new EachKey(new stdClass(), [new Regex('\w+', 'example value')]), 'eachKey(matching(regex, \'\w+\', \'example value\'))'])]
+    #[TestWith([new EachKey(new stdClass(), [new Regex('\w+', 'example value')]), "eachKey(matching(regex, '\w+', 'example value'))"])]
     public function testFormat(MatcherInterface $matcher, string $expression): void
     {
         $result = $this->formatter->format($matcher);
