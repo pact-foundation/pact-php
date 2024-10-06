@@ -173,6 +173,20 @@
             "eachValue": {
               "vehicle 1": "car"
             },
+            "eachValueComplexValue": {
+              "46c9c929-50b7-4566-a0bf-114859bdf9ff": {
+                "length": "3m",
+                "rating": 7.3,
+                "title": "Wing It!",
+                "year": 2023
+              },
+              "95481709-5868-4d67-8d4b-410728b207a0": {
+                "length": "10m",
+                "rating": 6.4,
+                "title": "Big Buck Bunny",
+                "year": 2008
+              }
+            },
             "email": "hello@pact.io",
             "equal": "exact this value",
             "equalArray": [
@@ -437,6 +451,20 @@
                     }
                   ],
                   "value": "{\"vehicle 1\":\"car\"}"
+                }
+              ]
+            },
+            "$.eachValueComplexValue": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "eachValue",
+                  "rules": [
+                    {
+                      "match": "type"
+                    }
+                  ],
+                  "value": "{\"46c9c929-50b7-4566-a0bf-114859bdf9ff\":{\"length\":\"3m\",\"rating\":7.3,\"title\":\"Wing It!\",\"year\":2023},\"95481709-5868-4d67-8d4b-410728b207a0\":{\"length\":\"10m\",\"rating\":6.4,\"title\":\"Big Buck Bunny\",\"year\":2008}}"
                 }
               ]
             },
@@ -726,9 +754,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.22",
-      "mockserver": "1.2.9",
-      "models": "1.2.3"
+      "ffi": "0.4.23",
+      "mockserver": "1.2.10",
+      "models": "1.2.5"
     },
     "pactSpecification": {
       "version": "4.0"
