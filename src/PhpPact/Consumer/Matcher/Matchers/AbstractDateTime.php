@@ -2,43 +2,47 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\DateTimeFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
-use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
-use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Expression;
+use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 
-abstract class AbstractDateTime extends GeneratorAwareMatcher
+abstract class AbstractDateTime extends GeneratorAwareMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
+    use JsonFormattableTrait;
+
     public function __construct(protected string $format, private ?string $value = null)
     {
         parent::__construct();
     }
 
-    public function getFormat(): string
+    public function formatJson(): Attributes
     {
-        return $this->format;
+        return $this->mergeJson(new Attributes([
+            'pact:matcher:type' => $this->getType(),
+            'format' => $this->format,
+            'value' => $this->value,
+        ]));
     }
 
-    /**
-     * @return array<string, string>
-     */
-    protected function getAttributesData(): array
+    public function formatExpression(): Expression
     {
-        return ['format' => $this->format];
+        if (!is_string($this->value)) {
+            throw new InvalidValueException(sprintf("DateTime matching expression doesn't support value of type %s", gettype($this->value)));
+        }
+
+        $type = $this->getType();
+
+        return new Expression(
+            "matching({$type}, %format%, %value%)",
+            [
+                'format' => $this->format,
+                'value' => $this->value,
+            ],
+        );
     }
 
-    public function getValue(): ?string
-    {
-        return $this->value;
-    }
-
-    public function createJsonFormatter(): JsonFormatterInterface
-    {
-        return new HasGeneratorFormatter();
-    }
-
-    public function createExpressionFormatter(): ExpressionFormatterInterface
-    {
-        return new DateTimeFormatter();
-    }
+    abstract protected function getType(): string;
 }

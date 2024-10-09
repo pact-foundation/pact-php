@@ -2,43 +2,31 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\TypeFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
-use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
-use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Expression;
+use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
 
 /**
  * This executes a type based match against the values, that is, they are equal if they are the same type.
  */
-class Type extends AbstractMatcher
+class Type extends AbstractMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
     public function __construct(private mixed $value)
     {
         parent::__construct();
     }
 
-    protected function getAttributesData(): array
+    public function formatJson(): Attributes
     {
-        return [];
+        return new Attributes([
+            'pact:matcher:type' => 'type',
+            'value' => $this->value,
+        ]);
     }
 
-    public function getValue(): mixed
+    public function formatExpression(): Expression
     {
-        return $this->value;
-    }
-
-    public function getType(): string
-    {
-        return 'type';
-    }
-
-    public function createJsonFormatter(): JsonFormatterInterface
-    {
-        return new NoGeneratorFormatter();
-    }
-
-    public function createExpressionFormatter(): ExpressionFormatterInterface
-    {
-        return new TypeFormatter();
+        return new Expression('matching(type, %value%)', ['value' => $this->value]);
     }
 }

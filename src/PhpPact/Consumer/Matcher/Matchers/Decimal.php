@@ -2,17 +2,21 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\DecimalFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Generators\RandomDecimal;
-use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
-use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Expression;
+use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 
 /**
  * This checks if the type of the value is a number with decimal places.
  */
-class Decimal extends GeneratorAwareMatcher
+class Decimal extends GeneratorAwareMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
+    use JsonFormattableTrait;
+
     public function __construct(private ?float $value = null)
     {
         if ($value === null) {
@@ -21,28 +25,19 @@ class Decimal extends GeneratorAwareMatcher
         parent::__construct();
     }
 
-    public function getType(): string
+    public function formatJson(): Attributes
     {
-        return 'decimal';
+        return $this->mergeJson(new Attributes([
+            'pact:matcher:type' => 'decimal',
+            'value' => $this->value,
+        ]));
     }
 
-    protected function getAttributesData(): array
+    public function formatExpression(): Expression
     {
-        return [];
-    }
-
-    public function getValue(): ?float
-    {
-        return $this->value;
-    }
-
-    public function createJsonFormatter(): JsonFormatterInterface
-    {
-        return new HasGeneratorFormatter();
-    }
-
-    public function createExpressionFormatter(): ExpressionFormatterInterface
-    {
-        return new DecimalFormatter();
+        if (!is_float($this->value)) {
+            throw new InvalidValueException(sprintf("Decimal matching expression doesn't support value of type %s", gettype($this->value)));
+        }
+        return new Expression('matching(decimal, %value%)', ['value' => $this->value]);
     }
 }

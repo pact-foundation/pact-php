@@ -2,31 +2,30 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\MaxTypeFormatter as ExpressionFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\MaxTypeFormatter as JsonFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Matchers\MaxType;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class MaxTypeTest extends TestCase
 {
-    #[TestWith([-3, '{"pact:matcher:type":"type","max":0,"value":["string value"]}'])]
-    #[TestWith([3, '{"pact:matcher:type":"type","max":3,"value":["string value"]}'])]
-    public function testSerialize(int $max, string $json): void
+    #[TestWith(['example text', 2, '{"pact:matcher:type": "type", "value": ["example text"], "max": 2}'])]
+    #[TestWith(['example text', -2, '{"pact:matcher:type": "type", "value": ["example text"], "max": 0}'])]
+    public function testFormatJson(mixed $value, int $max, string $json): void
     {
-        $matcher = new MaxType('string value', $max);
-        $this->assertSame($json, json_encode($matcher));
+        $matcher = new MaxType($value, $max);
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
-    public function testCreateJsonFormatter(): void
+    #[TestWith(["contains single quote '", 2, "\"atMost(2), eachValue(matching(type, 'contains single quote \\\'')\""])]
+    #[TestWith([null, 2, '"atMost(2), eachValue(matching(type, null)"'])]
+    #[TestWith(['example value', 2, "\"atMost(2), eachValue(matching(type, 'example value')\""])]
+    public function testFormatExpression(mixed $value, int $max, string $expression): void
     {
-        $matcher = new MaxType(null, 0);
-        $this->assertInstanceOf(JsonFormatter::class, $matcher->createJsonFormatter());
-    }
-
-    public function testCreateExpressionFormatter(): void
-    {
-        $matcher = new MaxType(null, 0);
-        $this->assertInstanceOf(ExpressionFormatter::class, $matcher->createExpressionFormatter());
+        $matcher = new MaxType($value, $max);
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
     }
 }
