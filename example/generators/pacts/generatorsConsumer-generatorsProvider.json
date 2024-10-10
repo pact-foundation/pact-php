@@ -68,6 +68,7 @@
             "number": null,
             "regex": null,
             "requestId": 222,
+            "semver": null,
             "string": "some string",
             "time": null,
             "url": null,
@@ -132,6 +133,10 @@
             },
             "$.regex": {
               "regex": "\\d+ (miles|kilometers)",
+              "type": "Regex"
+            },
+            "$.semver": {
+              "regex": "\\d+\\.\\d+\\.\\d+",
               "type": "Regex"
             },
             "$.string": {
@@ -279,6 +284,14 @@
                 {
                   "match": "regex",
                   "regex": "\\d+ (miles|kilometers)"
+                }
+              ]
+            },
+            "$.semver": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "semver"
                 }
               ]
             },
