@@ -121,7 +121,7 @@ final class ProviderContext implements Context
     /**
      * @Then a warning will be displayed that there was no provider state callback configured for provider state :state
      */
-    public function aWarningWillBeDisplayedThatThereWasNoProviderStateCallbackConfiguredForProviderState(string $state): void
+    public function aWarningWillBeDisplayedThatThereWasNoProviderStateCallbackConfiguredForProviderState(string $state): never
     {
         throw new PendingException("Unable to verify this, as I can't find a way to assert this message from verifier's log: 'pact_verifier::callback_executors: State Change ignored as there is no state change URL provided for interaction'");
     }
@@ -129,7 +129,7 @@ final class ProviderContext implements Context
     /**
      * @Given a request filter is configured to make the following changes:
      */
-    public function aRequestFilterIsConfiguredToMakeTheFollowingChanges(TableNode $table): void
+    public function aRequestFilterIsConfiguredToMakeTheFollowingChanges(TableNode $table): never
     {
         throw new PendingException("Unable to set request filter callback from ffi");
     }
@@ -137,7 +137,7 @@ final class ProviderContext implements Context
     /**
      * @Then the request to the provider will contain the header :header
      */
-    public function theRequestToTheProviderWillContainTheHeader(string $header): void
+    public function theRequestToTheProviderWillContainTheHeader(string $header): never
     {
         throw new PendingException('Unable to set request filter callback from ffi, so no need to implement this step');
     }

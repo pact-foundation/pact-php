@@ -84,7 +84,7 @@ final class ConsumerContext implements Context
     /**
      * @Given the message request payload contains the :fixture JSON document
      */
-    public function theMessageRequestPayloadContainsTheJsonDocument(string $fixture): void
+    public function theMessageRequestPayloadContainsTheJsonDocument(string $fixture): never
     {
         throw new PendingException("Can't set sync message's request payload using FFI call");
     }
@@ -92,7 +92,7 @@ final class ConsumerContext implements Context
     /**
      * @Given the message response payload contains the :fixture document
      */
-    public function theMessageResponsePayloadContainsTheDocument(string $fixture): void
+    public function theMessageResponsePayloadContainsTheDocument(string $fixture): never
     {
         throw new PendingException("Can't set sync message's response payload using FFI call");
     }
@@ -100,7 +100,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the received message payload will contain the :fixture document
      */
-    public function theReceivedMessagePayloadWillContainTheDocument(string $fixture): void
+    public function theReceivedMessagePayloadWillContainTheDocument(string $fixture): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -125,7 +125,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the first interaction in the pact file will contain the :fixture document as the request
      */
-    public function theFirstInteractionInThePactFileWillContainTheDocumentAsTheRequest(string $fixture): void
+    public function theFirstInteractionInThePactFileWillContainTheDocumentAsTheRequest(string $fixture): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -133,7 +133,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the first interaction in the pact file request content type will be :contentType
      */
-    public function theFirstInteractionInThePactFileRequestContentTypeWillBe(string $contentType): void
+    public function theFirstInteractionInThePactFileRequestContentTypeWillBe(string $contentType): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -141,7 +141,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the first interaction in the pact file will contain the :fixture document as a response
      */
-    public function theFirstInteractionInThePactFileWillContainTheDocumentAsAResponse(string $fixture): void
+    public function theFirstInteractionInThePactFileWillContainTheDocumentAsAResponse(string $fixture): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -149,7 +149,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the first interaction in the pact file response content type will be :contentType
      */
-    public function theFirstInteractionInThePactFileResponseContentTypeWillBe(string $contentType): void
+    public function theFirstInteractionInThePactFileResponseContentTypeWillBe(string $contentType): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -157,7 +157,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the first interaction in the pact file will contain :num response messages
      */
-    public function theFirstInteractionInThePactFileWillContainResponseMessages(int $num): void
+    public function theFirstInteractionInThePactFileWillContainResponseMessages(int $num): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -165,7 +165,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the first interaction in the pact file will contain the :fixture document as the first response message
      */
-    public function theFirstInteractionInThePactFileWillContainTheDocumentAsTheFirstResponseMessage(string $fixture): void
+    public function theFirstInteractionInThePactFileWillContainTheDocumentAsTheFirstResponseMessage(string $fixture): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -173,7 +173,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the first interaction in the pact file will contain the :fixture document as the second response message
      */
-    public function theFirstInteractionInThePactFileWillContainTheDocumentAsTheSecondResponseMessage(string $fixture): void
+    public function theFirstInteractionInThePactFileWillContainTheDocumentAsTheSecondResponseMessage(string $fixture): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -181,7 +181,7 @@ final class ConsumerContext implements Context
     /**
      * @Given the message request contains the following metadata:
      */
-    public function theMessageRequestContainsTheFollowingMetadata(TableNode $table): void
+    public function theMessageRequestContainsTheFollowingMetadata(TableNode $table): never
     {
         throw new PendingException("Can't set sync message's metadata using FFI call");
     }
@@ -189,7 +189,7 @@ final class ConsumerContext implements Context
     /**
      * @Then /^the received message request metadata will contain "([^"]+)" == "(.+)"$/
      */
-    public function theReceivedMessageRequestMetadataWillContain(string $key, string $value): void
+    public function theReceivedMessageRequestMetadataWillContain(string $key, string $value): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -197,7 +197,7 @@ final class ConsumerContext implements Context
     /**
      * @Then /^the first message in the pact file will contain the request message metadata "([^"]+)" == "(.+)"$/
      */
-    public function theFirstMessageInThePactFileWillContainTheRequestMessageMetadata(string $key, string $value): void
+    public function theFirstMessageInThePactFileWillContainTheRequestMessageMetadata(string $key, string $value): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -252,7 +252,7 @@ final class ConsumerContext implements Context
     /**
      * @Given the message request is configured with the following:
      */
-    public function theMessageRequestIsConfiguredWithTheFollowing(TableNode $table): void
+    public function theMessageRequestIsConfiguredWithTheFollowing(TableNode $table): never
     {
         throw new PendingException("Can't set sync message's request generators using FFI call");
     }
@@ -260,7 +260,7 @@ final class ConsumerContext implements Context
     /**
      * @Given the message response is configured with the following:
      */
-    public function theMessageResponseIsConfiguredWithTheFollowing(TableNode $table): void
+    public function theMessageResponseIsConfiguredWithTheFollowing(TableNode $table): never
     {
         throw new PendingException("Can't set sync message's response generators using FFI call");
     }
@@ -268,7 +268,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the message request contents for :path will have been replaced with a(n) :type
      */
-    public function theMessageRequestContentsForWillHaveBeenReplacedWithAn(string $path, string $type): void
+    public function theMessageRequestContentsForWillHaveBeenReplacedWithAn(string $path, string $type): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -276,7 +276,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the message response contents for :path will have been replaced with a(n) :type
      */
-    public function theMessageResponseContentsForWillHaveBeenReplacedWithAn(string $path, string $type): void
+    public function theMessageResponseContentsForWillHaveBeenReplacedWithAn(string $path, string $type): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -284,7 +284,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the received message request metadata will contain :key replaced with a(n) :type
      */
-    public function theReceivedMessageRequestMetadataWillContainReplacedWithAn(string $key, string $type): void
+    public function theReceivedMessageRequestMetadataWillContainReplacedWithAn(string $key, string $type): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -292,7 +292,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the received message response metadata will contain :key == :value
      */
-    public function theReceivedMessageResponseMetadataWillContain(string $key, string $value): void
+    public function theReceivedMessageResponseMetadataWillContain(string $key, string $value): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -300,7 +300,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the received message response metadata will contain :key replaced with an :type
      */
-    public function theReceivedMessageResponseMetadataWillContainReplacedWithAn(string $key, string $type): void
+    public function theReceivedMessageResponseMetadataWillContainReplacedWithAn(string $key, string $type): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -316,7 +316,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the consumer test will have passed
      */
-    public function theConsumerTestWillHavePassed(): void
+    public function theConsumerTestWillHavePassed(): never
     {
         throw new PendingException('Implement previous pending step first');
     }
@@ -324,7 +324,7 @@ final class ConsumerContext implements Context
     /**
      * @Then the received message content type will be :contentType
      */
-    public function theReceivedMessageContentTypeWillBe(string $contentType): void
+    public function theReceivedMessageContentTypeWillBe(string $contentType): never
     {
         throw new PendingException('Implement previous pending step first');
     }
