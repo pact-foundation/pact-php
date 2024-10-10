@@ -2,41 +2,38 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\SemverFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
-use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Matchers\Semver;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\TestCase;
 
-class SemverTest extends GeneratorAwareMatcherTestCase
+class SemverTest extends TestCase
 {
-    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
+    #[TestWith([new Semver(null), '{"pact:matcher:type":"semver","pact:generator:type":"Regex","regex":"\\\\d+\\\\.\\\\d+\\\\.\\\\d+","value": null}'])]
+    #[TestWith([new Semver('1.2.3'), '{"pact:matcher:type":"semver","value":"1.2.3"}'])]
+    public function testFormatJson(MatcherInterface $matcher, string $json): void
     {
-        return new Semver();
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
-    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
-    {
-        return new Semver('10.21.0-rc.1');
-    }
-
-    #[TestWith([null, '{"pact:matcher:type":"semver","pact:generator:type":"Regex","regex":"\\\\d+\\\\.\\\\d+\\\\.\\\\d+"}'])]
-    #[TestWith(['1.2.3', '{"pact:matcher:type":"semver","value":"1.2.3"}'])]
-    public function testSerialize(?string $value, string $json): void
-    {
-        $matcher = new Semver($value);
-        $this->assertSame($json, json_encode($matcher));
-    }
-
-    public function testCreateJsonFormatter(): void
+    public function testInvalidValue(): void
     {
         $matcher = new Semver();
-        $this->assertInstanceOf(HasGeneratorFormatter::class, $matcher->createJsonFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage("Semver matching expression doesn't support value of type NULL");
+        json_encode($matcher);
     }
 
-    public function testCreateExpressionFormatter(): void
+    #[TestWith([new Semver("contains single quote '"), "\"matching(semver, 'contains single quote \\\'')\""])]
+    #[TestWith([new Semver('1.0.0'), "\"matching(semver, '1.0.0')\""])]
+    public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
-        $matcher = new Semver();
-        $this->assertInstanceOf(SemverFormatter::class, $matcher->createExpressionFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
     }
 }

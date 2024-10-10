@@ -2,17 +2,20 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\StringValueFormatter as ExpressionFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\StringValueFormatter as JsonFormatter;
 use PhpPact\Consumer\Matcher\Generators\RandomString;
-use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
-use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Expression;
+use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 
 /**
  * There is no matcher for string. We re-use `type` matcher.
  */
-class StringValue extends GeneratorAwareMatcher
+class StringValue extends GeneratorAwareMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
+    use JsonFormattableTrait;
+
     public const DEFAULT_VALUE = 'some string';
 
     public function __construct(private ?string $value = null)
@@ -23,36 +26,21 @@ class StringValue extends GeneratorAwareMatcher
         parent::__construct();
     }
 
-    public function getType(): string
+    public function formatJson(): Attributes
     {
-        return 'type';
+        return $this->mergeJson(new Attributes([
+            'pact:matcher:type' => 'type',
+            'value' => $this->getValue(),
+        ]));
     }
 
-    /**
-     * @return string|array<string, mixed>
-     */
-    public function jsonSerialize(): string|array
+    public function formatExpression(): Expression
     {
-        return $this->getFormatter()->format($this);
+        return new Expression('matching(type, %value%)', ['value' => $this->getValue()]);
     }
 
-    protected function getAttributesData(): array
-    {
-        return [];
-    }
-
-    public function getValue(): string
+    private function getValue(): string
     {
         return $this->value ?? self::DEFAULT_VALUE;
-    }
-
-    public function createJsonFormatter(): JsonFormatterInterface
-    {
-        return new JsonFormatter();
-    }
-
-    public function createExpressionFormatter(): ExpressionFormatterInterface
-    {
-        return new ExpressionFormatter();
     }
 }

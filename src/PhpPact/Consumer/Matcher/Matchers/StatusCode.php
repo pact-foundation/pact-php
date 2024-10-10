@@ -4,17 +4,18 @@ namespace PhpPact\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Enum\HttpStatus;
 use PhpPact\Consumer\Matcher\Exception\InvalidHttpStatusException;
-use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
-use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
 use PhpPact\Consumer\Matcher\Generators\RandomInt;
-use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
-use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 
 /**
  * Matches the response status code.
  */
-class StatusCode extends GeneratorAwareMatcher
+class StatusCode extends GeneratorAwareMatcher implements JsonFormattableInterface
 {
+    use JsonFormattableTrait;
+
     private HttpStatus $status;
 
     public function __construct(string|HttpStatus $status, private ?int $value = null)
@@ -40,31 +41,12 @@ class StatusCode extends GeneratorAwareMatcher
         parent::__construct();
     }
 
-    public function getType(): string
+    public function formatJson(): Attributes
     {
-        return 'statusCode';
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    protected function getAttributesData(): array
-    {
-        return ['status' => $this->status->value];
-    }
-
-    public function getValue(): ?int
-    {
-        return $this->value;
-    }
-
-    public function createJsonFormatter(): JsonFormatterInterface
-    {
-        return new HasGeneratorFormatter();
-    }
-
-    public function createExpressionFormatter(): ExpressionFormatterInterface
-    {
-        throw new MatcherNotSupportedException("StatusCode matcher doesn't support expression formatter");
+        return $this->mergeJson(new Attributes([
+            'pact:matcher:type' => 'statusCode',
+            'status' => $this->status->value,
+            'value' => $this->value,
+        ]));
     }
 }

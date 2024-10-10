@@ -2,41 +2,39 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\DecimalFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Matchers\Decimal;
-use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\TestCase;
 
-class DecimalTest extends GeneratorAwareMatcherTestCase
+class DecimalTest extends TestCase
 {
-    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
+    #[TestWith([new Decimal(null), '{"pact:matcher:type":"decimal","pact:generator:type":"RandomDecimal","digits":10,"value":null}'])]
+    #[TestWith([new Decimal(1.23), '{"pact:matcher:type":"decimal","value":1.23}'])]
+    public function testFormatJson(MatcherInterface $matcher, string $json): void
     {
-        return new Decimal();
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
-    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
+    public function testInvalidValue(): void
     {
-        return new Decimal(15.68);
+        $matcher = (new Decimal())->withFormatter(new ExpressionFormatter());
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage(sprintf("Decimal matching expression doesn't support value of type %s", gettype(null)));
+        json_encode($matcher);
     }
 
-    #[TestWith([null, '{"pact:matcher:type":"decimal","pact:generator:type":"RandomDecimal","digits":10}'])]
-    #[TestWith([1.23, '{"pact:matcher:type":"decimal","value":1.23}'])]
-    public function testSerialize(?float $value, string $json): void
+    #[TestWith([new Decimal(-99), '"matching(decimal, -99)"'])] // Provider verification will fail on this case
+    #[TestWith([new Decimal(100), '"matching(decimal, 100)"'])] // Provider verification will fail on this case
+    #[TestWith([new Decimal(100.01), '"matching(decimal, 100.01)"'])]
+    #[TestWith([new Decimal(-100.003), '"matching(decimal, -100.003)"'])]
+    public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
-        $matcher = new Decimal($value);
-        $this->assertSame($json, json_encode($matcher));
-    }
-
-    public function testCreateJsonFormatter(): void
-    {
-        $matcher = $this->getMatcherWithoutExampleValue();
-        $this->assertInstanceOf(HasGeneratorFormatter::class, $matcher->createJsonFormatter());
-    }
-
-    public function testCreateExpressionFormatter(): void
-    {
-        $matcher = $this->getMatcherWithoutExampleValue();
-        $this->assertInstanceOf(DecimalFormatter::class, $matcher->createExpressionFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
     }
 }

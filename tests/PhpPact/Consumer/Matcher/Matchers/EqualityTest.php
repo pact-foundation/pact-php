@@ -2,31 +2,49 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\EqualityFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Generators\RandomString;
 use PhpPact\Consumer\Matcher\Matchers\Equality;
+use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class EqualityTest extends TestCase
 {
-    public function testSerialize(): void
+    #[TestWith([new Equality('exact this string'), new RandomString(), '{"pact:matcher:type":"equality","pact:generator:type":"RandomString","size": 10,"value":"exact this string"}'])]
+    #[TestWith([new Equality('exact this string'), null, '{"pact:matcher:type":"equality","value":"exact this string"}'])]
+    public function testFormatJson(Equality $matcher, ?GeneratorInterface $generator, string $json): void
     {
-        $string = new Equality('exact this string');
-        $this->assertSame(
-            '{"pact:matcher:type":"equality","value":"exact this string"}',
-            json_encode($string)
-        );
+        $matcher = $matcher->withGenerator($generator);
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
-    public function testCreateJsonFormatter(): void
+    #[TestWith([new Equality(new \stdClass()), 'object'])]
+    #[TestWith([new Equality(['key' => 'value']), 'array'])]
+    public function testInvalidValue(MatcherInterface $matcher, string $type): void
     {
-        $matcher = new Equality(null);
-        $this->assertInstanceOf(NoGeneratorFormatter::class, $matcher->createJsonFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage(sprintf("Expression doesn't support value of type %s", $type));
+        json_encode($matcher);
     }
 
-    public function testCreateExpressionFormatter(): void
+    #[TestWith([new Equality("contains single quote '"), "\"matching(equalTo, 'contains single quote \\\'')\""])]
+    #[TestWith([new Equality('example value'), "\"matching(equalTo, 'example value')\""])]
+    #[TestWith([new Equality(100.09), '"matching(equalTo, 100.09)"'])]
+    #[TestWith([new Equality(-99.99), '"matching(equalTo, -99.99)"'])]
+    #[TestWith([new Equality(100), '"matching(equalTo, 100)"'])]
+    #[TestWith([new Equality(-99), '"matching(equalTo, -99)"'])]
+    #[TestWith([new Equality(true), '"matching(equalTo, true)"'])]
+    #[TestWith([new Equality(false), '"matching(equalTo, false)"'])]
+    #[TestWith([new Equality(null), '"matching(equalTo, null)"'])]
+    public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
-        $matcher = new Equality(null);
-        $this->assertInstanceOf(EqualityFormatter::class, $matcher->createExpressionFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
     }
 }
