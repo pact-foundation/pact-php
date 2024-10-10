@@ -4,6 +4,7 @@ namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Generators\RandomString;
 use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
@@ -47,6 +48,22 @@ class TypeTest extends TestCase
     public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
         $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
+    }
+
+    #[TestWith([new Type("contains single quote '"), new ProviderState('${value}'), '"matching(type, fromProviderState(\'${value}\', \'contains single quote \\\\\'\'))"'])]
+    #[TestWith([new Type('example value'), new ProviderState('${value}'), '"matching(type, fromProviderState(\'${value}\', \'example value\'))"'])]
+    #[TestWith([new Type(100.09), new ProviderState('${value}'), '"matching(type, fromProviderState(\'${value}\', 100.09))"'])]
+    #[TestWith([new Type(-99.99), new ProviderState('${value}'), '"matching(type, fromProviderState(\'${value}\', -99.99))"'])]
+    #[TestWith([new Type(100), new ProviderState('${value}'), '"matching(type, fromProviderState(\'${value}\', 100))"'])]
+    #[TestWith([new Type(-99), new ProviderState('${value}'), '"matching(type, fromProviderState(\'${value}\', -99))"'])]
+    #[TestWith([new Type(true), new ProviderState('${value}'), '"matching(type, fromProviderState(\'${value}\', true))"'])]
+    #[TestWith([new Type(false), new ProviderState('${value}'), '"matching(type, fromProviderState(\'${value}\', false))"'])]
+    #[TestWith([new Type(null), new ProviderState('${value}'), '"matching(type, fromProviderState(\'${value}\', null))"'])]
+    public function testFormatExpressionWithGenerator(Type $matcher, GeneratorInterface $generator, string $expression): void
+    {
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $matcher = $matcher->withGenerator($generator);
         $this->assertSame($expression, json_encode($matcher));
     }
 }

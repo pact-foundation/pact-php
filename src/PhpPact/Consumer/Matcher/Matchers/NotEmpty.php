@@ -6,6 +6,7 @@ use PhpPact\Consumer\Matcher\Model\Attributes;
 use PhpPact\Consumer\Matcher\Model\Expression;
 use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
 use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Trait\ExpressionFormattableTrait;
 use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 
 /**
@@ -14,6 +15,7 @@ use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 class NotEmpty extends GeneratorAwareMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
     use JsonFormattableTrait;
+    use ExpressionFormattableTrait;
 
     public function __construct(private mixed $value)
     {
@@ -30,6 +32,6 @@ class NotEmpty extends GeneratorAwareMatcher implements JsonFormattableInterface
 
     public function formatExpression(): Expression
     {
-        return new Expression('notEmpty(%value%)', ['value' => $this->value]);
+        return $this->mergeExpression(new Expression('notEmpty(%value%)', ['value' => $this->value]));
     }
 }

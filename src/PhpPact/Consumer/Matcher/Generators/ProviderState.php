@@ -3,6 +3,8 @@
 namespace PhpPact\Consumer\Matcher\Generators;
 
 use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Expression;
+use PhpPact\Consumer\Matcher\Model\Generator\ExpressionFormattableInterface;
 use PhpPact\Consumer\Matcher\Model\Generator\JsonFormattableInterface;
 
 /**
@@ -10,7 +12,7 @@ use PhpPact\Consumer\Matcher\Model\Generator\JsonFormattableInterface;
  *
  * Example expression: /products/${id}
  */
-class ProviderState extends AbstractGenerator implements JsonFormattableInterface
+class ProviderState extends AbstractGenerator implements JsonFormattableInterface, ExpressionFormattableInterface
 {
     public function __construct(private string $expression)
     {
@@ -22,5 +24,10 @@ class ProviderState extends AbstractGenerator implements JsonFormattableInterfac
             'pact:generator:type' => 'ProviderState',
             'expression' => $this->expression,
         ]);
+    }
+
+    public function formatExpression(): Expression
+    {
+        return new Expression('fromProviderState(%expression%, %value%)', ['expression' => $this->expression]);
     }
 }

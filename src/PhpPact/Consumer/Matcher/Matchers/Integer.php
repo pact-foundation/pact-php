@@ -8,6 +8,7 @@ use PhpPact\Consumer\Matcher\Model\Attributes;
 use PhpPact\Consumer\Matcher\Model\Expression;
 use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
 use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Trait\ExpressionFormattableTrait;
 use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 
 /**
@@ -16,6 +17,7 @@ use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 class Integer extends GeneratorAwareMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
     use JsonFormattableTrait;
+    use ExpressionFormattableTrait;
 
     public function __construct(private ?int $value = null)
     {
@@ -38,6 +40,6 @@ class Integer extends GeneratorAwareMatcher implements JsonFormattableInterface,
         if (!is_int($this->value)) {
             throw new InvalidValueException(sprintf("Integer matching expression doesn't support value of type %s", gettype($this->value)));
         }
-        return new Expression('matching(integer, %value%)', ['value' => $this->value]);
+        return $this->mergeExpression(new Expression('matching(integer, %value%)', ['value' => $this->value]));
     }
 }

@@ -8,6 +8,7 @@ use PhpPact\Consumer\Matcher\Model\Attributes;
 use PhpPact\Consumer\Matcher\Model\Expression;
 use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
 use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Trait\ExpressionFormattableTrait;
 use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 
 /**
@@ -16,6 +17,7 @@ use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 class Decimal extends GeneratorAwareMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
     use JsonFormattableTrait;
+    use ExpressionFormattableTrait;
 
     public function __construct(private ?float $value = null)
     {
@@ -38,6 +40,6 @@ class Decimal extends GeneratorAwareMatcher implements JsonFormattableInterface,
         if (!is_float($this->value)) {
             throw new InvalidValueException(sprintf("Decimal matching expression doesn't support value of type %s", gettype($this->value)));
         }
-        return new Expression('matching(decimal, %value%)', ['value' => $this->value]);
+        return $this->mergeExpression(new Expression('matching(decimal, %value%)', ['value' => $this->value]));
     }
 }
