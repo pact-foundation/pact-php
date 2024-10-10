@@ -2,43 +2,31 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\IncludesFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
-use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
-use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Expression;
+use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
 
 /**
  * This checks if the string representation of a value contains the substring.
  */
-class Includes extends AbstractMatcher
+class Includes extends AbstractMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
     public function __construct(private string $value)
     {
         parent::__construct();
     }
 
-    protected function getAttributesData(): array
+    public function formatJson(): Attributes
     {
-        return [];
+        return new Attributes([
+            'pact:matcher:type' => 'include',
+            'value' => $this->value,
+        ]);
     }
 
-    public function getValue(): string
+    public function formatExpression(): Expression
     {
-        return $this->value;
-    }
-
-    public function getType(): string
-    {
-        return 'include';
-    }
-
-    public function createJsonFormatter(): JsonFormatterInterface
-    {
-        return new NoGeneratorFormatter();
-    }
-
-    public function createExpressionFormatter(): ExpressionFormatterInterface
-    {
-        return new IncludesFormatter();
+        return new Expression('matching(include, %value%)', ['value' => $this->value]);
     }
 }

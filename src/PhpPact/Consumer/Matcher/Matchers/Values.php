@@ -2,17 +2,15 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
-use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
-use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
 
 /**
  * Match the values in a map, ignoring the keys
  *
  * @deprecated use EachKey or EachValue
  */
-class Values extends AbstractMatcher
+class Values extends AbstractMatcher implements JsonFormattableInterface
 {
     /**
      * @param array<mixed> $values
@@ -22,31 +20,11 @@ class Values extends AbstractMatcher
         parent::__construct();
     }
 
-    protected function getAttributesData(): array
+    public function formatJson(): Attributes
     {
-        return [];
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function getValue(): array
-    {
-        return $this->values;
-    }
-
-    public function getType(): string
-    {
-        return 'values';
-    }
-
-    public function createJsonFormatter(): JsonFormatterInterface
-    {
-        return new NoGeneratorFormatter();
-    }
-
-    public function createExpressionFormatter(): ExpressionFormatterInterface
-    {
-        throw new MatcherNotSupportedException("Values matcher doesn't support expression formatter");
+        return new Attributes([
+            'pact:matcher:type' => 'values',
+            'value' => $this->values,
+        ]);
     }
 }

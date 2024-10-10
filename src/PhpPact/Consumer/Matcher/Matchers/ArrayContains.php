@@ -2,52 +2,32 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
-use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
-use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
 
 /**
  * Checks if all the variants are present in an array.
  */
-class ArrayContains extends AbstractMatcher
+class ArrayContains extends AbstractMatcher implements JsonFormattableInterface
 {
     /**
      * @param array<mixed> $variants
      */
     public function __construct(private array $variants)
     {
+        if (empty($variants)) {
+            throw new InvalidValueException('Variants should not be empty');
+        }
         parent::__construct();
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getAttributesData(): array
+    public function formatJson(): Attributes
     {
-        return ['variants' => $this->getValue()];
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function getValue(): array
-    {
-        return array_values($this->variants);
-    }
-
-    public function getType(): string
-    {
-        return 'arrayContains';
-    }
-
-    public function createJsonFormatter(): JsonFormatterInterface
-    {
-        return new NoGeneratorFormatter();
-    }
-
-    public function createExpressionFormatter(): ExpressionFormatterInterface
-    {
-        throw new MatcherNotSupportedException("ArrayContains matcher doesn't support expression formatter");
+        return new Attributes([
+            'pact:matcher:type' => 'arrayContains',
+            'variants' => array_values($this->variants),
+            'value' => array_values($this->variants),
+        ]);
     }
 }

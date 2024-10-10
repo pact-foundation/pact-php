@@ -16,7 +16,7 @@ namespace PhpPact\Consumer\Matcher\Generators;
  */
 class Date extends AbstractDateTime
 {
-    public function getType(): string
+    protected function getType(): string
     {
         return 'Date';
     }

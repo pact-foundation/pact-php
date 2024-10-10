@@ -45,8 +45,7 @@
                 }
               ]
             }
-          },
-          "header": {}
+          }
         },
         "method": "GET",
         "path": "/generators"
@@ -54,15 +53,22 @@
       "response": {
         "body": {
           "content": {
-            "boolean": null,
+            "boolean": true,
+            "boolean_v3": null,
             "date": null,
             "datetime": null,
-            "decimal": null,
+            "decimal": 13.01,
+            "decimal_v3": null,
+            "equality": "Hello World!",
             "hexadecimal": null,
-            "integer": null,
+            "integer": 13,
+            "integer_v3": null,
+            "like": "6057401b-c539-4948-971a-24b702d79882",
+            "notEmpty": "text",
             "number": null,
             "regex": null,
             "requestId": 222,
+            "semver": null,
             "string": "some string",
             "time": null,
             "url": null,
@@ -74,6 +80,9 @@
         "generators": {
           "body": {
             "$.boolean": {
+              "type": "RandomBoolean"
+            },
+            "$.boolean_v3": {
               "type": "RandomBoolean"
             },
             "$.date": {
@@ -88,6 +97,14 @@
               "digits": 10,
               "type": "RandomDecimal"
             },
+            "$.decimal_v3": {
+              "digits": 10,
+              "type": "RandomDecimal"
+            },
+            "$.equality": {
+              "size": 10,
+              "type": "RandomString"
+            },
             "$.hexadecimal": {
               "digits": 10,
               "type": "RandomHexadecimal"
@@ -97,6 +114,18 @@
               "min": 0,
               "type": "RandomInt"
             },
+            "$.integer_v3": {
+              "max": 10,
+              "min": 0,
+              "type": "RandomInt"
+            },
+            "$.like": {
+              "type": "Uuid"
+            },
+            "$.notEmpty": {
+              "size": 10,
+              "type": "RandomString"
+            },
             "$.number": {
               "max": 10,
               "min": 0,
@@ -104,6 +133,10 @@
             },
             "$.regex": {
               "regex": "\\d+ (miles|kilometers)",
+              "type": "Regex"
+            },
+            "$.semver": {
+              "regex": "\\d+\\.\\d+\\.\\d+",
               "type": "Regex"
             },
             "$.string": {
@@ -140,6 +173,14 @@
               "combine": "AND",
               "matchers": [
                 {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.boolean_v3": {
+              "combine": "AND",
+              "matchers": [
+                {
                   "match": "boolean"
                 }
               ]
@@ -166,7 +207,23 @@
               "combine": "AND",
               "matchers": [
                 {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.decimal_v3": {
+              "combine": "AND",
+              "matchers": [
+                {
                   "match": "decimal"
+                }
+              ]
+            },
+            "$.equality": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
                 }
               ]
             },
@@ -183,7 +240,33 @@
               "combine": "AND",
               "matchers": [
                 {
+                  "match": "type",
+                  "max": 10,
+                  "min": 0
+                }
+              ]
+            },
+            "$.integer_v3": {
+              "combine": "AND",
+              "matchers": [
+                {
                   "match": "integer"
+                }
+              ]
+            },
+            "$.like": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.notEmpty": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "notEmpty"
                 }
               ]
             },
@@ -201,6 +284,14 @@
                 {
                   "match": "regex",
                   "regex": "\\d+ (miles|kilometers)"
+                }
+              ]
+            },
+            "$.semver": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "semver"
                 }
               ]
             },
@@ -240,7 +331,6 @@
               ]
             }
           },
-          "header": {},
           "status": {
             "$": {
               "combine": "AND",
@@ -261,9 +351,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.22",
-      "mockserver": "1.2.9",
-      "models": "1.2.3"
+      "ffi": "0.4.23",
+      "mockserver": "1.2.10",
+      "models": "1.2.5"
     },
     "pactSpecification": {
       "version": "4.0"
