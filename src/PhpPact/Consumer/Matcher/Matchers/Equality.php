@@ -2,43 +2,36 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\EqualityFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
-use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
-use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Expression;
+use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Trait\ExpressionFormattableTrait;
+use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 
 /**
  * This is the default matcher, and relies on the equals operator
  */
-class Equality extends AbstractMatcher
+class Equality extends GeneratorAwareMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
+    use JsonFormattableTrait;
+    use ExpressionFormattableTrait;
+
     public function __construct(private mixed $value)
     {
         parent::__construct();
     }
 
-    protected function getAttributesData(): array
+    public function formatJson(): Attributes
     {
-        return [];
+        return $this->mergeJson(new Attributes([
+            'pact:matcher:type' => 'equality',
+            'value' => $this->value,
+        ]));
     }
 
-    public function getValue(): mixed
+    public function formatExpression(): Expression
     {
-        return $this->value;
-    }
-
-    public function getType(): string
-    {
-        return 'equality';
-    }
-
-    public function createJsonFormatter(): JsonFormatterInterface
-    {
-        return new NoGeneratorFormatter();
-    }
-
-    public function createExpressionFormatter(): ExpressionFormatterInterface
-    {
-        return new EqualityFormatter();
+        return $this->mergeExpression(new Expression('matching(equalTo, %value%)', ['value' => $this->value]));
     }
 }

@@ -29,17 +29,18 @@ class XmlTextTest extends TestCase
         $matcher->setGenerator(new RandomInt(2, 8));
         $matcher->setFormatter(new XmlContentFormatter());
         $text = new XmlText($matcher);
-        $this->assertSame(
-            json_encode([
-                'content' => null,
-                'matcher' => [
-                    'pact:matcher:type' => 'integer',
-                    'min' => 2,
-                    'max' => 8,
-                ],
-                'pact:generator:type' => 'RandomInt'
-            ]),
-            json_encode($text)
-        );
+        $expected = json_encode([
+            'content' => null,
+            'matcher' => [
+                'pact:matcher:type' => 'integer',
+                'min' => 2,
+                'max' => 8,
+            ],
+            'pact:generator:type' => 'RandomInt'
+        ]);
+        $this->assertIsString($expected);
+        $actual = json_encode($text);
+        $this->assertIsString($actual);
+        $this->assertJsonStringEqualsJsonString($expected, $actual);
     }
 }

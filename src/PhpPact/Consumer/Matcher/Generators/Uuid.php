@@ -4,6 +4,9 @@ namespace PhpPact\Consumer\Matcher\Generators;
 
 use PhpPact\Consumer\Matcher\Enum\UuidFormat;
 use PhpPact\Consumer\Matcher\Exception\InvalidUuidFormatException;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Generator\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
 
 /**
  * Generates a random UUID.
@@ -13,7 +16,7 @@ use PhpPact\Consumer\Matcher\Exception\InvalidUuidFormatException;
  * - upper-case-hyphenated (e.g 936DA01F-9ABD-4D9D-80C7-02AF85C822A8)
  * - URN (e.g. urn:uuid:936da01f-9abd-4d9d-80c7-02af85c822a8)
  */
-class Uuid extends AbstractGenerator
+class Uuid implements GeneratorInterface, JsonFormattableInterface
 {
     /**
      * @deprecated Use UuidFormat::SIMPLE instead
@@ -34,6 +37,9 @@ class Uuid extends AbstractGenerator
 
     private null|UuidFormat $format;
 
+    /**
+     * @param null|string|UuidFormat $format Default to lower-case-hyphenated if null
+     */
     public function __construct(null|string|UuidFormat $format = null)
     {
         if (is_string($format)) {
@@ -50,18 +56,11 @@ class Uuid extends AbstractGenerator
         $this->format = $format;
     }
 
-    public function getType(): string
+    public function formatJson(): Attributes
     {
-        return 'Uuid';
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    protected function getAttributesData(): array
-    {
-        return $this->format !== null ? [
-            'format' => $this->format->value,
-        ] : [];
+        return new Attributes([
+            'pact:generator:type' => 'Uuid',
+            ...(is_null($this->format) ? [] : ['format' => $this->format->value]),
+        ]);
     }
 }

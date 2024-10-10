@@ -19,8 +19,7 @@ trait TextTrait
     {
         return function (XmlElement $element) use ($content): void {
             $matcher = new Type($content);
-            $matcher->setFormatter(new XmlContentFormatter());
-            $text = new XmlText($matcher);
+            $text = new XmlText($matcher->withFormatter(new XmlContentFormatter()));
             $element->setText($text);
         };
     }

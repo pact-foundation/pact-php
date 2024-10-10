@@ -2,14 +2,15 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\IncludesFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Matchers\Includes;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class IncludesTest extends TestCase
 {
-    public function testSerialize(): void
+    public function testFormatJson(): void
     {
         $string = new Includes('contains this string');
         $this->assertSame(
@@ -18,15 +19,11 @@ class IncludesTest extends TestCase
         );
     }
 
-    public function testCreateJsonFormatter(): void
+    #[TestWith([new Includes("contains single quote '"), "\"matching(include, 'contains single quote \\\'')\""])]
+    #[TestWith([new Includes('example value'), "\"matching(include, 'example value')\""])]
+    public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
-        $matcher = new Includes('text');
-        $this->assertInstanceOf(NoGeneratorFormatter::class, $matcher->createJsonFormatter());
-    }
-
-    public function testCreateExpressionFormatter(): void
-    {
-        $matcher = new Includes('text');
-        $this->assertInstanceOf(IncludesFormatter::class, $matcher->createExpressionFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
     }
 }

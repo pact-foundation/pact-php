@@ -2,89 +2,69 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Exception\InvalidRegexException;
-use PhpPact\Consumer\Matcher\Formatters\Expression\RegexFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
 use PhpPact\Consumer\Matcher\Generators\Regex as RegexGenerator;
-use PhpPact\Consumer\Matcher\Model\ExpressionFormatterInterface;
-use PhpPact\Consumer\Matcher\Model\JsonFormatterInterface;
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Expression;
+use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 
 use function preg_last_error;
 use function preg_match;
 
-class Regex extends GeneratorAwareMatcher
+class Regex extends GeneratorAwareMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
+    use JsonFormattableTrait;
+
     /**
      * @param string|string[]|null $values
      */
     public function __construct(
         private string $regex,
-        protected string|array|null $values = null,
+        private string|array|null $values = null,
     ) {
         if ($values === null) {
             $this->setGenerator(new RegexGenerator($this->regex));
+        } else {
+            $this->validateRegex();
         }
         parent::__construct();
     }
 
     /**
-     * @return string|array<string, mixed>
+     * @todo Use json_validate()
      */
-    public function jsonSerialize(): string|array
-    {
-        if (null !== $this->values) {
-            $this->validateRegex();
-        }
-
-        return parent::jsonSerialize();
-    }
-
     private function validateRegex(): void
     {
         foreach ((array) $this->values as $value) {
             $result = preg_match("/$this->regex/", $value);
 
-            if ($result === false || $result === 0) {
+            if ($result !== 1) {
                 $errorCode = preg_last_error();
 
-                throw new InvalidRegexException("The pattern '{$this->regex}' is not valid for value '{$value}'. Failed with error code {$errorCode}.");
+                throw new InvalidRegexException("The value '{$value}' doesn't match pattern '{$this->regex}'. Failed with error code {$errorCode}.");
             }
         }
     }
 
-    public function getType(): string
+    public function formatJson(): Attributes
     {
-        return 'regex';
+        return $this->mergeJson(new Attributes([
+            'pact:matcher:type' => 'regex',
+            'regex' => $this->regex,
+            'value' => $this->values,
+        ]));
     }
 
-    /**
-     * @return string|string[]|null
-     */
-    public function getValue(): string|array|null
+    public function formatExpression(): Expression
     {
-        return $this->values;
-    }
+        $value = $this->values;
+        if (!is_string($value)) {
+            throw new InvalidValueException(sprintf("Regex matching expression doesn't support value of type %s", gettype($value)));
+        }
 
-    /**
-     * @return array<string, string>
-     */
-    protected function getAttributesData(): array
-    {
-        return ['regex' => $this->regex];
-    }
-
-    public function getRegex(): string
-    {
-        return $this->regex;
-    }
-
-    public function createJsonFormatter(): JsonFormatterInterface
-    {
-        return new HasGeneratorFormatter();
-    }
-
-    public function createExpressionFormatter(): ExpressionFormatterInterface
-    {
-        return new RegexFormatter();
+        return new Expression("matching(regex, %regex%, %value%)", ['regex' => $this->regex, 'value' => $value]);
     }
 }

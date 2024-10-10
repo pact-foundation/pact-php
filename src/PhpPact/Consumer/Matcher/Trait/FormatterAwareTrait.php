@@ -17,4 +17,12 @@ trait FormatterAwareTrait
     {
         return $this->formatter;
     }
+
+    public function withFormatter(FormatterInterface $formatter): static
+    {
+        $matcher = clone $this;
+        $matcher->setFormatter($formatter);
+
+        return $matcher;
+    }
 }

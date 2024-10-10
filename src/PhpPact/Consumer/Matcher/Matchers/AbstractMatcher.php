@@ -2,7 +2,7 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Formatters\Json\JsonFormatter;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PhpPact\Consumer\Matcher\Trait\FormatterAwareTrait;
 
@@ -12,24 +12,11 @@ abstract class AbstractMatcher implements MatcherInterface
 
     public function __construct()
     {
-        $this->setFormatter($this->createJsonFormatter());
+        $this->setFormatter(new JsonFormatter());
     }
 
-    /**
-     * @return string|array<string, mixed>
-     */
-    public function jsonSerialize(): string|array
+    public function jsonSerialize(): mixed
     {
         return $this->getFormatter()->format($this);
     }
-
-    public function getAttributes(): Attributes
-    {
-        return new Attributes($this, $this->getAttributesData());
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    abstract protected function getAttributesData(): array;
 }

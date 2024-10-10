@@ -59,7 +59,7 @@ class XmlBuilderTest extends TestCase
                             $this->builder->name('ns1:task'),
                             $this->builder->attribute('id', $this->matcher->integerV3(1)),
                             $this->builder->attribute('name', $this->matcher->string('Task 1')),
-                            $this->builder->attribute('done', $this->matcher->boolean()),
+                            $this->builder->attribute('done', $this->matcher->boolean(true)),
                             $this->builder->contentLike('Task 1 description'),
                         ),
                     ),
@@ -153,6 +153,10 @@ class XmlBuilderTest extends TestCase
             ],
         ];
 
-        $this->assertSame(json_encode($expectedArray), json_encode($this->builder));
+        $expected = json_encode($expectedArray);
+        $this->assertIsString($expected);
+        $actual = json_encode($this->builder);
+        $this->assertIsString($actual);
+        $this->assertJsonStringEqualsJsonString($expected, $actual);
     }
 }
