@@ -415,10 +415,10 @@ class Matcher
     /**
      * Allows defining matching rules to apply to the keys in a map
      *
-     * @param array<string, mixed> $values
+     * @param array<string, mixed>|object $values
      * @param MatcherInterface[]   $rules
      */
-    public function eachKey(array $values, array $rules): MatcherInterface
+    public function eachKey(array|object $values, array $rules): MatcherInterface
     {
         return $this->withFormatter(new EachKey($values, $rules));
     }
@@ -426,10 +426,10 @@ class Matcher
     /**
      * Allows defining matching rules to apply to the values in a collection. For maps, delgates to the Values matcher.
      *
-     * @param array<string, mixed> $values
+     * @param array<string, mixed>|object $values
      * @param MatcherInterface[]   $rules
      */
-    public function eachValue(array $values, array $rules): MatcherInterface
+    public function eachValue(array|object $values, array $rules): MatcherInterface
     {
         return $this->withFormatter(new EachValue($values, $rules));
     }

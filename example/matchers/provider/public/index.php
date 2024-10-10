@@ -72,6 +72,20 @@ $app->get('/matchers', function (ServerRequestInterface $request) {
             'item 1' => 'bike',
             'item 2' => 'motorbike',
         ],
+        'eachValueComplexValue' => [
+            '35251397-d0d3-4178-af7d-4eb8ce7d8baa' => [
+                'title' => 'Sintel',
+                'year' => 2010,
+                'length' => '14',
+                'rating' => 7.4,
+            ],
+            '4ef94471-9ff5-476f-92f3-0bcf89166427' => [
+                'title' => 'Tears of Steel',
+                'year' => 2012,
+                'length' => '12',
+                'rating' => 5.5,
+            ],
+        ],
         'url' => 'https://www.example.com/users/1234/posts/latest',
         'matchAll' => [
             'tablet' => '300 usd',
