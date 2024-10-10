@@ -53,7 +53,7 @@ $app->get('/has-state', function (ServerRequestInterface $request) use ($get) {
 
 $app->post('/pact-change-state', $stateChangeHandler);
 
-$app->post('/failed-pact-change-state', function (ServerRequestInterface $request) use ($stateChangeHandler): void {
+$app->post('/failed-pact-change-state', function (ServerRequestInterface $request) use ($stateChangeHandler): never {
     $stateChangeHandler($request);
 
     throw new \Exception('Cant do it');
