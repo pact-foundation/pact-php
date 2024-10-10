@@ -4,20 +4,23 @@ namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Generators\RandomString;
 use PhpPact\Consumer\Matcher\Matchers\NotEmpty;
+use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class NotEmptyTest extends TestCase
 {
-    public function testFormatJson(): void
+    #[TestWith([new NotEmpty(['some text']), new RandomString(), '{"pact:matcher:type":"notEmpty","pact:generator:type":"RandomString","size": 10,"value":["some text"]}'])]
+    #[TestWith([new NotEmpty(['some text']), null, '{"pact:matcher:type":"notEmpty","value":["some text"]}'])]
+    public function testFormatJson(NotEmpty $matcher, ?GeneratorInterface $generator, string $json): void
     {
-        $array = new NotEmpty(['some text']);
-        $this->assertSame(
-            '{"pact:matcher:type":"notEmpty","value":["some text"]}',
-            json_encode($array)
-        );
+        $matcher = $matcher->withGenerator($generator);
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
     #[TestWith([new NotEmpty(new \stdClass()), 'object'])]
