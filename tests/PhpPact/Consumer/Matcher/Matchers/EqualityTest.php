@@ -4,20 +4,23 @@ namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Generators\RandomString;
 use PhpPact\Consumer\Matcher\Matchers\Equality;
+use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class EqualityTest extends TestCase
 {
-    public function testFormatJson(): void
+    #[TestWith([new Equality('exact this string'), new RandomString(), '{"pact:matcher:type":"equality","pact:generator:type":"RandomString","size": 10,"value":"exact this string"}'])]
+    #[TestWith([new Equality('exact this string'), null, '{"pact:matcher:type":"equality","value":"exact this string"}'])]
+    public function testFormatJson(Equality $matcher, ?GeneratorInterface $generator, string $json): void
     {
-        $string = new Equality('exact this string');
-        $this->assertSame(
-            '{"pact:matcher:type":"equality","value":"exact this string"}',
-            json_encode($string)
-        );
+        $matcher = $matcher->withGenerator($generator);
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
     #[TestWith([new Equality(new \stdClass()), 'object'])]

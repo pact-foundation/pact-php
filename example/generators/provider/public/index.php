@@ -12,9 +12,9 @@ $app->get('/generators', function (ServerRequestInterface $request) {
 
     return Response::json([
         'regex' => '800 kilometers',
-        'boolean' => true,
-        'integer' => 11,
-        'decimal' => 25.1,
+        'boolean_v3' => true,
+        'integer_v3' => 11,
+        'decimal_v3' => 25.1,
         'hexadecimal' => '20AC',
         'uuid' => 'e9d2f3a5-6ecc-4bff-8935-84bb6141325a',
         'date' => '1997-12-11',
@@ -23,6 +23,12 @@ $app->get('/generators', function (ServerRequestInterface $request) {
         'string' => 'another string',
         'number' => 112.3,
         'url' => 'https://www.example.com/users/1234/posts/latest',
+        'notEmpty' => 123,
+        'equality' => 'Hello World!',
+        'like' => 'not uuid',
+        'boolean' => false,
+        'integer' => -99,
+        'decimal' => -810.22,
         'requestId' => $body['id'],
     ])
     ->withStatus(400);

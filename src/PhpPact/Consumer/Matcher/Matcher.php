@@ -8,7 +8,10 @@ use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Formatters\Json\JsonFormatter;
 use PhpPact\Consumer\Matcher\Generators\MockServerURL;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
+use PhpPact\Consumer\Matcher\Generators\RandomBoolean;
+use PhpPact\Consumer\Matcher\Generators\RandomDecimal;
 use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
+use PhpPact\Consumer\Matcher\Generators\RandomInt;
 use PhpPact\Consumer\Matcher\Generators\Uuid;
 use PhpPact\Consumer\Matcher\Matchers\ArrayContains;
 use PhpPact\Consumer\Matcher\Matchers\Boolean;
@@ -213,19 +216,22 @@ class Matcher
         return $this->term($value, self::RFC3339_TIMESTAMP_FORMAT);
     }
 
-    public function boolean(): Type
+    public function boolean(?bool $value = null): Type
     {
-        return $this->like(true);
+        return $this->like($value ?? true)
+            ->withGenerator(is_null($value) ? new RandomBoolean() : null);
     }
 
-    public function integer(int $int = 13): Type
+    public function integer(?int $value = null): Type
     {
-        return $this->like($int);
+        return $this->like($value ?? 13)
+            ->withGenerator(is_null($value) ? new RandomInt() : null);
     }
 
-    public function decimal(float $float = 13.01): Type
+    public function decimal(?float $value = null): Type
     {
-        return $this->like($float);
+        return $this->like($value ?? 13.01)
+            ->withGenerator(is_null($value) ? new RandomDecimal() : null);
     }
 
     public function booleanV3(?bool $value = null): Boolean

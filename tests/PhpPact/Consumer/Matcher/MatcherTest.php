@@ -8,7 +8,10 @@ use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Formatters\Json\JsonFormatter;
 use PhpPact\Consumer\Matcher\Generators\MockServerURL;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
+use PhpPact\Consumer\Matcher\Generators\RandomBoolean;
+use PhpPact\Consumer\Matcher\Generators\RandomDecimal;
 use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
+use PhpPact\Consumer\Matcher\Generators\RandomInt;
 use PhpPact\Consumer\Matcher\Generators\Uuid;
 use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Matcher\Matchers\ArrayContains;
@@ -161,22 +164,44 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testInteger(): void
+    #[TestWith([null, true])]
+    #[TestWith([123, false])]
+    public function testInteger(?int $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Type::class, $result = $this->matcher->integer());
+        $this->assertInstanceOf(Type::class, $result = $this->matcher->integer($value));
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RandomInt::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
     }
 
-    public function testBoolean(): void
+    #[TestWith([null, true])]
+    #[TestWith([true, false])]
+    #[TestWith([false, false])]
+    public function testBoolean(?bool $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Type::class, $result = $this->matcher->boolean());
+        $this->assertInstanceOf(Type::class, $result = $this->matcher->boolean($value));
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RandomBoolean::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
     }
 
-    public function testDecimal(): void
+    #[TestWith([null, true])]
+    #[TestWith([1.01, false])]
+    public function testDecimal(?float $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Type::class, $result = $this->matcher->decimal());
+        $this->assertInstanceOf(Type::class, $result = $this->matcher->decimal($value));
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RandomDecimal::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
     }
 
     public function testIntegerV3(): void
