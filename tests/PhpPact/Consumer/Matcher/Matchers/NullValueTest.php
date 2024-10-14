@@ -2,31 +2,26 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\NullValueFormatter as ExpressionFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\NullValueFormatter as JsonFormatter;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Matchers\NullValue;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class NullValueTest extends TestCase
 {
-    public function testSerialize(): void
+    #[TestWith([new NullValue(), '{"pact:matcher:type": "null"}'])]
+    public function testFormatJson(MatcherInterface $matcher, string $json): void
     {
-        $null = new NullValue();
-        $this->assertSame(
-            '{"pact:matcher:type":"null"}',
-            json_encode($null)
-        );
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
-    public function testCreateJsonFormatter(): void
+    #[TestWith([new NullValue(), '"matching(type, null)"'])]
+    public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
-        $matcher = new NullValue();
-        $this->assertInstanceOf(JsonFormatter::class, $matcher->createJsonFormatter());
-    }
-
-    public function testCreateExpressionFormatter(): void
-    {
-        $matcher = new NullValue();
-        $this->assertInstanceOf(ExpressionFormatter::class, $matcher->createExpressionFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
     }
 }

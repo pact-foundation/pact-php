@@ -2,14 +2,16 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\NotEmptyFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\NoGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Matchers\NotEmpty;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class NotEmptyTest extends TestCase
 {
-    public function testSerialize(): void
+    public function testFormatJson(): void
     {
         $array = new NotEmpty(['some text']);
         $this->assertSame(
@@ -18,15 +20,25 @@ class NotEmptyTest extends TestCase
         );
     }
 
-    public function testCreateJsonFormatter(): void
+    #[TestWith([new NotEmpty(new \stdClass()), 'object'])]
+    #[TestWith([new NotEmpty(['key' => 'value']), 'array'])]
+    public function testInvalidValue(MatcherInterface $matcher, string $type): void
     {
-        $matcher = new NotEmpty('test');
-        $this->assertInstanceOf(NoGeneratorFormatter::class, $matcher->createJsonFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage(sprintf("Expression doesn't support value of type %s", $type));
+        json_encode($matcher);
     }
 
-    public function testCreateExpressionFormatter(): void
+    #[TestWith([new NotEmpty("contains single quote '"), "\"notEmpty('contains single quote \\\'')\""])]
+    #[TestWith([new NotEmpty('example value'), "\"notEmpty('example value')\""])]
+    #[TestWith([new NotEmpty(100.09), '"notEmpty(100.09)"'])]
+    #[TestWith([new NotEmpty(100), '"notEmpty(100)"'])]
+    #[TestWith([new NotEmpty(true), '"notEmpty(true)"'])]
+    #[TestWith([new NotEmpty(false), '"notEmpty(false)"'])]
+    public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
-        $matcher = new NotEmpty('test');
-        $this->assertInstanceOf(NotEmptyFormatter::class, $matcher->createExpressionFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
     }
 }

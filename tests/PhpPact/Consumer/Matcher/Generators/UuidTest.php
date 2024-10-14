@@ -9,30 +9,24 @@ use PHPUnit\Framework\TestCase;
 
 class UuidTest extends TestCase
 {
-    public function testType(): void
+    public function testInvalidFormat(): void
     {
-        $generator = new Uuid();
-        $this->assertSame('Uuid', $generator->getType());
+        $this->expectException(InvalidUuidFormatException::class);
+        $this->expectExceptionMessage('Format invalid is not supported. Supported formats are: simple, lower-case-hyphenated, upper-case-hyphenated, URN');
+        new Uuid('invalid');
     }
 
-    /**
-     * @param null|array<string, string> $data
-     */
-    #[TestWith([null, []])]
-    #[TestWith(['simple', ['format' => 'simple']])]
-    #[TestWith(['lower-case-hyphenated', ['format' => 'lower-case-hyphenated']])]
-    #[TestWith(['upper-case-hyphenated', ['format' => 'upper-case-hyphenated']])]
-    #[TestWith(['URN', ['format' => 'URN']])]
-    #[TestWith(['invalid', null])]
-    public function testAttributes(?string $format, ?array $data): void
+    #[TestWith([null, '{"pact:generator:type":"Uuid"}'])]
+    #[TestWith(['simple', '{"pact:generator:type":"Uuid","format":"simple"}'])]
+    #[TestWith(['lower-case-hyphenated', '{"pact:generator:type":"Uuid","format":"lower-case-hyphenated"}'])]
+    #[TestWith(['upper-case-hyphenated', '{"pact:generator:type":"Uuid","format":"upper-case-hyphenated"}'])]
+    #[TestWith(['URN', '{"pact:generator:type":"Uuid","format":"URN"}'])]
+    public function testAttributes(?string $format, string $json): void
     {
-        if (null === $data) {
-            $this->expectException(InvalidUuidFormatException::class);
-            $this->expectExceptionMessage('Format invalid is not supported. Supported formats are: simple, lower-case-hyphenated, upper-case-hyphenated, URN');
-        }
         $generator = new Uuid($format);
-        $attributes = $generator->getAttributes();
-        $this->assertSame($generator, $attributes->getParent());
-        $this->assertSame($data, $attributes->getData());
+        $attributes = $generator->formatJson();
+        $result = json_encode($attributes);
+        $this->assertIsString($result);
+        $this->assertSame($json, $result);
     }
 }

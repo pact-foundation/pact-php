@@ -2,28 +2,38 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Matchers\Date;
-use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\TestCase;
 
-class DateTest extends AbstractDateTimeTestCase
+class DateTest extends TestCase
 {
-    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
+    #[TestWith([new Date('yyyy-MM-dd', null), '{"pact:generator:type":"Date","format":"yyyy-MM-dd","pact:matcher:type":"date","value":null}'])]
+    #[TestWith([new Date('yyyy-MM-dd', '1995-02-04'), '{"pact:matcher:type":"date","format":"yyyy-MM-dd","value":"1995-02-04"}'])]
+    public function testFormatJson(MatcherInterface $matcher, string $json): void
     {
-        return new Date();
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
-    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
+    public function testInvalidValue(): void
     {
-        return new Date('yyyy-MM-dd', '2001-09-17');
+        $matcher = (new Date('yyyy-MM-dd'))->withFormatter(new ExpressionFormatter());
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage(sprintf("DateTime matching expression doesn't support value of type %s", gettype(null)));
+        json_encode($matcher);
     }
 
-    #[TestWith([null, '{"pact:matcher:type":"date","pact:generator:type":"Date","format":"yyyy-MM-dd"}'])]
-    #[TestWith(['1995-02-04', '{"pact:matcher:type":"date","format":"yyyy-MM-dd","value":"1995-02-04"}'])]
-    public function testSerialize(?string $value, string $json): void
+    #[TestWith([new Date("contains single quote '", '2012-04-12'), "\"matching(date, 'contains single quote \\\'', '2012-04-12')\""])]
+    #[TestWith([new Date('yyyy-MM-dd', "contains single quote '"), "\"matching(date, 'yyyy-MM-dd', 'contains single quote \\\'')\""])]
+    #[TestWith([new Date('yyyy-MM-dd', '2012-04-12'), "\"matching(date, 'yyyy-MM-dd', '2012-04-12')\""])]
+    public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
-        $format = 'yyyy-MM-dd';
-        $matcher = new Date($format, $value);
-        $this->assertSame($json, json_encode($matcher));
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
     }
 }
