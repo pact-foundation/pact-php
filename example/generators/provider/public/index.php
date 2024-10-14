@@ -29,6 +29,7 @@ $app->get('/generators', function (ServerRequestInterface $request) {
         'boolean' => false,
         'integer' => -99,
         'decimal' => -810.22,
+        'semver' => '1.2.3',
         'requestId' => $body['id'],
     ])
     ->withStatus(400);

@@ -58,6 +58,7 @@ class GeneratorsTest extends TestCase
                 'boolean' => $this->matcher->boolean(null),
                 'integer' => $this->matcher->integer(null),
                 'decimal' => $this->matcher->decimal(null),
+                'semver' => $this->matcher->semver(null),
                 'requestId' => 222,
             ]);
 
@@ -115,6 +116,7 @@ class GeneratorsTest extends TestCase
         $this->assertIsBool($body['boolean']);
         $this->assertIsInt($body['integer']);
         $this->assertIsFloat($body['decimal'] + 0);
+        $this->assertMatchesRegularExpression('/\d+\.\d+\.\d+/', $body['semver']);
         $this->assertSame(222, $body['requestId']);
     }
 
