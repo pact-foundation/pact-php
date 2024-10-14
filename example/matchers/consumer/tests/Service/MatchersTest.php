@@ -112,6 +112,34 @@ class MatchersTest extends TestCase
                     ['vehicle 1' => 'car'],
                     [$this->matcher->regex(null, 'car|bike|motorbike')]
                 ),
+                'eachValueComplexValue' => $this->matcher->eachValue(
+                    (object) [
+                        '95481709-5868-4d67-8d4b-410728b207a0' => [
+                            'title' => 'Big Buck Bunny',
+                            'year' => 2008,
+                            'length' => '10m',
+                            'rating' => 6.4,
+                        ],
+                        '46c9c929-50b7-4566-a0bf-114859bdf9ff' => [
+                            'title' => 'Wing It!',
+                            'year' => 2023,
+                            'length' => '3m',
+                            'rating' => 7.3,
+                        ],
+                    ],
+                    [
+                        $this->matcher->like(
+                            // WARNING Example value will be ignored
+                            [
+                                //  therefore, these matchers are not recognized
+                                'title' => $this->matcher->includes('Open'),
+                                'year' => $this->matcher->equal(2006),
+                                'length' => $this->matcher->regex('11m', '\d+m'),
+                                'rating' => $this->matcher->decimal(5.6),
+                            ]
+                        )
+                    ]
+                ),
                 'url' => $this->matcher->url('http://localhost:8080/users/1234/posts/latest', '.*(\\/users\\/\\d+\\/posts\\/latest)$', false),
                 'matchAll' => $this->matcher->matchAll(
                     ['desktop' => '2000 usd'],
@@ -220,6 +248,20 @@ class MatchersTest extends TestCase
             ],
             'eachValue' => [
                 'vehicle 1' => 'car',
+            ],
+            'eachValueComplexValue' => [
+                '95481709-5868-4d67-8d4b-410728b207a0' => [
+                    'title' => 'Big Buck Bunny',
+                    'year' => 2008,
+                    'length' => '10m',
+                    'rating' => 6.4,
+                ],
+                '46c9c929-50b7-4566-a0bf-114859bdf9ff' => [
+                    'title' => 'Wing It!',
+                    'year' => 2023,
+                    'length' => '3m',
+                    'rating' => 7.3,
+                ],
             ],
             'url' => 'http://localhost:8080/users/1234/posts/latest',
             'matchAll' => ['desktop' => '2000 usd'],

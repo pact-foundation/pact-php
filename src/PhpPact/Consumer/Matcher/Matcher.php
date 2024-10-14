@@ -465,7 +465,7 @@ class Matcher
      * Allows defining matching rules to apply to the keys in a map
      *
      * @param array<string, mixed>|object $values
-     * @param MatcherInterface[] $rules
+     * @param MatcherInterface[]   $rules
      */
     public function eachKey(array|object $values, array $rules): EachKey
     {
