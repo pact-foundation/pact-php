@@ -2,28 +2,26 @@
 
 namespace PhpPact\Consumer\Matcher\Model;
 
+use ArrayIterator;
+use IteratorAggregate;
+use JsonSerializable;
 use PhpPact\Consumer\Matcher\Exception\AttributeConflictException;
+use Traversable;
 
-class Attributes
+/**
+ * @implements IteratorAggregate<string, mixed>
+ */
+class Attributes implements IteratorAggregate, JsonSerializable
 {
     /**
      * @param array<string, mixed> $data
      */
-    public function __construct(private GeneratorInterface|MatcherInterface $parent, private array $data = [])
+    public function __construct(private array $data = [])
     {
-    }
-
-    public function getParent(): GeneratorInterface|MatcherInterface
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getData(): array
-    {
-        return $this->data;
+        $this->data = [];
+        foreach ($data as $key => $value) {
+            $this->set($key, $value);
+        }
     }
 
     public function has(string $key): bool
@@ -36,24 +34,35 @@ class Attributes
         return $this->data[$key] ?? null;
     }
 
+    public function set(string $key, mixed $value): void
+    {
+        $this->data[$key] = $value;
+    }
+
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->data);
+    }
+
     public function merge(self $attributes): self
     {
-        foreach ($this->data as $key => $value) {
-            if ($attributes->has($key) && $value !== $attributes->get($key)) {
-                throw new AttributeConflictException(sprintf("Attribute '%s' of %s '%s' and %s '%s' are conflict", $key, $this->getParentType(), $this->getParentName(), $attributes->getParentType(), $attributes->getParentName()));
+        $return = new self($this->data);
+        foreach ($attributes as $key => $value) {
+            if (!$return->has($key)) {
+                $return->set($key, $value);
+            } elseif ($return->has($key) && $value !== $return->get($key)) {
+                throw new AttributeConflictException(sprintf("Can not merge attributes: Values of attribute '%s' are conflict", $key));
             }
         }
 
-        return new self($this->parent, $this->data + $attributes->getData());
+        return $return;
     }
 
-    private function getParentType(): string
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
     {
-        return $this->parent instanceof GeneratorInterface ? 'generator' : 'matcher';
-    }
-
-    private function getParentName(): string
-    {
-        return $this->parent->getType();
+        return $this->data;
     }
 }

@@ -41,8 +41,7 @@ trait ElementTrait
         return function (XmlElement $element) use ($options): void {
             $child = new XmlElement(...$options);
             $matcher = new Type($child);
-            $matcher->setFormatter(new XmlElementFormatter());
-            $element->addChild($matcher);
+            $element->addChild($matcher->withFormatter(new XmlElementFormatter()));
         };
     }
 }

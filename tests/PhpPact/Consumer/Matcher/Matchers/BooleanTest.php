@@ -2,42 +2,38 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\BooleanFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Matchers\Boolean;
-use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\TestCase;
 
-class BooleanTest extends GeneratorAwareMatcherTestCase
+class BooleanTest extends TestCase
 {
-    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
+    #[TestWith([new Boolean(null), '{"pact:generator:type":"RandomBoolean","pact:matcher:type":"boolean","value":null}'])]
+    #[TestWith([new Boolean(true), '{"pact:matcher:type":"boolean","value":true}'])]
+    #[TestWith([new Boolean(false), '{"pact:matcher:type":"boolean","value":false}'])]
+    public function testFormatJson(MatcherInterface $matcher, string $json): void
     {
-        return new Boolean();
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
-    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
+    public function testInvalidValue(): void
     {
-        return new Boolean(false);
+        $matcher = (new Boolean())->withFormatter(new ExpressionFormatter());
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage(sprintf("Boolean matching expression doesn't support value of type %s", gettype(null)));
+        json_encode($matcher);
     }
 
-    #[TestWith([null, '{"pact:matcher:type":"boolean","pact:generator:type":"RandomBoolean"}'])]
-    #[TestWith([true, '{"pact:matcher:type":"boolean","value":true}'])]
-    #[TestWith([false, '{"pact:matcher:type":"boolean","value":false}'])]
-    public function testSerialize(?bool $value, string $json): void
+    #[TestWith([new Boolean(true), '"matching(boolean, true)"'])]
+    #[TestWith([new Boolean(false), '"matching(boolean, false)"'])]
+    public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
-        $matcher = new Boolean($value);
-        $this->assertSame($json, json_encode($matcher));
-    }
-
-    public function testCreateJsonFormatter(): void
-    {
-        $matcher = $this->getMatcherWithoutExampleValue();
-        $this->assertInstanceOf(HasGeneratorFormatter::class, $matcher->createJsonFormatter());
-    }
-
-    public function testCreateExpressionFormatter(): void
-    {
-        $matcher = $this->getMatcherWithoutExampleValue();
-        $this->assertInstanceOf(BooleanFormatter::class, $matcher->createExpressionFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
     }
 }

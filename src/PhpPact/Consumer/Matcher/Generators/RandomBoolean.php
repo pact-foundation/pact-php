@@ -2,21 +2,19 @@
 
 namespace PhpPact\Consumer\Matcher\Generators;
 
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Generator\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
+
 /**
  * Generates a random boolean value
  */
-class RandomBoolean extends AbstractGenerator
+class RandomBoolean implements GeneratorInterface, JsonFormattableInterface
 {
-    public function getType(): string
+    public function formatJson(): Attributes
     {
-        return 'RandomBoolean';
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    protected function getAttributesData(): array
-    {
-        return [];
+        return new Attributes([
+            'pact:generator:type' => 'RandomBoolean',
+        ]);
     }
 }

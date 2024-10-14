@@ -2,42 +2,54 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Formatters\Expression\NumberFormatter;
-use PhpPact\Consumer\Matcher\Formatters\Json\HasGeneratorFormatter;
-use PhpPact\Consumer\Matcher\Matchers\GeneratorAwareMatcher;
+use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Matchers\Number;
+use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\TestCase;
 
-class NumberTest extends GeneratorAwareMatcherTestCase
+class NumberTest extends TestCase
 {
-    protected function getMatcherWithoutExampleValue(): GeneratorAwareMatcher
+    #[TestWith([new Number(null), '{"pact:matcher:type":"number","pact:generator:type":"RandomInt","min":0,"max":10,"value":null}'])]
+    #[TestWith([new Number(123), '{"pact:matcher:type":"number","value":123}'])]
+    #[TestWith([new Number(12.3), '{"pact:matcher:type":"number","value":12.3}'])]
+    public function testFormatJson(MatcherInterface $matcher, string $json): void
     {
-        return new Number();
+        $jsonEncoded = json_encode($matcher);
+        $this->assertIsString($jsonEncoded);
+        $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
-    protected function getMatcherWithExampleValue(): GeneratorAwareMatcher
+    public function testInvalidValue(): void
     {
-        return new Number(56.73);
+        $matcher = new Number();
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage(sprintf("Number matching expression doesn't support value of type %s", gettype(null)));
+        json_encode($matcher);
     }
 
-    #[TestWith([null, '{"pact:matcher:type":"number","pact:generator:type":"RandomInt","min":0,"max":10}'])]
-    #[TestWith([123, '{"pact:matcher:type":"number","value":123}'])]
-    #[TestWith([12.3, '{"pact:matcher:type":"number","value":12.3}'])]
-    public function testSerialize(int|float|null $value, string $json): void
+    #[TestWith([new Number(-99), '"matching(number, -99)"'])]
+    #[TestWith([new Number(100), '"matching(number, 100)"'])]
+    #[TestWith([new Number(100.01), '"matching(number, 100.01)"'])]
+    #[TestWith([new Number(-100.003), '"matching(number, -100.003)"'])]
+    public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
-        $matcher = new Number($value);
-        $this->assertSame($json, json_encode($matcher));
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
     }
 
-    public function testCreateJsonFormatter(): void
+    #[TestWith([new Number(-99), new ProviderState('${value}'), '"matching(number, fromProviderState(\'${value}\', -99))"'])]
+    #[TestWith([new Number(100), new ProviderState('${value}'), '"matching(number, fromProviderState(\'${value}\', 100))"'])]
+    #[TestWith([new Number(100.01), new ProviderState('${value}'), '"matching(number, fromProviderState(\'${value}\', 100.01))"'])]
+    #[TestWith([new Number(-100.003), new ProviderState('${value}'), '"matching(number, fromProviderState(\'${value}\', -100.003))"'])]
+    public function testFormatExpressionWithGenerator(Number $matcher, GeneratorInterface $generator, string $expression): void
     {
-        $matcher = new Number(123);
-        $this->assertInstanceOf(HasGeneratorFormatter::class, $matcher->createJsonFormatter());
-    }
-
-    public function testCreateExpressionFormatter(): void
-    {
-        $matcher = new Number(123);
-        $this->assertInstanceOf(NumberFormatter::class, $matcher->createExpressionFormatter());
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $matcher = $matcher->withGenerator($generator);
+        $this->assertSame($expression, json_encode($matcher));
     }
 }

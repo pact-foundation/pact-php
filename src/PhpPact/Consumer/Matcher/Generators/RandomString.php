@@ -2,27 +2,24 @@
 
 namespace PhpPact\Consumer\Matcher\Generators;
 
+use PhpPact\Consumer\Matcher\Model\Attributes;
+use PhpPact\Consumer\Matcher\Model\Generator\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
+
 /**
  * Generates a random alphanumeric string of the provided length
  */
-class RandomString extends AbstractGenerator
+class RandomString implements GeneratorInterface, JsonFormattableInterface
 {
     public function __construct(private int $size = 10)
     {
     }
 
-    public function getType(): string
+    public function formatJson(): Attributes
     {
-        return 'RandomString';
-    }
-
-    /**
-     * @return array<string, int>
-     */
-    protected function getAttributesData(): array
-    {
-        return [
+        return new Attributes([
+            'pact:generator:type' => 'RandomString',
             'size' => $this->size,
-        ];
+        ]);
     }
 }
