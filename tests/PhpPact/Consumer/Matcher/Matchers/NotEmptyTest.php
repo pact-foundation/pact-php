@@ -4,6 +4,7 @@ namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Generators\RandomString;
 use PhpPact\Consumer\Matcher\Matchers\NotEmpty;
 use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
@@ -42,6 +43,19 @@ class NotEmptyTest extends TestCase
     public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
         $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
+    }
+
+    #[TestWith([new NotEmpty("contains single quote '"), new ProviderState('${value}'), '"notEmpty(fromProviderState(\'${value}\', \'contains single quote \\\\\'\'))"'])]
+    #[TestWith([new NotEmpty('example value'), new ProviderState('${value}'), '"notEmpty(fromProviderState(\'${value}\', \'example value\'))"'])]
+    #[TestWith([new NotEmpty(100.09), new ProviderState('${value}'), '"notEmpty(fromProviderState(\'${value}\', 100.09))"'])]
+    #[TestWith([new NotEmpty(100), new ProviderState('${value}'), '"notEmpty(fromProviderState(\'${value}\', 100))"'])]
+    #[TestWith([new NotEmpty(true), new ProviderState('${value}'), '"notEmpty(fromProviderState(\'${value}\', true))"'])]
+    #[TestWith([new NotEmpty(false), new ProviderState('${value}'), '"notEmpty(fromProviderState(\'${value}\', false))"'])]
+    public function testFormatExpressionWithGenerator(NotEmpty $matcher, GeneratorInterface $generator, string $expression): void
+    {
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $matcher = $matcher->withGenerator($generator);
         $this->assertSame($expression, json_encode($matcher));
     }
 }

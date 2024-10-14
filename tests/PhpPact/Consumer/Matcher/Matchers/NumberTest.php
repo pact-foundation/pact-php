@@ -4,7 +4,9 @@ namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Matchers\Number;
+use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
@@ -37,6 +39,17 @@ class NumberTest extends TestCase
     public function testFormatExpression(MatcherInterface $matcher, string $expression): void
     {
         $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $this->assertSame($expression, json_encode($matcher));
+    }
+
+    #[TestWith([new Number(-99), new ProviderState('${value}'), '"matching(number, fromProviderState(\'${value}\', -99))"'])]
+    #[TestWith([new Number(100), new ProviderState('${value}'), '"matching(number, fromProviderState(\'${value}\', 100))"'])]
+    #[TestWith([new Number(100.01), new ProviderState('${value}'), '"matching(number, fromProviderState(\'${value}\', 100.01))"'])]
+    #[TestWith([new Number(-100.003), new ProviderState('${value}'), '"matching(number, fromProviderState(\'${value}\', -100.003))"'])]
+    public function testFormatExpressionWithGenerator(Number $matcher, GeneratorInterface $generator, string $expression): void
+    {
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $matcher = $matcher->withGenerator($generator);
         $this->assertSame($expression, json_encode($matcher));
     }
 }

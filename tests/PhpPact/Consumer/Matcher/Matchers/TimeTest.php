@@ -4,7 +4,9 @@ namespace PhpPactTest\Consumer\Matcher\Matchers;
 
 use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
+use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Matchers\Time;
+use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
@@ -35,5 +37,15 @@ class TimeTest extends TestCase
     {
         $matcher = $matcher->withFormatter(new ExpressionFormatter());
         $this->assertSame($json, json_encode($matcher));
+    }
+
+    #[TestWith([new Time("contains single quote '", '22:04'), new ProviderState('${value}'), '"matching(time, \'contains single quote \\\\\'\', fromProviderState(\'${value}\', \'22:04\'))"'])]
+    #[TestWith([new Time('HH:mm', "contains single quote '"), new ProviderState('${value}'), '"matching(time, \'HH:mm\', fromProviderState(\'${value}\', \'contains single quote \\\\\'\'))"'])]
+    #[TestWith([new Time('HH:mm', '22:04'), new ProviderState('${value}'), '"matching(time, \'HH:mm\', fromProviderState(\'${value}\', \'22:04\'))"'])]
+    public function testFormatExpressionWithGenerator(Time $matcher, GeneratorInterface $generator, string $expression): void
+    {
+        $matcher = $matcher->withFormatter(new ExpressionFormatter());
+        $matcher = $matcher->withGenerator($generator);
+        $this->assertSame($expression, json_encode($matcher));
     }
 }

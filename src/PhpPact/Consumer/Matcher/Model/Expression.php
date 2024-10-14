@@ -15,6 +15,19 @@ class Expression implements JsonSerializable
         $this->setValues($values);
     }
 
+    public function getFormat(): string
+    {
+        return $this->format;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getValues(): array
+    {
+        return $this->values;
+    }
+
     public function jsonSerialize(): string
     {
         return $this->format();

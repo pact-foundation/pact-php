@@ -11,7 +11,8 @@ class ExpressionTest extends TestCase
 {
     public function testFormat(): void
     {
-        $expression = new Expression('values(%quote%, %noQuote%, %true%, %false%, %integer%, %double%, %empty%)', [
+        $format = 'values(%quote%, %noQuote%, %true%, %false%, %integer%, %double%, %empty%)';
+        $values = [
             'quote' => "it's fine",
             'noQuote' => 'right',
             'true' => true,
@@ -19,7 +20,10 @@ class ExpressionTest extends TestCase
             'integer' => -123,
             'double' => -12.3,
             'empty' => null,
-        ]);
+        ];
+        $expression = new Expression($format, $values);
+        $this->assertSame($format, $expression->getFormat());
+        $this->assertSame($values, $expression->getValues());
         $this->assertSame("\"values('it\\\'s fine', 'right', true, false, -123, -12.3, null)\"", json_encode($expression));
         $this->assertSame("values('it\'s fine', 'right', true, false, -123, -12.3, null)", (string)$expression);
     }
