@@ -170,13 +170,11 @@ To run the examples
 
 Run a single example
 
-1. Change into the required example folder `cd examples/json`
-3. Run the example - `phpunit`
+`composer run-example:json`
 
 Run all examples
 
-1. Change into the examples folder `cd examples`
-2. Install all the examples `phpunit`
+`composer run-examples`
 
 ![----------](https://user-images.githubusercontent.com/53900/182992715-aa63e421-170b-41cf-8f95-82fe4b0846c2.png)
 
