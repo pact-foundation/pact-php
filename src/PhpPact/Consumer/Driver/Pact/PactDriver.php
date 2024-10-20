@@ -23,6 +23,9 @@ class PactDriver implements PactDriverInterface
 
     public function cleanUp(): void
     {
+        if (!$this->pact) {
+            return;
+        }
         $success = $this->client->freePactHandle($this->getPact()->handle) === 0;
         if (!$success) {
             trigger_error('Can not free pact handle. The handle is not valid or does not refer to a valid Pact. Could be that it was previously deleted.', E_USER_WARNING);

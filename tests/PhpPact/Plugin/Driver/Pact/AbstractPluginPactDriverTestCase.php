@@ -2,7 +2,6 @@
 
 namespace PhpPactTest\Plugin\Driver\Pact;
 
-use PhpPact\Consumer\Driver\Exception\MissingPactException;
 use PhpPact\Plugin\Driver\Pact\AbstractPluginPactDriver;
 use PhpPact\Plugin\Exception\PluginNotSupportedBySpecificationException;
 use PhpPactTest\Consumer\Driver\Pact\PactDriverTest;
@@ -51,7 +50,7 @@ abstract class AbstractPluginPactDriverTestCase extends PactDriverTest
 
     public function testCleanUpPluginWithoutPact(): void
     {
-        $this->expectException(MissingPactException::class);
+        $this->expectNotToPerformAssertions();
         $this->driver->cleanUp();
     }
 
