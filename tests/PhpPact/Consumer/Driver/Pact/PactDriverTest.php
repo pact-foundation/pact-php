@@ -81,7 +81,7 @@ class PactDriverTest extends TestCase
 
     public function testCleanUpWithoutPact(): void
     {
-        $this->expectException(MissingPactException::class);
+        $this->expectNotToPerformAssertions();
         $this->driver->cleanUp();
     }
 

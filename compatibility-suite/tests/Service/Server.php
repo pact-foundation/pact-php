@@ -77,4 +77,10 @@ final class Server implements ServerInterface
     {
         return $this->config->getPort();
     }
+
+    public function __destruct()
+    {
+        // Clean up mock server
+        $this->getVerifyResult();
+    }
 }
