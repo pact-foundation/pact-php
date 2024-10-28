@@ -510,6 +510,41 @@ class Client implements ClientInterface
         return $result;
     }
 
+    public function loggerInit(): void
+    {
+        $this->call('pactffi_logger_init');
+    }
+
+    public function loggerAttachSink(string $sinkSpecifier, int $levelFilter): int
+    {
+        $method = 'pactffi_logger_attach_sink';
+        $result = $this->call($method, $sinkSpecifier, $levelFilter);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function loggerApply(): int
+    {
+        $method = 'pactffi_logger_apply';
+        $result = $this->call($method);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function fetchLogBuffer(?string $logId = null): string
+    {
+        $method = 'pactffi_fetch_log_buffer';
+        $result = $this->call($method, $logId);
+        if (!is_string($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "string", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
     public function getInteractionPartRequest(): int
     {
         return $this->getEnum('InteractionPart_Request');
@@ -548,6 +583,36 @@ class Client implements ClientInterface
     public function getPactSpecificationUnknown(): int
     {
         return $this->getEnum('PactSpecification_Unknown');
+    }
+
+    public function getLevelFilterTrace(): int
+    {
+        return $this->getEnum('LevelFilter_Trace');
+    }
+
+    public function getLevelFilterDebug(): int
+    {
+        return $this->getEnum('LevelFilter_Debug');
+    }
+
+    public function getLevelFilterInfo(): int
+    {
+        return $this->getEnum('LevelFilter_Info');
+    }
+
+    public function getLevelFilterWarn(): int
+    {
+        return $this->getEnum('LevelFilter_Warn');
+    }
+
+    public function getLevelFilterError(): int
+    {
+        return $this->getEnum('LevelFilter_Error');
+    }
+
+    public function getLevelFilterOff(): int
+    {
+        return $this->getEnum('LevelFilter_Off');
     }
 
     private function getEnum(string $name): int

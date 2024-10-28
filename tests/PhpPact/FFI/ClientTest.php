@@ -385,6 +385,30 @@ class ClientTest extends TestCase
         $this->assertSame(5, $result);
     }
 
+    public function testLoggerInit(): void
+    {
+        $this->client->loggerInit();
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testLoggerAttachSink(): void
+    {
+        $result = $this->client->loggerAttachSink('stdout', 0);
+        $this->assertSame(0, $result);
+    }
+
+    public function testLoggerApply(): void
+    {
+        $result = $this->client->loggerApply();
+        $this->assertSame(-1, $result);
+    }
+
+    public function testFetchLogBuffer(): void
+    {
+        $result = $this->client->fetchLogBuffer();
+        $this->assertSame('', $result);
+    }
+
     public function testGetInteractionPartRequest(): void
     {
         $this->assertSame(0, $this->client->getInteractionPartRequest());
@@ -423,5 +447,35 @@ class ClientTest extends TestCase
     public function testGetPactSpecificationUnknown(): void
     {
         $this->assertSame(0, $this->client->getPactSpecificationUnknown());
+    }
+
+    public function testGetLevelFilterTrace(): void
+    {
+        $this->assertSame(5, $this->client->getLevelFilterTrace());
+    }
+
+    public function testGetLevelFilterDebug(): void
+    {
+        $this->assertSame(4, $this->client->getLevelFilterDebug());
+    }
+
+    public function testGetLevelFilterInfo(): void
+    {
+        $this->assertSame(3, $this->client->getLevelFilterInfo());
+    }
+
+    public function testGetLevelFilterWarn(): void
+    {
+        $this->assertSame(2, $this->client->getLevelFilterWarn());
+    }
+
+    public function testGetLevelFilterError(): void
+    {
+        $this->assertSame(1, $this->client->getLevelFilterError());
+    }
+
+    public function testGetLevelFilterOff(): void
+    {
+        $this->assertSame(0, $this->client->getLevelFilterOff());
     }
 }
