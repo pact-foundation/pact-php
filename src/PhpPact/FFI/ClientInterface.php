@@ -123,6 +123,14 @@ interface ClientInterface
 
     public function interactionContents(int $interaction, int $part, string $contentType, string $contents): int;
 
+    public function loggerInit(): void;
+
+    public function loggerAttachSink(string $sinkSpecifier, int $levelFilter): int;
+
+    public function loggerApply(): int;
+
+    public function fetchLogBuffer(?string $logId = null): string;
+
     public function getInteractionPartRequest(): int;
 
     public function getInteractionPartResponse(): int;
@@ -138,4 +146,16 @@ interface ClientInterface
     public function getPactSpecificationV4(): int;
 
     public function getPactSpecificationUnknown(): int;
+
+    public function getLevelFilterTrace(): int;
+
+    public function getLevelFilterDebug(): int;
+
+    public function getLevelFilterInfo(): int;
+
+    public function getLevelFilterWarn(): int;
+
+    public function getLevelFilterError(): int;
+
+    public function getLevelFilterOff(): int;
 }
