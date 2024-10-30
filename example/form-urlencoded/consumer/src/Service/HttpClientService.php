@@ -27,6 +27,9 @@ class HttpClientService
                 'email' => 'user@example.test',
                 'password' => 'very@secure&password123',
                 'age' => 41,
+                'and' => '&',
+                'slash' => '/',
+                'question-mark' => '?',
             ]) .
             '&roles[]=User&roles[]=Manager',
             'headers' => [

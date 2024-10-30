@@ -39,6 +39,10 @@ class HttpClientServiceTest extends TestCase
                         'object' => $matcher->like([
                             'key' => $matcher->string('value')
                         ]),
+                        // special characters
+                        'and' => $matcher->equal('&'),
+                        'slash' => '/',
+                        'question-mark' => '?',
                     ]),
                     'application/x-www-form-urlencoded'
                 )
