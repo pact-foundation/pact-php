@@ -33,6 +33,11 @@ class HttpClientServiceTest extends TestCase
                         'password' => $matcher->regex('user@password111', '^[\w\d@$!%*#?&^_-]{8,}$'),
                         'age' => $matcher->number(27),
                         'roles[]' => $matcher->eachValue(['User'], [$matcher->regex('User', 'Admin|User|Manager')]),
+                        'orders[]' => $matcher->arrayContaining([
+                            $matcher->equal('DESC'),
+                            $matcher->equal('ASC'),
+                            $matcher->equal(''),
+                        ]),
                         // Null, boolean and object values are not supported, so the values and matchers will be ignored
                         'null' => $matcher->nullValue(),
                         'boolean' => $matcher->booleanV3(true),

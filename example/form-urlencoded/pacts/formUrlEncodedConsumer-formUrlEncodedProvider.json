@@ -11,7 +11,7 @@
         }
       ],
       "request": {
-        "body": "age=27&agree=false&ampersand=%26&email=user%40email.test&empty=&equals-sign=%3D&fullname=User+name&password=user%40password111&question-mark=%3F&roles%5B%5D=User&slash=%2F",
+        "body": "age=27&agree=false&ampersand=%26&email=user%40email.test&empty=&equals-sign=%3D&fullname=User+name&orders%5B%5D=DESC&orders%5B%5D=ASC&orders%5B%5D=&password=user%40password111&question-mark=%3F&roles%5B%5D=User&slash=%2F",
         "headers": {
           "Accept": "application/x-www-form-urlencoded",
           "Content-Type": "application/x-www-form-urlencoded"
@@ -82,6 +82,55 @@
                 {
                   "match": "regex",
                   "regex": "^[\\w\\d@$!%*#?&^_-]{8,}$"
+                }
+              ]
+            },
+            "$['orders[]']": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "arrayContains",
+                  "variants": [
+                    {
+                      "index": 0,
+                      "rules": {
+                        "$": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "equality"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "index": 1,
+                      "rules": {
+                        "$": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "equality"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "index": 2,
+                      "rules": {
+                        "$": {
+                          "combine": "AND",
+                          "matchers": [
+                            {
+                              "match": "equality"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
                 }
               ]
             },

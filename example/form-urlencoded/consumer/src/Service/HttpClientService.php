@@ -32,7 +32,8 @@ class HttpClientService
                 'question-mark' => '?',
                 'equals-sign' => '=',
             ]) .
-            '&roles[]=User&roles[]=Manager',
+            '&roles[]=User&roles[]=Manager' .
+            '&orders[]=&orders[]=ASC&orders[]=DESC',
             'headers' => [
                 'Accept' => 'application/x-www-form-urlencoded',
                 'Content-Type' => 'application/x-www-form-urlencoded',
