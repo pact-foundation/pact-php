@@ -11,7 +11,7 @@
         }
       ],
       "request": {
-        "body": "age=27&agree=false&and=%26&email=user%40email.test&empty=&fullname=User+name&password=user%40password111&question-mark=%3F&roles%5B%5D=User&slash=%2F",
+        "body": "age=27&agree=false&ampersand=%26&email=user%40email.test&empty=&fullname=User+name&password=user%40password111&question-mark=%3F&roles%5B%5D=User&slash=%2F",
         "headers": {
           "Accept": "application/x-www-form-urlencoded",
           "Content-Type": "application/x-www-form-urlencoded"
@@ -35,7 +35,7 @@
                 }
               ]
             },
-            "$.and": {
+            "$.ampersand": {
               "combine": "AND",
               "matchers": [
                 {

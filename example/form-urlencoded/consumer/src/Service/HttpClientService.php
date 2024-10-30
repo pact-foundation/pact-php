@@ -27,7 +27,7 @@ class HttpClientService
                 'email' => 'user@example.test',
                 'password' => 'very@secure&password123',
                 'age' => 41,
-                'and' => '&',
+                'ampersand' => '&',
                 'slash' => '/',
                 'question-mark' => '?',
             ]) .

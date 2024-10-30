@@ -40,7 +40,7 @@ class HttpClientServiceTest extends TestCase
                             'key' => $matcher->string('value')
                         ]),
                         // special characters
-                        'and' => $matcher->equal('&'),
+                        'ampersand' => $matcher->equal('&'),
                         'slash' => '/',
                         'question-mark' => '?',
                     ]),
