@@ -16,11 +16,15 @@ $app->post('/users', function (ServerRequestInterface $request) {
 
     error_log(sprintf('request body: %s', (string) $request->getBody()));
 
-    $response->getBody()->write(\json_encode(['id' => '49dcfd3f-a5c9-49cb-a09e-a40a1da936b9']));
+    $response->getBody()->write(http_build_query([
+        'id' => '49dcfd3f-a5c9-49cb-a09e-a40a1da936b9',
+        // @todo Follow Postel's law
+        // 'extra' => 'any',
+    ]));
 
     return $response
         ->withStatus(201)
-        ->withHeader('Content-Type', 'application/json');
+        ->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 });
 
 $app->post('/pact-change-state', function (ServerRequestInterface $request) {

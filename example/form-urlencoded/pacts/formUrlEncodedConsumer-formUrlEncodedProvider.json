@@ -13,7 +13,7 @@
       "request": {
         "body": "age=27&agree=false&and=%26&email=user%40email.test&empty=&fullname=User+name&password=user%40password111&question-mark=%3F&roles%5B%5D=User&slash=%2F",
         "headers": {
-          "Accept": "application/json",
+          "Accept": "application/x-www-form-urlencoded",
           "Content-Type": "application/x-www-form-urlencoded"
         },
         "matchingRules": {
@@ -106,11 +106,9 @@
         "path": "/users"
       },
       "response": {
-        "body": {
-          "id": "6e58b1df-ff80-4031-b7b9-5191e4c74ee8"
-        },
+        "body": "id=6e58b1df-ff80-4031-b7b9-5191e4c74ee8",
         "headers": {
-          "Content-Type": "application/json"
+          "Content-Type": "application/x-www-form-urlencoded"
         },
         "matchingRules": {
           "body": {

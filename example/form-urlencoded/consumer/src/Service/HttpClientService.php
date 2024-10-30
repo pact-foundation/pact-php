@@ -33,7 +33,7 @@ class HttpClientService
             ]) .
             '&roles[]=User&roles[]=Manager',
             'headers' => [
-                'Accept' => 'application/json',
+                'Accept' => 'application/x-www-form-urlencoded',
                 'Content-Type' => 'application/x-www-form-urlencoded',
             ],
         ]);
