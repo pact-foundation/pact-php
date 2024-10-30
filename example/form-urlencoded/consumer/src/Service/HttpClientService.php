@@ -30,6 +30,7 @@ class HttpClientService
                 'ampersand' => '&',
                 'slash' => '/',
                 'question-mark' => '?',
+                'equals-sign' => '=',
             ]) .
             '&roles[]=User&roles[]=Manager',
             'headers' => [

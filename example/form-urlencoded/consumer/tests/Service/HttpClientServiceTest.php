@@ -43,6 +43,7 @@ class HttpClientServiceTest extends TestCase
                         'ampersand' => $matcher->equal('&'),
                         'slash' => '/',
                         'question-mark' => '?',
+                        'equals-sign' => '=',
                     ]),
                     'application/x-www-form-urlencoded'
                 )
