@@ -19,7 +19,7 @@ trait ProviderStates
 
     /**
      * @param string $name
-     * @param array<string, string> $params
+     * @param array<string, mixed> $params
      * @param bool   $overwrite
      *
      * @return array<int, ProviderState>
@@ -33,7 +33,7 @@ trait ProviderStates
 
     /**
      * @param string $name
-     * @param array<string, string> $params
+     * @param array<string, mixed> $params
      * @param bool   $overwrite - if true reset the entire state
      *
      * @return $this
