@@ -48,6 +48,13 @@ class ConsumerServiceMultipleInteractionsTest extends TestCase
         }
         $builder = new InteractionBuilder($config);
         $builder
+            ->given('User exist', [
+                'user' => [
+                    'name' => 'Bob',
+                    'id' => '0c447df2-20ae-469d-ae52-b1258c06dabe',
+                    'dob' => '1993-06-22',
+                ],
+            ])
             ->uponReceiving('A get request to /hello/{name}')
             ->with($request)
             ->willRespondWith($response, false); // Don't start the mock server yet, because there will me more interactions.

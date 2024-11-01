@@ -30,12 +30,12 @@ class ProviderState
     }
 
     /**
-     * @param array<string, string> $params
+     * @param array<string, mixed> $params
      */
     public function setParams(array $params = []): void
     {
         foreach ($params as $key => $value) {
-            $this->addParam($key, $value);
+            $this->addParam($key, is_string($value) ? $value : json_encode($value, JSON_THROW_ON_ERROR));
         }
     }
 

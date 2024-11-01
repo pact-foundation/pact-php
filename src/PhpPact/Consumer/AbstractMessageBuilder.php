@@ -15,7 +15,7 @@ abstract class AbstractMessageBuilder implements BuilderInterface
 
     /**
      * @param string                 $name      what is given to the request
-     * @param array<string, string>  $params    for that request
+     * @param array<string, mixed>  $params    for that request
      * @param bool                   $overwrite clear pass states completely and start this array
      */
     public function given(string $name, array $params = [], bool $overwrite = false): self

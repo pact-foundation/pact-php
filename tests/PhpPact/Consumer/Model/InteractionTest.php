@@ -124,4 +124,30 @@ class InteractionTest extends TestCase
             $this->assertSame(['key 2' => 'value 2'], $providerState->getParams());
         }
     }
+
+    public function testAddProviderStateWithParamMixedValue(): void
+    {
+        $this->interaction->addProviderState('provider state 1', ['string value' => 'test']);
+        $this->interaction->addProviderState('provider state 2', ['number value' => 123]);
+        $this->interaction->addProviderState('provider state 3', ['array value' => ['value 1', 'value 2', 'value 3']]);
+        $this->interaction->addProviderState('provider state 4', ['object value' => (object) ['key 1' => 'value 1', 'key 2' => 'value 2']]);
+        $providerStates = $this->interaction->getProviderStates();
+        $this->assertCount(4, $providerStates);
+        $providerState = reset($providerStates);
+        $this->assertInstanceOf(ProviderState::class, $providerState);
+        $this->assertSame('provider state 1', $providerState->getName());
+        $this->assertSame(['string value' => 'test'], $providerState->getParams());
+        $providerState = next($providerStates);
+        $this->assertInstanceOf(ProviderState::class, $providerState);
+        $this->assertSame('provider state 2', $providerState->getName());
+        $this->assertSame(['number value' => '123'], $providerState->getParams());
+        $providerState = next($providerStates);
+        $this->assertInstanceOf(ProviderState::class, $providerState);
+        $this->assertSame('provider state 3', $providerState->getName());
+        $this->assertSame(['array value' => '["value 1","value 2","value 3"]'], $providerState->getParams());
+        $providerState = next($providerStates);
+        $this->assertInstanceOf(ProviderState::class, $providerState);
+        $this->assertSame('provider state 4', $providerState->getName());
+        $this->assertSame(['object value' => '{"key 1":"value 1","key 2":"value 2"}'], $providerState->getParams());
+    }
 }
