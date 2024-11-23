@@ -36,6 +36,7 @@ class MockServerEnvConfig extends MockServerConfig
 
         $version = $this->parseEnv('PACT_SPECIFICATION_VERSION');
         if (!$version) {
+            /** @var string */
             $version = static::DEFAULT_SPECIFICATION_VERSION;
         }
 
