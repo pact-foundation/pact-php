@@ -58,6 +58,26 @@ class PersonMessageHandlerTest extends TestCase
                         'given' => $this->matcher->like($this->given),
                         'surname' => $this->matcher->like($this->surname),
                     ],
+                    'children' => $this->matcher->matchAll(
+                        ['Zane' => 12],
+                        [
+                            $this->matcher->eachKey(
+                                [],
+                                [$this->matcher->string()]
+                            ),
+                            $this->matcher->eachValue(
+                                [],
+                                [
+                                    $this->matcher->number(23),
+                                ],
+                            ),
+                            $this->matcher->atLeast(0),
+                            $this->matcher->atMost(3),
+                            // These matchers are allowed, but are not recommend
+                            // $this->matcher->atLeastLike(123, 2),
+                            // $this->matcher->atMostLike(234, 3),
+                        ],
+                    ),
                 ]),
                 'application/protobuf'
             ));
