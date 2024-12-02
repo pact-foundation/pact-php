@@ -135,8 +135,7 @@ class MessageBuilderTest extends TestCase
         foreach ($callbacks as $callback) {
             $this->assertSame($this->builder, $this->builder->setCallback($callback));
         }
-        $builderCallbacks = $this->getCallbacks();
-        $this->assertSame([end($callbacks)], $builderCallbacks);
+        $this->assertCallbacks([end($callbacks)]);
     }
 
     public function testSetMultipleCallbacks(): void
@@ -150,8 +149,7 @@ class MessageBuilderTest extends TestCase
         foreach ($callbacks as $description => $callback) {
             $this->assertSame($this->builder, $this->builder->setCallback($callback, $description));
         }
-        $builderCallbacks = $this->getCallbacks();
-        $this->assertSame($callbacks, $builderCallbacks);
+        $this->assertCallbacks($callbacks);
     }
 
     public function testReify(): void
@@ -242,14 +240,13 @@ class MessageBuilderTest extends TestCase
     }
 
     /**
-     * @return array<mixed, callable>
+     * @param callable[] $expectedCallbacks
      */
-    private function getCallbacks(): array
+    private function assertCallbacks(array $expectedCallbacks): void
     {
         $reflection = new ReflectionProperty($this->builder, 'callback');
-        $callback = $reflection->getValue($this->builder);
-        $this->assertIsArray($callback);
-
-        return $callback;
+        $callbacks = $reflection->getValue($this->builder);
+        $this->assertIsArray($callbacks);
+        $this->assertSame($expectedCallbacks, $callbacks);
     }
 }
