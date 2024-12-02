@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\CompatibilitySuite\Service;
 
+use PhpPact\Consumer\Matcher\Enum\HttpStatus;
 use PhpPact\Consumer\Matcher\Matchers\ArrayContains;
 use PhpPact\Consumer\Matcher\Matchers\Boolean;
 use PhpPact\Consumer\Matcher\Matchers\ContentType;
@@ -55,10 +56,10 @@ final class MatchingRuleConverter implements MatchingRuleConverterInterface
                 return new Number($this->getNumber($value));
 
             case 'integer':
-                return new Integer($this->getNumber($value));
+                return new Integer($this->getInteger($value));
 
             case 'decimal':
-                return new Decimal($this->getNumber($value));
+                return new Decimal($this->getDecimal($value));
 
             case 'null':
                 return new NullValue();
@@ -92,24 +93,48 @@ final class MatchingRuleConverter implements MatchingRuleConverterInterface
 
             case 'regex':
                 $regex = $rule->getMatcherAttribute('regex');
-                return new Regex($regex, $value);
+                return new Regex($regex, $value ?? '');
 
             case 'statusCode':
-                return new StatusCode($rule->getMatcherAttribute('status'));
+                return new StatusCode($this->getHttpStatus($rule));
 
             default:
                 return null;
         }
     }
 
-    private function getNumber(mixed $value): int|float|null
+    private function getNumber(mixed $value): int|float
     {
         if (is_numeric($value)) {
-            $value = $value + 0;
-        } else {
-            $value = null;
+            return $value + 0;
         }
 
-        return $value;
+        // @todo Fix this compatibility-suite's mistake: there is no number in `basic.json`
+        return 1;
+    }
+
+    private function getInteger(mixed $value): int
+    {
+        if (is_numeric($value)) {
+            return $value + 0;
+        }
+
+        // @todo Fix this compatibility-suite's mistake: there is no integer in `basic.json`
+        return 1;
+    }
+
+    private function getDecimal(mixed $value): float
+    {
+        if (is_numeric($value)) {
+            return $value + 0;
+        }
+
+        // @todo Fix this compatibility-suite's mistake: there is no decimal in `basic.json`
+        return 1.1;
+    }
+
+    private function getHttpStatus(MatchingRule $rule): HttpStatus
+    {
+        return HttpStatus::from($rule->getMatcherAttribute('status') ?? '');
     }
 }

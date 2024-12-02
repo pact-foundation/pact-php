@@ -2,9 +2,9 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
+use PhpPact\Consumer\Matcher\Generators\RandomInt;
 use PhpPact\Consumer\Matcher\Matchers\Number;
 use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
@@ -13,23 +13,16 @@ use PHPUnit\Framework\TestCase;
 
 class NumberTest extends TestCase
 {
-    #[TestWith([new Number(null), '{"pact:matcher:type":"number","pact:generator:type":"RandomInt","min":0,"max":10,"value":null}'])]
-    #[TestWith([new Number(123), '{"pact:matcher:type":"number","value":123}'])]
-    #[TestWith([new Number(12.3), '{"pact:matcher:type":"number","value":12.3}'])]
-    public function testFormatJson(MatcherInterface $matcher, string $json): void
+    #[TestWith([new Number(123), null, '{"pact:matcher:type":"number","value":123}'])]
+    #[TestWith([new Number(12.3), null, '{"pact:matcher:type":"number","value":12.3}'])]
+    #[TestWith([new Number(123), new RandomInt(), '{"pact:matcher:type":"number","pact:generator:type":"RandomInt","min":0,"max":10,"value":123}'])]
+    #[TestWith([new Number(12.3), new RandomInt(), '{"pact:matcher:type":"number","pact:generator:type":"RandomInt","min":0,"max":10,"value":12.3}'])]
+    public function testFormatJson(Number $matcher, ?GeneratorInterface $generator, string $json): void
     {
+        $matcher->setGenerator($generator);
         $jsonEncoded = json_encode($matcher);
         $this->assertIsString($jsonEncoded);
         $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
-    }
-
-    public function testInvalidValue(): void
-    {
-        $matcher = new Number();
-        $matcher = $matcher->withFormatter(new ExpressionFormatter());
-        $this->expectException(InvalidValueException::class);
-        $this->expectExceptionMessage(sprintf("Number matching expression doesn't support value of type %s", gettype(null)));
-        json_encode($matcher);
     }
 
     #[TestWith([new Number(-99), '"matching(number, -99)"'])]

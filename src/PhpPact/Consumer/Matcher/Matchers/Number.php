@@ -2,8 +2,6 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
-use PhpPact\Consumer\Matcher\Generators\RandomInt;
 use PhpPact\Consumer\Matcher\Model\Attributes;
 use PhpPact\Consumer\Matcher\Model\Expression;
 use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
@@ -19,11 +17,8 @@ class Number extends GeneratorAwareMatcher implements JsonFormattableInterface, 
     use JsonFormattableTrait;
     use ExpressionFormattableTrait;
 
-    public function __construct(private int|float|null $value = null)
+    public function __construct(private int|float $value = 13)
     {
-        if ($value === null) {
-            $this->setGenerator(new RandomInt());
-        }
         parent::__construct();
     }
 
@@ -37,9 +32,6 @@ class Number extends GeneratorAwareMatcher implements JsonFormattableInterface, 
 
     public function formatExpression(): Expression
     {
-        if (null === $this->value) {
-            throw new InvalidValueException(sprintf("Number matching expression doesn't support value of type %s", gettype($this->value)));
-        }
         return $this->mergeExpression(new Expression('matching(number, %value%)', ['value' => $this->value]));
     }
 }
