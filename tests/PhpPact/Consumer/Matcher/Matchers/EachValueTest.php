@@ -55,7 +55,7 @@ class EachValueTest extends TestCase
                         "value": null
                     }
                 ]
-                }
+            }
             JSON,
             $jsonEncoded
         );
