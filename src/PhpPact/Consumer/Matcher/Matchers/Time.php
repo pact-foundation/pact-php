@@ -2,8 +2,6 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Generators\Time as TimeGenerator;
-
 /**
  * Matches the string representation of a value against the time format.
  *
@@ -13,11 +11,8 @@ use PhpPact\Consumer\Matcher\Generators\Time as TimeGenerator;
  */
 class Time extends AbstractDateTime
 {
-    public function __construct(string $format = 'HH:mm:ss', ?string $value = null)
+    public function __construct(string $format = 'HH:mm:ss', string $value = '')
     {
-        if ($value === null) {
-            $this->setGenerator(new TimeGenerator($format));
-        }
         parent::__construct($format, $value);
     }
 

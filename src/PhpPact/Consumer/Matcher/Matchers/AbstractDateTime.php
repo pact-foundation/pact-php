@@ -15,7 +15,7 @@ abstract class AbstractDateTime extends GeneratorAwareMatcher implements JsonFor
     use JsonFormattableTrait;
     use ExpressionFormattableTrait;
 
-    public function __construct(protected string $format, private ?string $value = null)
+    public function __construct(protected string $format, private string $value = '')
     {
         parent::__construct();
     }
@@ -31,10 +31,6 @@ abstract class AbstractDateTime extends GeneratorAwareMatcher implements JsonFor
 
     public function formatExpression(): Expression
     {
-        if (!is_string($this->value)) {
-            throw new InvalidValueException(sprintf("DateTime matching expression doesn't support value of type %s", gettype($this->value)));
-        }
-
         $type = $this->getType();
 
         return $this->mergeExpression(new Expression(

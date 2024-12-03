@@ -103,7 +103,7 @@ class GeneratorsTest extends TestCase
         $this->assertTrue($this->validateDateTime($body['time'], 'H:i:s'));
         $this->assertTrue($this->validateDateTime($body['datetime'], "Y-m-d\TH:i:s"));
         $this->assertIsString($body['string']);
-        $this->assertNotSame(StringValue::DEFAULT_VALUE, $body['string']);
+        $this->assertNotSame('', $body['string']);
         $this->assertIsNumeric($body['number']);
         $this->assertNotSame('http://localhost/users/1234/posts/latest', $body['url']);
         $this->assertMatchesRegularExpression('/.*(\\/users\\/\\d+\\/posts\\/latest)$/', $body['url']);

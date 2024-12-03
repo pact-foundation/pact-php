@@ -2,9 +2,9 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
+use PhpPact\Consumer\Matcher\Generators\RandomDecimal;
 use PhpPact\Consumer\Matcher\Matchers\Decimal;
 use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
@@ -13,21 +13,14 @@ use PHPUnit\Framework\TestCase;
 
 class DecimalTest extends TestCase
 {
-    #[TestWith([new Decimal(null), '{"pact:matcher:type":"decimal","pact:generator:type":"RandomDecimal","digits":10,"value":null}'])]
-    #[TestWith([new Decimal(1.23), '{"pact:matcher:type":"decimal","value":1.23}'])]
-    public function testFormatJson(MatcherInterface $matcher, string $json): void
+    #[TestWith([new Decimal(1.23), null, '{"pact:matcher:type":"decimal","value":1.23}'])]
+    #[TestWith([new Decimal(1.23), new RandomDecimal(), '{"pact:matcher:type":"decimal","pact:generator:type":"RandomDecimal","digits":10,"value":1.23}'])]
+    public function testFormatJson(Decimal $matcher, ?GeneratorInterface $generator, string $json): void
     {
+        $matcher->setGenerator($generator);
         $jsonEncoded = json_encode($matcher);
         $this->assertIsString($jsonEncoded);
         $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
-    }
-
-    public function testInvalidValue(): void
-    {
-        $matcher = (new Decimal())->withFormatter(new ExpressionFormatter());
-        $this->expectException(InvalidValueException::class);
-        $this->expectExceptionMessage(sprintf("Decimal matching expression doesn't support value of type %s", gettype(null)));
-        json_encode($matcher);
     }
 
     #[TestWith([new Decimal(-99), '"matching(decimal, -99)"'])] // Provider verification will fail on this case
