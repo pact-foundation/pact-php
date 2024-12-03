@@ -25,7 +25,7 @@ class ArrayData
     }
 
     /**
-     * @param array<int, string> $values
+     * @param string[] $values
      */
     public static function createFrom(array $values): ?self
     {
@@ -38,7 +38,8 @@ class ArrayData
         if ($items === null) {
             throw new CDataNotCreatedException();
         }
-        foreach ($values as $index => $value) {
+        $index = 0;
+        foreach ($values as $value) {
             $length = \strlen($value);
             $itemSize = $length + 1;
             $item = FFI::new("char[{$itemSize}]", false);
@@ -46,7 +47,7 @@ class ArrayData
                 throw new CDataNotCreatedException();
             }
             FFI::memcpy($item, $value, $length);
-            $items[$index] = $item; // @phpstan-ignore-line
+            $items[$index++] = $item; // @phpstan-ignore-line
         }
 
         return new self($items, $size);
