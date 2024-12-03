@@ -2,8 +2,6 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
-use PhpPact\Consumer\Matcher\Generators\RandomDecimal;
 use PhpPact\Consumer\Matcher\Model\Attributes;
 use PhpPact\Consumer\Matcher\Model\Expression;
 use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
@@ -19,11 +17,8 @@ class Decimal extends GeneratorAwareMatcher implements JsonFormattableInterface,
     use JsonFormattableTrait;
     use ExpressionFormattableTrait;
 
-    public function __construct(private ?float $value = null)
+    public function __construct(private float $value = 13.01)
     {
-        if ($value === null) {
-            $this->setGenerator(new RandomDecimal());
-        }
         parent::__construct();
     }
 
@@ -37,9 +32,6 @@ class Decimal extends GeneratorAwareMatcher implements JsonFormattableInterface,
 
     public function formatExpression(): Expression
     {
-        if (!is_float($this->value)) {
-            throw new InvalidValueException(sprintf("Decimal matching expression doesn't support value of type %s", gettype($this->value)));
-        }
         return $this->mergeExpression(new Expression('matching(decimal, %value%)', ['value' => $this->value]));
     }
 }

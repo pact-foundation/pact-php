@@ -2,8 +2,6 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
-use PhpPact\Consumer\Matcher\Generators\RandomBoolean;
 use PhpPact\Consumer\Matcher\Model\Attributes;
 use PhpPact\Consumer\Matcher\Model\Expression;
 use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
@@ -17,11 +15,8 @@ class Boolean extends GeneratorAwareMatcher implements JsonFormattableInterface,
 {
     use JsonFormattableTrait;
 
-    public function __construct(private ?bool $value = null)
+    public function __construct(private bool $value = false)
     {
-        if ($value === null) {
-            $this->setGenerator(new RandomBoolean());
-        }
         parent::__construct();
     }
 
@@ -35,10 +30,6 @@ class Boolean extends GeneratorAwareMatcher implements JsonFormattableInterface,
 
     public function formatExpression(): Expression
     {
-        if (!is_bool($this->value)) {
-            throw new InvalidValueException(sprintf("Boolean matching expression doesn't support value of type %s", gettype($this->value)));
-        }
-
         return new Expression('matching(boolean, %value%)', ['value' => $this->value]);
     }
 }

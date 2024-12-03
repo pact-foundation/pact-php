@@ -2,7 +2,6 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Generators\RandomString;
 use PhpPact\Consumer\Matcher\Model\Attributes;
 use PhpPact\Consumer\Matcher\Model\Expression;
 use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
@@ -16,13 +15,8 @@ class StringValue extends GeneratorAwareMatcher implements JsonFormattableInterf
 {
     use JsonFormattableTrait;
 
-    public const DEFAULT_VALUE = 'some string';
-
-    public function __construct(private ?string $value = null)
+    public function __construct(private string $value = '')
     {
-        if ($value === null) {
-            $this->setGenerator(new RandomString());
-        }
         parent::__construct();
     }
 
@@ -30,17 +24,12 @@ class StringValue extends GeneratorAwareMatcher implements JsonFormattableInterf
     {
         return $this->mergeJson(new Attributes([
             'pact:matcher:type' => 'type',
-            'value' => $this->getValue(),
+            'value' => $this->value,
         ]));
     }
 
     public function formatExpression(): Expression
     {
-        return new Expression('matching(type, %value%)', ['value' => $this->getValue()]);
-    }
-
-    private function getValue(): string
-    {
-        return $this->value ?? self::DEFAULT_VALUE;
+        return new Expression('matching(type, %value%)', ['value' => $this->value]);
     }
 }

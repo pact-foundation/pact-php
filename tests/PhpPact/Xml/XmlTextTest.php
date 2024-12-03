@@ -30,7 +30,7 @@ class XmlTextTest extends TestCase
         $matcher->setFormatter(new XmlContentFormatter());
         $text = new XmlText($matcher);
         $expected = json_encode([
-            'content' => null,
+            'content' => 13,
             'matcher' => [
                 'pact:matcher:type' => 'integer',
                 'min' => 2,

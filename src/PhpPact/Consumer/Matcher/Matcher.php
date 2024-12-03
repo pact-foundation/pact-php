@@ -3,15 +3,21 @@
 namespace PhpPact\Consumer\Matcher;
 
 use PhpPact\Consumer\Matcher\Enum\HttpStatus;
+use PhpPact\Consumer\Matcher\Exception\InvalidHttpStatusException;
 use PhpPact\Consumer\Matcher\Exception\MatcherException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Formatters\Json\JsonFormatter;
+use PhpPact\Consumer\Matcher\Generators\Date as DateGenerator;
+use PhpPact\Consumer\Matcher\Generators\DateTime as DateTimeGenerator;
 use PhpPact\Consumer\Matcher\Generators\MockServerURL;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
 use PhpPact\Consumer\Matcher\Generators\RandomBoolean;
 use PhpPact\Consumer\Matcher\Generators\RandomDecimal;
 use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
 use PhpPact\Consumer\Matcher\Generators\RandomInt;
+use PhpPact\Consumer\Matcher\Generators\RandomString;
+use PhpPact\Consumer\Matcher\Generators\Regex as RegexGenerator;
+use PhpPact\Consumer\Matcher\Generators\Time as TimeGenerator;
 use PhpPact\Consumer\Matcher\Generators\Uuid;
 use PhpPact\Consumer\Matcher\Matchers\ArrayContains;
 use PhpPact\Consumer\Matcher\Matchers\Boolean;
@@ -139,9 +145,11 @@ class Matcher
      */
     public function term(string|array|null $values, string $pattern): Regex
     {
-        $matcher = new Regex($pattern, $values);
+        $matcher = new Regex($pattern, $values ?? '');
 
-        return $matcher->withFormatter($this->createFormatter());
+        return $matcher
+            ->withGenerator(null === $values ? new RegexGenerator($pattern) : null)
+            ->withFormatter($this->createFormatter());
     }
 
     /**
@@ -231,28 +239,34 @@ class Matcher
     public function decimal(?float $value = null): Type
     {
         return $this->like($value ?? 13.01)
-            ->withGenerator(is_null($value) ? new RandomDecimal() : null);
+            ->withGenerator(null === $value ? new RandomDecimal() : null);
     }
 
     public function booleanV3(?bool $value = null): Boolean
     {
-        $matcher = new Boolean($value);
+        $matcher = new Boolean($value ?? false);
 
-        return $matcher->withFormatter($this->createFormatter());
+        return $matcher
+            ->withGenerator(null === $value ? new RandomBoolean() : null)
+            ->withFormatter($this->createFormatter());
     }
 
     public function integerV3(?int $value = null): Integer
     {
-        $matcher = new Integer($value);
+        $matcher = new Integer($value ?? 13);
 
-        return $matcher->withFormatter($this->createFormatter());
+        return $matcher
+            ->withGenerator(null === $value ? new RandomInt() : null)
+            ->withFormatter($this->createFormatter());
     }
 
     public function decimalV3(?float $value = null): Decimal
     {
-        $matcher = new Decimal($value);
+        $matcher = new Decimal($value ?? 13.01);
 
-        return $matcher->withFormatter($this->createFormatter());
+        return $matcher
+            ->withGenerator(null === $value ? new RandomDecimal() : null)
+            ->withFormatter($this->createFormatter());
     }
 
     /**
@@ -260,10 +274,10 @@ class Matcher
      */
     public function hexadecimal(?string $value = null): Regex
     {
-        $matcher = new Regex(self::HEX_FORMAT, $value);
+        $matcher = new Regex(self::HEX_FORMAT, $value ?? '');
 
         return $matcher
-            ->withGenerator(is_null($value) ? new RandomHexadecimal() : null)
+            ->withGenerator(null === $value ? new RandomHexadecimal() : null)
             ->withFormatter($this->createFormatter());
     }
 
@@ -272,10 +286,10 @@ class Matcher
      */
     public function uuid(?string $value = null): Regex
     {
-        $matcher = new Regex(self::UUID_V4_FORMAT, $value);
+        $matcher = new Regex(self::UUID_V4_FORMAT, $value ?? '');
 
         return $matcher
-            ->withGenerator(is_null($value) ? new Uuid() : null)
+            ->withGenerator(null === $value ? new Uuid() : null)
             ->withFormatter($this->createFormatter());
     }
 
@@ -314,9 +328,11 @@ class Matcher
      */
     public function date(string $format = 'yyyy-MM-dd', ?string $value = null): Date
     {
-        $matcher = new Date($format, $value);
+        $matcher = new Date($format, $value ?? '');
 
-        return $matcher->withFormatter($this->createFormatter());
+        return $matcher
+            ->withGenerator(null === $value ? new DateGenerator($format) : null)
+            ->withFormatter($this->createFormatter());
     }
 
     /**
@@ -328,9 +344,11 @@ class Matcher
      */
     public function time(string $format = 'HH:mm:ss', ?string $value = null): Time
     {
-        $matcher = new Time($format, $value);
+        $matcher = new Time($format, $value ?? '');
 
-        return $matcher->withFormatter($this->createFormatter());
+        return $matcher
+            ->withGenerator(null === $value ? new TimeGenerator() : null)
+            ->withFormatter($this->createFormatter());
     }
 
     /**
@@ -342,16 +360,20 @@ class Matcher
      */
     public function datetime(string $format = "yyyy-MM-dd'T'HH:mm:ss", ?string $value = null): DateTime
     {
-        $matcher = new DateTime($format, $value);
+        $matcher = new DateTime($format, $value ?? '');
 
-        return $matcher->withFormatter($this->createFormatter());
+        return $matcher
+            ->withGenerator(null === $value ? new DateTimeGenerator() : null)
+            ->withFormatter($this->createFormatter());
     }
 
     public function string(?string $value = null): StringValue
     {
-        $matcher = new StringValue($value);
+        $matcher = new StringValue($value ?? '');
 
-        return $matcher->withFormatter($this->createFormatter());
+        return $matcher
+            ->withGenerator(null === $value ? new RandomString() : null)
+            ->withFormatter($this->createFormatter());
     }
 
     /**
@@ -389,9 +411,11 @@ class Matcher
      */
     public function number(int|float|null $value = null): Number
     {
-        $matcher = new Number($value);
+        $matcher = new Number($value ?? 13);
 
-        return $matcher->withFormatter($this->createFormatter());
+        return $matcher
+            ->withGenerator(null === $value ? new RandomInt() : null)
+            ->withFormatter($this->createFormatter());
     }
 
     /**
@@ -422,9 +446,11 @@ class Matcher
      */
     public function semver(?string $value = null): Semver
     {
-        $matcher = new Semver($value);
+        $matcher = new Semver($value ?? '');
 
-        return $matcher->withFormatter($this->createFormatter());
+        return $matcher
+            ->withGenerator(null === $value ? new RegexGenerator('\d+\.\d+\.\d+') : null)
+            ->withFormatter($this->createFormatter());
     }
 
     /**
@@ -432,9 +458,32 @@ class Matcher
      */
     public function statusCode(string|HttpStatus $status, ?int $value = null): StatusCode
     {
+        if (is_string($status)) {
+            try {
+                $status = HttpStatus::from($status);
+            } catch (\Throwable $th) {
+                $all = implode(', ', array_map(
+                    fn (HttpStatus $status) => $status->value,
+                    HttpStatus::cases()
+                ));
+                throw new InvalidHttpStatusException(sprintf("Status '%s' is not supported. Supported status are: %s", $status, $all));
+            }
+        }
+
+        if (null === $value) {
+            $value = 0;
+            $range = $status->range();
+
+            $generator = new RandomInt($range->min, $range->max);
+        } else {
+            $generator = null;
+        }
+
         $matcher = new StatusCode($status, $value);
 
-        return $matcher->withFormatter($this->createFormatter());
+        return $matcher
+            ->withGenerator($generator)
+            ->withFormatter($this->createFormatter());
     }
 
     /**
@@ -492,7 +541,7 @@ class Matcher
      */
     public function url(string $url, string $regex, bool $useMockServerBasePath = true): Regex
     {
-        $matcher = new Regex($regex, $useMockServerBasePath ? null : $url);
+        $matcher = new Regex($regex, $useMockServerBasePath ? '' : $url);
 
         return $matcher
             ->withGenerator($useMockServerBasePath ? new MockServerURL($regex, $url) : null)
