@@ -92,7 +92,7 @@ final class MatchingRuleConverter implements MatchingRuleConverterInterface
 
             case 'regex':
                 $regex = $rule->getMatcherAttribute('regex');
-                return new Regex($regex, $this->ignoreInvalidValue($regex, $value));
+                return new Regex($regex, $value);
 
             case 'statusCode':
                 return new StatusCode($rule->getMatcherAttribute('status'));
@@ -106,25 +106,6 @@ final class MatchingRuleConverter implements MatchingRuleConverterInterface
     {
         if (is_numeric($value)) {
             $value = $value + 0;
-        } else {
-            $value = null;
-        }
-
-        return $value;
-    }
-
-    private function ignoreInvalidValue(string $regex, mixed $value): string|array|null
-    {
-        if (is_string($value)) {
-            if (!preg_match("/$regex/", $value)) {
-                $value = null;
-            }
-        } elseif (is_array($value)) {
-            foreach (array_keys($value) as $key) {
-                if (!preg_match("/$regex/", $value[$key])) {
-                    $value[$key] = null;
-                }
-            }
         } else {
             $value = null;
         }

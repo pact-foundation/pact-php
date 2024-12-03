@@ -2,7 +2,6 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\InvalidRegexException;
 use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Matchers\Regex;
@@ -13,17 +12,6 @@ use PHPUnit\Framework\TestCase;
 class RegexTest extends TestCase
 {
     private string $regex = '\d+';
-
-    #[TestWith(['number', true])]
-    #[TestWith(['integer', false])]
-    public function testInvalidRegex(string $value, bool $isArray): void
-    {
-        $values = $isArray ? [$value] : $value;
-        $this->expectException(InvalidRegexException::class);
-        $value = is_array($values) ? $values[0] : $values;
-        $this->expectExceptionMessage("The value '{$value}' doesn't match pattern '{$this->regex}'. Failed with error code 0.");
-        new Regex($this->regex, $values);
-    }
 
     /**
      * @param string|string[]|null $values
