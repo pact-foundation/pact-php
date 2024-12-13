@@ -40,7 +40,7 @@
         "ramsey/uuid": "^4.7",
         "pact-foundation/example-protobuf-sync-message-provider": "@dev",
         "webonyx/graphql-php": "^15.14",
-        "rector/rector": "^1.2",
+        "rector/rector": "^2.0",
         "clue/framework-x": "^0.16.0"
     },
     "autoload": {
