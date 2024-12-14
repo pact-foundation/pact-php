@@ -2,9 +2,9 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Generators\ProviderState;
+use PhpPact\Consumer\Matcher\Generators\RandomInt;
 use PhpPact\Consumer\Matcher\Matchers\Integer;
 use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
@@ -13,22 +13,14 @@ use PHPUnit\Framework\TestCase;
 
 class IntegerTest extends TestCase
 {
-    #[TestWith([new Integer(null), '{"pact:matcher:type":"integer","pact:generator:type":"RandomInt","min":0,"max":10,"value": null}'])]
-    #[TestWith([new Integer(123), '{"pact:matcher:type":"integer","value":123}'])]
-    public function testFormatJson(MatcherInterface $matcher, string $json): void
+    #[TestWith([new Integer(123), null, '{"pact:matcher:type":"integer","value":123}'])]
+    #[TestWith([new Integer(123), new RandomInt(), '{"pact:matcher:type":"integer","pact:generator:type":"RandomInt","min":0,"max":10,"value": 123}'])]
+    public function testFormatJson(Integer $matcher, ?GeneratorInterface $generator, string $json): void
     {
+        $matcher->setGenerator($generator);
         $jsonEncoded = json_encode($matcher);
         $this->assertIsString($jsonEncoded);
         $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
-    }
-
-    public function testInvalidValue(): void
-    {
-        $matcher = new Integer();
-        $matcher = $matcher->withFormatter(new ExpressionFormatter());
-        $this->expectException(InvalidValueException::class);
-        $this->expectExceptionMessage(sprintf("Integer matching expression doesn't support value of type %s", gettype(null)));
-        json_encode($matcher);
     }
 
     #[TestWith([new Integer(-99), '"matching(integer, -99)"'])]

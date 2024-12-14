@@ -14,7 +14,7 @@
       "request": {
         "body": {
           "content": {
-            "id": null
+            "id": 13
           },
           "contentType": "application/json",
           "encoded": false
@@ -54,25 +54,25 @@
         "body": {
           "content": {
             "boolean": true,
-            "boolean_v3": null,
-            "date": null,
-            "datetime": null,
+            "boolean_v3": false,
+            "date": "",
+            "datetime": "",
             "decimal": 13.01,
-            "decimal_v3": null,
+            "decimal_v3": 13.01,
             "equality": "Hello World!",
-            "hexadecimal": null,
+            "hexadecimal": "",
             "integer": 13,
-            "integer_v3": null,
+            "integer_v3": 13,
             "like": "6057401b-c539-4948-971a-24b702d79882",
             "notEmpty": "text",
-            "number": null,
-            "regex": null,
+            "number": 13,
+            "regex": "",
             "requestId": 222,
-            "semver": null,
-            "string": "some string",
-            "time": null,
-            "url": null,
-            "uuid": null
+            "semver": "",
+            "string": "",
+            "time": "",
+            "url": "",
+            "uuid": ""
           },
           "contentType": "application/json",
           "encoded": false

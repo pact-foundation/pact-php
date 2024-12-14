@@ -2,6 +2,7 @@
 
 namespace PhpPactTest\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Enum\HttpStatus;
 use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
 use PhpPact\Consumer\Matcher\Exception\MatchingExpressionException;
@@ -50,9 +51,8 @@ class EachValueTest extends TestCase
                     },
                     {
                         "pact:matcher:type": "regex",
-                        "pact:generator:type": "Regex",
                         "regex": "\\\\w{2}\\\\d",
-                        "value": null
+                        "value": ""
                     }
                 ]
             }
@@ -78,7 +78,7 @@ class EachValueTest extends TestCase
 
     public function testInvalidRules(): void
     {
-        $matcher = (new EachValue(['value'], [new StatusCode('info')]))->withFormatter(new ExpressionFormatter());
+        $matcher = (new EachValue(['value'], [new StatusCode(HttpStatus::INFORMATION)]))->withFormatter(new ExpressionFormatter());
         $this->expectException(MatcherNotSupportedException::class);
         $this->expectExceptionMessage(sprintf("Rule '%s' must implement '%s' to be formatted as expression", StatusCode::class, ExpressionFormattableInterface::class));
         json_encode($matcher);

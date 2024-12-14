@@ -3,7 +3,7 @@
 namespace PhpPactTest\Consumer\Matcher;
 
 use PhpPact\Consumer\Matcher\Enum\HttpStatus;
-use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
+use PhpPact\Consumer\Matcher\Exception\InvalidHttpStatusException;
 use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Formatters\Json\JsonFormatter;
 use PhpPact\Consumer\Matcher\Generators\MockServerURL;
@@ -12,6 +12,11 @@ use PhpPact\Consumer\Matcher\Generators\RandomBoolean;
 use PhpPact\Consumer\Matcher\Generators\RandomDecimal;
 use PhpPact\Consumer\Matcher\Generators\RandomHexadecimal;
 use PhpPact\Consumer\Matcher\Generators\RandomInt;
+use PhpPact\Consumer\Matcher\Generators\RandomString;
+use PhpPact\Consumer\Matcher\Generators\Regex as RegexGenerator;
+use PhpPact\Consumer\Matcher\Generators\Date as DateGenerator;
+use PhpPact\Consumer\Matcher\Generators\Time as TimeGenerator;
+use PhpPact\Consumer\Matcher\Generators\DateTime as DateTimeGenerator;
 use PhpPact\Consumer\Matcher\Generators\Uuid;
 use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Matcher\Matchers\ArrayContains;
@@ -96,15 +101,37 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testTerm(): void
+    /**
+     * @param string|string[]|null $values
+     */
+    #[TestWith([null, true])]
+    #[TestWith(['123', false])]
+    #[TestWith([['123', '234'], false])]
+    public function testTerm(string|array|null $values, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Regex::class, $result = $this->matcher->term('123', '\d+'));
+        $this->assertInstanceOf(Regex::class, $result = $this->matcher->term($values, '\d+'));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RegexGenerator::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testRegex(): void
+    /**
+     * @param string|string[]|null $values
+     */
+    #[TestWith([null, true])]
+    #[TestWith(['Games', false])]
+    #[TestWith([['Games', 'Other'], false])]
+    public function testRegex(string|array|null $values, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Regex::class, $result = $this->matcher->regex('Games', 'Games|Other'));
+        $this->assertInstanceOf(Regex::class, $result = $this->matcher->regex($values, 'Games|Other'));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RegexGenerator::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
@@ -204,21 +231,46 @@ class MatcherTest extends TestCase
         }
     }
 
-    public function testIntegerV3(): void
+    #[TestWith([null, true])]
+    #[TestWith([13, false])]
+    public function testIntegerV3(?int $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Integer::class, $result = $this->matcher->integerV3(13));
+        $this->assertInstanceOf(Integer::class, $result = $this->matcher->integerV3($value));
+        $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RandomInt::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testBooleanV3(): void
+    #[TestWith([null, true])]
+    #[TestWith([true, false])]
+    #[TestWith([false, false])]
+    public function testBooleanV3(?bool $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Boolean::class, $result = $this->matcher->booleanV3(true));
+        $this->assertInstanceOf(Boolean::class, $result = $this->matcher->booleanV3($value));
+        $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RandomBoolean::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testDecimalV3(): void
+    #[TestWith([null, true])]
+    #[TestWith([13.01, false])]
+    public function testDecimalV3(?float $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Decimal::class, $result = $this->matcher->decimalV3(13.01));
+        $this->assertInstanceOf(Decimal::class, $result = $this->matcher->decimalV3($value));
+        $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RandomDecimal::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
@@ -250,21 +302,42 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(JsonFormatter::class, $uuid->getFormatter());
     }
 
-    public function testIpv4Address(): void
+    #[TestWith([null, true])]
+    #[TestWith(['127.0.0.13', false])]
+    public function testIpv4Address(?string $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Regex::class, $result = $this->matcher->ipv4Address());
+        $this->assertInstanceOf(Regex::class, $result = $this->matcher->ipv4Address($value));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RegexGenerator::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testIpv6Address(): void
+    #[TestWith([null, true])]
+    #[TestWith(['::ffff:192.0.2.128', false])]
+    public function testIpv6Address(?string $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Regex::class, $result = $this->matcher->ipv6Address());
+        $this->assertInstanceOf(Regex::class, $result = $this->matcher->ipv6Address($value));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RegexGenerator::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testEmail(): void
+    #[TestWith([null, true])]
+    #[TestWith(['hello@pact.io', false])]
+    public function testEmail(?string $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Regex::class, $result = $this->matcher->email());
+        $this->assertInstanceOf(Regex::class, $result = $this->matcher->email($value));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RegexGenerator::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
@@ -274,27 +347,55 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testDate(): void
+    #[TestWith([null, true])]
+    #[TestWith(['2022-11-21', false])]
+    public function testDate(?string $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Date::class, $result = $this->matcher->date('yyyy-MM-dd', '2022-11-21'));
+        $this->assertInstanceOf(Date::class, $result = $this->matcher->date('yyyy-MM-dd', $value));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(DateGenerator::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testTime(): void
+    #[TestWith([null, true])]
+    #[TestWith(['21:45::31', false])]
+    public function testTime(?string $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Time::class, $result = $this->matcher->time('HH:mm:ss', '21:45::31'));
+        $this->assertInstanceOf(Time::class, $result = $this->matcher->time('HH:mm:ss', $value));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(TimeGenerator::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testDateTime(): void
+    #[TestWith([null, true])]
+    #[TestWith(['2015-08-06T16:53:10', false])]
+    public function testDateTime(?string $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(DateTime::class, $result = $this->matcher->datetime("yyyy-MM-dd'T'HH:mm:ss", '2015-08-06T16:53:10'));
+        $this->assertInstanceOf(DateTime::class, $result = $this->matcher->datetime("yyyy-MM-dd'T'HH:mm:ss", $value));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(DateTimeGenerator::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testString(): void
+    #[TestWith([null, true])]
+    #[TestWith(['test string', false])]
+    public function testString(?string $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(StringValue::class, $result = $this->matcher->string('test string'));
+        $this->assertInstanceOf(StringValue::class, $result = $this->matcher->string($value));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RandomString::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
@@ -319,9 +420,17 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testNumber(): void
+    #[TestWith([null, true])]
+    #[TestWith([13, false])]
+    #[TestWith([13.01, false])]
+    public function testNumber(int|float|null $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Number::class, $result = $this->matcher->number(13.01));
+        $this->assertInstanceOf(Number::class, $result = $this->matcher->number($value));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RandomInt::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
@@ -340,16 +449,39 @@ class MatcherTest extends TestCase
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testSemver(): void
+    #[TestWith([null, true])]
+    #[TestWith(['1.2.3', false])]
+    public function testSemver(?string $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(Semver::class, $result = $this->matcher->semver('1.2.3'));
+        $this->assertInstanceOf(Semver::class, $result = $this->matcher->semver($value));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RegexGenerator::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
     }
 
-    public function testValidStatusCode(): void
+    #[TestWith(['success', null, true])]
+    #[TestWith(['success', 123, false])]
+    #[TestWith([HttpStatus::SUCCESS, null, true])]
+    #[TestWith([HttpStatus::SUCCESS, 123, false])]
+    public function testValidStatusCode(string|HttpStatus $status, ?int $value, bool $hasGenerator): void
     {
-        $this->assertInstanceOf(StatusCode::class, $result = $this->matcher->statusCode(HttpStatus::SUCCESS));
+        $this->assertInstanceOf(StatusCode::class, $result = $this->matcher->statusCode($status, $value));
+        if ($hasGenerator) {
+            $this->assertInstanceOf(RandomInt::class, $result->getGenerator());
+        } else {
+            $this->assertNull($result->getGenerator());
+        }
         $this->assertInstanceOf(JsonFormatter::class, $result->getFormatter());
+    }
+
+    public function testInvalidStatusCode(): void
+    {
+        $this->expectException(InvalidHttpStatusException::class);
+        $this->expectExceptionMessage("Status 'invalid' is not supported. Supported status are: info, success, redirect, clientError, serverError, nonError, error");
+        $this->matcher->statusCode('invalid');
     }
 
     public function testValues(): void

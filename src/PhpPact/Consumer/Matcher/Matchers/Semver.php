@@ -2,8 +2,6 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
-use PhpPact\Consumer\Matcher\Generators\Regex;
 use PhpPact\Consumer\Matcher\Model\Attributes;
 use PhpPact\Consumer\Matcher\Model\Expression;
 use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
@@ -17,11 +15,8 @@ class Semver extends GeneratorAwareMatcher implements JsonFormattableInterface, 
 {
     use JsonFormattableTrait;
 
-    public function __construct(private ?string $value = null)
+    public function __construct(private string $value = '')
     {
-        if ($value === null) {
-            $this->setGenerator(new Regex('\d+\.\d+\.\d+'));
-        }
         parent::__construct();
     }
 
@@ -35,9 +30,6 @@ class Semver extends GeneratorAwareMatcher implements JsonFormattableInterface, 
 
     public function formatExpression(): Expression
     {
-        if (!is_string($this->value)) {
-            throw new InvalidValueException(sprintf("Semver matching expression doesn't support value of type %s", gettype($this->value)));
-        }
         return new Expression('matching(semver, %value%)', ['value' => $this->value]);
     }
 }

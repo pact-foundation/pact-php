@@ -36,11 +36,8 @@ class ArrayContainsTest extends TestCase
                         "value": "string"
                     },
                     {
-                        "pact:generator:type": "RandomInt",
-                        "min": 0,
-                        "max": 10,
                         "pact:matcher:type": "integer",
-                        "value": null
+                        "value": 13
                     }
                 ],
                 "value": [
@@ -49,11 +46,8 @@ class ArrayContainsTest extends TestCase
                         "value": "string"
                     },
                     {
-                        "pact:generator:type": "RandomInt",
-                        "min": 0,
-                        "max": 10,
                         "pact:matcher:type": "integer",
-                        "value": null
+                        "value": 13
                     }
                 ]
             }

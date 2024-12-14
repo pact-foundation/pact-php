@@ -2,8 +2,6 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
-use PhpPact\Consumer\Matcher\Generators\Date as DateGenerator;
-
 /**
  * Matches the string representation of a value against the date format.
  *
@@ -13,11 +11,8 @@ use PhpPact\Consumer\Matcher\Generators\Date as DateGenerator;
  */
 class Date extends AbstractDateTime
 {
-    public function __construct(string $format = 'yyyy-MM-dd', ?string $value = null)
+    public function __construct(string $format = 'yyyy-MM-dd', string $value = '')
     {
-        if ($value === null) {
-            $this->setGenerator(new DateGenerator($format));
-        }
         parent::__construct($format, $value);
     }
 
