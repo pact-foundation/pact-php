@@ -64,19 +64,19 @@ class ClientTest extends TestCase
     public function testNewInteraction(): void
     {
         $result = $this->client->newInteraction(1, 'test');
-        $this->assertIsInt($result);
+        $this->assertNotEmpty($result);
     }
 
     public function testNewMessageInteraction(): void
     {
         $result = $this->client->newMessageInteraction(1, 'test');
-        $this->assertIsInt($result);
+        $this->assertNotEmpty($result);
     }
 
     public function testNewSyncMessageInteraction(): void
     {
         $result = $this->client->newSyncMessageInteraction(1, 'test');
-        $this->assertIsInt($result);
+        $this->assertNotEmpty($result);
     }
 
     public function testGiven(): void
@@ -130,7 +130,7 @@ class ClientTest extends TestCase
     public function testNewPact(): void
     {
         $result = $this->client->newPact('consumer', 'provider');
-        $this->assertIsInt($result);
+        $this->assertNotEmpty($result);
         $this->client->freePactHandle($result);
     }
 

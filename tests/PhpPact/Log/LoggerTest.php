@@ -67,6 +67,7 @@ class LoggerTest extends TestCase
     {
         $this->expectException(Error::class);
         $this->expectExceptionMessage('Call to protected PhpPact\Log\Logger::__clone()');
+        // @phpstan-ignore expr.resultUnused
         clone $this->logger;
     }
 

@@ -94,9 +94,7 @@ class StubServer
             $results[] = "--loglevel={$this->config->getLogLevel()}";
         }
 
-        if ($this->config->getPort() !== null) {
-            $results[] = "--port={$this->config->getPort()}";
-        }
+        $results[] = "--port={$this->config->getPort()}";
 
         if ($this->config->getProviderState() !== null) {
             $results[] = "--provider-state={$this->config->getProviderState()}";
