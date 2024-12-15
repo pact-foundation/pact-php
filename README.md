@@ -71,6 +71,7 @@ This readme offers a basic introduction to the library. The full documentation f
 - [Examples](https://github.com/pact-foundation/pact-php/tree/master/examples/)
 - [Stub Server](/docs/stub-server.md)
 - [Framework Integrations](/docs/framework-integrations.md)
+- [Troubleshooting](./docs/troubleshooting.md)
 
 ## Need Help
 
