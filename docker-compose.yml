@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   postgres:
     image: postgres
@@ -9,12 +7,18 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   broker_app:
-    image: dius/pact-broker
+    image: pactfoundation/pact-broker
     ports:
-      - "8080:80"
-    links:
-      - postgres
+      - "8080:9292"
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       PACT_BROKER_DATABASE_USERNAME: postgres
       PACT_BROKER_DATABASE_PASSWORD: password
