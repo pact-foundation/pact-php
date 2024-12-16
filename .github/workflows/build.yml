@@ -18,11 +18,11 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         name: Checkout repository
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231 # v2
         with:
           php-version: 8.1
           coverage: none
@@ -49,11 +49,11 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         name: Checkout repository
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231 # v2
         with:
           extensions: sockets, curl, zip, ffi, grpc
           php-version: ${{ matrix.php }}
@@ -72,7 +72,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache Pact Plugins
-        uses: actions/cache@v4
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4
         with:
           path: ~/.pact/plugins
           key: ${{ matrix.os }}-pact-plugins
@@ -93,11 +93,11 @@ jobs:
         dependencies: [ 'lowest', 'locked' ]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         name: Checkout repository
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231 # v2
         with:
           extensions: 'sockets, curl, zip, ffi'
           php-version: ${{ matrix.php }}
@@ -114,7 +114,7 @@ jobs:
           PACT_DO_NOT_TRACK: true
 
       - name: Coveralls Parallel
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@cfd0633edbd2411b532b808ba7a8b5e04f76d2c8 # v2
         with:
           flag-name: ${{ matrix.php }}-${{ matrix.dependencies }}
           parallel: true
@@ -126,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
-      uses: coverallsapp/github-action@v2
+      uses: coverallsapp/github-action@cfd0633edbd2411b532b808ba7a8b5e04f76d2c8 # v2
       with:
         parallel-finished: true
 
@@ -140,13 +140,13 @@ jobs:
         arch: [ amd64, arm64 ]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         name: Checkout repository
       - name: Set up QEMU
         if: matrix.arch == 'arm64'
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3
       - name: Set up Docker Buildx
         if: matrix.arch == 'arm64'
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5 # v3
       - name: run musl # If shared-mime-info not installed - Expected binary contents to have content type 'image/jpeg' but detected contents was 'application/octet-stream'
         run: docker run --env PACT_DO_NOT_TRACK=true --platform=linux/${{ matrix.arch }} --rm -v $PWD:/home alpine:3.19 /bin/sh -c 'apk add --no-cache shared-mime-info php82-dev php82-ffi php82-pecl-grpc php82-sockets php82-tokenizer php82-dom php82-xml php82-xmlwriter php82-simplexml composer protoc protobuf-dev && cd /home && composer install && composer test && composer run-examples'
