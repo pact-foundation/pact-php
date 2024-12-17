@@ -3,8 +3,5 @@
   "extends": ["config:best-practices"],
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
-  "automerge": true,
-  "ignorePaths": [
-    "docker-compose.yml"
-  ]
+  "automerge": true
 }
