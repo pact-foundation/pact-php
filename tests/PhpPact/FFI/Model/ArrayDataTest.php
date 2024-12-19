@@ -20,7 +20,7 @@ class ArrayDataTest extends TestCase
         $this->assertInstanceOf(ArrayData::class, $arrayData);
         $this->assertSame(count($branches), $arrayData->getSize());
         foreach ($branches as $index => $branch) {
-            // @phpstan-ignore offsetAccess.nonOffsetAccessible,argument.type
+            // @phpstan-ignore argument.type
             $this->assertSame($branch, FFI::string($arrayData->getItems()[$index]));
         }
     }

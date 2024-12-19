@@ -31,7 +31,7 @@
         "ext-sockets": "*",
         "roave/security-advisories": "dev-latest",
         "friendsofphp/php-cs-fixer": "^3.0",
-        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan": "^2.0.4",
         "phpunit/phpunit": "^10.1.0|^11.0",
         "guzzlehttp/guzzle": "^7.8",
         "behat/behat": "^3.13",
