@@ -47,7 +47,7 @@ class ArrayData
                 throw new CDataNotCreatedException();
             }
             FFI::memcpy($item, $value, $length);
-            $items[$index++] = $item; // @phpstan-ignore-line
+            $items[$index++] = $item;
         }
 
         return new self($items, $size);
