@@ -2,10 +2,11 @@ name: Code Analysis & Test
 
 on:
   push:
+    branches:
+      - master
   pull_request:
-  # Once on the first of the month at 06:00 UTC
-  schedule:
-    - cron: 0 6 1 * *
+    branches:
+      - master
 
 concurrency:
   group: ${{ github.ref }}
