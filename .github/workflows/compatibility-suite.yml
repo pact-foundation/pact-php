@@ -1,6 +1,12 @@
 name: Compatibility Suite
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 env:
   PACT_DO_NOT_TRACK: true
