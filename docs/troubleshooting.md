@@ -10,6 +10,12 @@ You can run these code (once) before running tests:
 
 ```php
 use PhpPact\Log\Logger;
+use PhpPact\Log\Enum\LogLevel;
+use PhpPact\Log\Model\File;
+use PhpPact\Log\Model\Buffer;
+use PhpPact\Log\Model\Stdout;
+use PhpPact\Log\Model\Stderr;
+
 $logger = Logger::instance();
 $logger->attach(new File('/path/to/file', LogLevel::DEBUG));
 $logger->attach(new Buffer(LogLevel::ERROR));
@@ -56,6 +62,8 @@ Consumer:
 
 ```php
 use PhpPact\Standalone\MockService\MockServerConfig;
+
+$config = new VerifierConfig();
 $config->setLogLevel('DEBUG');
 ```
 
@@ -63,6 +71,8 @@ Provider:
 
 ```php
 use PhpPact\Standalone\ProviderVerifier\Model\VerifierConfig;
+
+$config = new VerifierConfig();
 $config->setLogLevel('DEBUG');
 ```
 
