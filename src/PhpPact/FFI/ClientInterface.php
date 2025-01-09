@@ -158,4 +158,18 @@ interface ClientInterface
     public function getLevelFilterError(): int;
 
     public function getLevelFilterOff(): int;
+
+    /**
+     * @deprecated 10.1.0 This method is deprecated and will be removed in a future release.
+     *                    Please use the more specific methods in this interface instead,
+     *                    as they provide clearer intent and stricter type definitions.
+     */
+    public function call(string $name, mixed ...$arguments): mixed;
+
+    /**
+     * @deprecated 10.1.0 This method is deprecated and will be removed in a future release.
+     *                    Please use the more specific methods in this interface instead,
+     *                    as they provide clearer intent and stricter type definitions.
+     */
+    public function get(string $name): mixed;
 }
