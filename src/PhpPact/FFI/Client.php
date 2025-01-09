@@ -624,12 +624,12 @@ class Client implements ClientInterface
         return $value;
     }
 
-    private function call(string $name, mixed ...$arguments): mixed
+    public function call(string $name, mixed ...$arguments): mixed
     {
         return $this->ffi->{$name}(...$arguments);
     }
 
-    private function get(string $name): mixed
+    public function get(string $name): mixed
     {
         return $this->ffi->{$name};
     }
