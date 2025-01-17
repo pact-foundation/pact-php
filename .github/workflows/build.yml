@@ -46,7 +46,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.3]
-        os: [ubuntu-latest, macos-13, macos-14, windows-latest]
+        os: [ubuntu-latest, macos-13, macos-14, windows-latest, ubuntu-24.04-arm]
     timeout-minutes: 5
 
     steps:
@@ -132,22 +132,16 @@ jobs:
         parallel-finished: true
 
   test-alpine:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     needs:
       - php-cs
     strategy:
       fail-fast: false
       matrix:
-        arch: [ amd64, arm64 ]
+        os: [ubuntu-latest, ubuntu-24.04-arm]
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         name: Checkout repository
-      - name: Set up QEMU
-        if: matrix.arch == 'arm64'
-        uses: docker/setup-qemu-action@53851d14592bedcffcf25ea515637cff71ef929a # v3
-      - name: Set up Docker Buildx
-        if: matrix.arch == 'arm64'
-        uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5 # v3
       - name: run musl # If shared-mime-info not installed - Expected binary contents to have content type 'image/jpeg' but detected contents was 'application/octet-stream'
-        run: docker run --env PACT_DO_NOT_TRACK=true --platform=linux/${{ matrix.arch }} --rm -v $PWD:/home alpine:3.19 /bin/sh -c 'apk add --no-cache shared-mime-info php82-dev php82-ffi php82-pecl-grpc php82-sockets php82-tokenizer php82-dom php82-xml php82-xmlwriter php82-simplexml composer protoc protobuf-dev && cd /home && composer install && composer test && composer run-examples'
+        run: docker run --env PACT_DO_NOT_TRACK=true --rm -v $PWD:/home alpine:3.19 /bin/sh -c 'apk add --no-cache shared-mime-info php82-dev php82-ffi php82-pecl-grpc php82-sockets php82-tokenizer php82-dom php82-xml php82-xmlwriter php82-simplexml composer protoc protobuf-dev && cd /home && composer install && composer test && composer run-examples'
