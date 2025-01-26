@@ -115,7 +115,7 @@ jobs:
           PACT_DO_NOT_TRACK: true
 
       - name: Coveralls Parallel
-        uses: coverallsapp/github-action@cfd0633edbd2411b532b808ba7a8b5e04f76d2c8 # v2
+        uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2
         with:
           flag-name: ${{ matrix.php }}-${{ matrix.dependencies }}
           parallel: true
@@ -127,7 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
-      uses: coverallsapp/github-action@cfd0633edbd2411b532b808ba7a8b5e04f76d2c8 # v2
+      uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b # v2
       with:
         parallel-finished: true
 
