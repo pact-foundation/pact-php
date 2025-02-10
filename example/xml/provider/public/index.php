@@ -35,6 +35,27 @@ $app->get('/movies', function (ServerRequestInterface $request) {
                 </great-lines>
                 <rating type="thumbs">7</rating>
                 <rating type="stars">5</rating>
+                <release-date>
+                    08-12-2022
+                    <china>
+                        21-11-2024
+                    </china>
+                </release-date>
+                <specs runtime="1 hours 07 minutes" aspect-ratio="3:2" color="color"></specs>
+                <also-known-as xmlns:aka="http://example.com/movies">
+                    <aka:united-states>
+                        PHP: The movie
+                    </aka:united-states>
+                    <aka:australia>
+                        PHP: The language
+                    </aka:australia>
+                    <aka:argentina>
+                        PHP: La película
+                    </aka:argentina>
+                    <aka:brazil>
+                        PHP: O filme
+                    </aka:brazil>
+                </also-known-as>
             </movie>
         </movies>
         XML
