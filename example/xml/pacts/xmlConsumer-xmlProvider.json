@@ -31,13 +31,97 @@
         "path": "/movies"
       },
       "response": {
-        "body": "<?xml version='1.0'?><movies><movie><title>Big Buck Bunny</title><characters><character><name>Big Buck Bunny</name><actor>Jan Morgenstern</actor></character><character><name/><actor/></character></characters><plot>The plot follows a day in the life of Big Buck Bunny, during which time he meets three bullying rodents: the leader, Frank the flying squirrel, and his sidekicks Rinky the red squirrel and Gimera the chinchilla.\nThe rodents amuse themselves by harassing helpless creatures of the forest by throwing fruits, nuts, and rocks at them.</plot><great-lines><line>Open source movie</line></great-lines><rating type='stars'>6</rating></movie>List of movies</movies>",
+        "body": "<?xml version='1.0'?><movies><movie><title>Big Buck Bunny</title><characters><character><name>Big Buck Bunny</name><actor>Jan Morgenstern</actor></character><character><name/><actor/></character></characters><plot>The plot follows a day in the life of Big Buck Bunny, during which time he meets three bullying rodents: the leader, Frank the flying squirrel, and his sidekicks Rinky the red squirrel and Gimera the chinchilla.\nThe rodents amuse themselves by harassing helpless creatures of the forest by throwing fruits, nuts, and rocks at them.</plot><great-lines><line>Open source movie</line></great-lines><rating type='stars'>6</rating><release-date><china></china></release-date><specs aspect-ratio='' color='' runtime=''/><also-known-as xmlns:aka='http://example.com/movies'><aka:united-states></aka:united-states><aka:australia></aka:australia><aka:argentina></aka:argentina><aka:brazil></aka:brazil></also-known-as></movie>List of movies</movies>",
+        "generators": {
+          "body": {
+            "$.movies.movie.also-known-as.#text": {
+              "size": 10,
+              "type": "RandomString"
+            },
+            "$.movies.movie.also-known-as.aka:argentina.#text": {
+              "size": 10,
+              "type": "RandomString"
+            },
+            "$.movies.movie.also-known-as.aka:australia.#text": {
+              "size": 10,
+              "type": "RandomString"
+            },
+            "$.movies.movie.also-known-as.aka:brazil.#text": {
+              "size": 10,
+              "type": "RandomString"
+            },
+            "$.movies.movie.also-known-as.aka:united-states.#text": {
+              "size": 10,
+              "type": "RandomString"
+            },
+            "$.movies.movie.release-date.#text": {
+              "format": "dd-MM-yyyy",
+              "type": "Date"
+            },
+            "$.movies.movie.release-date.china.#text": {
+              "format": "dd-MM-yyyy",
+              "type": "Date"
+            },
+            "$.movies.movie.specs['@aspect-ratio']": {
+              "regex": "([0-9]+[.])?[0-9]+:[0-9]+",
+              "type": "Regex"
+            },
+            "$.movies.movie.specs['@color']": {
+              "regex": "color|black&white",
+              "type": "Regex"
+            },
+            "$.movies.movie.specs['@runtime']": {
+              "regex": "\\d+ hours [0-5]?[0-9] minutes",
+              "type": "Regex"
+            }
+          }
+        },
         "headers": {
           "Content-Type": "application/xml"
         },
         "matchingRules": {
           "body": {
             "$.movies.movie": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.also-known-as.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.also-known-as.aka:argentina.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.also-known-as.aka:australia.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.also-known-as.aka:brazil.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.also-known-as.aka:united-states.#text": {
               "combine": "AND",
               "matchers": [
                 {
@@ -110,6 +194,51 @@
                 }
               ]
             },
+            "$.movies.movie.release-date.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "dd-MM-yyyy",
+                  "match": "date"
+                }
+              ]
+            },
+            "$.movies.movie.release-date.china.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "dd-MM-yyyy",
+                  "match": "date"
+                }
+              ]
+            },
+            "$.movies.movie.specs['@aspect-ratio']": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "([0-9]+[.])?[0-9]+:[0-9]+"
+                }
+              ]
+            },
+            "$.movies.movie.specs['@color']": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "color|black&white"
+                }
+              ]
+            },
+            "$.movies.movie.specs['@runtime']": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "\\d+ hours [0-5]?[0-9] minutes"
+                }
+              ]
+            },
             "$.movies.movie.title.#text": {
               "combine": "AND",
               "matchers": [
@@ -129,8 +258,7 @@
                 }
               ]
             }
-          },
-          "status": {}
+          }
         },
         "status": 200
       }
@@ -138,9 +266,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.22",
-      "mockserver": "1.2.9",
-      "models": "1.2.3"
+      "ffi": "0.4.27",
+      "mockserver": "1.2.11",
+      "models": "1.2.7"
     },
     "pactSpecification": {
       "version": "3.0.0"
