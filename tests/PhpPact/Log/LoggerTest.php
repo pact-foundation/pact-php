@@ -103,11 +103,13 @@ class LoggerTest extends TestCase
                 'return' => 0
             ]
         ];
+        $matcher = $this->exactly(count($calls));
         $this->client
-            ->expects($this->exactly(4))
+            ->expects($matcher)
             ->method('loggerAttachSink')
-            ->willReturnCallback(function (...$args) use (&$calls) {
-                $call = array_shift($calls);
+            ->willReturnCallback(function (...$args) use ($calls, $matcher) {
+                $index = $matcher->numberOfInvocations() - 1;
+                $call = $calls[$index];
                 $this->assertSame($call['args'], $args);
 
                 return $call['return'];
