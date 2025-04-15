@@ -19,7 +19,7 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # v2
+      - uses: shivammathur/setup-php@cf4cade2721270509d5b1c766ab3549210a39a2a # v2
         with:
           php-version: 8.1
           coverage: none
@@ -37,7 +37,7 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # v2
+      - uses: shivammathur/setup-php@cf4cade2721270509d5b1c766ab3549210a39a2a # v2
         with:
           php-version: 8.1
           coverage: none
@@ -55,7 +55,7 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # v2
+      - uses: shivammathur/setup-php@cf4cade2721270509d5b1c766ab3549210a39a2a # v2
         with:
           php-version: 8.1
           coverage: none
@@ -73,7 +73,7 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: shivammathur/setup-php@9e72090525849c5e82e596468b86eb55e9cc5401 # v2
+      - uses: shivammathur/setup-php@cf4cade2721270509d5b1c766ab3549210a39a2a # v2
         with:
           php-version: 8.1
           coverage: none
