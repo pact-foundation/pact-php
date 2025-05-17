@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package plugins;
 
-option php_generic_services = true;
-
 service Calculator {
     rpc calculate (ShapeMessage) returns (AreaResponse) {}
 }
