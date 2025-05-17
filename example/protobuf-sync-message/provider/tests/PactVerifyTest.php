@@ -9,11 +9,11 @@ use PHPUnit\Framework\TestCase;
 
 class PactVerifyTest extends TestCase
 {
-    private RoadRunnerProcess $process;
+    private gRPCServerProcess $process;
 
     protected function setUp(): void
     {
-        $this->process = new RoadRunnerProcess();
+        $this->process = new gRPCServerProcess();
         $this->process->start();
     }
 

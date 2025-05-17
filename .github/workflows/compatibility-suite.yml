@@ -9,6 +9,7 @@ on:
       - master
 
 env:
+  PACT_LOGLEVEL: debug
   PACT_DO_NOT_TRACK: true
 
 jobs:
@@ -28,8 +29,6 @@ jobs:
 
       - name: Run Behat
         run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V1 --colors
-        env:
-          PACT_LOGLEVEL: debug
   v2:
     runs-on: ubuntu-latest
     steps:
@@ -46,8 +45,6 @@ jobs:
 
       - name: Run Behat
         run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V2 --colors
-        env:
-          PACT_LOGLEVEL: debug
   v3:
     runs-on: ubuntu-latest
     steps:
@@ -64,8 +61,6 @@ jobs:
 
       - name: Run Behat
         run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V3 --name '/^((?!binary body \(negative|Message provider).)*$/' --colors
-        env:
-          PACT_LOGLEVEL: debug
   v4:
     runs-on: ubuntu-latest
     steps:
@@ -82,5 +77,3 @@ jobs:
 
       - name: Run Behat
         run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V4 --colors
-        env:
-          PACT_LOGLEVEL: debug
