@@ -67,6 +67,10 @@
         "test-coverage": "phpunit",
         "check-compatibility": "behat",
         "refactor": "rector",
+        "generate-protobuf": [
+            "protoc --php_out=example/protobuf-async-message/library/src example/protobuf-async-message/library/proto/say_hello.proto",
+            "protoc --php_out=example/protobuf-sync-message/library/src --grpc_out=generate_server:example/protobuf-sync-message/library/src --plugin=protoc-gen-grpc=$(which grpc_php_plugin) example/protobuf-sync-message/library/proto/area_calculator.proto"
+        ],
         "run-examples": [
             "composer run-example:binary",
             "composer run-example:csv",
@@ -119,13 +123,11 @@
         ],
         "run-example:protobuf-async-message": [
             "rm -f example/protobuf-async-message/pacts/protobufAsyncMessageConsumer-protobufAsyncMessageProvider.json",
-            "protoc --php_out=example/protobuf-async-message/library/src example/protobuf-async-message/library/proto/say_hello.proto",
             "cd example/protobuf-async-message/consumer && phpunit",
             "cd example/protobuf-async-message/provider && phpunit"
         ],
         "run-example:protobuf-sync-message": [
             "rm -f example/protobuf-sync-message/pacts/protobufSyncMessageConsumer-protobufSyncMessageProvider.json",
-            "protoc --php_out=example/protobuf-sync-message/library/src --grpc_out=generate_server:example/protobuf-sync-message/library/src --plugin=protoc-gen-grpc=$GRPC_PHP_PLUGIN_PATH example/protobuf-sync-message/library/proto/area_calculator.proto",
             "cd example/protobuf-sync-message/consumer && phpunit",
             "cd example/protobuf-sync-message/provider && phpunit"
         ],
