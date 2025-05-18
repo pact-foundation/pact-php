@@ -5,16 +5,16 @@ namespace ProtobufSyncMessageProvider\Tests;
 use PhpPactTest\Helper\AbstractProcess;
 use Symfony\Component\Process\Process;
 
-class RoadRunnerProcess extends AbstractProcess
+class gRPCServerProcess extends AbstractProcess
 {
     public function getPort(): int
     {
-        return 9001;
+        return 50051;
     }
 
     protected function getProcess(): Process
     {
-        $process = new Process([__DIR__ . '/../bin/roadrunner/rr', 'serve', '-w', __DIR__ . '/..']);
+        $process = new Process(['php', 'index.php'], __DIR__ . '/../public/');
         $process->setTimeout(120);
 
         return $process;

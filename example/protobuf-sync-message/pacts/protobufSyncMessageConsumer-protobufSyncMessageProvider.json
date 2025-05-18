@@ -12,7 +12,7 @@
       "pending": false,
       "pluginConfiguration": {
         "protobuf": {
-          "descriptorKey": "6b90c212dfe22dc3c119d1c3fe42b5e1",
+          "descriptorKey": "9d3cde93422a61274872668087eb174d",
           "service": ".plugins.Calculator/calculate"
         }
       },
@@ -78,9 +78,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.22",
-      "mockserver": "1.2.9",
-      "models": "1.2.3"
+      "ffi": "0.4.26",
+      "mockserver": "1.2.11",
+      "models": "1.2.7"
     },
     "pactSpecification": {
       "version": "4.0"
@@ -88,9 +88,9 @@
     "plugins": [
       {
         "configuration": {
-          "6b90c212dfe22dc3c119d1c3fe42b5e1": {
-            "protoDescriptors": "CtYFChVhcmVhX2NhbGN1bGF0b3IucHJvdG8SB3BsdWdpbnMikgIKDFNoYXBlTWVzc2FnZRIpCgZzcXVhcmUYASABKAsyDy5wbHVnaW5zLlNxdWFyZUgAUgZzcXVhcmUSMgoJcmVjdGFuZ2xlGAIgASgLMhIucGx1Z2lucy5SZWN0YW5nbGVIAFIJcmVjdGFuZ2xlEikKBmNpcmNsZRgDIAEoCzIPLnBsdWdpbnMuQ2lyY2xlSABSBmNpcmNsZRIvCgh0cmlhbmdsZRgEIAEoCzIRLnBsdWdpbnMuVHJpYW5nbGVIAFIIdHJpYW5nbGUSPgoNcGFyYWxsZWxvZ3JhbRgFIAEoCzIWLnBsdWdpbnMuUGFyYWxsZWxvZ3JhbUgAUg1wYXJhbGxlbG9ncmFtQgcKBXNoYXBlIikKBlNxdWFyZRIfCgtlZGdlX2xlbmd0aBgBIAEoAlIKZWRnZUxlbmd0aCI5CglSZWN0YW5nbGUSFgoGbGVuZ3RoGAEgASgCUgZsZW5ndGgSFAoFd2lkdGgYAiABKAJSBXdpZHRoIiAKBkNpcmNsZRIWCgZyYWRpdXMYASABKAJSBnJhZGl1cyJPCghUcmlhbmdsZRIVCgZlZGdlX2EYASABKAJSBWVkZ2VBEhUKBmVkZ2VfYhgCIAEoAlIFZWRnZUISFQoGZWRnZV9jGAMgASgCUgVlZGdlQyJICg1QYXJhbGxlbG9ncmFtEh8KC2Jhc2VfbGVuZ3RoGAEgASgCUgpiYXNlTGVuZ3RoEhYKBmhlaWdodBgCIAEoAlIGaGVpZ2h0IiQKDEFyZWFSZXNwb25zZRIUCgV2YWx1ZRgBIAEoAlIFdmFsdWUySQoKQ2FsY3VsYXRvchI7CgljYWxjdWxhdGUSFS5wbHVnaW5zLlNoYXBlTWVzc2FnZRoVLnBsdWdpbnMuQXJlYVJlc3BvbnNlIgBCA9ACAWIGcHJvdG8z",
-            "protoFile": "syntax = \"proto3\";\n\npackage plugins;\n\noption php_generic_services = true;\n\nservice Calculator {\n    rpc calculate (ShapeMessage) returns (AreaResponse) {}\n}\n\nmessage ShapeMessage {\n  oneof shape {\n    Square square = 1;\n    Rectangle rectangle = 2;\n    Circle circle = 3;\n    Triangle triangle = 4;\n    Parallelogram parallelogram = 5;\n  }\n}\n\nmessage Square {\n  float edge_length = 1;\n}\n\nmessage Rectangle {\n  float length = 1;\n  float width = 2;\n}\n\nmessage Circle {\n  float radius = 1;\n}\n\nmessage Triangle {\n  float edge_a = 1;\n  float edge_b = 2;\n  float edge_c = 3;\n}\n\nmessage Parallelogram {\n  float base_length = 1;\n  float height = 2;\n}\n\nmessage AreaResponse {\n    float value = 1;\n}\n"
+          "9d3cde93422a61274872668087eb174d": {
+            "protoDescriptors": "CtEFChVhcmVhX2NhbGN1bGF0b3IucHJvdG8SB3BsdWdpbnMikgIKDFNoYXBlTWVzc2FnZRIpCgZzcXVhcmUYASABKAsyDy5wbHVnaW5zLlNxdWFyZUgAUgZzcXVhcmUSMgoJcmVjdGFuZ2xlGAIgASgLMhIucGx1Z2lucy5SZWN0YW5nbGVIAFIJcmVjdGFuZ2xlEikKBmNpcmNsZRgDIAEoCzIPLnBsdWdpbnMuQ2lyY2xlSABSBmNpcmNsZRIvCgh0cmlhbmdsZRgEIAEoCzIRLnBsdWdpbnMuVHJpYW5nbGVIAFIIdHJpYW5nbGUSPgoNcGFyYWxsZWxvZ3JhbRgFIAEoCzIWLnBsdWdpbnMuUGFyYWxsZWxvZ3JhbUgAUg1wYXJhbGxlbG9ncmFtQgcKBXNoYXBlIikKBlNxdWFyZRIfCgtlZGdlX2xlbmd0aBgBIAEoAlIKZWRnZUxlbmd0aCI5CglSZWN0YW5nbGUSFgoGbGVuZ3RoGAEgASgCUgZsZW5ndGgSFAoFd2lkdGgYAiABKAJSBXdpZHRoIiAKBkNpcmNsZRIWCgZyYWRpdXMYASABKAJSBnJhZGl1cyJPCghUcmlhbmdsZRIVCgZlZGdlX2EYASABKAJSBWVkZ2VBEhUKBmVkZ2VfYhgCIAEoAlIFZWRnZUISFQoGZWRnZV9jGAMgASgCUgVlZGdlQyJICg1QYXJhbGxlbG9ncmFtEh8KC2Jhc2VfbGVuZ3RoGAEgASgCUgpiYXNlTGVuZ3RoEhYKBmhlaWdodBgCIAEoAlIGaGVpZ2h0IiQKDEFyZWFSZXNwb25zZRIUCgV2YWx1ZRgBIAEoAlIFdmFsdWUySQoKQ2FsY3VsYXRvchI7CgljYWxjdWxhdGUSFS5wbHVnaW5zLlNoYXBlTWVzc2FnZRoVLnBsdWdpbnMuQXJlYVJlc3BvbnNlIgBiBnByb3RvMw==",
+            "protoFile": "syntax = \"proto3\";\n\npackage plugins;\n\nservice Calculator {\n    rpc calculate (ShapeMessage) returns (AreaResponse) {}\n}\n\nmessage ShapeMessage {\n  oneof shape {\n    Square square = 1;\n    Rectangle rectangle = 2;\n    Circle circle = 3;\n    Triangle triangle = 4;\n    Parallelogram parallelogram = 5;\n  }\n}\n\nmessage Square {\n  float edge_length = 1;\n}\n\nmessage Rectangle {\n  float length = 1;\n  float width = 2;\n}\n\nmessage Circle {\n  float radius = 1;\n}\n\nmessage Triangle {\n  float edge_a = 1;\n  float edge_b = 2;\n  float edge_c = 3;\n}\n\nmessage Parallelogram {\n  float base_length = 1;\n  float height = 2;\n}\n\nmessage AreaResponse {\n    float value = 1;\n}\n"
           }
         },
         "name": "protobuf",

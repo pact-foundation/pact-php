@@ -2,7 +2,9 @@
 
 namespace ProtobufSyncMessageProvider\Service;
 
+use Grpc\ServerContext;
 use Plugins\AreaResponse;
+use Plugins\CalculatorStub;
 use Plugins\Circle;
 use Plugins\Parallelogram;
 use Plugins\Rectangle;
@@ -10,11 +12,10 @@ use Plugins\ShapeMessage;
 use Plugins\Square;
 use Plugins\Triangle;
 use Exception;
-use Spiral\RoadRunner\GRPC\ContextInterface;
 
-class Calculator implements CalculatorInterface
+class Calculator extends CalculatorStub
 {
-    public function calculate(ContextInterface $ctx, ShapeMessage $request): AreaResponse
+    public function calculate(ShapeMessage $request, ServerContext $serverContext): AreaResponse
     {
         switch ($request->getShape()) {
             case 'square':
