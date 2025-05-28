@@ -37,10 +37,14 @@
         "behat/behat": "^3.13",
         "galbar/jsonpath": "^3.0",
         "ramsey/uuid": "^4.7",
-        "pact-foundation/example-protobuf-sync-message-provider": "@dev",
         "webonyx/graphql-php": "^15.14",
         "rector/rector": "^2.0",
-        "clue/framework-x": "^0.17.0"
+        "clue/framework-x": "^0.17.0",
+        "grpc/grpc": "^1.57",
+        "google/protobuf": "^4.31"
+    },
+    "suggest": {
+        "ext-grpc": "If you want to use gRPC then you must install and use this"
     },
     "autoload": {
         "psr-4": {
@@ -63,6 +67,10 @@
         "test-coverage": "phpunit",
         "check-compatibility": "behat",
         "refactor": "rector",
+        "generate-protobuf": [
+            "protoc --php_out=example/protobuf-async-message/library/src example/protobuf-async-message/library/proto/say_hello.proto",
+            "protoc --php_out=example/protobuf-sync-message/library/src --grpc_out=generate_server:example/protobuf-sync-message/library/src --plugin=protoc-gen-grpc=$(which grpc_php_plugin) example/protobuf-sync-message/library/proto/area_calculator.proto"
+        ],
         "run-examples": [
             "composer run-example:binary",
             "composer run-example:csv",
@@ -115,13 +123,11 @@
         ],
         "run-example:protobuf-async-message": [
             "rm -f example/protobuf-async-message/pacts/protobufAsyncMessageConsumer-protobufAsyncMessageProvider.json",
-            "protoc --php_out=example/protobuf-async-message/library/src example/protobuf-async-message/library/proto/say_hello.proto",
             "cd example/protobuf-async-message/consumer && phpunit",
             "cd example/protobuf-async-message/provider && phpunit"
         ],
         "run-example:protobuf-sync-message": [
             "rm -f example/protobuf-sync-message/pacts/protobufSyncMessageConsumer-protobufSyncMessageProvider.json",
-            "protoc --php_out=example/protobuf-sync-message/library/src example/protobuf-sync-message/library/proto/area_calculator.proto",
             "cd example/protobuf-sync-message/consumer && phpunit",
             "cd example/protobuf-sync-message/provider && phpunit"
         ],
@@ -180,11 +186,5 @@
         "allow-plugins": {
             "pact-foundation/composer-downloads-plugin": true
         }
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "example/protobuf-sync-message/provider"
-        }
-    ]
+    }
 }
