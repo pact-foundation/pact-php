@@ -16,8 +16,8 @@ class PactDriver implements PactDriverInterface
     protected ?Pact $pact = null;
 
     public function __construct(
-        protected ClientInterface $client,
-        protected PactConfigInterface $config
+        protected readonly ClientInterface $client,
+        protected readonly PactConfigInterface $config
     ) {
     }
 

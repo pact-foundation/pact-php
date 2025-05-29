@@ -9,13 +9,10 @@ use Symfony\Component\Process\Process;
 
 class StubServer
 {
-    private StubServerConfigInterface $config;
-
     private Process $process;
 
-    public function __construct(StubServerConfigInterface $config, ?Process $process = null)
+    public function __construct(private readonly StubServerConfigInterface $config, ?Process $process = null)
     {
-        $this->config = $config;
         $this->process = $process ?? new Process([Scripts::getStubService(), ...$this->getArguments()], null, ['PACT_BROKER_BASE_URL' => false]);
     }
 

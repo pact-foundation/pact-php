@@ -7,7 +7,7 @@ use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
 
 class MatchingField extends AbstractMatcher implements ExpressionFormattableInterface
 {
-    public function __construct(private string $fieldName)
+    public function __construct(private readonly string $fieldName)
     {
     }
 
