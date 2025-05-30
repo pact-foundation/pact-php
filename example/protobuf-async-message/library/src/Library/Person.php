@@ -21,6 +21,10 @@ class Person extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.library.Name name = 2;</code>
      */
     protected $name = null;
+    /**
+     * Generated from protobuf field <code>map<string, int32> children = 3;</code>
+     */
+    private $children;
 
     /**
      * Constructor.
@@ -30,6 +34,7 @@ class Person extends \Google\Protobuf\Internal\Message
      *
      *     @type string $id
      *     @type \Library\Name $name
+     *     @type array|\Google\Protobuf\Internal\MapField $children
      * }
      */
     public function __construct($data = NULL) {
@@ -87,6 +92,28 @@ class Person extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkMessage($var, \Library\Name::class);
         $this->name = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>map<string, int32> children = 3;</code>
+     * @return \Google\Protobuf\Internal\MapField
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * Generated from protobuf field <code>map<string, int32> children = 3;</code>
+     * @param array|\Google\Protobuf\Internal\MapField $var
+     * @return $this
+     */
+    public function setChildren($var)
+    {
+        $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::INT32);
+        $this->children = $arr;
 
         return $this;
     }

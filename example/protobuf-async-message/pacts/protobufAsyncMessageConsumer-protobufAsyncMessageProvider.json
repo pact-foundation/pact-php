@@ -5,18 +5,48 @@
   "interactions": [
     {
       "contents": {
-        "content": "CiRkMWYwNzdiNS0wZjkxLTQwYWEtYjhmOS01NjhiNTBlZTRkZDkSEAoFR2l2ZW4SB1N1cm5hbWU=",
+        "content": "CiRkMWYwNzdiNS0wZjkxLTQwYWEtYjhmOS01NjhiNTBlZTRkZDkSEAoFR2l2ZW4SB1N1cm5hbWUaCAoEWmFuZRAM",
         "contentType": "application/protobuf;message=.library.Person",
         "contentTypeHint": "BINARY",
         "encoded": "base64"
       },
       "description": "Person message sent",
       "interactionMarkup": {
-        "markup": "```protobuf\nmessage Person {\n    string id = 1;\n    message .library.Name name = 2;\n}\n```\n",
+        "markup": "```protobuf\nmessage Person {\n    string id = 1;\n    message .library.Name name = 2;\n    map<message .library.Person.ChildrenEntry> children = 3;\n}\n```\n",
         "markupType": "COMMON_MARK"
       },
       "matchingRules": {
         "body": {
+          "$.children": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "eachKey",
+                "rules": [
+                  {
+                    "match": "type"
+                  }
+                ]
+              },
+              {
+                "match": "eachValue",
+                "rules": [
+                  {
+                    "match": "number"
+                  }
+                ],
+                "value": "23"
+              },
+              {
+                "match": "type",
+                "min": 1
+              },
+              {
+                "match": "type",
+                "max": 3
+              }
+            ]
+          },
           "$.id": {
             "combine": "AND",
             "matchers": [
@@ -50,7 +80,7 @@
       "pending": false,
       "pluginConfiguration": {
         "protobuf": {
-          "descriptorKey": "f77f40284a5ed1f38188ed943aca6938",
+          "descriptorKey": "ded980de2ac5f7f7f2784a845297d34e",
           "message": ".library.Person"
         }
       },
@@ -68,8 +98,8 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.22",
-      "models": "1.2.3"
+      "ffi": "0.4.26",
+      "models": "1.2.7"
     },
     "pactSpecification": {
       "version": "4.0"
@@ -77,6 +107,10 @@
     "plugins": [
       {
         "configuration": {
+          "ded980de2ac5f7f7f2784a845297d34e": {
+            "protoDescriptors": "CpACCg9zYXlfaGVsbG8ucHJvdG8SB2xpYnJhcnkiswEKBlBlcnNvbhIOCgJpZBgBIAEoCVICaWQSIQoEbmFtZRgCIAEoCzINLmxpYnJhcnkuTmFtZVIEbmFtZRI5CghjaGlsZHJlbhgDIAMoCzIdLmxpYnJhcnkuUGVyc29uLkNoaWxkcmVuRW50cnlSCGNoaWxkcmVuGjsKDUNoaWxkcmVuRW50cnkSEAoDa2V5GAEgASgJUgNrZXkSFAoFdmFsdWUYAiABKAVSBXZhbHVlOgI4ASI2CgROYW1lEhQKBWdpdmVuGAEgASgJUgVnaXZlbhIYCgdzdXJuYW1lGAIgASgJUgdzdXJuYW1lYgZwcm90bzM=",
+            "protoFile": "syntax = \"proto3\";\n\npackage library;\n\nmessage Person {\n  string id = 1;\n  Name name = 2;\n  map<string, int32> children = 3;\n}\n\nmessage Name {\n  string given = 1;\n  string surname = 2;\n}\n"
+          },
           "f77f40284a5ed1f38188ed943aca6938": {
             "protoDescriptors": "CpcBCg9zYXlfaGVsbG8ucHJvdG8SB2xpYnJhcnkiOwoGUGVyc29uEg4KAmlkGAEgASgJUgJpZBIhCgRuYW1lGAIgASgLMg0ubGlicmFyeS5OYW1lUgRuYW1lIjYKBE5hbWUSFAoFZ2l2ZW4YASABKAlSBWdpdmVuEhgKB3N1cm5hbWUYAiABKAlSB3N1cm5hbWViBnByb3RvMw==",
             "protoFile": "syntax = \"proto3\";\n\npackage library;\n\nmessage Person {\n  string id = 1;\n  Name name = 2;\n}\n\nmessage Name {\n  string given = 1;\n  string surname = 2;\n}\n"
