@@ -6,6 +6,7 @@ message Person {
   string id = 1;
   Name name = 2;
   map<string, int32> children = 3;
+  repeated string hobbies = 4;
 }
 
 message Name {

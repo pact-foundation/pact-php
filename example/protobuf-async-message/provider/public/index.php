@@ -23,6 +23,7 @@ $app->post('/', function (ServerRequestInterface $request) {
             'Rachel Long' => 14,
             'Edmund Doherty' => 4,
         ]);
+        $person->setHobbies(['painting', 'reading', 'swimming']);
 
         $response = new Response(200);
         $response->getBody()->write($person->serializeToString());

@@ -38,7 +38,7 @@ class PersonMessageHandlerTest extends TestCase
             ->setConsumer('protobufAsyncMessageConsumer')
             ->setProvider('protobufAsyncMessageProvider')
             ->setPactSpecificationVersion('4.0.0')
-            ->setPactDir(__DIR__.'/../../../pacts');
+            ->setPactDir(__DIR__ . '/../../../pacts');
         if ($logLevel = \getenv('PACT_LOGLEVEL')) {
             $config->setLogLevel($logLevel);
         }
@@ -81,6 +81,8 @@ class PersonMessageHandlerTest extends TestCase
                         ),
                         'Zane' => 12,
                     ],
+                    // We can use atLeastLike or atMostLike to match a list of values without a lot of verbose code
+                    'hobbies' => $this->matcher->atLeastLike('painting', 2),
                 ]),
                 'application/protobuf'
             ));
