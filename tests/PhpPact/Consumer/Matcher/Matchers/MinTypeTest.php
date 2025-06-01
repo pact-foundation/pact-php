@@ -19,9 +19,9 @@ class MinTypeTest extends TestCase
         $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
-    #[TestWith(["contains single quote '", 1, "\"atLeast(1), eachValue(matching(type, 'contains single quote \\\'')\""])]
-    #[TestWith([null, 1, '"atLeast(1), eachValue(matching(type, null)"'])]
-    #[TestWith(['example value', 1, "\"atLeast(1), eachValue(matching(type, 'example value')\""])]
+    #[TestWith(["contains single quote '", 1, "\"atLeast(1), eachValue(matching(type, 'contains single quote \\\''))\""])]
+    #[TestWith([null, 1, '"atLeast(1), eachValue(matching(type, null))"'])]
+    #[TestWith(['example value', 1, "\"atLeast(1), eachValue(matching(type, 'example value'))\""])]
     public function testFormatExpression(mixed $value, int $min, string $expression): void
     {
         $matcher = new MinType($value, $min);

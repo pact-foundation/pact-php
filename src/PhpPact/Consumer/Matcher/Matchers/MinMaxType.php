@@ -43,6 +43,6 @@ class MinMaxType extends AbstractMatcher implements JsonFormattableInterface, Ex
 
     public function formatExpression(): Expression
     {
-        return new Expression("atLeast({$this->min}), atMost({$this->max}), eachValue(matching(type, %value%)", ['value' => $this->value]);
+        return new Expression("atLeast({$this->min}), atMost({$this->max}), eachValue(matching(type, %value%))", ['value' => $this->value]);
     }
 }
