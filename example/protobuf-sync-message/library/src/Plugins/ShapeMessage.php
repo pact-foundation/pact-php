@@ -13,6 +13,10 @@ use Google\Protobuf\Internal\GPBUtil;
  */
 class ShapeMessage extends \Google\Protobuf\Internal\Message
 {
+    /**
+     * Generated from protobuf field <code>string id = 6;</code>
+     */
+    protected $id = '';
     protected $shape;
 
     /**
@@ -26,6 +30,7 @@ class ShapeMessage extends \Google\Protobuf\Internal\Message
      *     @type \Plugins\Circle $circle
      *     @type \Plugins\Triangle $triangle
      *     @type \Plugins\Parallelogram $parallelogram
+     *     @type string $id
      * }
      */
     public function __construct($data = NULL) {
@@ -164,6 +169,28 @@ class ShapeMessage extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkMessage($var, \Plugins\Parallelogram::class);
         $this->writeOneof(5, $var);
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>string id = 6;</code>
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Generated from protobuf field <code>string id = 6;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setId($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->id = $var;
 
         return $this;
     }

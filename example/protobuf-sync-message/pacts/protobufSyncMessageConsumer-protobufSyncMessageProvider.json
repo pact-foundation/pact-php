@@ -12,19 +12,33 @@
       "pending": false,
       "pluginConfiguration": {
         "protobuf": {
-          "descriptorKey": "9d3cde93422a61274872668087eb174d",
+          "descriptorKey": "2761f949cadfd45e14098c4c2a2e18ab",
           "service": ".plugins.Calculator/calculate"
         }
       },
+      "providerStates": [
+        {
+          "name": "a shape"
+        }
+      ],
       "request": {
         "contents": {
-          "content": "EgoNAABAQBUAAIBA",
+          "content": "EgoNAABAQBUAAIBAMgA=",
           "contentType": "application/protobuf;message=.plugins.ShapeMessage",
           "contentTypeHint": "BINARY",
           "encoded": "base64"
         },
         "matchingRules": {
           "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
             "$.rectangle.length": {
               "combine": "AND",
               "matchers": [
@@ -88,9 +102,9 @@
     "plugins": [
       {
         "configuration": {
-          "9d3cde93422a61274872668087eb174d": {
-            "protoDescriptors": "CtEFChVhcmVhX2NhbGN1bGF0b3IucHJvdG8SB3BsdWdpbnMikgIKDFNoYXBlTWVzc2FnZRIpCgZzcXVhcmUYASABKAsyDy5wbHVnaW5zLlNxdWFyZUgAUgZzcXVhcmUSMgoJcmVjdGFuZ2xlGAIgASgLMhIucGx1Z2lucy5SZWN0YW5nbGVIAFIJcmVjdGFuZ2xlEikKBmNpcmNsZRgDIAEoCzIPLnBsdWdpbnMuQ2lyY2xlSABSBmNpcmNsZRIvCgh0cmlhbmdsZRgEIAEoCzIRLnBsdWdpbnMuVHJpYW5nbGVIAFIIdHJpYW5nbGUSPgoNcGFyYWxsZWxvZ3JhbRgFIAEoCzIWLnBsdWdpbnMuUGFyYWxsZWxvZ3JhbUgAUg1wYXJhbGxlbG9ncmFtQgcKBXNoYXBlIikKBlNxdWFyZRIfCgtlZGdlX2xlbmd0aBgBIAEoAlIKZWRnZUxlbmd0aCI5CglSZWN0YW5nbGUSFgoGbGVuZ3RoGAEgASgCUgZsZW5ndGgSFAoFd2lkdGgYAiABKAJSBXdpZHRoIiAKBkNpcmNsZRIWCgZyYWRpdXMYASABKAJSBnJhZGl1cyJPCghUcmlhbmdsZRIVCgZlZGdlX2EYASABKAJSBWVkZ2VBEhUKBmVkZ2VfYhgCIAEoAlIFZWRnZUISFQoGZWRnZV9jGAMgASgCUgVlZGdlQyJICg1QYXJhbGxlbG9ncmFtEh8KC2Jhc2VfbGVuZ3RoGAEgASgCUgpiYXNlTGVuZ3RoEhYKBmhlaWdodBgCIAEoAlIGaGVpZ2h0IiQKDEFyZWFSZXNwb25zZRIUCgV2YWx1ZRgBIAEoAlIFdmFsdWUySQoKQ2FsY3VsYXRvchI7CgljYWxjdWxhdGUSFS5wbHVnaW5zLlNoYXBlTWVzc2FnZRoVLnBsdWdpbnMuQXJlYVJlc3BvbnNlIgBiBnByb3RvMw==",
-            "protoFile": "syntax = \"proto3\";\n\npackage plugins;\n\nservice Calculator {\n    rpc calculate (ShapeMessage) returns (AreaResponse) {}\n}\n\nmessage ShapeMessage {\n  oneof shape {\n    Square square = 1;\n    Rectangle rectangle = 2;\n    Circle circle = 3;\n    Triangle triangle = 4;\n    Parallelogram parallelogram = 5;\n  }\n}\n\nmessage Square {\n  float edge_length = 1;\n}\n\nmessage Rectangle {\n  float length = 1;\n  float width = 2;\n}\n\nmessage Circle {\n  float radius = 1;\n}\n\nmessage Triangle {\n  float edge_a = 1;\n  float edge_b = 2;\n  float edge_c = 3;\n}\n\nmessage Parallelogram {\n  float base_length = 1;\n  float height = 2;\n}\n\nmessage AreaResponse {\n    float value = 1;\n}\n"
+          "2761f949cadfd45e14098c4c2a2e18ab": {
+            "protoDescriptors": "CuEFChVhcmVhX2NhbGN1bGF0b3IucHJvdG8SB3BsdWdpbnMiogIKDFNoYXBlTWVzc2FnZRIpCgZzcXVhcmUYASABKAsyDy5wbHVnaW5zLlNxdWFyZUgAUgZzcXVhcmUSMgoJcmVjdGFuZ2xlGAIgASgLMhIucGx1Z2lucy5SZWN0YW5nbGVIAFIJcmVjdGFuZ2xlEikKBmNpcmNsZRgDIAEoCzIPLnBsdWdpbnMuQ2lyY2xlSABSBmNpcmNsZRIvCgh0cmlhbmdsZRgEIAEoCzIRLnBsdWdpbnMuVHJpYW5nbGVIAFIIdHJpYW5nbGUSPgoNcGFyYWxsZWxvZ3JhbRgFIAEoCzIWLnBsdWdpbnMuUGFyYWxsZWxvZ3JhbUgAUg1wYXJhbGxlbG9ncmFtEg4KAmlkGAYgASgJUgJpZEIHCgVzaGFwZSIpCgZTcXVhcmUSHwoLZWRnZV9sZW5ndGgYASABKAJSCmVkZ2VMZW5ndGgiOQoJUmVjdGFuZ2xlEhYKBmxlbmd0aBgBIAEoAlIGbGVuZ3RoEhQKBXdpZHRoGAIgASgCUgV3aWR0aCIgCgZDaXJjbGUSFgoGcmFkaXVzGAEgASgCUgZyYWRpdXMiTwoIVHJpYW5nbGUSFQoGZWRnZV9hGAEgASgCUgVlZGdlQRIVCgZlZGdlX2IYAiABKAJSBWVkZ2VCEhUKBmVkZ2VfYxgDIAEoAlIFZWRnZUMiSAoNUGFyYWxsZWxvZ3JhbRIfCgtiYXNlX2xlbmd0aBgBIAEoAlIKYmFzZUxlbmd0aBIWCgZoZWlnaHQYAiABKAJSBmhlaWdodCIkCgxBcmVhUmVzcG9uc2USFAoFdmFsdWUYASABKAJSBXZhbHVlMkkKCkNhbGN1bGF0b3ISOwoJY2FsY3VsYXRlEhUucGx1Z2lucy5TaGFwZU1lc3NhZ2UaFS5wbHVnaW5zLkFyZWFSZXNwb25zZSIAYgZwcm90bzM=",
+            "protoFile": "syntax = \"proto3\";\n\npackage plugins;\n\nservice Calculator {\n    rpc calculate (ShapeMessage) returns (AreaResponse) {}\n}\n\nmessage ShapeMessage {\n  oneof shape {\n    Square square = 1;\n    Rectangle rectangle = 2;\n    Circle circle = 3;\n    Triangle triangle = 4;\n    Parallelogram parallelogram = 5;\n  }\n  string id = 6;\n}\n\nmessage Square {\n  float edge_length = 1;\n}\n\nmessage Rectangle {\n  float length = 1;\n  float width = 2;\n}\n\nmessage Circle {\n  float radius = 1;\n}\n\nmessage Triangle {\n  float edge_a = 1;\n  float edge_b = 2;\n  float edge_c = 3;\n}\n\nmessage Parallelogram {\n  float base_length = 1;\n  float height = 2;\n}\n\nmessage AreaResponse {\n    float value = 1;\n}\n"
           }
         },
         "name": "protobuf",
