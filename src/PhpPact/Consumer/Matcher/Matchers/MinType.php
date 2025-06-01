@@ -37,6 +37,6 @@ class MinType extends AbstractMatcher implements JsonFormattableInterface, Expre
 
     public function formatExpression(): Expression
     {
-        return new Expression("atLeast({$this->min}), eachValue(matching(type, %value%))", ['value' => $this->value]);
+        return new Expression("eachValue(matching(type, %value%)), atLeast({$this->min})", ['value' => $this->value]);
     }
 }
