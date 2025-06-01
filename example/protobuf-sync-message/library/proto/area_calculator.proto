@@ -15,6 +15,7 @@ message ShapeMessage {
     Parallelogram parallelogram = 5;
   }
   string created = 6;
+  string id = 7;
 }
 
 message Square {

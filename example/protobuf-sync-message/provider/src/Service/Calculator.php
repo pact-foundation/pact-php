@@ -20,6 +20,9 @@ class Calculator extends CalculatorStub
         if (empty($request->getCreated())) {
             throw new Exception('Shape created date is required');
         }
+        if (empty($request->getId())) {
+            throw new Exception('Shape ID is required');
+        }
         switch ($request->getShape()) {
             case 'square':
                 $area = $this->calculateSquareArea($request->getSquare());
