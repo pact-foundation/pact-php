@@ -19,9 +19,9 @@ class MaxTypeTest extends TestCase
         $this->assertJsonStringEqualsJsonString($json, $jsonEncoded);
     }
 
-    #[TestWith(["contains single quote '", 2, "\"atMost(2), eachValue(matching(type, 'contains single quote \\\'')\""])]
-    #[TestWith([null, 2, '"atMost(2), eachValue(matching(type, null)"'])]
-    #[TestWith(['example value', 2, "\"atMost(2), eachValue(matching(type, 'example value')\""])]
+    #[TestWith(["contains single quote '", 2, "\"atMost(2), eachValue(matching(type, 'contains single quote \\\''))\""])]
+    #[TestWith([null, 2, '"atMost(2), eachValue(matching(type, null))"'])]
+    #[TestWith(['example value', 2, "\"atMost(2), eachValue(matching(type, 'example value'))\""])]
     public function testFormatExpression(mixed $value, int $max, string $expression): void
     {
         $matcher = new MaxType($value, $max);
