@@ -16,13 +16,14 @@ class SayHello
         }
         $pool->internalAddGeneratedFile(
             '
-
-<example/protobuf-async-message/library/proto/say_hello.protolibrary"“
+
+<example/protobuf-async-message/library/proto/say_hello.protolibrary"¤
 Person
 
 id (	
 name (2.library.Name/
-children (2.library.Person.ChildrenEntry/
+children (2.library.Person.ChildrenEntry
+hobbies (	/
 ChildrenEntry
 key (	
 value (:8"&

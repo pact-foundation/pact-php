@@ -38,7 +38,7 @@ class PersonMessageHandlerTest extends TestCase
             ->setConsumer('protobufAsyncMessageConsumer')
             ->setProvider('protobufAsyncMessageProvider')
             ->setPactSpecificationVersion('4.0.0')
-            ->setPactDir(__DIR__.'/../../../pacts');
+            ->setPactDir(__DIR__ . '/../../../pacts');
         if ($logLevel = \getenv('PACT_LOGLEVEL')) {
             $config->setLogLevel($logLevel);
         }
@@ -81,6 +81,9 @@ class PersonMessageHandlerTest extends TestCase
                         ),
                         'Zane' => 12,
                     ],
+                    // We can use constrainedArrayLike, atLeastLike or atMostLike to match a list of values,
+                    // no need to write a lot of verbose code like matchAll
+                    'hobbies' => $this->matcher->constrainedArrayLike('painting', 2, 5),
                 ]),
                 'application/protobuf'
             ));
