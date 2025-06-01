@@ -5,7 +5,7 @@
   "interactions": [
     {
       "contents": {
-        "content": "CiRkMWYwNzdiNS0wZjkxLTQwYWEtYjhmOS01NjhiNTBlZTRkZDkSEAoFR2l2ZW4SB1N1cm5hbWUaCAoEWmFuZRAMIjBhdExlYXN0KDIpLCBlYWNoVmFsdWUobWF0Y2hpbmcodHlwZSwgJ3BhaW50aW5nJyk=",
+        "content": "CiRkMWYwNzdiNS0wZjkxLTQwYWEtYjhmOS01NjhiNTBlZTRkZDkSEAoFR2l2ZW4SB1N1cm5hbWUaCAoEWmFuZRAMIghwYWludGluZw==",
         "contentType": "application/protobuf;message=.library.Person",
         "contentTypeHint": "BINARY",
         "encoded": "base64"
@@ -44,6 +44,33 @@
               {
                 "match": "type",
                 "max": 3
+              }
+            ]
+          },
+          "$.hobbies": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "eachValue",
+                "rules": [
+                  {
+                    "match": "type"
+                  }
+                ],
+                "value": "painting"
+              }
+            ]
+          },
+          "$.hobbies.*": {
+            "combine": "AND",
+            "matchers": [
+              {
+                "match": "type",
+                "min": 2
+              },
+              {
+                "match": "type",
+                "max": 5
               }
             ]
           },
