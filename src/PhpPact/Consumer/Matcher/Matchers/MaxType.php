@@ -35,6 +35,6 @@ class MaxType extends AbstractMatcher implements JsonFormattableInterface, Expre
 
     public function formatExpression(): Expression
     {
-        return new Expression("atMost({$this->max}), eachValue(matching(type, %value%)", ['value' => $this->value]);
+        return new Expression("atMost({$this->max}), eachValue(matching(type, %value%))", ['value' => $this->value]);
     }
 }
