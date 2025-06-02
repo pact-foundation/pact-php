@@ -16,7 +16,7 @@
           "expectations": {
             "request": {
               "created": "matching(date, 'yyyy-MM-dd', fromProviderState('${created}', ''))",
-              "id": "matching(regex, '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$', '')",
+              "id": "matching(regex, '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$', fromProviderState('${id}', ''))",
               "rectangle": {
                 "length": "matching(number, 3)",
                 "width": "matching(number, 4)"
@@ -45,6 +45,10 @@
           "body": {
             "$.created": {
               "expression": "${created}",
+              "type": "ProviderState"
+            },
+            "$.id": {
+              "expression": "${id}",
               "type": "ProviderState"
             }
           }
