@@ -14,7 +14,7 @@ use PhpPact\Standalone\MockService\Model\VerifyResult;
 class SyncMessageDriver extends AbstractMessageDriver implements SyncMessageDriverInterface
 {
     public function __construct(
-        private MockServerInterface $mockServer,
+        private readonly MockServerInterface $mockServer,
         ClientInterface $client,
         PactDriverInterface $pactDriver,
         ?MessageBodyDriverInterface $messageBodyDriver = null

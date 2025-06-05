@@ -15,7 +15,7 @@ use PhpPact\Standalone\MockService\MockServerConfigInterface;
  */
 class InteractionBuilder implements BuilderInterface
 {
-    private InteractionDriverInterface $driver;
+    private readonly InteractionDriverInterface $driver;
     private Interaction $interaction;
 
     public function __construct(MockServerConfigInterface $config, ?InteractionDriverFactoryInterface $driverFactory = null)

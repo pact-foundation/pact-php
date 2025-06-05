@@ -15,9 +15,9 @@ use PhpPact\Standalone\MockService\Model\VerifyResult;
 class MockServer implements MockServerInterface
 {
     public function __construct(
-        private ClientInterface $client,
-        private PactDriverInterface $pactDriver,
-        private MockServerConfigInterface $config
+        private readonly ClientInterface $client,
+        private readonly PactDriverInterface $pactDriver,
+        private readonly MockServerConfigInterface $config
     ) {
     }
 

@@ -7,7 +7,7 @@ class Multipart
     /**
      * @param array<Part> $parts
      */
-    public function __construct(private array $parts, private string $boundary)
+    public function __construct(private array $parts, private readonly string $boundary)
     {
         $this->setParts($parts);
     }

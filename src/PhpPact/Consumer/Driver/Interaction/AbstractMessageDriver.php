@@ -14,7 +14,7 @@ abstract class AbstractMessageDriver extends AbstractDriver implements SharedMes
 
     public function __construct(
         ClientInterface $client,
-        protected PactDriverInterface $pactDriver,
+        protected readonly PactDriverInterface $pactDriver,
         ?MessageBodyDriverInterface $messageBodyDriver = null
     ) {
         parent::__construct($client);
