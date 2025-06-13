@@ -17,6 +17,9 @@ class Calculator extends CalculatorStub
 {
     public function calculate(ShapeMessage $request, ServerContext $serverContext): AreaResponse
     {
+        if (empty($request->getCreated())) {
+            throw new Exception('Shape created date is required');
+        }
         switch ($request->getShape()) {
             case 'square':
                 $area = $this->calculateSquareArea($request->getSquare());

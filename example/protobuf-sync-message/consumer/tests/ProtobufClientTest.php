@@ -39,6 +39,7 @@ class ProtobufClientTest extends TestCase
                     'pact:proto-service' => 'Calculator/calculate',
 
                     'request' => [
+                        'created' => $matcher->fromProviderState($matcher->date(), '${created}'),
                         'rectangle' => [
                             'length' => $matcher->number(3),
                             'width' => $matcher->number(4),
@@ -54,7 +55,9 @@ class ProtobufClientTest extends TestCase
 
         $service = new ProtobufClient("{$config->getHost()}:{$config->getPort()}");
         $rectangle = (new Rectangle())->setLength(3)->setWidth(4);
-        $message = (new ShapeMessage())->setRectangle($rectangle);
+        $message = new ShapeMessage();
+        $message->setCreated('2001-06-23');
+        $message->setRectangle($rectangle);
         $response = $service->calculate($message);
 
         $this->assertTrue($builder->verify());
