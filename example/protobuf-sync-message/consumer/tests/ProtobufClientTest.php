@@ -31,6 +31,7 @@ class ProtobufClientTest extends TestCase
         $builder = new SyncMessageBuilder($config, new ProtobufSyncMessageDriverFactory());
         $builder
             ->expectsToReceive('request for calculate shape area')
+            ->given('a shape')
             ->withMetadata([])
             ->withContent(new Text(
                 json_encode([
@@ -39,6 +40,7 @@ class ProtobufClientTest extends TestCase
                     'pact:proto-service' => 'Calculator/calculate',
 
                     'request' => [
+                        'id' => $matcher->fromProviderState($matcher->uuid(), '${id}'),
                         'rectangle' => [
                             'length' => $matcher->number(3),
                             'width' => $matcher->number(4),
@@ -54,7 +56,9 @@ class ProtobufClientTest extends TestCase
 
         $service = new ProtobufClient("{$config->getHost()}:{$config->getPort()}");
         $rectangle = (new Rectangle())->setLength(3)->setWidth(4);
-        $message = (new ShapeMessage())->setRectangle($rectangle);
+        $message = new ShapeMessage();
+        $message->setId('eb87e331-81d6-43c2-b8e8-0574f8c30ab3');
+        $message->setRectangle($rectangle);
         $response = $service->calculate($message);
 
         $this->assertTrue($builder->verify());
