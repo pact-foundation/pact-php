@@ -11,7 +11,7 @@ use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
  */
 class RandomHexadecimal implements GeneratorInterface, JsonFormattableInterface
 {
-    public function __construct(private int $digits = 10)
+    public function __construct(private readonly int $digits = 10)
     {
     }
 

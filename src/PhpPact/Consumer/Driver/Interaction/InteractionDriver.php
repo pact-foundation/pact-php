@@ -20,8 +20,8 @@ class InteractionDriver extends AbstractDriver implements InteractionDriverInter
 
     public function __construct(
         ClientInterface $client,
-        private MockServerInterface $mockServer,
-        private PactDriverInterface $pactDriver,
+        private readonly MockServerInterface $mockServer,
+        private readonly PactDriverInterface $pactDriver,
         ?RequestDriverInterface $requestDriver = null,
         ?ResponseDriverInterface $responseDriver = null,
     ) {

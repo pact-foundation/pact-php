@@ -11,7 +11,7 @@ use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
  */
 class Regex implements GeneratorInterface, JsonFormattableInterface
 {
-    public function __construct(private string $regex)
+    public function __construct(private readonly string $regex)
     {
     }
 
