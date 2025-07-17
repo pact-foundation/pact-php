@@ -25,6 +25,10 @@ class Person extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>map<string, int32> children = 3;</code>
      */
     private $children;
+    /**
+     * Generated from protobuf field <code>repeated string hobbies = 4;</code>
+     */
+    private $hobbies;
 
     /**
      * Constructor.
@@ -35,6 +39,7 @@ class Person extends \Google\Protobuf\Internal\Message
      *     @type string $id
      *     @type \Library\Name $name
      *     @type array|\Google\Protobuf\Internal\MapField $children
+     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $hobbies
      * }
      */
     public function __construct($data = NULL) {
@@ -114,6 +119,28 @@ class Person extends \Google\Protobuf\Internal\Message
     {
         $arr = GPBUtil::checkMapField($var, \Google\Protobuf\Internal\GPBType::STRING, \Google\Protobuf\Internal\GPBType::INT32);
         $this->children = $arr;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>repeated string hobbies = 4;</code>
+     * @return \Google\Protobuf\Internal\RepeatedField
+     */
+    public function getHobbies()
+    {
+        return $this->hobbies;
+    }
+
+    /**
+     * Generated from protobuf field <code>repeated string hobbies = 4;</code>
+     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
+     * @return $this
+     */
+    public function setHobbies($var)
+    {
+        $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::STRING);
+        $this->hobbies = $arr;
 
         return $this;
     }
