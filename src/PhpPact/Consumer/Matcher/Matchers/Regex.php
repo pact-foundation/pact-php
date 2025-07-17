@@ -7,11 +7,13 @@ use PhpPact\Consumer\Matcher\Model\Attributes;
 use PhpPact\Consumer\Matcher\Model\Expression;
 use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
 use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
+use PhpPact\Consumer\Matcher\Trait\ExpressionFormattableTrait;
 use PhpPact\Consumer\Matcher\Trait\JsonFormattableTrait;
 
 class Regex extends GeneratorAwareMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
     use JsonFormattableTrait;
+    use ExpressionFormattableTrait;
 
     /**
      * @param string|string[] $values
@@ -39,6 +41,6 @@ class Regex extends GeneratorAwareMatcher implements JsonFormattableInterface, E
             throw new InvalidValueException(sprintf("Regex matching expression doesn't support value of type %s", gettype($value)));
         }
 
-        return new Expression("matching(regex, %regex%, %value%)", ['regex' => $this->regex, 'value' => $value]);
+        return $this->mergeExpression(new Expression("matching(regex, %regex%, %value%)", ['regex' => $this->regex, 'value' => $value]));
     }
 }
