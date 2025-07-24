@@ -14,7 +14,7 @@ class ArrayContains extends AbstractMatcher implements JsonFormattableInterface
     /**
      * @param array<mixed> $variants
      */
-    public function __construct(private array $variants)
+    public function __construct(private readonly array $variants)
     {
         if (empty($variants)) {
             throw new InvalidValueException('Variants should not be empty');

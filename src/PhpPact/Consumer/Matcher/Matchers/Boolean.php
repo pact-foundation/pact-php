@@ -15,7 +15,7 @@ class Boolean extends GeneratorAwareMatcher implements JsonFormattableInterface,
 {
     use JsonFormattableTrait;
 
-    public function __construct(private bool $value = false)
+    public function __construct(private readonly bool $value = false)
     {
         parent::__construct();
     }

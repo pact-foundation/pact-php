@@ -11,7 +11,7 @@ use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
  */
 class RandomInt implements GeneratorInterface, JsonFormattableInterface
 {
-    public function __construct(private int $min = 0, private int $max = 10)
+    public function __construct(private readonly int $min = 0, private readonly int $max = 10)
     {
     }
 

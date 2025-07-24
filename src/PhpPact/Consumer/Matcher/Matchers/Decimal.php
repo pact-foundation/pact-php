@@ -17,7 +17,7 @@ class Decimal extends GeneratorAwareMatcher implements JsonFormattableInterface,
     use JsonFormattableTrait;
     use ExpressionFormattableTrait;
 
-    public function __construct(private float $value = 13.01)
+    public function __construct(private readonly float $value = 13.01)
     {
         parent::__construct();
     }
