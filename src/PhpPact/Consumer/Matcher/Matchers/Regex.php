@@ -19,8 +19,8 @@ class Regex extends GeneratorAwareMatcher implements JsonFormattableInterface, E
      * @param string|string[] $values
      */
     public function __construct(
-        private string $regex,
-        private string|array $values = '',
+        private readonly string $regex,
+        private readonly string|array $values = '',
     ) {
         parent::__construct();
     }

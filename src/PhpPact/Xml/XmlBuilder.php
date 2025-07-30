@@ -11,7 +11,7 @@ class XmlBuilder implements JsonSerializable
     use ElementTrait;
     use TextTrait;
 
-    public function __construct(private string $version, private string $charset)
+    public function __construct(private readonly string $version, private readonly string $charset)
     {
     }
 

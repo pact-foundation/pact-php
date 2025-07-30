@@ -14,7 +14,7 @@ use PhpPact\Consumer\Matcher\Model\Matcher\JsonFormattableInterface;
 class MinType extends AbstractMatcher implements JsonFormattableInterface, ExpressionFormattableInterface
 {
     public function __construct(
-        private mixed $value,
+        private readonly mixed $value,
         private int $min,
     ) {
         if ($min < 0) {
