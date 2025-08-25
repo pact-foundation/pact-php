@@ -35,7 +35,7 @@ class Uuid implements GeneratorInterface, JsonFormattableInterface
      */
     public const URN_FORMAT = 'URN';
 
-    private null|UuidFormat $format;
+    private readonly null|UuidFormat $format;
 
     /**
      * @param null|string|UuidFormat $format Default to lower-case-hyphenated if null

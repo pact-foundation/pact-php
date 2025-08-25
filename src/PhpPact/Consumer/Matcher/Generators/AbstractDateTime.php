@@ -8,7 +8,7 @@ use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
 
 abstract class AbstractDateTime implements GeneratorInterface, JsonFormattableInterface
 {
-    public function __construct(private ?string $format = null, private ?string $expression = null)
+    public function __construct(private readonly ?string $format = null, private readonly ?string $expression = null)
     {
     }
 
