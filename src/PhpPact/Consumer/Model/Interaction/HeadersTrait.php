@@ -21,7 +21,7 @@ trait HeadersTrait
     }
 
     /**
-     * @param array<string, string|string[]> $headers
+     * @param array<string, MatcherInterface|MatcherInterface[]|string|string[]> $headers
      */
     public function setHeaders(array $headers): self
     {

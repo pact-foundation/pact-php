@@ -18,7 +18,7 @@ class HttpClientService
     {
         return $this->httpClient->get("{$this->baseUri}/matchers", [
             'headers' => ['Accept' => 'application/json', 'Theme' => 'light'],
-            'query' => 'pages=2&pages=3&locales[]=fr-BE&locales[]=ru-RU&browsers[]=Firefox&browsers[]=Chrome&browsers[]=Safari',
+            'query' => 'pages=2&pages=3&locales[]=fr-BE&locales[]=ru-RU&browsers[]=Firefox&browsers[]=Chrome&browsers[]=Safari&single=query&multiple[]=query1&multiple[]=query2',
             'http_errors' => false,
         ]);
     }

@@ -107,6 +107,11 @@ $app->get('/matchers', function (ServerRequestInterface $request) {
         'PHP',
         'Nginx',
         'Slim',
+    ])
+    ->withHeader('single', 'header')
+    ->withHeader('multiple', [
+        'header1',
+        'header2',
     ]);
 });
 

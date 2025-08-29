@@ -121,9 +121,16 @@
             "en-US",
             "en-AU"
           ],
+          "multiple[]": [
+            "query1",
+            "query2"
+          ],
           "pages": [
             "1",
             "22"
+          ],
+          "single": [
+            "query"
           ]
         }
       },
@@ -245,6 +252,13 @@
           ],
           "X-Powered-By": [
             "PHP"
+          ],
+          "multiple": [
+            "header1",
+            "header2"
+          ],
+          "single": [
+            "header"
           ]
         },
         "matchingRules": {
@@ -754,9 +768,9 @@
   ],
   "metadata": {
     "pactRust": {
-      "ffi": "0.4.23",
-      "mockserver": "1.2.10",
-      "models": "1.2.5"
+      "ffi": "0.4.26",
+      "mockserver": "1.2.11",
+      "models": "1.2.7"
     },
     "pactSpecification": {
       "version": "4.0"

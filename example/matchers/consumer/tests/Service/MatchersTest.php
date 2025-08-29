@@ -49,12 +49,18 @@ class MatchersTest extends TestCase
 
                 'browsers[]' => $this->matcher->arrayContaining(['Firefox', 'Chrome']),
             ])
+            ->addQueryParameter('single', 'query')
+            ->addQueryParameter('multiple[]', ['query1', 'query2'])
             ->addHeader('Accept', 'application/json')
             ->addHeader('Theme', $this->matcher->regex('dark', 'light|dark'));
 
         $response = new ProviderResponse();
         $response
             ->setStatus($this->matcher->statusCode(HttpStatus::SERVER_ERROR, 512))
+            ->setHeaders([
+                'single' => 'header',
+                'multiple' => ['header1', 'header2'],
+            ])
             ->addHeader('Content-Type', 'application/json')
             ->addHeader('X-Powered-By', $this->matcher->arrayContaining([
                 'PHP'
