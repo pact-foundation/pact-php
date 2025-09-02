@@ -25,11 +25,12 @@ class RequestDriverTest extends TestCase
     private string $method = 'POST';
     private string $path = '/items/item';
     /**
-     * @var array<string, string[]>
+     * @var array<string, string[]|null>
      */
     private array $query = [
         'query1' => ['query-value-1', 'query-value-2'],
         'query2' => ['query-value-3'],
+        'query3' => null,
     ];
     /**
      * @var array<string, string[]>
