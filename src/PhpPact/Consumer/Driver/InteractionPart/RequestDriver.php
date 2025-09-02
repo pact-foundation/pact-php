@@ -19,8 +19,9 @@ class RequestDriver extends AbstractInteractionPartDriver implements RequestDriv
     private function withQueryParameters(Interaction $interaction): void
     {
         foreach ($interaction->getRequest()->getQuery() as $key => $values) {
+            $values ??= [null];
             foreach (array_values($values) as $index => $value) {
-                $success = $this->client->withQueryParameterV2($interaction->getHandle(), (string) $key, (int) $index, (string) $value);
+                $success = $this->client->withQueryParameterV2($interaction->getHandle(), (string) $key, (int) $index, $value);
                 if (!$success) {
                     throw new QueryParameterNotAddedException('Mock server has been started, interaction handle is invalid, or empty query parameter name');
                 }

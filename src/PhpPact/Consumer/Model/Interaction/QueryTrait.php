@@ -8,12 +8,12 @@ use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 trait QueryTrait
 {
     /**
-     * @var array<string, string[]>
+     * @var array<string, string[]|null>
      */
     private array $query = [];
 
     /**
-     * @return array<string, string[]>
+     * @return array<string, string[]|null>
      */
     public function getQuery(): array
     {
@@ -21,7 +21,7 @@ trait QueryTrait
     }
 
     /**
-     * @param array<string, MatcherInterface|MatcherInterface[]|string|string[]> $query
+     * @param array<string, MatcherInterface|MatcherInterface[]|string|string[]|null> $query
      */
     public function setQuery(array $query): self
     {
@@ -34,12 +34,18 @@ trait QueryTrait
     }
 
     /**
-     * @param MatcherInterface|MatcherInterface[]|string|string[] $value
+     * @param MatcherInterface|MatcherInterface[]|string|string[]|null $value
      *
      * @throws JsonException
      */
-    public function addQueryParameter(string $key, array|string|MatcherInterface $value): self
+    public function addQueryParameter(string $key, array|string|MatcherInterface|null $value): self
     {
+        if ($value === null) {
+            $this->query[$key] = null;
+
+            return $this;
+        }
+
         $this->query[$key] = [];
         if (is_array($value)) {
             array_walk($value, fn (string|MatcherInterface $value) => $this->addQueryParameterValue($key, $value));

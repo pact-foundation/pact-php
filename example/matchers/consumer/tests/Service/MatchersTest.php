@@ -49,6 +49,7 @@ class MatchersTest extends TestCase
 
                 'browsers[]' => $this->matcher->arrayContaining(['Firefox', 'Chrome']),
             ])
+            ->addQueryParameter('null', null)
             ->addQueryParameter('single', 'query')
             ->addQueryParameter('multiple[]', ['query1', 'query2'])
             ->addHeader('Accept', 'application/json')

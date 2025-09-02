@@ -643,12 +643,13 @@ trait ClientTrait
     }
 
     /**
-     * @param array<string, string[]> $query
+     * @param array<string, string[]|null> $query
      */
     protected function expectsWithQueryParameterV2(int $interaction, array $query): void
     {
         $calls = [];
         foreach ($query as $name => $values) {
+            $values ??= [null];
             foreach ($values as $index => $value) {
                 $calls[] = [$interaction, $name, $index, $value, true];
             }
