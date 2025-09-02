@@ -21,7 +21,7 @@ trait QueryTrait
     }
 
     /**
-     * @param array<string, string|string[]> $query
+     * @param array<string, MatcherInterface|MatcherInterface[]|string|string[]> $query
      */
     public function setQuery(array $query): self
     {
