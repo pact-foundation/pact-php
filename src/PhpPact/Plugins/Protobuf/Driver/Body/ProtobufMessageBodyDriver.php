@@ -9,7 +9,7 @@ use PhpPact\Plugin\Driver\Body\PluginBodyDriverInterface;
 
 class ProtobufMessageBodyDriver implements MessageBodyDriverInterface
 {
-    public function __construct(private PluginBodyDriverInterface $pluginBodyDriver)
+    public function __construct(private readonly PluginBodyDriverInterface $pluginBodyDriver)
     {
     }
 

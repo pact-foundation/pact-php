@@ -19,7 +19,7 @@ class Verifier
     protected ClientInterface $client;
     protected CData $handle;
 
-    public function __construct(VerifierConfigInterface $config, private ?LoggerInterface $logger = null, ?ClientInterface $client = null)
+    public function __construct(VerifierConfigInterface $config, private readonly ?LoggerInterface $logger = null, ?ClientInterface $client = null)
     {
         $this->client = $client ?? new Client();
         $this->newHandle($config);
