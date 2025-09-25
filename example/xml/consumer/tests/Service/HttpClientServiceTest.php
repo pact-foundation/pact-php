@@ -72,11 +72,42 @@ class HttpClientServiceTest extends TestCase
                         $xmlBuilder->attribute('type', $matcher->regex('stars', 'stars|thumbs')),
                         $xmlBuilder->contentLike(6),
                     ),
-                    // TODO: implement XML generators
-                    // $xmlBuilder->add(
-                    //     $xmlBuilder->name('release-date'),
-                    //     $xmlBuilder->content($matcher->date('dd-MM-yyyy')),
-                    // ),
+                    // Generators
+                    $xmlBuilder->add(
+                        $xmlBuilder->name('release-date'),
+                        $xmlBuilder->content($matcher->date('dd-MM-yyyy')),
+                        $xmlBuilder->add(
+                            $xmlBuilder->name('china'),
+                            $xmlBuilder->content($matcher->date('dd-MM-yyyy')),
+                        ),
+                    ),
+                    $xmlBuilder->add(
+                        $xmlBuilder->name('specs'),
+                        $xmlBuilder->attribute('runtime', $matcher->regex(null, '\d+ hours [0-5]?[0-9] minutes')),
+                        $xmlBuilder->attribute('aspect-ratio', $matcher->regex(null, '([0-9]+[.])?[0-9]+:[0-9]+')),
+                        $xmlBuilder->attribute('color', $matcher->regex(null, 'color|black&white')),
+                    ),
+                    $xmlBuilder->add(
+                        $xmlBuilder->name('also-known-as'),
+                        $xmlBuilder->content($matcher->string()),
+                        $xmlBuilder->attribute('xmlns:aka', 'http://example.com/movies'),
+                        $xmlBuilder->add(
+                            $xmlBuilder->name('aka:united-states'),
+                            $xmlBuilder->content($matcher->string()),
+                        ),
+                        $xmlBuilder->add(
+                            $xmlBuilder->name('aka:australia'),
+                            $xmlBuilder->content($matcher->string()),
+                        ),
+                        $xmlBuilder->add(
+                            $xmlBuilder->name('aka:argentina'),
+                            $xmlBuilder->content($matcher->string()),
+                        ),
+                        $xmlBuilder->add(
+                            $xmlBuilder->name('aka:brazil'),
+                            $xmlBuilder->content($matcher->string()),
+                        ),
+                    ),
                 ),
             );
 
@@ -107,18 +138,56 @@ class HttpClientServiceTest extends TestCase
 
         $this->assertTrue($verifyResult);
         $this->assertCount(1, $movies->movie);
-        $this->assertEquals('Big Buck Bunny', $movies->movie[0]->title);
+        $this->assertXmlContent('Big Buck Bunny', $movies->movie[0]->title);
         // TODO: investigate why mock server replace "\r\n" by "\n" on Windows
-        $this->assertEquals(str_replace("\r\n", "\n", $plot), $movies->movie[0]->plot);
-        $this->assertCount(1, $movies->movie[0]->{'great-lines'}->line);
-        $this->assertEquals('Open source movie', $movies->movie[0]->{'great-lines'}->line[0]);
-        $this->assertEquals('6', $movies->movie[0]->rating);
+        $this->assertXmlContent(str_replace("\r\n", "\n", $plot), $movies->movie[0]->plot);
+        $this->assertXmlContent('Open source movie', $movies->movie[0]->{'great-lines'}->line);
+        $this->assertXmlContent('6', $movies->movie[0]->rating);
+        $this->assertXmlAttribute('stars', 'type', $movies->movie[0]->rating);
         $this->assertCount(2, $movies->movie[0]->characters->character);
-        $this->assertEquals('Big Buck Bunny', $movies->movie[0]->characters->character[0]->name);
-        $this->assertEquals('Jan Morgenstern', $movies->movie[0]->characters->character[0]->actor);
-        // TODO: implement XML generators
-        $this->assertEquals('', $movies->movie[0]->characters->character[1]->name);
-        $this->assertEquals('', $movies->movie[0]->characters->character[1]->actor);
-        //$this->assertEquals('', $movies->movie[0]->{'release-date'}[0]);
+        $this->assertXmlContent('Big Buck Bunny', $movies->movie[0]->characters->character[0]->name);
+        $this->assertXmlContent('Jan Morgenstern', $movies->movie[0]->characters->character[0]->actor);
+        // TODO: investigate why content of the second element (examples = 2) is empty
+        $this->assertXmlContent('', $movies->movie[0]->characters->character[1]->name);
+        $this->assertXmlContent('', $movies->movie[0]->characters->character[1]->actor);
+        // Generators
+        $this->assertXmlContentGenerated($movies->movie[0]->{'release-date'});
+        $this->assertXmlContentGenerated($movies->movie[0]->{'release-date'}[0]->china);
+        $this->assertXmlAttributeGenerated('runtime', $movies->movie[0]->specs);
+        $this->assertXmlAttributeGenerated('aspect-ratio', $movies->movie[0]->specs);
+        $this->assertXmlAttributeGenerated('color', $movies->movie[0]->specs);
+        $this->assertXmlContentGenerated($movies->movie[0]->{'also-known-as'});
+        $this->assertXmlContentGenerated($movies->movie[0]->{'also-known-as'}->children('aka', true)->{'united-states'});
+        $this->assertXmlContentGenerated($movies->movie[0]->{'also-known-as'}->children('aka', true)->{'australia'});
+        $this->assertXmlContentGenerated($movies->movie[0]->{'also-known-as'}->children('aka', true)->{'argentina'});
+        $this->assertXmlContentGenerated($movies->movie[0]->{'also-known-as'}->children('aka', true)->{'brazil'});
+    }
+
+    private function assertXmlContent(string $expected, \SimpleXMLElement $element): void
+    {
+        $this->assertCount(1, $element);
+        $this->assertSame($expected, (string)$element[0]);
+    }
+
+    private function assertXmlContentGenerated(\SimpleXMLElement $element): void
+    {
+        $this->assertCount(1, $element);
+        $this->assertNotSame('', (string)$element[0]);
+    }
+
+    private function assertXmlAttribute(string $expected, string $key, \SimpleXMLElement $element): void
+    {
+        $this->assertCount(1, $element);
+        $attributes = $element[0]->attributes();
+        $this->assertNotNull($attributes);
+        $this->assertSame($expected, (string)$attributes[$key]);
+    }
+
+    private function assertXmlAttributeGenerated(string $key, \SimpleXMLElement $element): void
+    {
+        $this->assertCount(1, $element);
+        $attributes = $element[0]->attributes();
+        $this->assertNotNull($attributes);
+        $this->assertNotSame('', (string)$attributes[$key]);
     }
 }
