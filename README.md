@@ -93,6 +93,16 @@ Looking for the previous [stable 9.x.x release](https://github.com/pact-foundati
 
 PHP 8.1+ as of pact-php v10
 
+### Runtime requirements (v10+)
+
+Pact PHP v10 uses native FFI bindings.
+
+- PHP 8.1+  
+- PHP FFI installed and enabled (`ffi.enable=true`)  
+- On Alpine (musl), install `libgcc` and enable FFI
+
+See: [docs/alpine-ffi-troubleshooting.md](docs/alpine-ffi-troubleshooting.md)
+
 ### Do Not Track
 
 In order to get better statistics as to who is using Pact, we have an anonymous tracking event that triggers when Pact installs for the first time. The only things we [track](https://docs.pact.io/metrics) are your type of OS, and the version information for the package being installed. No PII data is sent as part of this request. You can disable tracking by setting the environment variable `PACT_DO_NOT_TRACK=true`:
