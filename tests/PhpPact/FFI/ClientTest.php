@@ -336,7 +336,7 @@ class ClientTest extends TestCase
         $handle = $this->client->verifierNewForApplication('name', '1.1');
         if ($handle) {
             $result = $this->client->verifierJson($handle);
-            $this->assertSame('{"errors":[],"notices":[],"output":[],"pendingErrors":[],"result":true}', $result);
+            $this->assertSame('{"errors":[],"interactionResults":[],"notices":[],"output":[],"pendingErrors":[],"result":true}', $result);
         }
     }
 
