@@ -11,7 +11,7 @@ use UnexpectedValueException;
  */
 interface PactConfigInterface
 {
-    public const DEFAULT_SPECIFICATION_VERSION = '3.0.0';
+    public const DEFAULT_SPECIFICATION_VERSION = '4.0.0';
 
     /**
      * @deprecated Use WriteMode::OVERWRITE instead
