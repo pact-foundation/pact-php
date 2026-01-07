@@ -9,8 +9,8 @@ use PhpPact\FFI\Exception\CDataNotCreatedException;
 class ArrayData
 {
     private function __construct(
-        private CData $items,
-        private int $size
+        private readonly CData $items,
+        private readonly int $size
     ) {
     }
 

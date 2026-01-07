@@ -7,7 +7,7 @@ use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 
 class XmlText implements JsonSerializable
 {
-    public function __construct(private string|float|int|bool|null|MatcherInterface $content)
+    public function __construct(private readonly string|float|int|bool|null|MatcherInterface $content)
     {
     }
 

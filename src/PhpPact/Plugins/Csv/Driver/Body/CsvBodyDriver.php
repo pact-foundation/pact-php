@@ -9,7 +9,7 @@ use PhpPact\Plugin\Driver\Body\PluginBodyDriverInterface;
 
 class CsvBodyDriver implements InteractionBodyDriverInterface
 {
-    public function __construct(private PluginBodyDriverInterface $pluginBodyDriver)
+    public function __construct(private readonly PluginBodyDriverInterface $pluginBodyDriver)
     {
     }
 

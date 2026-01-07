@@ -15,7 +15,7 @@ abstract class AbstractDateTime extends GeneratorAwareMatcher implements JsonFor
     use JsonFormattableTrait;
     use ExpressionFormattableTrait;
 
-    public function __construct(protected string $format, private string $value = '')
+    public function __construct(protected readonly string $format, private readonly string $value = '')
     {
         parent::__construct();
     }

@@ -17,7 +17,7 @@ class Equality extends GeneratorAwareMatcher implements JsonFormattableInterface
     use JsonFormattableTrait;
     use ExpressionFormattableTrait;
 
-    public function __construct(private mixed $value)
+    public function __construct(private readonly mixed $value)
     {
         parent::__construct();
     }

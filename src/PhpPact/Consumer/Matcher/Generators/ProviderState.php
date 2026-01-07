@@ -14,7 +14,7 @@ use PhpPact\Consumer\Matcher\Model\Generator\JsonFormattableInterface;
  */
 class ProviderState extends AbstractGenerator implements JsonFormattableInterface, ExpressionFormattableInterface
 {
-    public function __construct(private string $expression)
+    public function __construct(private readonly string $expression)
     {
     }
 

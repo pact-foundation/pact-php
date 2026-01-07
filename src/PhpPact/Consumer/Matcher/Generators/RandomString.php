@@ -11,7 +11,7 @@ use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
  */
 class RandomString implements GeneratorInterface, JsonFormattableInterface
 {
-    public function __construct(private int $size = 10)
+    public function __construct(private readonly int $size = 10)
     {
     }
 

@@ -15,7 +15,7 @@ class Values extends AbstractMatcher implements JsonFormattableInterface
     /**
      * @param array<mixed> $values
      */
-    public function __construct(private array $values)
+    public function __construct(private readonly array $values)
     {
         parent::__construct();
     }

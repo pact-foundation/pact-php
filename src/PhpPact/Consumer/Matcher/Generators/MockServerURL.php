@@ -14,7 +14,7 @@ use PhpPact\Consumer\Matcher\Model\GeneratorInterface;
  */
 class MockServerURL implements GeneratorInterface, JsonFormattableInterface
 {
-    public function __construct(private string $regex, private string $example)
+    public function __construct(private readonly string $regex, private readonly string $example)
     {
     }
 
