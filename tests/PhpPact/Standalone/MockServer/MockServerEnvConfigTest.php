@@ -88,7 +88,7 @@ class MockServerEnvConfigTest extends TestCase
         });
     }
 
-    #[TestWith(['PACT_SPECIFICATION_VERSION', '3.0.0'])]
+    #[TestWith(['PACT_SPECIFICATION_VERSION', '4.0.0'])]
     #[TestWith(['PACT_SPECIFICATION_VERSION=1.1.0', '1.1.0'])]
     public function testPactSpecificationVersion(string $assignment, ?string $specificationVersion): void
     {
