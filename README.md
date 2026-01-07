@@ -254,8 +254,9 @@ It's best to run Pact verification tests as part of your unit testing suite, so 
 
 | Version | Status     | [Spec] Compatibility | PHP Compatibility | Install            |
 | ------- | ---------- | -------------------- | ----------------- | ------------------ |
+| 11.x    | Developing | 1, 1.1, 2, 3, 4      | ^8.2              | See [installation] |
 | 10.x    | Stable     | 1, 1.1, 2, 3, 4      | ^8.1              | See [installation] |
-| 9.x     | Stable     | 1, 1.1, 2, 3\*       | ^8.0              | [9xx]              |
+| 9.x     | Deprecated | 1, 1.1, 2, 3\*       | ^8.0              | [9xx]              |
 | 8.x     | Deprecated | 1, 1.1, 2, 3\*       | ^7.4\|^8.0        |                    |
 | 7.x     | Deprecated | 1, 1.1, 2, 3\*       | ^7.3              |                    |
 | 6.x     | Deprecated | 1, 1.1, 2, 3\*       | ^7.2              |                    |
