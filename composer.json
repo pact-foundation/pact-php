@@ -23,7 +23,7 @@
         "ext-ffi": "*",
         "ext-json": "*",
         "composer/semver": "^1.4.0|^3.2.0",
-        "symfony/process": "8.0.3",
+        "symfony/process": "^5.4|^6.0|^7.0|^8.0",
         "guzzlehttp/psr7": "^2.4.5",
         "pact-foundation/composer-downloads-plugin": "^2.1"
     },
