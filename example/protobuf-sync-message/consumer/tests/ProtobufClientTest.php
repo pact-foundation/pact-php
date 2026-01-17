@@ -10,7 +10,8 @@ use PhpPact\SyncMessage\SyncMessageBuilder;
 use PHPUnit\Framework\TestCase;
 use Plugins\Rectangle;
 use Plugins\ShapeMessage;
-use ProtobufSyncMessageConsumer\ProtobufClient;
+use Plugins\CalculatorClient;
+use Grpc\ChannelCredentials;
 
 class ProtobufClientTest extends TestCase
 {
@@ -55,15 +56,18 @@ class ProtobufClientTest extends TestCase
             ));
         $builder->registerMessage();
 
-        $service = new ProtobufClient("{$config->getHost()}:{$config->getPort()}");
+        $client = new CalculatorClient("{$config->getHost()}:{$config->getPort()}", [
+            'credentials' => ChannelCredentials::createInsecure(),
+        ]);
         $rectangle = (new Rectangle())->setLength(3)->setWidth(4);
         $message = new ShapeMessage();
         $message->setCreated('2001-06-23');
         $message->setId('eb87e331-81d6-43c2-b8e8-0574f8c30ab3');
         $message->setRectangle($rectangle);
-        $response = $service->calculate($message);
+        [$response, $status] = $client->calculate($message)->wait();
 
-        $this->assertTrue($builder->verify());
+        $this->assertNotNull($response);
         $this->assertEquals(3 * 4, $response->getValue());
+        $this->assertTrue($builder->verify());
     }
 }
