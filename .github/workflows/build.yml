@@ -49,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.3]
+        php: [8.4]
         os: [ubuntu-latest, macos-15, macos-15-intel, windows-latest, ubuntu-24.04-arm]
     timeout-minutes: 60
     env:
