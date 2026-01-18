@@ -39,6 +39,7 @@ class MockServer implements MockServerInterface
 
     public function verify(): VerifyResult
     {
+        usleep(10000); // Wait for last request reach mock server (TODO find better way)
         try {
             $matched = $this->isMatched();
 
