@@ -49,6 +49,8 @@ final class ResponseGeneratorsContext implements Context
         $search = [
             (string) $serverBaseUri->withHost('127.0.0.1'),
             (string) $serverBaseUri->withHost('::1'),
+            (string) $serverBaseUri->withHost('[::1]'),
+            (string) $serverBaseUri->withHost('0:0:0:0:0:0:0:1'),
         ];
         $body = str_replace($search, $href, $body);
         $this->bodyStorage->setBody($body);
