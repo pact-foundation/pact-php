@@ -24,12 +24,7 @@ final class InteractionBuilder implements InteractionBuilderInterface
         $interaction->setRequest($request);
 
         $response = new ProviderResponse();
-        $this->responseBuilder->build($response, array_filter([
-            'status' => $data['response'] ?? null,
-            'headers' => $data['response headers'] ?? null,
-            'body' => $data['response body'] ?? null,
-            'content-type' => $data['response content'] ?? null,
-        ]));
+        $this->responseBuilder->build($response, $data);
         $interaction->setResponse($response);
 
         return $interaction;

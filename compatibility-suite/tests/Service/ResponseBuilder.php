@@ -14,20 +14,22 @@ final class ResponseBuilder implements ResponseBuilderInterface
     {
         foreach ($data as $key => $value) {
             switch ($key) {
-                case 'status':
-                    $response->setStatus($data['status']);
+                case 'response':
+                    $response->setStatus($data['response']);
                     break;
 
-                case 'headers':
-                    $response->setHeaders($this->parser->parseHeaders($data['headers']));
+                case 'response headers':
+                    $response->setHeaders($this->parser->parseHeaders($data['response headers']));
                     break;
 
-                case 'body':
-                    $response->setBody($this->parser->parseBody($data['body'], $response->getBody()?->getContentType()));
+                case 'response body':
+                    $response->setBody($this->parser->parseBody($data['response body'], $response->getBody()?->getContentType()));
                     break;
 
-                case 'content-type':
-                    $response->addHeader('Content-Type', $data['content-type']);
+                case 'response content':
+                    if (!empty($data['response content'])) {
+                        $response->addHeader('Content-Type', $data['response content']);
+                    }
                     break;
 
                 default:
