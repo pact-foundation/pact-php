@@ -27,7 +27,9 @@ final class ResponseBuilder implements ResponseBuilderInterface
                     break;
 
                 case 'response content':
-                    $response->addHeader('Content-Type', $data['response content']);
+                    if (!empty($data['response content'])) {
+                        $response->addHeader('Content-Type', $data['response content']);
+                    }
                     break;
 
                 default:
