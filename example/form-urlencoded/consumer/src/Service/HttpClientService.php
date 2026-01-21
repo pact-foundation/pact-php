@@ -43,6 +43,7 @@ class HttpClientService
                 'Accept' => 'application/x-www-form-urlencoded',
                 'Content-Type' => 'application/x-www-form-urlencoded',
             ],
+            'http_errors' => false,
         ]);
 
         return $response->getBody();

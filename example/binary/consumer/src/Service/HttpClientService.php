@@ -20,7 +20,8 @@ class HttpClientService
     public function getImageContent(): string
     {
         $response = $this->httpClient->get(new Uri("{$this->baseUri}/image.jpg"), [
-            'headers' => ['Accept' => 'image/jpeg']
+            'headers' => ['Accept' => 'image/jpeg'],
+            'http_errors' => false,
         ]);
 
         return $response->getBody();

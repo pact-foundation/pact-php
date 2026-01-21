@@ -40,6 +40,7 @@ class HttpClientService
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer ZmluLWFwaTphcGktc2VjcmV0',
             ],
+            'http_errors' => false,
         ]);
 
         return $response->getBody();

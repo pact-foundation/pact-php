@@ -27,7 +27,8 @@ class HttpClientService
                     'message' => 'Hi everyone!',
                 ],
             ],
-            'headers' => ['Content-Type' => 'application/json']
+            'headers' => ['Content-Type' => 'application/json'],
+            'http_errors' => false,
         ]);
 
         return $response->getBody();
@@ -50,7 +51,8 @@ class HttpClientService
                     'y' => 5,
                 ],
             ],
-            'headers' => ['Content-Type' => 'application/json']
+            'headers' => ['Content-Type' => 'application/json'],
+            'http_errors' => false,
         ]);
 
         return $response->getBody();

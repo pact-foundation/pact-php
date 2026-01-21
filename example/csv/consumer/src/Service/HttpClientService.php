@@ -17,7 +17,8 @@ class HttpClientService
     public function getReport(): array
     {
         $response = $this->httpClient->get(new Uri("{$this->baseUri}/report.csv"), [
-            'headers' => ['Accept' => 'text/csv']
+            'headers' => ['Accept' => 'text/csv'],
+            'http_errors' => false,
         ]);
 
         return str_getcsv($response->getBody());
