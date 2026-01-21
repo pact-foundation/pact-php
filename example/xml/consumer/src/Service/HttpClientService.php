@@ -17,7 +17,8 @@ class HttpClientService
     public function getMovies(): string
     {
         $response = $this->httpClient->get(new Uri("{$this->baseUri}/movies"), [
-            'headers' => ['Accept' => 'application/xml']
+            'headers' => ['Accept' => 'application/xml'],
+            'http_errors' => false,
         ]);
 
         return $response->getBody();

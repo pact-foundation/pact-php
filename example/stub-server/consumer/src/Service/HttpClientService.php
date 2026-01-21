@@ -16,7 +16,9 @@ class HttpClientService
 
     public function getResults(): array
     {
-        $response = $this->httpClient->get(new Uri("{$this->baseUri}/test"));
+        $response = $this->httpClient->get(new Uri("{$this->baseUri}/test"), [
+            'http_errors' => false,
+        ]);
         $body   = $response->getBody();
         $object = \json_decode($body, null, 512, JSON_THROW_ON_ERROR);
 
