@@ -96,7 +96,7 @@ jobs:
           key: ${{ matrix.os }}-pact-plugins
 
       - name: Run examples
-        run: composer run-examples
+        run: ${{ matrix.os == 'windows-latest' && 'composer run-examples:windows' || 'composer run-examples' }}
         env:
           PACT_DO_NOT_TRACK: true
 
