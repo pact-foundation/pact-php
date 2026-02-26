@@ -4,6 +4,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V3\Message;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeStepScope;
+use Behat\Hook\BeforeStep;
 use Behat\Gherkin\Node\TableNode;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
@@ -52,9 +53,7 @@ final class ProviderContext implements Context
         $this->ids[] = $this->id++;
     }
 
-    /**
-     * @BeforeStep
-     */
+    #[BeforeStep]
     public function registerInteractions(BeforeStepScope $scope): void
     {
         if (

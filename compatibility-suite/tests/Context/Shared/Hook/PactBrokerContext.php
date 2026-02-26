@@ -5,6 +5,8 @@ namespace PhpPactTest\CompatibilitySuite\Context\Shared\Hook;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Hook\AfterScenario;
+use Behat\Hook\BeforeScenario;
 use PhpPactTest\CompatibilitySuite\Service\PactBrokerInterface;
 
 final class PactBrokerContext implements Context
@@ -14,9 +16,7 @@ final class PactBrokerContext implements Context
     ) {
     }
 
-    /**
-     * @BeforeScenario
-     */
+    #[BeforeScenario]
     public function startPactBroker(BeforeScenarioScope $scope): void
     {
         if (str_contains($scope->getScenario()->getTitle(), 'via a Pact broker')) {
@@ -24,9 +24,7 @@ final class PactBrokerContext implements Context
         }
     }
 
-    /**
-     * @AfterScenario
-     */
+    #[AfterScenario]
     public function stopPactBroker(AfterScenarioScope $scope): void
     {
         if (str_contains($scope->getScenario()->getTitle(), 'via a Pact broker')) {

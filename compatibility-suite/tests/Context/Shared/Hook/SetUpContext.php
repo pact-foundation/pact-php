@@ -4,15 +4,14 @@ namespace PhpPactTest\CompatibilitySuite\Context\Shared\Hook;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Hook\BeforeScenario;
 use Behat\Hook\BeforeSuite;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
 use PHPUnit\TextUI\Configuration\Builder;
 
 final class SetUpContext implements Context
 {
-    /**
-     * @BeforeScenario
-     */
+    #[BeforeScenario]
     public function cleanUpPacts(BeforeScenarioScope $scope): void
     {
         $files = glob(Path::PACTS_PATH . '/*.json');
