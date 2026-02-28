@@ -4,6 +4,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\Shared\Transform;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Transformation\Transform;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\MatchingRulesStorageInterface;
@@ -16,14 +17,10 @@ class InteractionsContext implements Context
     ) {
     }
 
-    /**
-     * @Transform table:No,method,path,query,headers,body,response,response content,response body
-     * @Transform table:No,method,path,query,headers,body,response,response headers,response content,response body
-     * @Transform table:No,method,path,query,headers,body,matching rules
-     * @Transform table:No,method,path,response,response headers,response content,response body,response matching rules
-     *
-     * @return array<int, Interaction>
-     */
+    #[Transform('table:No,method,path,query,headers,body,response,response content,response body')]
+    #[Transform('table:No,method,path,query,headers,body,response,response headers,response content,response body')]
+    #[Transform('table:No,method,path,query,headers,body,matching rules')]
+    #[Transform('table:No,method,path,response,response headers,response content,response body,response matching rules')]
     public function getInteractions(TableNode $table): array
     {
         $interactions = [];
