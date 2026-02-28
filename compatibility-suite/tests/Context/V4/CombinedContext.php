@@ -3,6 +3,9 @@
 namespace PhpPactTest\CompatibilitySuite\Context\V4;
 
 use Behat\Behat\Context\Context;
+use Behat\Step\Given;
+use Behat\Step\Then;
+use Behat\Step\When;
 use PhpPact\Config\Enum\WriteMode;
 use PhpPact\Consumer\Model\Message;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
@@ -26,9 +29,7 @@ final class CombinedContext implements Context
         $this->pactPath = new PactPath();
     }
 
-    /**
-     * @Given an HTTP interaction is being defined for a consumer test
-     */
+    #[Given('an HTTP interaction is being defined for a consumer test')]
     public function anHttpInteractionIsBeingDefinedForAConsumerTest(): void
     {
         $interaction = $this->builder->build([
@@ -39,16 +40,12 @@ final class CombinedContext implements Context
         $this->storage->add(InteractionsStorageInterface::PACT_WRITER_DOMAIN, $this->id, $interaction);
     }
 
-    /**
-     * @Given a message interaction is being defined for a consumer test
-     */
+    #[Given('a message interaction is being defined for a consumer test')]
     public function aMessageInteractionIsBeingDefinedForAConsumerTest(): void
     {
     }
 
-    /**
-     * @When the Pact file for the test is generated
-     */
+    #[When('the Pact file for the test is generated')]
     public function thePactFileForTheTestIsGenerated(): void
     {
         $this->pactWriter->write($this->id, $this->pactPath, WriteMode::MERGE);
@@ -57,9 +54,7 @@ final class CombinedContext implements Context
         $this->messagePactWriter->write($message, $this->pactPath, WriteMode::MERGE);
     }
 
-    /**
-     * @Then there will be an interaction in the Pact file with a type of :type
-     */
+    #[Then('there will be an interaction in the Pact file with a type of :type')]
     public function thereWillBeAnInteractionInThePactFileWithATypeOf(string $type): void
     {
         $pact = json_decode(file_get_contents($this->pactPath), true);

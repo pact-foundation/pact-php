@@ -3,6 +3,7 @@
 namespace PhpPactTest\CompatibilitySuite\Context\V3;
 
 use Behat\Behat\Context\Context;
+use Behat\Step\Then;
 use PhpPactTest\CompatibilitySuite\Service\BodyValidatorInterface;
 
 final class BodyGeneratorsContext implements Context
@@ -12,9 +13,7 @@ final class BodyGeneratorsContext implements Context
     ) {
     }
 
-    /**
-     * @Then the body value for :path will have been replaced with a(n) :type
-     */
+    #[Then('the body value for :path will have been replaced with a(n) :type')]
     public function theBodyValueForWillHaveBeenReplacedWithA(string $path, string $type): void
     {
         $this->validator->validateType($path, $type);

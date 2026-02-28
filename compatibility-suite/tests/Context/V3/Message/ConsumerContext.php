@@ -4,6 +4,9 @@ namespace PhpPactTest\CompatibilitySuite\Context\V3\Message;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\Given;
+use Behat\Step\Then;
+use Behat\Step\When;
 use Exception;
 use PhpPact\Config\Enum\WriteMode;
 use PhpPact\Consumer\MessageBuilder;
@@ -45,33 +48,25 @@ final class ConsumerContext implements Context
         $this->builder = new MessageBuilder($config);
     }
 
-    /**
-     * @Given a message integration is being defined for a consumer test
-     */
+    #[Given('a message integration is being defined for a consumer test')]
     public function aMessageIntegrationIsBeingDefinedForAConsumerTest(): void
     {
         $this->builder->expectsToReceive('a message');
     }
 
-    /**
-     * @Given the message payload contains the :fixture JSON document
-     */
+    #[Given('the message payload contains the :fixture JSON document')]
     public function theMessagePayloadContainsTheJsonDocument(string $fixture): void
     {
         $this->builder->withContent($this->fixtureLoader->loadJson($fixture . '.json'));
     }
 
-    /**
-     * @When the message is successfully processed
-     */
+    #[When('the message is successfully processed')]
     public function theMessageIsSuccessfullyProcessed(): void
     {
         $this->process([$this, 'storeMessage']);
     }
 
-    /**
-     * @Then the received message payload will contain the :fixture JSON document
-     */
+    #[Then('the received message payload will contain the :fixture JSON document')]
     public function theReceivedMessagePayloadWillContainTheJsonDocument(string $fixture): void
     {
         Assert::assertJsonStringEqualsJsonString(
@@ -80,42 +75,32 @@ final class ConsumerContext implements Context
         );
     }
 
-    /**
-     * @Then the received message content type will be :contentType
-     */
+    #[Then('the received message content type will be :contentType')]
     public function theReceivedMessageContentTypeWillBe(string $contentType): void
     {
         Assert::assertSame($contentType, $this->receivedMessage->metadata->contentType);
     }
 
-    /**
-     * @Then the consumer test will have passed
-     */
+    #[Then('the consumer test will have passed')]
     public function theConsumerTestWillHavePassed(): void
     {
         Assert::assertTrue($this->verifyResult);
     }
 
-    /**
-     * @Then a Pact file for the message interaction will have been written
-     */
+    #[Then('a Pact file for the message interaction will have been written')]
     public function aPactFileForTheMessageInteractionWillHaveBeenWritten(): void
     {
         Assert::assertTrue(file_exists($this->pactPath));
         $this->pact = json_decode(file_get_contents($this->pactPath), true);
     }
 
-    /**
-     * @Then the pact file will contain :messages message interaction(s)
-     */
+    #[Then('the pact file will contain :messages message interaction(s)')]
     public function thePactFileWillContainMessageInteraction(int $messages): void
     {
         Assert::assertCount($messages, $this->pact['messages'] ?? []);
     }
 
-    /**
-     * @Then the first message in the pact file will contain the :fixture document
-     */
+    #[Then('the first message in the pact file will contain the :fixture document')]
     public function theFirstMessageInThePactFileWillContainTheDocument(string $fixture): void
     {
         Assert::assertJsonStringEqualsJsonString(
@@ -124,57 +109,43 @@ final class ConsumerContext implements Context
         );
     }
 
-    /**
-     * @Then the first message in the pact file content type will be :contentType
-     */
+    #[Then('the first message in the pact file content type will be :contentType')]
     public function theFirstMessageInThePactFileContentTypeWillBe(string $contentType): void
     {
         Assert::assertSame($contentType, $this->pact['messages'][0]['metadata']['contentType'] ?? null);
     }
 
-    /**
-     * @When the message is NOT successfully processed with a :error exception
-     */
+    #[When('the message is NOT successfully processed with a :error exception')]
     public function theMessageIsNotSuccessfullyProcessedWithAException(string $error): void
     {
         $this->process(fn () => throw new Exception($error));
     }
 
-    /**
-     * @Then the consumer test will have failed
-     */
+    #[Then('the consumer test will have failed')]
     public function theConsumerTestWillHaveFailed(): void
     {
         Assert::assertFalse($this->verifyResult);
     }
 
-    /**
-     * @Then the consumer test error will be :error
-     */
+    #[Then('the consumer test error will be :error')]
     public function theConsumerTestErrorWillBe(string $error): void
     {
         // TODO Modify MessageBuilder code to check this exception?
     }
 
-    /**
-     * @Then a Pact file for the message interaction will NOT have been written
-     */
+    #[Then('a Pact file for the message interaction will NOT have been written')]
     public function aPactFileForTheMessageInteractionWillNotHaveBeenWritten(): void
     {
         Assert::assertFalse(file_exists($this->pactPath));
     }
 
-    /**
-     * @Given the message contains the following metadata:
-     */
+    #[Given('the message contains the following metadata:')]
     public function theMessageContainsTheFollowingMetadata(TableNode $table): void
     {
         $this->builder->withMetadata($this->parser->parseMetadataTable($table->getHash()));
     }
 
-    /**
-     * @Then /^the received message metadata will contain "([^"]+)" == "(.+)"$/
-     */
+    #[Then('/^the received message metadata will contain "([^"]+)" == "(.+)"$/')]
     public function theReceivedMessageMetadataWillContain(string $key, string $value): void
     {
         $actual = $this->receivedMessage->metadata->{$key};
@@ -185,9 +156,7 @@ final class ConsumerContext implements Context
         }
     }
 
-    /**
-     * @Then /^the first message in the pact file will contain the message metadata "([^"]+)" == "(.+)"$/
-     */
+    #[Then('/^the first message in the pact file will contain the message metadata "([^"]+)" == "(.+)"$/')]
     public function theFirstMessageInThePactFileWillContainTheMessageMetadata(string $key, string $value): void
     {
         $actual = $this->pact['messages'][0]['metadata'][$key] ?? null;
@@ -198,42 +167,32 @@ final class ConsumerContext implements Context
         }
     }
 
-    /**
-     * @Given a provider state :state for the message is specified
-     */
+    #[Given('a provider state :state for the message is specified')]
     public function aProviderStateForTheMessageIsSpecified(string $state): void
     {
         $this->builder->given($state, []);
     }
 
-    /**
-     * @Given a message is defined
-     */
+    #[Given('a message is defined')]
     public function aMessageIsDefined(): void
     {
         $this->aMessageIntegrationIsBeingDefinedForAConsumerTest();
     }
 
-    /**
-     * @Then the first message in the pact file will contain :states provider state(s)
-     */
+    #[Then('the first message in the pact file will contain :states provider state(s)')]
     public function theFirstMessageInThePactFileWillContainProviderStates(int $states): void
     {
         Assert::assertCount($states, $this->pact['messages'][0]['providerStates'] ?? []);
     }
 
-    /**
-     * @Then the first message in the Pact file will contain provider state :state
-     */
+    #[Then('the first message in the Pact file will contain provider state :state')]
     public function theFirstMessageInThePactFileWillContainProviderState(string $state): void
     {
         $states = array_map(fn (array $state): string => $state['name'], $this->pact['messages'][0]['providerStates']);
         Assert::assertContains($state, $states);
     }
 
-    /**
-     * @Given a provider state :state for the message is specified with the following data:
-     */
+    #[Given('a provider state :state for the message is specified with the following data:')]
     public function aProviderStateForTheMessageIsSpecifiedWithTheFollowingData(string $state, TableNode $table): void
     {
         $rows = $table->getHash();
@@ -241,9 +200,7 @@ final class ConsumerContext implements Context
         $this->builder->given($state, $row);
     }
 
-    /**
-     * @Then the provider state :state for the message will contain the following parameters:
-     */
+    #[Then('the provider state :state for the message will contain the following parameters:')]
     public function theProviderStateForTheMessageWillContainTheFollowingParameters(string $state, TableNode $table): void
     {
         $params = json_decode($table->getHash()[0]['parameters'], true);
@@ -253,9 +210,7 @@ final class ConsumerContext implements Context
         ], $this->pact['messages'][0]['providerStates']);
     }
 
-    /**
-     * @Given the message is configured with the following:
-     */
+    #[Given('the message is configured with the following:')]
     public function theMessageIsConfiguredWithTheFollowing(TableNode $table): void
     {
         $rows = $table->getHash();
@@ -273,18 +228,14 @@ final class ConsumerContext implements Context
         }
     }
 
-    /**
-     * @Then the message contents for :path will have been replaced with a(n) :type
-     */
+    #[Then('the message contents for :path will have been replaced with a(n) :type')]
     public function theMessageContentsForWillHaveBeenReplacedWithAn(string $path, string $type): void
     {
         $this->bodyStorage->setBody(json_encode($this->receivedMessage->contents));
         $this->validator->validateType($path, $type);
     }
 
-    /**
-     * @Then the received message metadata will contain :key replaced with an :type
-     */
+    #[Then('the received message metadata will contain :key replaced with an :type')]
     public function theReceivedMessageMetadataWillContainReplacedWithAn(string $key, string $type): void
     {
         $this->bodyStorage->setBody(json_encode($this->receivedMessage->metadata));

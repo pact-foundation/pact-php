@@ -4,6 +4,8 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4\Http;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\Given;
+use Behat\Step\Then;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
@@ -21,9 +23,7 @@ final class ProviderContext implements Context
         $this->pactPath = new PactPath();
     }
 
-    /**
-     * @Given a Pact file for interaction :id is to be verified, but is marked pending
-     */
+    #[Given('a Pact file for interaction :id is to be verified, but is marked pending')]
     public function aPactFileForInteractionIsToBeVerifiedButIsMarkedPending(int $id): void
     {
         $this->pactWriter->write($id, $this->pactPath);
@@ -33,9 +33,7 @@ final class ProviderContext implements Context
         $this->providerVerifier->addSource($this->pactPath);
     }
 
-    /**
-     * @Then there will be a pending :error error
-     */
+    #[Then('there will be a pending :error error')]
     public function thereWillBeAPendingError(string $error): void
     {
         $output = json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
@@ -64,9 +62,7 @@ final class ProviderContext implements Context
         Assert::assertContains($error, $errors);
     }
 
-    /**
-     * @Given a Pact file for interaction :id is to be verified with the following comments:
-     */
+    #[Given('a Pact file for interaction :id is to be verified with the following comments:')]
     public function aPactFileForInteractionIsToBeVerifiedWithTheFollowingComments(int $id, TableNode $table): void
     {
         $comments = [];
@@ -92,17 +88,13 @@ final class ProviderContext implements Context
         $this->providerVerifier->addSource($this->pactPath);
     }
 
-    /**
-     * @Then the comment :comment will have been printed to the console
-     */
+    #[Then('the comment :comment will have been printed to the console')]
     public function theCommentWillHaveBeenPrintedToTheConsole(string $comment): void
     {
         Assert::assertStringContainsString($comment, $this->providerVerifier->getVerifyResult()->getOutput());
     }
 
-    /**
-     * @Then the :name will displayed as the original test name
-     */
+    #[Then('the :name will displayed as the original test name')]
     public function theWillDisplayedAsTheOriginalTestName(string $name): void
     {
         Assert::assertStringContainsString(sprintf('Test Name: %s', $name), $this->providerVerifier->getVerifyResult()->getOutput());

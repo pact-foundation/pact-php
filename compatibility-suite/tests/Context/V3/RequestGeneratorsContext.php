@@ -4,6 +4,9 @@ namespace PhpPactTest\CompatibilitySuite\Context\V3;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\Given;
+use Behat\Step\Then;
+use Behat\Step\When;
 use GuzzleHttp\Psr7\Uri;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\BodyStorageInterface;
@@ -32,9 +35,7 @@ final class RequestGeneratorsContext implements Context
         $this->pactPath = new PactPath();
     }
 
-    /**
-     * @Given a request configured with the following generators:
-     */
+    #[Given('a request configured with the following generators:')]
     public function aRequestConfiguredWithTheFollowingGenerators(TableNode $table): void
     {
         $rows = $table->getHash();
@@ -49,9 +50,7 @@ final class RequestGeneratorsContext implements Context
         $this->storage->add(InteractionsStorageInterface::PACT_WRITER_DOMAIN, $this->id, $interaction);
     }
 
-    /**
-     * @When the request is prepared for use
-     */
+    #[When('the request is prepared for use')]
     public function theRequestIsPreparedForUse(): void
     {
         $this->generatorServer->start();
@@ -63,17 +62,13 @@ final class RequestGeneratorsContext implements Context
         $this->bodyStorage->setBody($this->generatorServer->getBody());
     }
 
-    /**
-     * @Given the generator test mode is set as :mode
-     */
+    #[Given('the generator test mode is set as :mode')]
     public function theGeneratorTestModeIsSetAs(string $mode): void
     {
         // There is nothing we can do using FFI call.
     }
 
-    /**
-     * @When the request is prepared for use with a "providerState" context:
-     */
+    #[When('the request is prepared for use with a "providerState" context:')]
     public function theRequestIsPreparedForUseWithAProviderStateContext(TableNode $table): void
     {
         $this->generatorServer->start();
@@ -92,9 +87,7 @@ final class RequestGeneratorsContext implements Context
         $this->bodyStorage->setBody($this->generatorServer->getBody());
     }
 
-    /**
-     * @Then the request :part will be set as :value
-     */
+    #[Then('the request :part will be set as :value')]
     public function theRequestWillBeSetAs(string $part, string $value): void
     {
         switch ($part) {
@@ -108,9 +101,7 @@ final class RequestGeneratorsContext implements Context
         }
     }
 
-    /**
-     * @Then the request :part will match :regex
-     */
+    #[Then('the request :part will match :regex')]
     public function theRequestWillMatch(string $part, string $regex): void
     {
         if ($part === 'path') {

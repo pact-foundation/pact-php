@@ -4,6 +4,9 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4\Message;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\Given;
+use Behat\Step\Then;
+use Behat\Step\When;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
@@ -32,9 +35,7 @@ final class ProviderContext implements Context
         $this->pactPath = new PactPath();
     }
 
-    /**
-     * @Given /^a provider is started that can generate the "([^"]+)" message with "(.+)"$/
-     */
+    #[Given('/^a provider is started that can generate the "([^"]+)" message with "(.+)"$/')]
     public function aProviderIsStartedThatCanGenerateTheMessageWith(string $name, string $fixture): void
     {
         $interaction = $this->builder->build([
@@ -59,9 +60,7 @@ final class ProviderContext implements Context
         ;
     }
 
-    /**
-     * @Given a Pact file for :name::fixture is to be verified, but is marked pending
-     */
+    #[Given('a Pact file for :name::fixture is to be verified, but is marked pending')]
     public function aPactFileForIsToBeVerifiedButIsMarkedPending(string $name, string $fixture): void
     {
         $message = new Message();
@@ -74,9 +73,7 @@ final class ProviderContext implements Context
         file_put_contents($this->pactPath, json_encode($pact));
     }
 
-    /**
-     * @Given a Pact file for :name::fixture is to be verified with the following comments:
-     */
+    #[Given('a Pact file for :name::fixture is to be verified with the following comments:')]
     public function aPactFileForIsToBeVerifiedWithTheFollowingComments(string $name, string $fixture, TableNode $table): void
     {
         $comments = [];
@@ -105,26 +102,20 @@ final class ProviderContext implements Context
         file_put_contents($this->pactPath, json_encode($pact));
     }
 
-    /**
-     * @When the verification is run
-     */
+    #[When('the verification is run')]
     public function theVerificationIsRun(): void
     {
         $this->providerVerifier->getConfig()->getProviderInfo()->setPort($this->server->getPort());
         $this->providerVerifier->verify();
     }
 
-    /**
-     * @Then the verification will be successful
-     */
+    #[Then('the verification will be successful')]
     public function theVerificationWillBeSuccessful(): void
     {
         Assert::assertTrue($this->providerVerifier->getVerifyResult()->isSuccess());
     }
 
-    /**
-     * @Then there will be a pending :error error
-     */
+    #[Then('there will be a pending :error error')]
     public function thereWillBeAPendingError(string $error): void
     {
         $output = json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
@@ -153,17 +144,13 @@ final class ProviderContext implements Context
         Assert::assertContains($error, $errors);
     }
 
-    /**
-     * @Then the comment :comment will have been printed to the console
-     */
+    #[Then('the comment :comment will have been printed to the console')]
     public function theCommentWillHaveBeenPrintedToTheConsole(string $comment): void
     {
         Assert::assertStringContainsString($comment, $this->providerVerifier->getVerifyResult()->getOutput());
     }
 
-    /**
-     * @Then the :name will displayed as the original test name
-     */
+    #[Then('the :name will displayed as the original test name')]
     public function theWillDisplayedAsTheOriginalTestName(string $name): void
     {
         Assert::assertStringContainsString(sprintf('Test Name: %s', $name), $this->providerVerifier->getVerifyResult()->getOutput());
