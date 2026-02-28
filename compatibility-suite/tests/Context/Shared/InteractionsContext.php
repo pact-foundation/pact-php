@@ -3,6 +3,7 @@
 namespace PhpPactTest\CompatibilitySuite\Context\Shared;
 
 use Behat\Behat\Context\Context;
+use Behat\Step\Given;
 use PhpPact\Consumer\Model\Interaction;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\MatchingRulesStorageInterface;
@@ -19,9 +20,7 @@ class InteractionsContext implements Context
     ) {
     }
 
-    /**
-     * @Given the following HTTP interactions have been defined:
-     */
+    #[Given('the following HTTP interactions have been defined:')]
     public function theFollowingHttpInteractionsHaveBeenDefined(array $interactions): void
     {
         foreach ($interactions as $id => $interaction) {

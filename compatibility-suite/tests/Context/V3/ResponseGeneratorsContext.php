@@ -4,6 +4,9 @@ namespace PhpPactTest\CompatibilitySuite\Context\V3;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\Given;
+use Behat\Step\Then;
+use Behat\Step\When;
 use PhpPactTest\CompatibilitySuite\Service\BodyStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\ClientInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
@@ -26,9 +29,7 @@ final class ResponseGeneratorsContext implements Context
     ) {
     }
 
-    /**
-     * @Given a response configured with the following generators:
-     */
+    #[Given('a response configured with the following generators:')]
     public function aResponseConfiguredWithTheFollowingGenerators(TableNode $table): void
     {
         $rows = $table->getHash();
@@ -44,9 +45,7 @@ final class ResponseGeneratorsContext implements Context
         $this->responseGeneratorBuilder->build($interaction->getResponse(), $row['generators']);
     }
 
-    /**
-     * @When the response is prepared for use
-     */
+    #[When('the response is prepared for use')]
     public function theResponseIsPreparedForUse(): void
     {
         $this->server->register($this->id);
@@ -54,9 +53,7 @@ final class ResponseGeneratorsContext implements Context
         $this->bodyStorage->setBody($this->client->getResponse()->getBody()->getContents());
     }
 
-    /**
-     * @Then the response :part will not be :value
-     */
+    #[Then('the response :part will not be :value')]
     public function theResponseWillNotBe(string $part, string $value): void
     {
         switch ($part) {
@@ -70,9 +67,7 @@ final class ResponseGeneratorsContext implements Context
         }
     }
 
-    /**
-     * @Then the response :part will match :regex
-     */
+    #[Then('the response :part will match :regex')]
     public function theResponseWillMatch(string $part, string $regex): void
     {
         if ($part === 'status') {

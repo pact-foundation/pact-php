@@ -4,6 +4,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\When;
 use PhpPactTest\CompatibilitySuite\Service\BodyStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\ClientInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
@@ -25,9 +26,7 @@ final class ResponseGeneratorsContext implements Context
     ) {
     }
 
-    /**
-     * @When the request is prepared for use with a "mockServer" context:
-     */
+    #[When('the request is prepared for use with a "mockServer" context:')]
     public function theRequestIsPreparedForUseWithAMockServerContext(TableNode $table): void
     {
         $interaction = $this->builder->build([

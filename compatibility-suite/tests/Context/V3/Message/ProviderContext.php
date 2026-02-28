@@ -6,6 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeStepScope;
 use Behat\Hook\BeforeStep;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\Given;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
@@ -35,9 +36,7 @@ final class ProviderContext implements Context
         $this->pactPath = new PactPath();
     }
 
-    /**
-     * @Given /^a provider is started that can generate the "([^"]+)" message with "(.+)"$/
-     */
+    #[Given('/^a provider is started that can generate the "([^"]+)" message with "(.+)"$/')]
     public function aProviderIsStartedThatCanGenerateTheMessageWith(string $name, string $fixture): void
     {
         $fixture = str_replace('\"', '"', $fixture);
@@ -75,9 +74,7 @@ final class ProviderContext implements Context
         }
     }
 
-    /**
-     * @Given a Pact file for :name::fixture is to be verified
-     */
+    #[Given('a Pact file for :name::fixture is to be verified')]
     public function aPactFileForIsToBeVerified(string $name, string $fixture): void
     {
         $message = new Message();
@@ -87,9 +84,7 @@ final class ProviderContext implements Context
         $this->providerVerifier->addSource($this->pactPath);
     }
 
-    /**
-     * @Given a Pact file for :name::fixture is to be verified with provider state :state
-     */
+    #[Given('a Pact file for :name::fixture is to be verified with provider state :state')]
     public function aPactFileForIsToBeVerifiedWithProviderState(string $name, string $fixture, string $state): void
     {
         $this->aPactFileForIsToBeVerified($name, $fixture);
@@ -98,9 +93,7 @@ final class ProviderContext implements Context
         file_put_contents($this->pactPath, json_encode($pact));
     }
 
-    /**
-     * @Given a provider is started that can generate the :name message with :fixture and the following metadata:
-     */
+    #[Given('a provider is started that can generate the :name message with :fixture and the following metadata:')]
     public function aProviderIsStartedThatCanGenerateTheMessageWithAndTheFollowingMetadata(string $name, string $fixture, TableNode $table): void
     {
         $interaction = $this->builder->build([
@@ -126,9 +119,7 @@ final class ProviderContext implements Context
         ;
     }
 
-    /**
-     * @Given a Pact file for :name::fixture is to be verified with the following metadata:
-     */
+    #[Given('a Pact file for :name::fixture is to be verified with the following metadata:')]
     public function aPactFileForIsToBeVerifiedWithTheFollowingMetadata(string $name, string $fixture, TableNode $table): void
     {
         $this->aPactFileForIsToBeVerified($name, $fixture);
@@ -137,9 +128,7 @@ final class ProviderContext implements Context
         file_put_contents($this->pactPath, json_encode($pact));
     }
 
-    /**
-     * @Given a Pact file for :name is to be verified with the following:
-     */
+    #[Given('a Pact file for :name is to be verified with the following:')]
     public function aPactFileForIsToBeVerifiedWithTheFollowing(string $name, TableNode $table): void
     {
         foreach ($table->getRowsHash() as $key => $value) {

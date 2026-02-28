@@ -4,6 +4,8 @@ namespace PhpPactTest\CompatibilitySuite\Context\V3\Http;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\Given;
+use Behat\Step\Then;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderStateServerInterface;
@@ -22,9 +24,7 @@ final class ProviderContext implements Context
         $this->pactPath = new PactPath();
     }
 
-    /**
-     * @Given a Pact file for interaction :id is to be verified with the following provider states defined:
-     */
+    #[Given('a Pact file for interaction :id is to be verified with the following provider states defined:')]
     public function aPactFileForInteractionIsToBeVerifiedWithTheFollowingProviderStatesDefined(int $id, TableNode $table): void
     {
         $this->pactWriter->write($id, $this->pactPath);
@@ -35,9 +35,7 @@ final class ProviderContext implements Context
         $this->providerVerifier->addSource($this->pactPath);
     }
 
-    /**
-     * @Then the provider state callback will receive a setup call with :state and the following parameters:
-     */
+    #[Then('the provider state callback will receive a setup call with :state and the following parameters:')]
     public function theProviderStateCallbackWillReceiveASetupCallWithAndTheFollowingParameters(string $state, TableNode $table): void
     {
         $params = $table->getHash()[0];
@@ -47,9 +45,7 @@ final class ProviderContext implements Context
         Assert::assertTrue($this->providerStateServer->hasState(ProviderStateServerInterface::ACTION_SETUP, $state, $params));
     }
 
-    /**
-     * @Then the provider state callback will receive a teardown call :state and the following parameters:
-     */
+    #[Then('the provider state callback will receive a teardown call :state and the following parameters:')]
     public function theProviderStateCallbackWillReceiveATeardownCallAndTheFollowingParameters(string $state, TableNode $table): void
     {
         $params = $table->getHash()[0];

@@ -5,6 +5,9 @@ namespace PhpPactTest\CompatibilitySuite\Context\V3;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\Given;
+use Behat\Step\Then;
+use Behat\Step\When;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
 use PhpPactTest\CompatibilitySuite\Exception\IntegrationJsonFormatException;
 use PhpPactTest\CompatibilitySuite\Service\ClientInterface;
@@ -33,9 +36,7 @@ final class RequestMatchingContext implements Context
     ) {
     }
 
-    /**
-     * @Given an expected request with a(n) :header header of :value
-     */
+    #[Given('an expected request with a(n) :header header of :value')]
     public function anExpectedRequestWithAHeaderOf(string $header, string $value): void
     {
         $this->type = self::HEADER_TYPE;
@@ -50,9 +51,7 @@ final class RequestMatchingContext implements Context
         $this->server->register($this->id);
     }
 
-    /**
-     * @Given a request is received with a(n) :header header of :value
-     */
+    #[Given('a request is received with a(n) :header header of :value')]
     public function aRequestIsReceivedWithAHeaderOf(string $header, string $value): void
     {
         $request = $this->storage->get(InteractionsStorageInterface::CLIENT_DOMAIN, $this->id)->getRequest();
@@ -60,33 +59,25 @@ final class RequestMatchingContext implements Context
         $this->client->sendRequestToServer($this->id);
     }
 
-    /**
-     * @When the request is compared to the expected one
-     */
+    #[When('the request is compared to the expected one')]
     public function theRequestIsComparedToTheExpectedOne(): void
     {
         $this->server->verify();
     }
 
-    /**
-     * @Then the comparison should be OK
-     */
+    #[Then('the comparison should be OK')]
     public function theComparisonShouldBeOk(): void
     {
         Assert::assertTrue($this->server->getVerifyResult()->isSuccess());
     }
 
-    /**
-     * @Then the comparison should NOT be OK
-     */
+    #[Then('the comparison should NOT be OK')]
     public function theComparisonShouldNotBeOk(): void
     {
         Assert::assertFalse($this->server->getVerifyResult()->isSuccess());
     }
 
-    /**
-     * @Then /^the mismatches will contain a mismatch with error "([^"]+)" -> "(.+)"$/
-     */
+    #[Then('/^the mismatches will contain a mismatch with error "([^"]+)" -> "(.+)"$/')]
     public function theMismatchesWillContainAMismatchWithError(string $path, string $error): void
     {
         $error = str_replace('\"', '"', $error);
@@ -112,9 +103,7 @@ final class RequestMatchingContext implements Context
         Assert::assertNotEmpty($mismatches);
     }
 
-    /**
-     * @Given an expected request configured with the following:
-     */
+    #[Given('an expected request configured with the following:')]
     public function anExpectedRequestConfiguredWithTheFollowing(TableNode $table): void
     {
         $this->type = self::BODY_TYPE;
@@ -135,9 +124,7 @@ final class RequestMatchingContext implements Context
         $this->server->register($this->id);
     }
 
-    /**
-     * @Given a request is received with the following:
-     */
+    #[Given('a request is received with the following:')]
     public function aRequestIsReceivedWithTheFollowing(TableNode $table): void
     {
         $rows = $table->getHash();
@@ -147,9 +134,7 @@ final class RequestMatchingContext implements Context
         $this->client->sendRequestToServer($this->id);
     }
 
-    /**
-     * @Given the following requests are received:
-     */
+    #[Given('the following requests are received:')]
     public function theFollowingRequestsAreReceived(TableNode $table): void
     {
         foreach ($table->getHash() as $row) {
@@ -159,9 +144,7 @@ final class RequestMatchingContext implements Context
         }
     }
 
-    /**
-     * @When the requests are compared to the expected one
-     */
+    #[When('the requests are compared to the expected one')]
     public function theRequestsAreComparedToTheExpectedOne(): void
     {
         $this->server->verify();

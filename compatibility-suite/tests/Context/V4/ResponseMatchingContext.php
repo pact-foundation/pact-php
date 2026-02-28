@@ -4,6 +4,9 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\Given;
+use Behat\Step\Then;
+use Behat\Step\When;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
@@ -28,9 +31,7 @@ final class ResponseMatchingContext implements Context
     ) {
     }
 
-    /**
-     * @Given an expected response configured with the following:
-     */
+    #[Given('an expected response configured with the following:')]
     public function anExpectedResponseConfiguredWithTheFollowing(TableNode $table): void
     {
         $rows = $table->getHash();
@@ -48,9 +49,7 @@ final class ResponseMatchingContext implements Context
         $this->providerVerifier->addSource($pactPath);
     }
 
-    /**
-     * @Given a status :status response is received
-     */
+    #[Given('a status :status response is received')]
     public function aStatusResponseIsReceived(int $status): void
     {
         $interaction = $this->storage->get(InteractionsStorageInterface::SERVER_DOMAIN, $this->id);
@@ -58,34 +57,26 @@ final class ResponseMatchingContext implements Context
         $this->server->register($this->id);
     }
 
-    /**
-     * @When the response is compared to the expected one
-     */
+    #[When('the response is compared to the expected one')]
     public function theResponseIsComparedToTheExpectedOne(): void
     {
         $this->providerVerifier->getConfig()->getProviderInfo()->setPort($this->server->getPort());
         $this->providerVerifier->verify();
     }
 
-    /**
-     * @Then the response comparison should be OK
-     */
+    #[Then('the response comparison should be OK')]
     public function theResponseComparisonShouldBeOk(): void
     {
         Assert::assertTrue($this->providerVerifier->getVerifyResult()->isSuccess());
     }
 
-    /**
-     * @Then the response comparison should NOT be OK
-     */
+    #[Then('the response comparison should NOT be OK')]
     public function theResponseComparisonShouldNotBeOk(): void
     {
         Assert::assertFalse($this->providerVerifier->getVerifyResult()->isSuccess());
     }
 
-    /**
-     * @Then the response mismatches will contain a :type mismatch with error :error
-     */
+    #[Then('the response mismatches will contain a :type mismatch with error :error')]
     public function theResponseMismatchesWillContainAMismatchWithError(string $type, string $error): void
     {
         $output = json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);

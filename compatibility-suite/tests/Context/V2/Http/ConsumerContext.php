@@ -4,6 +4,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V2\Http;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Step\When;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\MatchingRulesStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\RequestBuilderInterface;
@@ -21,9 +22,7 @@ final class ConsumerContext implements Context
     ) {
     }
 
-    /**
-     * @When the mock server is started with interaction :id but with the following changes:
-     */
+    #[When('the mock server is started with interaction :id but with the following changes:')]
     public function theMockServerIsStartedWithInteractionButWithTheFollowingChanges(int $id, TableNode $table): void
     {
         $request = $this->storage->get(InteractionsStorageInterface::SERVER_DOMAIN, $id)->getRequest();
