@@ -5,6 +5,8 @@ namespace PhpPactTest\CompatibilitySuite\Context\Shared\Hook;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Hook\AfterScenario;
+use Behat\Hook\BeforeScenario;
 use PhpPactTest\CompatibilitySuite\Service\ProviderStateServerInterface;
 
 final class ProviderStateContext implements Context
@@ -14,9 +16,7 @@ final class ProviderStateContext implements Context
     ) {
     }
 
-    /**
-     * @BeforeScenario
-     */
+    #[BeforeScenario]
     public function startProviderState(BeforeScenarioScope $scope): void
     {
         if (preg_match('/^Verifying .* provider state/', $scope->getScenario()->getTitle())) {
@@ -24,9 +24,7 @@ final class ProviderStateContext implements Context
         }
     }
 
-    /**
-     * @AfterScenario
-     */
+    #[AfterScenario]
     public function stopProviderState(AfterScenarioScope $scope): void
     {
         if (preg_match('/^Verifying .* provider state/', $scope->getScenario()->getTitle())) {
