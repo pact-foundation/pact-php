@@ -6,8 +6,10 @@ use Behat\Config\Suite;
 use PhpPactTest\CompatibilitySuite\Context\Shared\Hook\PactBrokerContext;
 use PhpPactTest\CompatibilitySuite\Context\Shared\Hook\ProviderStateContext;
 use PhpPactTest\CompatibilitySuite\Context\Shared\Hook\SetUpContext;
-use PhpPactTest\CompatibilitySuite\Context\Shared\Transform\InteractionsContext;
-use PhpPactTest\CompatibilitySuite\Context\V1\Http\ProviderContext;
+use PhpPactTest\CompatibilitySuite\Context\Shared\InteractionsContext as SharedInteractionsContext;
+use PhpPactTest\CompatibilitySuite\Context\Shared\Transform\InteractionsContext as TransformInteractionsContext;
+use PhpPactTest\CompatibilitySuite\Context\Shared\ProviderContext as SharedProviderContext;
+use PhpPactTest\CompatibilitySuite\Context\V1\Http\ProviderContext as V1ProviderContext;
 
 return (new Config())
     ->withProfile((new Profile('default'))
@@ -16,7 +18,7 @@ return (new Config())
         ]))
             ->addContext(SetUpContext::class)
             ->addContext(
-                InteractionsContext::class,
+                SharedInteractionsContext::class,
                 [
                     '@interactions_storage',
                     '@request_matching_rule_builder',
@@ -25,7 +27,7 @@ return (new Config())
                 ]
             )
             ->addContext(
-                InteractionsContext::class,
+                TransformInteractionsContext::class,
                 [
                     '@interaction_builder',
                     '@matching_rules_storage',
@@ -44,7 +46,7 @@ return (new Config())
                 ]
             )
             ->addContext(
-                ProviderContext::class,
+                SharedProviderContext::class,
                 [
                     '@server',
                     '@provider_verifier',
@@ -52,7 +54,7 @@ return (new Config())
                 ]
             )
             ->addContext(
-                ProviderContext::class,
+                V1ProviderContext::class,
                 [
                     '@server',
                     '@pact_writer',

@@ -4,8 +4,9 @@ use Behat\Config\Config;
 use Behat\Config\Profile;
 use Behat\Config\Suite;
 use PhpPactTest\CompatibilitySuite\Context\Shared\Hook\SetUpContext;
-use PhpPactTest\CompatibilitySuite\Context\Shared\Transform\InteractionsContext;
-use PhpPactTest\CompatibilitySuite\Context\V1\Http\ConsumerContext;
+use PhpPactTest\CompatibilitySuite\Context\Shared\InteractionsContext as SharedInteractionsContext;
+use PhpPactTest\CompatibilitySuite\Context\Shared\Transform\InteractionsContext as TransformInteractionsContext;
+use PhpPactTest\CompatibilitySuite\Context\V1\Http\ConsumerContext as V1ConsumerContext;
 
 return (new Config())
     ->withProfile((new Profile('default'))
@@ -14,7 +15,7 @@ return (new Config())
         ]))
             ->addContext(SetUpContext::class)
             ->addContext(
-                InteractionsContext::class,
+                SharedInteractionsContext::class,
                 [
                     '@interactions_storage',
                     '@request_matching_rule_builder',
@@ -23,14 +24,14 @@ return (new Config())
                 ]
             )
             ->addContext(
-                InteractionsContext::class,
+                TransformInteractionsContext::class,
                 [
                     '@interaction_builder',
                     '@matching_rules_storage',
                 ]
             )
             ->addContext(
-                ConsumerContext::class,
+                V1ConsumerContext::class,
                 [
                     '@server',
                     '@request_builder',

@@ -6,6 +6,7 @@ use Behat\Config\Profile;
 use Behat\Config\Suite;
 use PhpPactTest\CompatibilitySuite\Context\Shared\Hook\ProviderStateContext;
 use PhpPactTest\CompatibilitySuite\Context\Shared\Hook\SetUpContext;
+use PhpPactTest\CompatibilitySuite\Context\Shared\ProviderContext as SharedProviderContext;
 use PhpPactTest\CompatibilitySuite\Context\V3\Message\ProviderContext;
 
 return (new Config())
@@ -21,7 +22,7 @@ return (new Config())
                 ]
             )
             ->addContext(
-                ProviderContext::class,
+                SharedProviderContext::class,
                 [
                     '@server',
                     '@provider_verifier',

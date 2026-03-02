@@ -4,8 +4,9 @@ use Behat\Config\Config;
 use Behat\Config\Profile;
 use Behat\Config\Suite;
 use PhpPactTest\CompatibilitySuite\Context\Shared\Hook\SetUpContext;
+use PhpPactTest\CompatibilitySuite\Context\V3\BodyGeneratorsContext as V3BodyGeneratorsContext;
 use PhpPactTest\CompatibilitySuite\Context\V3\RequestGeneratorsContext;
-use PhpPactTest\CompatibilitySuite\Context\V4\BodyGeneratorsContext;
+use PhpPactTest\CompatibilitySuite\Context\V4\BodyGeneratorsContext as V4BodyGeneratorsContext;
 use PhpPactTest\CompatibilitySuite\Context\V4\ResponseGeneratorsContext;
 
 return (new Config())
@@ -15,7 +16,7 @@ return (new Config())
         ]))
             ->addContext(SetUpContext::class)
             ->addContext(
-                BodyGeneratorsContext::class,
+                V3BodyGeneratorsContext::class,
                 [
                     '@body_validator',
                 ]
@@ -33,7 +34,7 @@ return (new Config())
                 ]
             )
             ->addContext(
-                BodyGeneratorsContext::class,
+                V4BodyGeneratorsContext::class,
                 [
                     '@body_validator',
                 ]

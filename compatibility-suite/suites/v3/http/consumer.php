@@ -4,7 +4,7 @@ use Behat\Config\Config;
 use Behat\Config\Profile;
 use Behat\Config\Suite;
 use PhpPactTest\CompatibilitySuite\Context\Shared\Hook\SetUpContext;
-use PhpPactTest\CompatibilitySuite\Context\V3\Http\ConsumerContext;
+use PhpPactTest\CompatibilitySuite\Context\V3\Http\ConsumerContext as V3ConsumerContext;
 
 return (new Config())
     ->withProfile((new Profile('default'))
@@ -13,7 +13,7 @@ return (new Config())
         ]))
             ->addContext(SetUpContext::class)
             ->addContext(
-                ConsumerContext::class,
+                V3ConsumerContext::class,
                 [
                     '@interaction_builder',
                     '@pact_writer',
