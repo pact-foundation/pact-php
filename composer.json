@@ -248,9 +248,9 @@
                 "path": "bin/pact-ffi-lib/pact.{$extension}"
             },
             "pact-stub-server": {
-                "version": "0.6.2",
+                "version": "0.7.0",
                 "variables": {
-                    "{$os}": "PHP_OS === 'Darwin' ? 'osx' : strtolower(PHP_OS_FAMILY)",
+                    "{$os}": "PHP_OS === 'Darwin' ? 'macos' : strtolower(PHP_OS_FAMILY)",
                     "{$architecture}": "in_array(php_uname('m'), ['arm64', 'aarch64']) ? 'aarch64' : 'x86_64'",
                     "{$extension}": "PHP_OS_FAMILY === 'Windows' ? '.exe' : ''"
                 },
