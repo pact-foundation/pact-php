@@ -2,7 +2,7 @@
 
 namespace PhpPactTest\Plugins\Protobuf\Factory;
 
-use PhpPact\Consumer\Driver\Interaction\AbstractMessageDriver;
+use PhpPact\Consumer\Driver\Interaction\MessageDriver;
 use PhpPact\Consumer\Driver\Pact\PactDriver;
 use PhpPact\Consumer\Factory\MessageDriverFactoryInterface;
 use PhpPact\FFI\Client;
@@ -33,7 +33,7 @@ class ProtobufMessageDriverFactoryTest extends TestCase
     {
         $this->factory = new ProtobufMessageDriverFactory();
         $driver = $this->factory->create($this->config);
-        $this->assertPropertiesInstanceOf($driver, AbstractMessageDriver::class, [
+        $this->assertPropertiesInstanceOf($driver, MessageDriver::class, [
             'client' => Client::class,
             'pactDriver' => PactDriver::class,
             'messageBodyDriver' => ProtobufMessageBodyDriver::class,

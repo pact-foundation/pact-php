@@ -7,6 +7,11 @@ use SimpleXMLElement;
 
 class Xml extends Text
 {
+    public function getRawContents(): string
+    {
+        return parent::getContents();
+    }
+
     public function getContents(): string
     {
         $root = simplexml_load_string(parent::getContents());

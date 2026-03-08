@@ -57,7 +57,7 @@ final class ConsumerContext implements Context
     #[Given('the message payload contains the :fixture JSON document')]
     public function theMessagePayloadContainsTheJsonDocument(string $fixture): void
     {
-        $this->builder->withContent($this->fixtureLoader->loadJson($fixture . '.json'));
+        $this->builder->withContent($this->parser->parseBody('file:' . $fixture . '.json'));
     }
 
     #[When('the message is successfully processed')]
