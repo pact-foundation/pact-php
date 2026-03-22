@@ -2,8 +2,10 @@
 
 namespace PhpPact\Consumer\Matcher\Matchers;
 
+use PhpPact\Consumer\Matcher\Exception\InvalidFormatterException;
 use PhpPact\Consumer\Matcher\Exception\InvalidValueException;
 use PhpPact\Consumer\Matcher\Exception\MatcherNotSupportedException;
+use PhpPact\Consumer\Matcher\Formatters\Expression\ExpressionFormatter;
 use PhpPact\Consumer\Matcher\Model\Attributes;
 use PhpPact\Consumer\Matcher\Model\Expression;
 use PhpPact\Consumer\Matcher\Model\Matcher\ExpressionFormattableInterface;
@@ -26,7 +28,7 @@ class MatchAll extends AbstractMatcher implements JsonFormattableInterface, Expr
     {
         return new Attributes([
             'pact:matcher:type' => array_map(
-                fn (MatcherInterface $matcher) => $this->getFormatter()->format($matcher),
+                $this->getFormatter()->format(...),
                 $this->matchers
             ),
             'value' => $this->value,
@@ -35,8 +37,12 @@ class MatchAll extends AbstractMatcher implements JsonFormattableInterface, Expr
 
     public function formatExpression(): Expression
     {
+        $formatter = $this->getFormatter();
+        if (!$formatter instanceof ExpressionFormatter) {
+            throw new InvalidFormatterException(sprintf("Instance of '%s' is required to format expression", ExpressionFormatter::class));
+        }
         return new Expression(implode(', ', array_map(
-            fn (MatcherInterface $matcher) => $this->getFormatter()->format($matcher),
+            $formatter->format(...),
             $this->matchers
         )));
     }

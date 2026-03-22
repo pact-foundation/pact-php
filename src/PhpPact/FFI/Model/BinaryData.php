@@ -32,8 +32,9 @@ class BinaryData
         }
 
         $length = \strlen($contents);
-        $cData  = FFI::new("uint8_t[{$length}]");
-        if ($cData === null) {
+        $ffi = FFI::cdef();
+        $cData  = $ffi->new("uint8_t[{$length}]");
+        if (!$cData instanceof CData) {
             throw new CDataNotCreatedException();
         }
         FFI::memcpy($cData, $contents, $length);
