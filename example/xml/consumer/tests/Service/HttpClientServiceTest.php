@@ -108,6 +108,14 @@ class HttpClientServiceTest extends TestCase
                             $xmlBuilder->content($matcher->string()),
                         ),
                     ),
+                    $xmlBuilder->add(
+                        $xmlBuilder->name('genres'),
+                        $xmlBuilder->eachLike(
+                            $xmlBuilder->examples(3),
+                            $xmlBuilder->name('genre'),
+                            $xmlBuilder->content($matcher->string()),
+                        ),
+                    ),
                 ),
             );
 
@@ -161,32 +169,31 @@ class HttpClientServiceTest extends TestCase
         $this->assertXmlContentGenerated($movies->movie[0]->{'also-known-as'}->children('aka', true)->{'australia'});
         $this->assertXmlContentGenerated($movies->movie[0]->{'also-known-as'}->children('aka', true)->{'argentina'});
         $this->assertXmlContentGenerated($movies->movie[0]->{'also-known-as'}->children('aka', true)->{'brazil'});
+        $this->assertXmlContentGenerated($movies->movie[0]->genres->genre[0]);
+        $this->assertXmlContentGenerated($movies->movie[0]->genres->genre[1]);
+        $this->assertXmlContentGenerated($movies->movie[0]->genres->genre[2]);
     }
 
     private function assertXmlContent(string $expected, \SimpleXMLElement $element): void
     {
-        $this->assertCount(1, $element);
-        $this->assertSame($expected, (string)$element[0]);
+        $this->assertSame($expected, (string)$element);
     }
 
     private function assertXmlContentGenerated(\SimpleXMLElement $element): void
     {
-        $this->assertCount(1, $element);
-        $this->assertNotSame('', (string)$element[0]);
+        $this->assertNotSame('', (string)$element);
     }
 
     private function assertXmlAttribute(string $expected, string $key, \SimpleXMLElement $element): void
     {
-        $this->assertCount(1, $element);
-        $attributes = $element[0]->attributes();
+        $attributes = $element->attributes();
         $this->assertNotNull($attributes);
         $this->assertSame($expected, (string)$attributes[$key]);
     }
 
     private function assertXmlAttributeGenerated(string $key, \SimpleXMLElement $element): void
     {
-        $this->assertCount(1, $element);
-        $attributes = $element[0]->attributes();
+        $attributes = $element->attributes();
         $this->assertNotNull($attributes);
         $this->assertNotSame('', (string)$attributes[$key]);
     }

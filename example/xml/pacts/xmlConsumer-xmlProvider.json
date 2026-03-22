@@ -35,7 +35,7 @@
       },
       "response": {
         "body": {
-          "content": "<?xml version='1.0'?><movies><movie><title>Big Buck Bunny</title><characters><character><name>Big Buck Bunny</name><actor>Jan Morgenstern</actor></character><character><name/><actor/></character></characters><plot>The plot follows a day in the life of Big Buck Bunny, during which time he meets three bullying rodents: the leader, Frank the flying squirrel, and his sidekicks Rinky the red squirrel and Gimera the chinchilla.\nThe rodents amuse themselves by harassing helpless creatures of the forest by throwing fruits, nuts, and rocks at them.</plot><great-lines><line>Open source movie</line></great-lines><rating type='stars'>6</rating><release-date><china></china></release-date><specs aspect-ratio='' color='' runtime=''/><also-known-as xmlns:aka='http://example.com/movies'><aka:united-states></aka:united-states><aka:australia></aka:australia><aka:argentina></aka:argentina><aka:brazil></aka:brazil></also-known-as></movie>List of movies</movies>",
+          "content": "<?xml version='1.0'?><movies><movie><title>Big Buck Bunny</title><characters><character><name>Big Buck Bunny</name><actor>Jan Morgenstern</actor></character><character><name/><actor/></character></characters><plot>The plot follows a day in the life of Big Buck Bunny, during which time he meets three bullying rodents: the leader, Frank the flying squirrel, and his sidekicks Rinky the red squirrel and Gimera the chinchilla.\nThe rodents amuse themselves by harassing helpless creatures of the forest by throwing fruits, nuts, and rocks at them.</plot><great-lines><line>Open source movie</line></great-lines><rating type='stars'>6</rating><release-date><china></china></release-date><specs aspect-ratio='' color='' runtime=''/><also-known-as xmlns:aka='http://example.com/movies'><aka:united-states></aka:united-states><aka:australia></aka:australia><aka:argentina></aka:argentina><aka:brazil></aka:brazil></also-known-as><genres><genre></genre><genre/><genre/></genres></movie>List of movies</movies>",
           "contentType": "application/xml",
           "encoded": false
         },
@@ -58,6 +58,10 @@
               "type": "RandomString"
             },
             "$.movies.movie.also-known-as.aka:united-states.#text": {
+              "size": 10,
+              "type": "RandomString"
+            },
+            "$.movies.movie.genres.genre.#text": {
               "size": 10,
               "type": "RandomString"
             },
@@ -155,6 +159,22 @@
               ]
             },
             "$.movies.movie.characters.character.name.#text": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.genres.genre": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.movies.movie.genres.genre.#text": {
               "combine": "AND",
               "matchers": [
                 {
@@ -279,7 +299,7 @@
     "pactRust": {
       "ffi": "0.5.3",
       "mockserver": "2.2.1",
-      "models": "1.3.8"
+      "models": "1.3.9"
     },
     "pactSpecification": {
       "version": "4.0"
