@@ -35,7 +35,8 @@ class VerifierTest extends TestCase
         $this->config = new VerifierConfig();
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->client = $this->createMock(ClientInterface::class);
-        $handle = FFI::new('int');
+        $ffi = FFI::cdef();
+        $handle = $ffi->new('int');
         $this->assertInstanceOf(CData::class, $handle);
         $this->handle = $handle;
     }

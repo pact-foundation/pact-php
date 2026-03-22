@@ -34,23 +34,24 @@ class ArrayData
             return null;
         }
 
-        $items = FFI::new("char*[{$size}]");
-        if ($items === null) {
+        $ffi = FFI::cdef();
+        $items = $ffi->new("char*[{$size}]");
+        if (!$items instanceof CData) {
             throw new CDataNotCreatedException();
         }
         $index = 0;
         foreach ($values as $value) {
             $length = \strlen($value);
             $itemSize = $length + 1;
-            $item = FFI::new("char[{$itemSize}]", false);
-            if ($item === null) {
+            $item = $ffi->new("char[{$itemSize}]", false);
+            if (!$item instanceof CData) {
                 throw new CDataNotCreatedException();
             }
             FFI::memcpy($item, $value, $length);
-            $items[$index++] = $item;
+            $items[$index++] = $item; // @phpstan-ignore-line
         }
 
-        return new self($items, $size);
+        return new self($items, $size); // @phpstan-ignore-line
     }
 
     public function __destruct()

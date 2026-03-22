@@ -12,7 +12,9 @@ class XmlContentFormatter extends JsonFormatter
     public function format(MatcherInterface $matcher): Attributes
     {
         $attributes = parent::format($matcher);
-        $data = [];
+        $data = [
+            'matcher' => [],
+        ];
         foreach ($attributes as $key => $value) {
             switch ($key) {
                 case 'value':
