@@ -56,6 +56,10 @@ $app->get('/movies', function (ServerRequestInterface $request) {
                         PHP: O filme
                     </aka:brazil>
                 </also-known-as>
+                <genres>
+                    <genre>Horor</genre>
+                    <genre>Sci-Fi</genre>
+                </genres>
             </movie>
         </movies>
         XML
