@@ -41,8 +41,15 @@
         "rector/rector": "^2.0",
         "clue/framework-x": "^0.17.0",
         "grpc/grpc": "^1.57",
-        "google/protobuf": "^5.0"
+        "google/protobuf": "^5.0",
+        "hosmelq/sse": "^0.1.0"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/xadammr/sse-client"
+        }
+    ],
     "suggest": {
         "ext-grpc": "If you want to use gRPC then you must install and use this"
     },
@@ -84,7 +91,8 @@
             "composer run-example:stub-server",
             "composer run-example:xml",
             "composer run-example:graphql",
-            "composer run-example:form-urlencoded"
+            "composer run-example:form-urlencoded",
+            "composer run-example:server-sent-events"
         ],
         "run-examples:windows": [
             "composer run-example:binary:windows",
@@ -99,7 +107,8 @@
             "composer run-example:stub-server:windows",
             "composer run-example:xml:windows",
             "composer run-example:graphql:windows",
-            "composer run-example:form-urlencoded:windows"
+            "composer run-example:form-urlencoded:windows",
+            "composer run-example:server-sent-events:windows"
         ],
         "run-example:binary:windows": [
             "powershell -Command \"if (Test-Path 'example/binary/pacts/binaryConsumer-binaryProvider.json') { Remove-Item 'example/binary/pacts/binaryConsumer-binaryProvider.json' }\"",
@@ -226,6 +235,16 @@
             "rm -f example/graphql/pacts/formUrlEncodedConsumer-formUrlEncodedProvider.json",
             "cd example/form-urlencoded/consumer && phpunit",
             "cd example/form-urlencoded/provider && phpunit"
+        ],
+        "run-example:server-sent-events:windows": [
+            "powershell -Command \"if (Test-Path 'example/server-sent-events/pacts/sseConsumer-sseProvider.json') { Remove-Item 'example/server-sent-events/pacts/sseConsumer-sseProvider.json' }\"",
+            "cd example/server-sent-events/consumer && phpunit --process-isolation",
+            "cd example/server-sent-events/provider && phpunit --process-isolation"
+        ],
+        "run-example:server-sent-events": [
+            "rm -f example/server-sent-events/pacts/sseConsumer-sseProvider.json",
+            "cd example/server-sent-events/consumer && phpunit",
+            "cd example/server-sent-events/provider && phpunit"
         ]
     },
     "extra": {

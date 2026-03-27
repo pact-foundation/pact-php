@@ -1,0 +1,144 @@
+{
+  "consumer": {
+    "name": "sseConsumer"
+  },
+  "interactions": [
+    {
+      "description": "request for events",
+      "interactionMarkup": {
+        "markup": "# SSE Events\n\n|type|data|\n|---|---|\n||simple text\nother text|\n|count|100|\n|time|2000-01-01|\n|user|id: 123, name: Bob|\n",
+        "markupType": "COMMON_MARK"
+      },
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "events are available"
+        }
+      ],
+      "request": {
+        "headers": {
+          "Accept": [
+            "text/event-stream"
+          ]
+        },
+        "method": "GET",
+        "path": "/events"
+      },
+      "response": {
+        "body": {
+          "content": "retry:100\nid:100\ndata:simple text\ndata:other text\n\nevent:count\ndata:100\n\nevent:time\ndata:2000-01-01\n\nevent:user\ndata:id: 123, name: Bob\n\n",
+          "contentType": "text/event-stream",
+          "contentTypeHint": "DEFAULT",
+          "encoded": false
+        },
+        "generators": {
+          "body": {
+            "data.time.*": {
+              "format": "yyyy-MM-dd",
+              "type": "DateTime"
+            }
+          }
+        },
+        "headers": {
+          "Cache-Control": [
+            "no-cache"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "X-Accel-Buffering": [
+            "no"
+          ],
+          "content-type": [
+            "text/event-stream"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "data.*": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "data.count.*": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "data.time.*": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "format": "yyyy-MM-dd",
+                  "match": "datetime"
+                }
+              ]
+            },
+            "data.user.*": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "id: \\d+, name: \\w+"
+                }
+              ]
+            },
+            "event": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "id.*": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "retry": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      },
+      "transport": "http",
+      "type": "Synchronous/HTTP"
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.5.3",
+      "mockserver": "2.2.1",
+      "models": "1.3.9"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    },
+    "plugins": [
+      {
+        "configuration": {},
+        "name": "sse",
+        "version": "0.1.0"
+      }
+    ]
+  },
+  "provider": {
+    "name": "sseProvider"
+  }
+}
