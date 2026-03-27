@@ -250,7 +250,9 @@ It's best to run Pact verification tests as part of your unit testing suite, so 
 
 ## Compatibility
 
-<details><summary>Versions</summary>
+<details>
+
+<summary>Versions</summary>
 
 | Version | Status     | [Spec] Compatibility | PHP Compatibility | Install            |
 | ------- | ---------- | -------------------- | ----------------- | ------------------ |
@@ -270,7 +272,9 @@ _\*_ v3 support is limited to the subset of functionality required to enable lan
 
 </details>
 
-<details><summary>Supported Platforms</summary>
+<details>
+
+<summary>Supported Platforms</summary>
 
 | OS      | Architecture | Supported  | Pact-PHP Version |
 | ------- | ------------ | ---------  | ---------------- |
