@@ -2,10 +2,10 @@
 
 namespace PhpPactTest\Plugins\Protobuf\Factory;
 
-use PhpPact\Consumer\Driver\Interaction\AbstractMessageDriver;
 use PhpPact\FFI\Client;
-use PhpPact\Plugins\Protobuf\Driver\Body\ProtobufMessageBodyDriver;
+use PhpPact\Plugins\Protobuf\Driver\Body\ProtobufSyncMessageBodyDriver;
 use PhpPact\Plugins\Protobuf\Driver\Pact\ProtobufPactDriver;
+use PhpPact\SyncMessage\Driver\Interaction\SyncMessageDriver;
 use PhpPact\Plugins\Protobuf\Factory\ProtobufSyncMessageDriverFactory;
 use PhpPact\Plugins\Protobuf\Service\GrpcMockServer;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
@@ -39,8 +39,8 @@ class ProtobufSyncMessageDriverFactoryTest extends TestCase
             'pactDriver' => ProtobufPactDriver::class,
             'mockServer' => GrpcMockServer::class,
         ]);
-        $this->assertPropertiesInstanceOf($driver, AbstractMessageDriver::class, [
-            'messageBodyDriver' => ProtobufMessageBodyDriver::class,
+        $this->assertPropertiesInstanceOf($driver, SyncMessageDriver::class, [
+            'messageBodyDriver' => ProtobufSyncMessageBodyDriver::class,
         ]);
     }
 }

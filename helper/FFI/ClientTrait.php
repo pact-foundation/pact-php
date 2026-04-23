@@ -216,6 +216,30 @@ trait ClientTrait
             });
     }
 
+    /**
+     * @param array<string, string> $metadata
+     */
+    protected function expectsWithMetadata(int $interaction, array $metadata): void
+    {
+        $calls = [];
+        foreach ($metadata as $key => $value) {
+            $calls[] = [$interaction, $key, $value, $this->client->getInteractionPartRequest()];
+        }
+        foreach ($metadata as $key => $value) {
+            $calls[] = [$interaction, $key, $value, $this->client->getInteractionPartResponse()];
+        }
+        $this->client
+            ->expects($this->exactly(count($calls)))
+            ->method('withMetadata')
+            ->willReturnCallback(function (...$args) use (&$calls) {
+                $call = array_shift($calls);
+                foreach ($args as $key => $arg) {
+                    $this->assertThat($arg, $call[$key] instanceof Constraint ? $call[$key] : new IsIdentical($call[$key]));
+                }
+                return true;
+            });
+    }
+
     protected function expectsMessageGiven(int $message, string $name): void
     {
         $this->client

@@ -4,7 +4,7 @@ namespace PhpPact\Plugins\Protobuf\Factory;
 
 use PhpPact\FFI\Client;
 use PhpPact\Plugin\Driver\Body\PluginBodyDriver;
-use PhpPact\Plugins\Protobuf\Driver\Body\ProtobufMessageBodyDriver;
+use PhpPact\Plugins\Protobuf\Driver\Body\ProtobufSyncMessageBodyDriver;
 use PhpPact\Plugins\Protobuf\Driver\Pact\ProtobufPactDriver;
 use PhpPact\Plugins\Protobuf\Service\GrpcMockServer;
 use PhpPact\Standalone\MockService\MockServerConfigInterface;
@@ -19,7 +19,7 @@ class ProtobufSyncMessageDriverFactory implements SyncMessageDriverFactoryInterf
         $client = new Client();
         $pactDriver = new ProtobufPactDriver($client, $config);
         $grpcMockServer = new GrpcMockServer($client, $pactDriver, $config);
-        $messageBodyDriver = new ProtobufMessageBodyDriver(new PluginBodyDriver($client));
+        $messageBodyDriver = new ProtobufSyncMessageBodyDriver(new PluginBodyDriver($client));
 
         return new SyncMessageDriver($grpcMockServer, $client, $pactDriver, $messageBodyDriver);
     }

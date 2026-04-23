@@ -7,13 +7,16 @@ use PhpPact\Config\PactConfigInterface;
 use PhpPact\Consumer\Exception\MissingCallbackException;
 use PhpPact\Consumer\Factory\MessageDriverFactory;
 use PhpPact\Consumer\Factory\MessageDriverFactoryInterface;
+use PhpPact\Consumer\Matcher\Model\MatcherInterface;
+use PhpPact\Consumer\Model\Message;
 
 /**
  * Build a message and send it to the Ruby Standalone Mock Service
  */
-class MessageBuilder extends AbstractMessageBuilder
+class MessageBuilder implements BuilderInterface
 {
     protected MessageDriverInterface $driver;
+    protected Message $message;
 
     /**
      * @var array<mixed, callable>
@@ -22,8 +25,73 @@ class MessageBuilder extends AbstractMessageBuilder
 
     public function __construct(PactConfigInterface $config, ?MessageDriverFactoryInterface $driverFactory = null)
     {
-        parent::__construct();
+        $this->message = new Message();
         $this->driver = ($driverFactory ?? new MessageDriverFactory())->create($config);
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    public function given(string $name, array $params = [], bool $overwrite = false): self
+    {
+        $this->message->setProviderState($name, $params, $overwrite);
+
+        return $this;
+    }
+
+    public function expectsToReceive(string $description): self
+    {
+        $this->message->setDescription($description);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string, MatcherInterface|string> $metadata
+     */
+    public function withMetadata(array $metadata): self
+    {
+        $this->message->setMetadata($metadata);
+
+        return $this;
+    }
+
+    public function withContent(mixed $contents): self
+    {
+        $this->message->setContents($contents);
+
+        return $this;
+    }
+
+    public function key(?string $key): self
+    {
+        $this->message->setKey($key);
+
+        return $this;
+    }
+
+    public function pending(?bool $pending): self
+    {
+        $this->message->setPending($pending);
+
+        return $this;
+    }
+
+    /**
+     * @param array<string, mixed> $comments
+     */
+    public function comments(array $comments): self
+    {
+        $this->message->setComments($comments);
+
+        return $this;
+    }
+
+    public function comment(string $comment): self
+    {
+        $this->message->addTextComment($comment);
+
+        return $this;
     }
 
     /**

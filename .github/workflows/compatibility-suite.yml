@@ -79,5 +79,10 @@ jobs:
 
       - uses: ramsey/composer-install@v3
 
+      - uses: pact-foundation/pact-cli@main
+
+      - name: Install sync-message-test plugin
+        run: pact plugin install https://github.com/tienvx/pact-sync-message-test-plugin/releases/tag/0.2.0 -y
+
       - name: Run Behat
         run: vendor/bin/behat compatibility-suite/pact-compatibility-suite/features/V4 --colors

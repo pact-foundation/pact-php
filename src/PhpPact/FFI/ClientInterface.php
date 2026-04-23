@@ -39,6 +39,8 @@ interface ClientInterface
 
     public function messageWithMetadataV2(int $message, string $key, string $value): void;
 
+    public function withMetadata(int $interaction, string $key, string $value, int $part): bool;
+
     public function messageGiven(int $message, string $name): void;
 
     public function messageGivenWithParam(int $message, string $name, string $key, string $value): void;
@@ -122,6 +124,10 @@ interface ClientInterface
     public function responseStatusV2(int $interaction, ?string $status): bool;
 
     public function interactionContents(int $interaction, int $part, string $contentType, string $contents): int;
+
+    public function withMatchingRules(int $interaction, int $part, string $rules): bool;
+
+    public function withGenerators(int $interaction, int $part, string $generators): bool;
 
     public function loggerInit(): void;
 

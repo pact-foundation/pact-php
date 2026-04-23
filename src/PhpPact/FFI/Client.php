@@ -174,6 +174,12 @@ class Client implements ClientInterface
         $this->call($method, $message, $key, $value);
     }
 
+    public function withMetadata(int $interaction, string $key, string $value, int $part): bool
+    {
+        $method = 'pactffi_with_metadata';
+        return (bool) $this->call($method, $interaction, $key, $value, $part);
+    }
+
     public function messageGiven(int $message, string $name): void
     {
         $method = 'pactffi_message_given';
@@ -506,6 +512,26 @@ class Client implements ClientInterface
         $result = $this->call($method, $interaction, $part, $contentType, $contents);
         if (!is_int($result)) {
             throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function withMatchingRules(int $interaction, int $part, string $rules): bool
+    {
+        $method = 'pactffi_with_matching_rules';
+        $result = $this->call($method, $interaction, $part, $rules);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
+    public function withGenerators(int $interaction, int $part, string $generators): bool
+    {
+        $method = 'pactffi_with_generators';
+        $result = $this->call($method, $interaction, $part, $generators);
+        if (!is_bool($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "boolean", but got "%s"', $method, get_debug_type($result)));
         }
         return $result;
     }

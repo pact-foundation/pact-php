@@ -2,13 +2,14 @@
 
 namespace PhpPact\SyncMessage\Driver\Interaction;
 
-use PhpPact\Consumer\Driver\Interaction\SharedMessageDriverInterface;
-use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\MockService\Model\VerifyResult;
+use PhpPact\SyncMessage\Model\SyncMessage;
 
-interface SyncMessageDriverInterface extends SharedMessageDriverInterface
+interface SyncMessageDriverInterface
 {
+    public function registerMessage(SyncMessage $message): void;
+
     public function verifyMessage(): VerifyResult;
 
-    public function registerMessage(Message $message): void;
+    public function writePactAndCleanUp(): void;
 }

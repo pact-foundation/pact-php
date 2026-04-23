@@ -4,7 +4,6 @@ namespace PhpPact\Consumer\Model;
 
 use JsonException;
 use PhpPact\Consumer\Exception\BodyNotSupportedException;
-use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PhpPact\Consumer\Model\Body\Binary;
 use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
@@ -12,6 +11,7 @@ use PhpPact\Consumer\Model\Interaction\CommentsTrait;
 use PhpPact\Consumer\Model\Interaction\DescriptionTrait;
 use PhpPact\Consumer\Model\Interaction\HandleTrait;
 use PhpPact\Consumer\Model\Interaction\KeyTrait;
+use PhpPact\Consumer\Model\Interaction\MetadataTrait;
 use PhpPact\Consumer\Model\Interaction\PendingTrait;
 
 /**
@@ -25,42 +25,9 @@ class Message
     use KeyTrait;
     use PendingTrait;
     use CommentsTrait;
-
-    /**
-     * @var array<string, string>
-     */
-    private array $metadata = [];
+    use MetadataTrait;
 
     private Text|Binary|null $contents = null;
-
-    /**
-     * @return array<string, string>
-     */
-    public function getMetadata(): array
-    {
-        return $this->metadata;
-    }
-
-    /**
-     * @param array<string, string|MatcherInterface> $metadata
-     */
-    public function setMetadata(array $metadata): self
-    {
-        $this->metadata = [];
-        foreach ($metadata as $key => $value) {
-            $this->setMetadataValue($key, $value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @throws JsonException
-     */
-    private function setMetadataValue(string $key, string|MatcherInterface $value): void
-    {
-        $this->metadata[$key] = is_string($value) ? $value : json_encode($value, JSON_THROW_ON_ERROR);
-    }
 
     public function getContents(): Text|Binary|null
     {

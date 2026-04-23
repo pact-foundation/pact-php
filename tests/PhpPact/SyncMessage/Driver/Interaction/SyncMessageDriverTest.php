@@ -2,15 +2,15 @@
 
 namespace PhpPactTest\SyncMessage\Driver\Interaction;
 
-use PhpPact\Consumer\Driver\Body\MessageBodyDriverInterface;
 use PhpPact\Consumer\Driver\Pact\PactDriverInterface;
-use PhpPact\Consumer\Model\Message;
 use PhpPact\Consumer\Model\Pact\Pact;
 use PhpPact\Consumer\Service\MockServerInterface;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\Standalone\MockService\Model\VerifyResult;
+use PhpPact\SyncMessage\Driver\Body\SyncMessageBodyDriverInterface;
 use PhpPact\SyncMessage\Driver\Interaction\SyncMessageDriver;
 use PhpPact\SyncMessage\Driver\Interaction\SyncMessageDriverInterface;
+use PhpPact\SyncMessage\Model\SyncMessage;
 use PhpPactTest\Helper\FFI\ClientTrait;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -23,8 +23,8 @@ class SyncMessageDriverTest extends TestCase
     private SyncMessageDriverInterface $driver;
     private MockServerInterface&MockObject $mockServer;
     private PactDriverInterface&MockObject $pactDriver;
-    private MessageBodyDriverInterface&MockObject $messageBodyDriver;
-    private Message $message;
+    private SyncMessageBodyDriverInterface&MockObject $messageBodyDriver;
+    private SyncMessage $message;
     private int $messageHandle = 123;
     private int $pactHandle = 234;
     private string $description = 'Receiving message';
@@ -50,14 +50,15 @@ class SyncMessageDriverTest extends TestCase
         $this->mockServer = $this->createMock(MockServerInterface::class);
         $this->client = $this->createMock(ClientInterface::class);
         $this->pactDriver = $this->createMock(PactDriverInterface::class);
-        $this->messageBodyDriver = $this->createMock(MessageBodyDriverInterface::class);
+        $this->messageBodyDriver = $this->createMock(SyncMessageBodyDriverInterface::class);
         $this->driver = new SyncMessageDriver($this->mockServer, $this->client, $this->pactDriver, $this->messageBodyDriver);
-        $this->message = new Message();
+        $this->message = new SyncMessage();
         $this->message->setDescription($this->description);
         foreach ($this->providerStates as $name => $params) {
             $this->message->addProviderState($name, $params);
         }
-        $this->message->setMetadata($this->metadata);
+        $this->message->setRequestMetadata($this->metadata);
+        $this->message->setResponeMetadata($this->metadata);
     }
 
     public function testVerifyMessage(): void
@@ -98,7 +99,7 @@ class SyncMessageDriverTest extends TestCase
             'name' => 'abc',
         ], true);
         $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
-        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
+        $this->expectsWithMetadata($this->messageHandle, $this->metadata);
         $this->driver->registerMessage($this->message);
         $this->assertSame($this->messageHandle, $this->message->getHandle());
     }
@@ -121,7 +122,7 @@ class SyncMessageDriverTest extends TestCase
             'name' => 'abc',
         ], true);
         $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
-        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
+        $this->expectsWithMetadata($this->messageHandle, $this->metadata);
         $this->expectsSetInteractionKey($this->messageHandle, $this->description, $key, $success);
         $this->driver->registerMessage($this->message);
     }
@@ -146,7 +147,7 @@ class SyncMessageDriverTest extends TestCase
             'name' => 'abc',
         ], true);
         $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
-        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
+        $this->expectsWithMetadata($this->messageHandle, $this->metadata);
         $this->expectsSetInteractionPending($this->messageHandle, $this->description, $pending, $success);
         $this->driver->registerMessage($this->message);
     }
@@ -175,7 +176,7 @@ class SyncMessageDriverTest extends TestCase
             'name' => 'abc',
         ], true);
         $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
-        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
+        $this->expectsWithMetadata($this->messageHandle, $this->metadata);
         $this->expectsSetComments($this->messageHandle, $this->description, $comments, $success);
         $this->driver->registerMessage($this->message);
     }
@@ -201,7 +202,7 @@ class SyncMessageDriverTest extends TestCase
             'name' => 'abc',
         ], true);
         $this->expectsMessageExpectsToReceive($this->messageHandle, $this->description);
-        $this->expectsMessageWithMetadataV2($this->messageHandle, $this->metadata);
+        $this->expectsWithMetadata($this->messageHandle, $this->metadata);
         $this->expectsAddTextComments($this->messageHandle, $this->description, $comments, $success);
         $this->driver->registerMessage($this->message);
     }
