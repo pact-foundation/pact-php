@@ -1,0 +1,20 @@
+<?php
+
+namespace PhpPact\Plugins\Sse\Driver\Body;
+
+use PhpPact\Consumer\Driver\Body\InteractionBodyDriverInterface;
+use PhpPact\Consumer\Driver\Enum\InteractionPart;
+use PhpPact\Consumer\Model\Interaction;
+use PhpPact\Plugin\Driver\Body\PluginBodyDriverInterface;
+
+class SseBodyDriver implements InteractionBodyDriverInterface
+{
+    public function __construct(private readonly PluginBodyDriverInterface $pluginBodyDriver)
+    {
+    }
+
+    public function registerBody(Interaction $interaction, InteractionPart $part): void
+    {
+        $this->pluginBodyDriver->registerBody($interaction, $part);
+    }
+}
