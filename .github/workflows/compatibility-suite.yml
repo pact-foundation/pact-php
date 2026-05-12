@@ -79,7 +79,7 @@ jobs:
 
       - uses: ramsey/composer-install@65e4f84970763564f46a70b8a54b90d033b3bdda # 4.0.0
 
-      - uses: pact-foundation/pact-cli@main
+      - uses: pact-foundation/pact-cli@66cc3a4dde9a76a2ee5a0ea7ea322f442c348571 # main
 
       - name: Install sync-message-test plugin
         run: pact plugin install https://github.com/tienvx/pact-sync-message-test-plugin/releases/tag/0.2.0 -y
