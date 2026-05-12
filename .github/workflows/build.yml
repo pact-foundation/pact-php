@@ -95,7 +95,7 @@ jobs:
           path: ~/.pact/plugins
           key: ${{ matrix.os }}-pact-plugins
 
-      - uses: pact-foundation/pact-cli@main
+      - uses: pact-foundation/pact-cli@66cc3a4dde9a76a2ee5a0ea7ea322f442c348571 # main
 
       - name: Install SSE plugin
         run: pact plugin install https://github.com/tienvx/pact-sse-plugin/releases/tag/0.1.0 -y
