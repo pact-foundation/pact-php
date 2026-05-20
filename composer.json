@@ -44,12 +44,6 @@
         "google/protobuf": "^5.0",
         "hosmelq/sse": "^0.1.0"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/xadammr/sse-client"
-        }
-    ],
     "suggest": {
         "ext-grpc": "If you want to use gRPC then you must install and use this"
     },
