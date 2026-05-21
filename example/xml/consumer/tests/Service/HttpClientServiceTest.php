@@ -155,9 +155,8 @@ class HttpClientServiceTest extends TestCase
         $this->assertCount(2, $movies->movie[0]->characters->character);
         $this->assertXmlContent('Big Buck Bunny', $movies->movie[0]->characters->character[0]->name);
         $this->assertXmlContent('Jan Morgenstern', $movies->movie[0]->characters->character[0]->actor);
-        // TODO: investigate why content of the second element (examples = 2) is empty
-        $this->assertXmlContent('', $movies->movie[0]->characters->character[1]->name);
-        $this->assertXmlContent('', $movies->movie[0]->characters->character[1]->actor);
+        $this->assertXmlContent('Big Buck Bunny', $movies->movie[0]->characters->character[1]->name);
+        $this->assertXmlContent('Jan Morgenstern', $movies->movie[0]->characters->character[1]->actor);
         // Generators
         $this->assertXmlContentGenerated($movies->movie[0]->{'release-date'});
         $this->assertXmlContentGenerated($movies->movie[0]->{'release-date'}[0]->china);
