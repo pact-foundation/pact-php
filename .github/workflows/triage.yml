@@ -11,5 +11,5 @@ on:
 
 jobs:
   call-workflow:
-    uses: pact-foundation/.github/.github/workflows/triage.yml@3a9ea59381bc45df621f1f97f5878a6b2f066110 # master
+    uses: pact-foundation/.github/.github/workflows/triage.yml@f8fd527b1d6ff4bbf48597ef88e32772f72c644b # master
     secrets: inherit
