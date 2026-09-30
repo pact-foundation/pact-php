@@ -22,7 +22,15 @@ $app->post('/api', function (ServerRequestInterface $request) {
                     'args' => [
                         'message' => ['type' => Type::string()],
                     ],
-                    'resolve' => static fn ($rootValue, array $args): string => $rootValue['prefix'] . $args['message'],
+                    'resolve' => static function (array $rootValue, array $args): string {
+                        $prefix = $rootValue['prefix'] ?? '';
+                        $message = $args['message'] ?? '';
+                        if (!is_string($prefix) || !is_string($message)) {
+                            throw new RuntimeException('Invalid arguments');
+                        }
+
+                        return $prefix . $message;
+                    },
                 ],
             ],
         ]);
@@ -36,7 +44,15 @@ $app->post('/api', function (ServerRequestInterface $request) {
                         'x' => ['type' => Type::int()],
                         'y' => ['type' => Type::int()],
                     ],
-                    'resolve' => static fn ($calc, array $args): int => $args['x'] + $args['y'],
+                    'resolve' => static function (array $calc, array $args): int {
+                        $x = $args['x'] ?? 0;
+                        $y = $args['y'] ?? 0;
+                        if (!is_int($x) || !is_int($y)) {
+                            throw new RuntimeException('Invalid arguments');
+                        }
+
+                        return $x + $y;
+                    },
                 ],
             ],
         ]);
@@ -49,8 +65,9 @@ $app->post('/api', function (ServerRequestInterface $request) {
             ->setMutation($mutationType)
         );
 
+        /** @var array{query?: string, variables?: array<string, mixed>} $body */
         $body = json_decode((string) $request->getBody(), true);
-        $query = $body['query'];
+        $query = $body['query'] ?? '';
         $variableValues = $body['variables'] ?? null;
 
         $rootValue = ['prefix' => 'You said: '];

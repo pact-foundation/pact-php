@@ -23,7 +23,7 @@ class PactVerifyTest extends TestCase
         $this->process->stop();
     }
 
-    public function testPactVerifyConsumer()
+    public function testPactVerifyConsumer(): void
     {
         $config = new VerifierConfig();
         $config->getProviderInfo()

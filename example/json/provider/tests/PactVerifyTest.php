@@ -26,7 +26,7 @@ class PactVerifyTest extends TestCase
     /**
      * This test will run after the web server is started.
      */
-    public function testPactVerifyConsumer()
+    public function testPactVerifyConsumer(): void
     {
         $config = new VerifierConfig();
         $config->getProviderInfo()

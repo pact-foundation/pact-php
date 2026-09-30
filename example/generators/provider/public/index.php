@@ -8,6 +8,7 @@ require __DIR__ . '/../autoload.php';
 $app = new FrameworkX\App();
 
 $app->get('/generators', function (ServerRequestInterface $request) {
+    /** @var array<string, mixed> $body */
     $body = json_decode((string) $request->getBody(), true);
 
     return Response::json([

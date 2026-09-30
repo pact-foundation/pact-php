@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class HttpClientServiceTest extends TestCase
 {
-    public function testQuery()
+    public function testQuery(): void
     {
         $matcher = new Matcher();
 
@@ -63,14 +63,14 @@ class HttpClientServiceTest extends TestCase
 
         $this->assertTrue($verifyResult);
         $this->assertJson($result);
-        $this->assertJsonStringEqualsJsonString(json_encode([
+        $this->assertJsonStringEqualsJsonString((string) json_encode([
             'data' => [
                 'echo' => 'Greetings Universe',
             ],
         ]), $result);
     }
 
-    public function testMutation()
+    public function testMutation(): void
     {
         $matcher = new Matcher();
 
@@ -124,7 +124,7 @@ class HttpClientServiceTest extends TestCase
 
         $this->assertTrue($verifyResult);
         $this->assertJson($result);
-        $this->assertJsonStringEqualsJsonString(json_encode([
+        $this->assertJsonStringEqualsJsonString((string) json_encode([
             'data' => [
                 'sum' => 4,
             ],

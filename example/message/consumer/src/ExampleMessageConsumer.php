@@ -6,6 +6,7 @@ class ExampleMessageConsumer
 {
     public function processMessage(string $message): void
     {
+        /** @var object{contents: object{text: mixed, number: mixed}, metadata: object{queue: mixed, routing_key: mixed}} $obj */
         $obj = \json_decode($message);
         if (($logLevel = \getenv('PACT_LOGLEVEL')) && !in_array(\strtoupper($logLevel), ['OFF', 'NONE'])) {
             print " [x] Processing \n";

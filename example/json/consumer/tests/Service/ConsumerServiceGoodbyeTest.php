@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class ConsumerServiceGoodbyeTest extends TestCase
 {
-    public function testGetGoodbyeString()
+    public function testGetGoodbyeString(): void
     {
         $request = new ConsumerRequest();
         $request

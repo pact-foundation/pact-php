@@ -4,10 +4,16 @@ namespace MessageProvider;
 
 class ExampleMessage
 {
+    /**
+     * @param array<array-key, mixed> $metadata
+     */
     public function __construct(private mixed $contents, private array $metadata = [])
     {
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getMetadata(): array
     {
         return $this->metadata;
@@ -20,7 +26,7 @@ class ExampleMessage
 
     public function __toString(): string
     {
-        return json_encode([
+        return (string) json_encode([
             'metadata' => $this->metadata,
             'contents' => $this->contents,
         ]);

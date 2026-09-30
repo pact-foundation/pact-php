@@ -16,7 +16,7 @@ class HttpClientServiceTest extends TestCase
 {
     public const URL_FORMAT = '^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)';
 
-    public function testUpdateUserProfile()
+    public function testUpdateUserProfile(): void
     {
         $matcher = new Matcher();
         $fullName = 'Colten Ziemann';
@@ -30,7 +30,7 @@ class HttpClientServiceTest extends TestCase
             ->setHeaders([
                 'Accept' => 'application/json',
                 'Authorization' => [
-                    \json_encode($matcher->like('Bearer eyJhbGciOiJIUzI1NiIXVCJ9'))
+                    (string) \json_encode($matcher->like('Bearer eyJhbGciOiJIUzI1NiIXVCJ9'))
                 ],
             ])
             ->setBody(new Multipart(

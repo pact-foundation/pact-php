@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 class HttpClientServiceTest extends TestCase
 {
-    public function testGetMovies()
+    public function testGetMovies(): void
     {
         $matcher = new Matcher();
 
@@ -26,7 +26,7 @@ class HttpClientServiceTest extends TestCase
             ->addHeader('Accept', 'application/x-www-form-urlencoded')
             ->setBody(
                 new Text(
-                    json_encode([
+                    (string) json_encode([
                         'empty' => $matcher->equal(''),
                         'agree' => $matcher->regex('false', 'true|false'),
                         'fullname' => $matcher->string('User name'),
@@ -68,7 +68,7 @@ class HttpClientServiceTest extends TestCase
             ->addHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->setBody(
                 new Text(
-                    json_encode([
+                    (string) json_encode([
                         'id' => $matcher->uuid(),
                         'age' => $matcher->integerV3()->withGenerator(new RandomInt(0, 130)),
                         'name[]' => [
@@ -101,8 +101,9 @@ class HttpClientServiceTest extends TestCase
         parse_str($service->createUser(), $params);
         $verifyResult = $builder->verify();
 
-        $this->assertTrue(condition: $verifyResult);
+        $this->assertTrue($verifyResult);
         $this->assertArrayHasKey('id', $params);
+        $this->assertIsString($params['id']);
         $pattern = Matcher::UUID_V4_FORMAT;
         $this->assertMatchesRegularExpression("/{$pattern}/", $params['id']);
         $this->assertArrayHasKey('age', $params);
@@ -111,6 +112,7 @@ class HttpClientServiceTest extends TestCase
         $this->assertArrayHasKey('name', $params);
         $this->assertIsArray($params['name']);
         $this->assertCount(4, $params['name']);
+        $this->assertIsString($params['name'][0]);
         $this->assertMatchesRegularExpression("/{$gender}/", $params['name'][0]);
     }
 }

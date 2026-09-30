@@ -11,6 +11,7 @@ class StubServerTest extends TestCase
 {
     public function testStubServer(): void
     {
+        $stubServer = null;
         try {
             $dirs = [__DIR__ . '/../_resources'];
             $extension = 'json';
@@ -35,8 +36,10 @@ class StubServerTest extends TestCase
                 ]
             ], $results);
         } finally {
-            $result = $stubServer->stop();
-            $this->assertTrue($result);
+            if ($stubServer !== null) {
+                $result = $stubServer->stop();
+                $this->assertTrue($result);
+            }
         }
     }
 }

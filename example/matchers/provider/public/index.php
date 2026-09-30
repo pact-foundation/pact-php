@@ -116,9 +116,10 @@ $app->get('/matchers', function (ServerRequestInterface $request) {
 });
 
 $app->post('/pact-change-state', function (ServerRequestInterface $request) {
+    /** @var array{action: string, state: string, params: array<array-key, mixed>} $body */
     $body = json_decode((string) $request->getBody(), true);
 
-    return Response::plaintext(sprintf('%s provider state %s with params: %s', $body['action'], $body['state'], json_encode($body['params'])));
+    return Response::plaintext(sprintf('%s provider state %s with params: %s', $body['action'], $body['state'], (string) json_encode($body['params'])));
 });
 
 $app->run();

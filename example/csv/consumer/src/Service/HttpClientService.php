@@ -14,6 +14,9 @@ class HttpClientService
         $this->httpClient = new Client();
     }
 
+    /**
+     * @return list<string|null>
+     */
     public function getReport(): array
     {
         $response = $this->httpClient->get(new Uri("{$this->baseUri}/report.csv"), [

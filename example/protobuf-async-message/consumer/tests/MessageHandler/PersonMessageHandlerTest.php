@@ -49,7 +49,7 @@ class PersonMessageHandlerTest extends TestCase
             ->given('A person with fixed id exists', ['id' => $id, 'reuse' => '0'])
             ->expectsToReceive('Person message sent')
             ->withContent(new Text(
-                json_encode([
+                (string) json_encode([
                     'pact:proto' => __DIR__ . '/../../../library/proto/say_hello.proto',
                     'pact:message-type' => 'Person',
                     'pact:content-type' => 'application/protobuf',
@@ -89,6 +89,7 @@ class PersonMessageHandlerTest extends TestCase
             ));
 
         $builder->setCallback(function (string $pactJson): void {
+            /** @var object{contents: object{content: string}} $message */
             $message = \json_decode($pactJson);
             $person = new Person();
             $decoded = base64_decode($message->contents->content);

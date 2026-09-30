@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class HttpClientServiceTest extends TestCase
 {
-    public function testGetImageContent()
+    public function testGetImageContent(): void
     {
         $path = __DIR__ . '/../_resource/image.jpg';
 

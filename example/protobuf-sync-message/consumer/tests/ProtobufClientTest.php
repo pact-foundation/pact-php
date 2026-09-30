@@ -10,6 +10,7 @@ use PhpPact\SyncMessage\SyncMessageBuilder;
 use PHPUnit\Framework\TestCase;
 use Plugins\Rectangle;
 use Plugins\ShapeMessage;
+use Plugins\AreaResponse;
 use Plugins\CalculatorClient;
 use Grpc\ChannelCredentials;
 
@@ -35,7 +36,7 @@ class ProtobufClientTest extends TestCase
             ->given('a shape')
             ->withMetadata([])
             ->withContent(new Text(
-                json_encode([
+                (string) json_encode([
                     'pact:proto' => $protoPath,
                     'pact:content-type' => 'application/grpc',
                     'pact:proto-service' => 'Calculator/calculate',
@@ -67,6 +68,7 @@ class ProtobufClientTest extends TestCase
         [$response, $status] = $client->calculate($message)->wait();
 
         $this->assertNotNull($response);
+        $this->assertInstanceOf(AreaResponse::class, $response);
         $this->assertEquals(3 * 4, $response->getValue());
         $this->assertTrue($builder->verify());
     }

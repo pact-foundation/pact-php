@@ -30,7 +30,7 @@ class HttpClientServiceTest extends TestCase
         $response
             ->setStatus(200)
             ->setBody(new Text(
-                json_encode([
+                (string) json_encode([
                     'id' => $matcher->number(100),
                     // NOTE: Must use integerV3() instead of integer() because in SSE all values
                     // are strings (e.g., 'data:100'). integer() returns a Type matcher which only

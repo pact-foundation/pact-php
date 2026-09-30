@@ -27,6 +27,7 @@ class HttpClientService
             'http_errors' => false,
         ]);
         $body   = $response->getBody();
+        /** @var object{message: string} $object */
         $object = \json_decode($body, null, 512, JSON_THROW_ON_ERROR);
 
         return $object->message;
@@ -42,6 +43,7 @@ class HttpClientService
             'http_errors' => false,
         ]);
         $body   = $response->getBody();
+        /** @var object{message: string} $object */
         $object = \json_decode($body, null, 512, JSON_THROW_ON_ERROR);
 
         return $object->message;
