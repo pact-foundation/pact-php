@@ -34,7 +34,7 @@
         "phpstan/phpstan": "^2.0.4",
         "phpunit/phpunit": "^10.1.0|^11.0",
         "guzzlehttp/guzzle": "^7.8",
-        "behat/behat": "^3.13",
+        "behat/behat": "^4.0",
         "galbar/jsonpath": "^3.0",
         "ramsey/uuid": "^4.7",
         "webonyx/graphql-php": "^15.14",
