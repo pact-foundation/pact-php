@@ -13,6 +13,7 @@ class PersonMessageHandler
 
     public function __invoke(Person $person): void
     {
-        $this->service->sayHello($person->getName()->getGiven(), $person->getName()->getSurname());
+        $name = $person->getName();
+        $this->service->sayHello($name?->getGiven() ?? '', $name?->getSurname() ?? '');
     }
 }

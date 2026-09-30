@@ -25,19 +25,39 @@ class Calculator extends CalculatorStub
         }
         switch ($request->getShape()) {
             case 'square':
-                $area = $this->calculateSquareArea($request->getSquare());
+                $square = $request->getSquare();
+                if ($square === null) {
+                    throw new Exception('Square is required');
+                }
+                $area = $this->calculateSquareArea($square);
                 break;
             case 'rectangle':
-                $area = $this->calculateRectangleArea($request->getRectangle());
+                $rectangle = $request->getRectangle();
+                if ($rectangle === null) {
+                    throw new Exception('Rectangle is required');
+                }
+                $area = $this->calculateRectangleArea($rectangle);
                 break;
             case 'circle':
-                $area = $this->calculateCircleArea($request->getCircle());
+                $circle = $request->getCircle();
+                if ($circle === null) {
+                    throw new Exception('Circle is required');
+                }
+                $area = $this->calculateCircleArea($circle);
                 break;
             case 'triangle':
-                $area = $this->calculateTriangleArea($request->getTriangle());
+                $triangle = $request->getTriangle();
+                if ($triangle === null) {
+                    throw new Exception('Triangle is required');
+                }
+                $area = $this->calculateTriangleArea($triangle);
                 break;
             case 'parallelogram':
-                $area = $this->calculateParallelogramArea($request->getParallelogram());
+                $parallelogram = $request->getParallelogram();
+                if ($parallelogram === null) {
+                    throw new Exception('Parallelogram is required');
+                }
+                $area = $this->calculateParallelogramArea($parallelogram);
                 break;
             default:
                 throw new Exception(sprintf('Shape %s is not supported', $request->getShape()));

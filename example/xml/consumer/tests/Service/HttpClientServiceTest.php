@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 class HttpClientServiceTest extends TestCase
 {
-    public function testGetMovies()
+    public function testGetMovies(): void
     {
         $matcher = new Matcher();
 
@@ -123,7 +123,7 @@ class HttpClientServiceTest extends TestCase
         $response
             ->setStatus(200)
             ->addHeader('Content-Type', $matcher->regex('application/xml', 'application\/.*xml'))
-            ->setBody(new Text(json_encode($xmlBuilder), 'application/xml'));
+            ->setBody(new Text((string) json_encode($xmlBuilder), 'application/xml'));
 
         $config = new MockServerConfig();
         $config

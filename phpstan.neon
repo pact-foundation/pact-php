@@ -3,6 +3,11 @@ parameters:
     paths:
         - src
         - tests
+        - example
+    excludePaths:
+        analyseAndScan:
+            - example/protobuf-async-message/library/src
+            - example/protobuf-sync-message/library/src
     treatPhpDocTypesAsCertain: false
     bootstrapFiles:
         - example/binary/consumer/autoload.php

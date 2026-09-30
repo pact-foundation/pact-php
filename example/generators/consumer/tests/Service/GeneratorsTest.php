@@ -83,6 +83,7 @@ class GeneratorsTest extends TestCase
         $verifyResult = $builder->verify();
 
         $statusCode = $response->getStatusCode();
+        /** @var array<string, mixed> $body */
         $body = \json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertTrue($verifyResult);
@@ -93,19 +94,27 @@ class GeneratorsTest extends TestCase
                 $this->lessThanOrEqual(499)
             )
         );
+        $this->assertIsString($body['regex']);
         $this->assertMatchesRegularExpression('/^' . $regexWithoutAnchors . '$/', $body['regex']);
         $this->assertIsBool($body['boolean_v3']);
         $this->assertIsInt($body['integer_v3']);
+        $this->assertIsNumeric($body['decimal_v3']);
         $this->assertIsFloat($body['decimal_v3'] + 0);
+        $this->assertIsString($body['hexadecimal']);
         $this->assertMatchesRegularExpression('/' . Matcher::HEX_FORMAT . '/', $body['hexadecimal']);
+        $this->assertIsString($body['uuid']);
         $this->assertMatchesRegularExpression('/' . Matcher::UUID_V4_FORMAT . '/', $body['uuid']);
+        $this->assertIsString($body['date']);
         $this->assertTrue($this->validateDateTime($body['date'], 'Y-m-d'));
+        $this->assertIsString($body['time']);
         $this->assertTrue($this->validateDateTime($body['time'], 'H:i:s'));
+        $this->assertIsString($body['datetime']);
         $this->assertTrue($this->validateDateTime($body['datetime'], "Y-m-d\TH:i:s"));
         $this->assertIsString($body['string']);
         $this->assertNotSame('', $body['string']);
         $this->assertIsNumeric($body['number']);
         $this->assertNotSame('http://localhost/users/1234/posts/latest', $body['url']);
+        $this->assertIsString($body['url']);
         $this->assertMatchesRegularExpression('/.*(\\/users\\/\\d+\\/posts\\/latest)$/', $body['url']);
         $this->assertIsString($body['notEmpty']);
         $this->assertNotEmpty($body['notEmpty']);
@@ -115,7 +124,9 @@ class GeneratorsTest extends TestCase
         $this->assertMatchesRegularExpression('/' . Matcher::UUID_V4_FORMAT . '/', $body['like']);
         $this->assertIsBool($body['boolean']);
         $this->assertIsInt($body['integer']);
+        $this->assertIsNumeric($body['decimal']);
         $this->assertIsFloat($body['decimal'] + 0);
+        $this->assertIsString($body['semver']);
         $this->assertMatchesRegularExpression('/\d+\.\d+\.\d+/', $body['semver']);
         $this->assertSame(222, $body['requestId']);
     }

@@ -37,7 +37,7 @@ class ExampleMessageConsumerTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testProcessText()
+    public function testProcessText(): void
     {
         $builder    = new MessageBuilder(self::$config);
 

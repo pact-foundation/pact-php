@@ -30,7 +30,7 @@ class HttpClientServiceTest extends TestCase
         $response
             ->setStatus(200)
             ->setBody(new Text(
-                json_encode([
+                (string) json_encode([
                     'csvHeaders' => false,
                     'column:1' => $matcher->like('Name'),
                     'column:2' => $matcher->number(100),

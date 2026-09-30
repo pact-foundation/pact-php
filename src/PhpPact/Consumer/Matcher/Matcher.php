@@ -513,7 +513,7 @@ class Matcher
     /**
      * Allows defining matching rules to apply to the keys in a map
      *
-     * @param array<string, mixed>|object $values
+     * @param array<array-key, mixed>|object $values
      * @param MatcherInterface[]   $rules
      */
     public function eachKey(array|object $values, array $rules): EachKey
@@ -526,7 +526,7 @@ class Matcher
     /**
      * Allows defining matching rules to apply to the values in a collection. For maps, delgates to the Values matcher.
      *
-     * @param array<string, mixed>|object $values
+     * @param array<array-key, mixed>|object $values
      * @param MatcherInterface[]   $rules
      */
     public function eachValue(array|object $values, array $rules): EachValue

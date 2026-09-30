@@ -4,6 +4,12 @@ namespace MessageProvider;
 
 class ExampleProvider
 {
+    /**
+     * @var array{
+     *     metadata: array<string, mixed>,
+     *     contents: array<string, mixed>
+     * }
+     */
     private array $message = [
         'metadata' => [
             'queue'       => 'wind cries',
@@ -15,8 +21,14 @@ class ExampleProvider
         ]
     ];
 
+    /**
+     * @var array{action?: string, state?: string, params?: array<array-key, mixed>}
+     */
     private array $currentState = [];
 
+    /**
+     * @param array<array-key, mixed> $providerStates
+     */
     public function dispatchMessage(string $description, array $providerStates): ?ExampleMessage
     {
         if ($description !== 'an alligator named Mary exists') {
@@ -26,12 +38,23 @@ class ExampleProvider
         return (new ExampleMessage($this->message['contents'], $this->message['metadata']));
     }
 
-    public function changeSate(string $action, string $state, array $params): void
+    /**
+     * @param array<array-key, mixed> $params
+     */
+    public function changeState(string $action, string $state, array $params): void
     {
         $this->currentState = [
             'action' => $action,
             'state' => $state,
             'params' => $params,
         ];
+    }
+
+    /**
+     * @return array{action?: string, state?: string, params?: array<array-key, mixed>}
+     */
+    public function getCurrentState(): array
+    {
+        return $this->currentState;
     }
 }

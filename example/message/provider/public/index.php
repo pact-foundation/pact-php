@@ -11,25 +11,28 @@ $app = new FrameworkX\App();
 $provider = new ExampleProvider();
 
 $app->post('/pact-messages', function (ServerRequestInterface $request) use ($provider) {
+    /** @var array{description: string, providerStates: array<array-key, mixed>} $body */
     $body = json_decode((string) $request->getBody(), true);
     $message = $provider->dispatchMessage($body['description'], $body['providerStates']);
     $response = new Response();
     if ($message) {
-        $response->getBody()->write(\json_encode($message->getContents()));
+        $response->getBody()->write((string) \json_encode($message->getContents()));
 
         return $response
             ->withHeader('Content-Type', 'application/json')
-            ->withHeader('Pact-Message-Metadata', \base64_encode(\json_encode($message->getMetadata())));
+            ->withHeader('Pact-Message-Metadata', \base64_encode((string) \json_encode($message->getMetadata())));
     }
 
     return $response;
 });
 
 $app->post('/pact-change-state', function (ServerRequestInterface $request) use ($provider) {
+    /** @var array{action: string, state: string, params: array<array-key, mixed>} $body */
     $body = json_decode((string) $request->getBody(), true);
-    $provider->changeSate($body['action'], $body['state'], $body['params']);
+    $provider->changeState($body['action'], $body['state'], $body['params']);
+    $currentState = $provider->getCurrentState();
 
-    return new Response();
+    return Response::plaintext(sprintf('%s provider state %s', $currentState['action'] ?? '', $currentState['state'] ?? ''));
 });
 
 $app->run();

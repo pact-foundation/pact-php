@@ -17,7 +17,7 @@ class ConsumerServiceMultipleInteractionsTest extends TestCase
      *
      * @throws \Exception
      */
-    public function testGetHelloString()
+    public function testGetHelloString(): void
     {
         $matcher = new Matcher();
 

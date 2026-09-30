@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 $app = new FrameworkX\App();
 
 $app->post('/', function (ServerRequestInterface $request) {
+    /** @var array{description: string} $body */
     $body = json_decode((string) $request->getBody(), true);
     if ($body['description'] === 'Person message sent') {
         $person = new Person();
@@ -30,13 +31,14 @@ $app->post('/', function (ServerRequestInterface $request) {
 
         return $response
             ->withHeader('Content-Type', 'application/protobuf;message=.library.Person')
-            ->withHeader('Pact-Message-Metadata', \base64_encode(\json_encode([])));
+            ->withHeader('Pact-Message-Metadata', \base64_encode((string) \json_encode([])));
     }
 
     return Response::plaintext('Hello world!');
 });
 
 $app->post('/pact-change-state', function (ServerRequestInterface $request) {
+    /** @var array{action: string, state: string, params: array<array-key, mixed>} $body */
     $body = json_decode((string) $request->getBody(), true);
 
     return Response::plaintext(sprintf('State changed: %s', \json_encode([
