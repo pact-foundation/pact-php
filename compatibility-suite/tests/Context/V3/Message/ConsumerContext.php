@@ -19,18 +19,24 @@ use PhpPactTest\CompatibilitySuite\Service\BodyValidatorInterface;
 use PhpPactTest\CompatibilitySuite\Service\FixtureLoaderInterface;
 use PhpPactTest\CompatibilitySuite\Service\MessageGeneratorBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\ParserInterface;
+use PhpPactTest\CompatibilitySuite\Util\Arr;
+use PhpPactTest\CompatibilitySuite\Util\TypeCaster;
 use PHPUnit\Framework\Assert;
+use stdClass;
 
 final class ConsumerContext implements Context
 {
     private MessageBuilder $builder;
-    private object|null $receivedMessage;
+    private stdClass|null $receivedMessage;
     private bool $verifyResult;
+    /**
+     * @var array<array-key, mixed>
+     */
     private array $pact;
     private PactPath $pactPath;
 
     public function __construct(
-        private string $specificationVersion,
+        string $specificationVersion,
         private MessageGeneratorBuilderInterface $messageGeneratorBuilder,
         private ParserInterface $parser,
         private BodyValidatorInterface $validator,
@@ -69,16 +75,23 @@ final class ConsumerContext implements Context
     #[Then('the received message payload will contain the :fixture JSON document')]
     public function theReceivedMessagePayloadWillContainTheJsonDocument(string $fixture): void
     {
+        if (null === $this->receivedMessage) {
+            throw new Exception('The received message is null.');
+        }
         Assert::assertJsonStringEqualsJsonString(
             $this->fixtureLoader->load($fixture . '.json'),
-            json_encode($this->receivedMessage->contents)
+            TypeCaster::toString(json_encode($this->receivedMessage->contents))
         );
     }
 
     #[Then('the received message content type will be :contentType')]
     public function theReceivedMessageContentTypeWillBe(string $contentType): void
     {
-        Assert::assertSame($contentType, $this->receivedMessage->metadata->contentType);
+        if (null === $this->receivedMessage) {
+            throw new Exception('The received message is null.');
+        }
+        $metadata = (array) $this->receivedMessage->metadata;
+        Assert::assertSame($contentType, Arr::str($metadata, 'contentType'));
     }
 
     #[Then('the consumer test will have passed')]
@@ -91,13 +104,13 @@ final class ConsumerContext implements Context
     public function aPactFileForTheMessageInteractionWillHaveBeenWritten(): void
     {
         Assert::assertTrue(file_exists($this->pactPath));
-        $this->pact = json_decode(file_get_contents($this->pactPath), true);
+        $this->pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
     }
 
     #[Then('the pact file will contain :messages message interaction(s)')]
     public function thePactFileWillContainMessageInteraction(int $messages): void
     {
-        Assert::assertCount($messages, $this->pact['messages'] ?? []);
+        Assert::assertCount($messages, Arr::sub($this->pact, 'messages'));
     }
 
     #[Then('the first message in the pact file will contain the :fixture document')]
@@ -105,14 +118,14 @@ final class ConsumerContext implements Context
     {
         Assert::assertJsonStringEqualsJsonString(
             $this->fixtureLoader->load($fixture),
-            json_encode($this->pact['messages'][0]['contents'] ?? null)
+            TypeCaster::toString(json_encode(Arr::sub($this->pact, 'messages', 0, 'contents')))
         );
     }
 
     #[Then('the first message in the pact file content type will be :contentType')]
     public function theFirstMessageInThePactFileContentTypeWillBe(string $contentType): void
     {
-        Assert::assertSame($contentType, $this->pact['messages'][0]['metadata']['contentType'] ?? null);
+        Assert::assertSame($contentType, Arr::str($this->pact, 'messages', 0, 'metadata', 'contentType'));
     }
 
     #[When('the message is NOT successfully processed with a :error exception')]
@@ -148,22 +161,26 @@ final class ConsumerContext implements Context
     #[Then('/^the received message metadata will contain "([^"]+)" == "(.+)"$/')]
     public function theReceivedMessageMetadataWillContain(string $key, string $value): void
     {
-        $actual = $this->receivedMessage->metadata->{$key};
+        if (null === $this->receivedMessage) {
+            throw new Exception('The received message is null.');
+        }
+        $metadata = (array) $this->receivedMessage->metadata;
+        $actual = $metadata[$key] ?? null;
         if (is_string($actual)) {
             Assert::assertSame($this->parser->parseMetadataValue($value), $actual);
         } else {
-            Assert::assertJsonStringEqualsJsonString($this->parser->parseMetadataValue($value), json_encode($actual));
+            Assert::assertJsonStringEqualsJsonString($this->parser->parseMetadataValue($value), TypeCaster::toString(json_encode($actual)));
         }
     }
 
     #[Then('/^the first message in the pact file will contain the message metadata "([^"]+)" == "(.+)"$/')]
     public function theFirstMessageInThePactFileWillContainTheMessageMetadata(string $key, string $value): void
     {
-        $actual = $this->pact['messages'][0]['metadata'][$key] ?? null;
+        $actual = Arr::sub($this->pact, 'messages', 0, 'metadata')[$key] ?? null;
         if (is_string($actual)) {
             Assert::assertSame($this->parser->parseMetadataValue($value), $actual);
         } else {
-            Assert::assertJsonStringEqualsJsonString($this->parser->parseMetadataValue($value), json_encode($actual));
+            Assert::assertJsonStringEqualsJsonString($this->parser->parseMetadataValue($value), TypeCaster::toString(json_encode($actual)));
         }
     }
 
@@ -182,13 +199,13 @@ final class ConsumerContext implements Context
     #[Then('the first message in the pact file will contain :states provider state(s)')]
     public function theFirstMessageInThePactFileWillContainProviderStates(int $states): void
     {
-        Assert::assertCount($states, $this->pact['messages'][0]['providerStates'] ?? []);
+        Assert::assertCount($states, Arr::sub($this->pact, 'messages', 0, 'providerStates'));
     }
 
     #[Then('the first message in the Pact file will contain provider state :state')]
     public function theFirstMessageInThePactFileWillContainProviderState(string $state): void
     {
-        $states = array_map(fn (array $state): string => $state['name'], $this->pact['messages'][0]['providerStates']);
+        $states = array_map(fn (mixed $state): string => Arr::str((array) $state, 'name'), Arr::sub($this->pact, 'messages', 0, 'providerStates'));
         Assert::assertContains($state, $states);
     }
 
@@ -196,7 +213,7 @@ final class ConsumerContext implements Context
     public function aProviderStateForTheMessageIsSpecifiedWithTheFollowingData(string $state, TableNode $table): void
     {
         $rows = $table->getHash();
-        $row = reset($rows);
+        $row = reset($rows) ?: [];
         $this->builder->given($state, $row);
     }
 
@@ -207,44 +224,58 @@ final class ConsumerContext implements Context
         Assert::assertContains([
             'name' => $state,
             'params' => $params,
-        ], $this->pact['messages'][0]['providerStates']);
+        ], Arr::sub($this->pact, 'messages', 0, 'providerStates'));
     }
 
     #[Given('the message is configured with the following:')]
     public function theMessageIsConfiguredWithTheFollowing(TableNode $table): void
     {
         $rows = $table->getHash();
-        $row = reset($rows);
+        $row = reset($rows) ?: [];
         $message = new Message();
         $message->setBody(isset($row['body']) ? $this->parser->parseBody($row['body']) : null);
-        $message->setMetadata(isset($row['metadata']) ? json_decode($row['metadata'], true) : null);
+        $metadata = null;
+        if (isset($row['metadata'])) {
+            $metadata = [];
+            foreach ((array) json_decode($row['metadata'], true) as $key => $value) {
+                $metadata[(string) $key] = is_string($value) ? $value : TypeCaster::toString(json_encode($value));
+            }
+        }
+        $message->setMetadata($metadata);
         $this->messageGeneratorBuilder->build($message, $row['generators']);
         if ($message->hasBody()) {
             $this->builder->withContent($message->getBody());
         }
         if ($message->hasMetadata()) {
             $this->builder->withContent('not empty'); // any not empty text, doesn't matter. If empty or not provided, received message will be null.
-            $this->builder->withMetadata($message->getMetadata());
+            $this->builder->withMetadata($message->getMetadata() ?? []);
         }
     }
 
     #[Then('the message contents for :path will have been replaced with a(n) :type')]
     public function theMessageContentsForWillHaveBeenReplacedWithAn(string $path, string $type): void
     {
-        $this->bodyStorage->setBody(json_encode($this->receivedMessage->contents));
+        if (null === $this->receivedMessage) {
+            throw new Exception('The received message is null.');
+        }
+        $this->bodyStorage->setBody(TypeCaster::toString(json_encode($this->receivedMessage->contents)));
         $this->validator->validateType($path, $type);
     }
 
     #[Then('the received message metadata will contain :key replaced with an :type')]
     public function theReceivedMessageMetadataWillContainReplacedWithAn(string $key, string $type): void
     {
-        $this->bodyStorage->setBody(json_encode($this->receivedMessage->metadata));
+        if (null === $this->receivedMessage) {
+            throw new Exception('The received message is null.');
+        }
+        $this->bodyStorage->setBody(TypeCaster::toString(json_encode($this->receivedMessage->metadata)));
         $this->validator->validateType("$.$key", $type);
     }
 
     public function storeMessage(string $message): void
     {
-        $this->receivedMessage = json_decode($message);
+        $decoded = json_decode($message);
+        $this->receivedMessage = $decoded instanceof stdClass ? $decoded : null;
     }
 
     private function process(callable $callback): void

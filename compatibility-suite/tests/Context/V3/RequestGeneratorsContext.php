@@ -39,7 +39,7 @@ final class RequestGeneratorsContext implements Context
     public function aRequestConfiguredWithTheFollowingGenerators(TableNode $table): void
     {
         $rows = $table->getHash();
-        $row = reset($rows);
+        $row = reset($rows) ?: [];
         $interaction = $this->builder->build([
             'No' => $this->id,
             'method' => 'PUT',
@@ -75,7 +75,7 @@ final class RequestGeneratorsContext implements Context
         $this->pactWriter->write($this->id, $this->pactPath);
         $port = $this->generatorServer->getPort();
         $this->providerVerifier->getConfig()->getProviderInfo()->setPort($port);
-        $params = json_decode($table->getRow(0)[0], true);
+        $params = (array) json_decode($table->getRow(0)[0], true);
         $this->providerVerifier
             ->getConfig()
                 ->getProviderState()

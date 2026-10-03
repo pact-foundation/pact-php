@@ -10,6 +10,8 @@ use Behat\Step\When;
 use PhpPact\Consumer\Model\Message;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
+use PhpPactTest\CompatibilitySuite\Util\Arr;
+use PhpPactTest\CompatibilitySuite\Util\TypeCaster;
 use PHPUnit\Framework\Assert;
 
 final class ConsumerContext implements Context
@@ -39,8 +41,8 @@ final class ConsumerContext implements Context
     #[Then('the first interaction in the Pact file will have a type of :type')]
     public function theFirstInteractionInThePactFileWillHaveATypeOf(string $type): void
     {
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        Assert::assertSame($type, $pact['interactions'][0]['type']);
+        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        Assert::assertSame($type, Arr::str($pact, 'interactions', 0, 'type'));
     }
 
     #[Given('a key of :key is specified for the message interaction')]
@@ -64,7 +66,8 @@ final class ConsumerContext implements Context
     #[Then('the first interaction in the Pact file will have :name = :value')]
     public function theFirstInteractionInThePactFileWillHave(string $name, string $value): void
     {
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        Assert::assertJsonStringEqualsJsonString($value, json_encode($pact['interactions'][0][$name]));
+        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $interaction = Arr::sub($pact, 'interactions', 0);
+        Assert::assertJsonStringEqualsJsonString($value, TypeCaster::toString(json_encode($interaction[$name])));
     }
 }

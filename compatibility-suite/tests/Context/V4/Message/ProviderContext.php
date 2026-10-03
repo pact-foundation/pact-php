@@ -17,6 +17,7 @@ use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\ParserInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
+use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class ProviderContext implements Context
@@ -68,8 +69,12 @@ final class ProviderContext implements Context
         $message->setContents($this->parser->parseBody($fixture));
         $this->pactWriter->write($message, $this->pactPath);
         $this->providerVerifier->addSource($this->pactPath);
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        $pact['interactions'][0]['pending'] = true;
+        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $interactions = Arr::sub($pact, 'interactions');
+        $interaction = Arr::sub($interactions, 0);
+        $interaction['pending'] = true;
+        $interactions[0] = $interaction;
+        $pact['interactions'] = $interactions;
         file_put_contents($this->pactPath, json_encode($pact));
     }
 
@@ -97,8 +102,12 @@ final class ProviderContext implements Context
         $message->setContents($this->parser->parseBody($fixture));
         $this->pactWriter->write($message, $this->pactPath);
         $this->providerVerifier->addSource($this->pactPath);
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        $pact['interactions'][0]['comments'] = $comments;
+        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $interactions = Arr::sub($pact, 'interactions');
+        $interaction = Arr::sub($interactions, 0);
+        $interaction['comments'] = $comments;
+        $interactions[0] = $interaction;
+        $pact['interactions'] = $interactions;
         file_put_contents($this->pactPath, json_encode($pact));
     }
 
@@ -118,18 +127,19 @@ final class ProviderContext implements Context
     #[Then('there will be a pending :error error')]
     public function thereWillBeAPendingError(string $error): void
     {
-        $output = json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
+        $output = (array) json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
         $errors = array_reduce(
-            $output['pendingErrors'],
-            function (array $errors, array $error) {
-                switch ($error['mismatch']['type']) {
+            Arr::sub($output, 'pendingErrors'),
+            function (array $errors, mixed $error) {
+                $mismatch = Arr::sub((array) $error, 'mismatch');
+                switch (Arr::str($mismatch, 'type')) {
                     case 'error':
-                        $errors[] = Mismatch::VERIFIER_MISMATCH_ERROR_MAP[$error['mismatch']['message']];
+                        $errors[] = Mismatch::VERIFIER_MISMATCH_ERROR_MAP[Arr::str($mismatch, 'message')];
                         break;
 
                     case 'mismatches':
-                        foreach ($error['mismatch']['mismatches'] as $mismatch) {
-                            $errors[] = Mismatch::VERIFIER_MISMATCH_TYPE_MAP[$mismatch['type']];
+                        foreach (Arr::sub($mismatch, 'mismatches') as $mismatchItem) {
+                            $errors[] = Mismatch::VERIFIER_MISMATCH_TYPE_MAP[Arr::str((array) $mismatchItem, 'type')];
                         }
                         break;
 

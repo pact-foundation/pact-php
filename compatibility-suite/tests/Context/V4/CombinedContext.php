@@ -13,6 +13,7 @@ use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
+use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class CombinedContext implements Context
@@ -57,8 +58,8 @@ final class CombinedContext implements Context
     #[Then('there will be an interaction in the Pact file with a type of :type')]
     public function thereWillBeAnInteractionInThePactFileWithATypeOf(string $type): void
     {
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        $types = array_map(fn (array $interaction) => $interaction['type'], $pact['interactions']);
+        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $types = array_map(fn (mixed $interaction): string => Arr::str((array) $interaction, 'type'), Arr::sub($pact, 'interactions'));
         Assert::assertContains($type, $types);
     }
 }

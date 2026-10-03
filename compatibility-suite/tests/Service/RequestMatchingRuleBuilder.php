@@ -56,7 +56,8 @@ final class RequestMatchingRuleBuilder implements RequestMatchingRuleBuilderInte
                         $jsonObject = new JsonObject($body->getContents(), true);
                         $value = $jsonObject->{$rule->getSubCategory()};
                         if (str_contains($rule->getSubCategory(), '*')) {
-                            $value = reset($value); // This is for handling '$.two.*.ids' and '$.*'
+                            $valueArray = (array) $value;
+                            $value = reset($valueArray); // This is for handling '$.two.*.ids' and '$.*'
                         }
                         $matcher = $this->converter->convert($rule, $value);
                         if ($matcher) {

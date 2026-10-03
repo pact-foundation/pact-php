@@ -10,5 +10,8 @@ interface PactBrokerInterface
 
     public function stop(): void;
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getMatrix(): array;
 }

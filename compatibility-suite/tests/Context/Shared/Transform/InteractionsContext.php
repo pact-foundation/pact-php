@@ -17,6 +17,9 @@ class InteractionsContext implements Context
     ) {
     }
 
+    /**
+     * @return array<int, Interaction>
+     */
     #[Transform('table:No,method,path,query,headers,body,response,response content,response body')]
     #[Transform('table:No,method,path,query,headers,body,response,response headers,response content,response body')]
     #[Transform('table:No,method,path,query,headers,body,matching rules')]
@@ -33,13 +36,16 @@ class InteractionsContext implements Context
         return $interactions;
     }
 
+    /**
+     * @param array<array-key, string|int> $data
+     */
     private function storeMatchingRules(int $id, array $data): void
     {
         if (isset($data['matching rules'])) {
-            $this->matchingRulesStorage->add(MatchingRulesStorageInterface::REQUEST_DOMAIN, $id, $data['matching rules']);
+            $this->matchingRulesStorage->add(MatchingRulesStorageInterface::REQUEST_DOMAIN, $id, (string) $data['matching rules']);
         }
         if (isset($data['response matching rules'])) {
-            $this->matchingRulesStorage->add(MatchingRulesStorageInterface::RESPONSE_DOMAIN, $id, $data['response matching rules']);
+            $this->matchingRulesStorage->add(MatchingRulesStorageInterface::RESPONSE_DOMAIN, $id, (string) $data['response matching rules']);
         }
     }
 }

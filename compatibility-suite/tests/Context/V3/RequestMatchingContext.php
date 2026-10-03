@@ -16,6 +16,7 @@ use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\RequestBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\RequestMatchingRuleBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
+use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class RequestMatchingContext implements Context
@@ -82,23 +83,27 @@ final class RequestMatchingContext implements Context
     {
         $error = str_replace('\"', '"', $error);
         $key = $this->type === self::HEADER_TYPE ? 'key' : 'path';
-        $mismatches = json_decode($this->server->getVerifyResult()->getOutput(), true);
-        $mismatches = array_reduce($mismatches, function (array $results, array $mismatch): array {
+        $output = (array) json_decode($this->server->getVerifyResult()->getOutput(), true);
+        $mismatches = [];
+        foreach ($output as $mismatch) {
+            $mismatch = (array) $mismatch;
             Assert::assertSame('request-mismatch', $mismatch['type']);
-            $results = array_merge($results, array_filter(
-                $mismatch['mismatches'],
-                fn (array $mismatch) => $mismatch['type'] === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$this->type]
+            $mismatches = array_merge($mismatches, array_filter(
+                Arr::sub($mismatch, 'mismatches'),
+                fn (mixed $mismatch): bool => Arr::str((array) $mismatch, 'type') === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$this->type]
             ));
-
-            return $results;
-        }, []);
+        }
         $mismatches = array_filter(
             $mismatches,
-            fn (array $mismatch) => $mismatch[$key] === $path
-                && (
-                    str_contains($mismatch['mismatch'], $error)
-                    || @preg_match("|$error|", $mismatch['mismatch'])
-                )
+            function (mixed $mismatch) use ($key, $path, $error): bool {
+                $mismatch = (array) $mismatch;
+
+                return $mismatch[$key] === $path
+                    && (
+                        str_contains(Arr::str($mismatch, 'mismatch'), $error)
+                        || @preg_match("|$error|", Arr::str($mismatch, 'mismatch'))
+                    );
+            }
         );
         Assert::assertNotEmpty($mismatches);
     }
@@ -108,7 +113,7 @@ final class RequestMatchingContext implements Context
     {
         $this->type = self::BODY_TYPE;
         $rows = $table->getHash();
-        $row = reset($rows);
+        $row = reset($rows) ?: [];
         $interaction = $this->builder->build([
             'No' => $this->id,
             'method' => 'POST',
@@ -128,7 +133,7 @@ final class RequestMatchingContext implements Context
     public function aRequestIsReceivedWithTheFollowing(TableNode $table): void
     {
         $rows = $table->getHash();
-        $row = reset($rows);
+        $row = reset($rows) ?: [];
         $request = $this->storage->get(InteractionsStorageInterface::CLIENT_DOMAIN, $this->id)->getRequest();
         $this->requestBuilder->build($request, $row);
         $this->client->sendRequestToServer($this->id);

@@ -33,7 +33,7 @@ final class ResponseGeneratorsContext implements Context
     public function aResponseConfiguredWithTheFollowingGenerators(TableNode $table): void
     {
         $rows = $table->getHash();
-        $row = reset($rows);
+        $row = reset($rows) ?: [];
         $interaction = $this->builder->build([
             'No' => $this->id,
             'method' => 'GET',
@@ -71,7 +71,7 @@ final class ResponseGeneratorsContext implements Context
     public function theResponseWillMatch(string $part, string $regex): void
     {
         if ($part === 'status') {
-            Assert::assertMatchesRegularExpression("/$regex/", $this->client->getResponse()->getStatusCode());
+            Assert::assertMatchesRegularExpression("/$regex/", (string) $this->client->getResponse()->getStatusCode());
         } elseif (preg_match('/header\[(.*)\]/', $part, $matches)) {
             foreach ($this->client->getResponse()->getHeader($matches[1]) as $value) {
                 Assert::assertMatchesRegularExpression("/$regex/", $value);

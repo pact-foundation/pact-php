@@ -14,6 +14,9 @@ interface GeneratorServerInterface
 
     public function getPath(): string;
 
+    /**
+     * @return array<int, string>
+     */
     public function getHeader(string $header): array;
 
     public function getQueryParam(string $name): string;

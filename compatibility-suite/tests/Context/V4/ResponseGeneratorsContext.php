@@ -11,6 +11,7 @@ use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\ResponseGeneratorBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
+use PhpPactTest\CompatibilitySuite\Util\Arr;
 
 final class ResponseGeneratorsContext implements Context
 {
@@ -43,7 +44,7 @@ final class ResponseGeneratorsContext implements Context
         $this->client->sendRequestToServer($this->id);
 
         $body = $this->client->getResponse()->getBody()->getContents();
-        $href = json_decode($table->getRow(0)[0], true)['href'];
+        $href = Arr::str((array) json_decode($table->getRow(0)[0], true), 'href');
         $serverBaseUri = $this->server->getBaseUri();
         $search = [
             (string) $serverBaseUri->withHost('127.0.0.1'),

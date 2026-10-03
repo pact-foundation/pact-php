@@ -8,7 +8,7 @@ use PhpPactTest\CompatibilitySuite\Exception\UndefinedInteractionException;
 final class InteractionsStorage implements InteractionsStorageInterface
 {
     /**
-     * @var array<int, Interaction>
+     * @var array<string, array<int, Interaction>>
      */
     private array $interactions = [];
 

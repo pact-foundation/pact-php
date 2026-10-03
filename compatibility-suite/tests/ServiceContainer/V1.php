@@ -25,25 +25,35 @@ class V1 extends AbstractServiceContainer
 {
     public function __construct()
     {
+        $interactionsStorage = new InteractionsStorage();
+        $matchingRuleConverter = new MatchingRuleConverter();
+        $httpClient = new HttpClient();
+        $fixtureLoader = new FixtureLoader();
+        $parser = new Parser($fixtureLoader, $this->getSpecification());
+        $matchingRuleParser = new MatchingRuleParser($matchingRuleConverter, $fixtureLoader);
+        $server = new Server($this->getSpecification(), $interactionsStorage);
+        $requestBuilder = new RequestBuilder($parser);
+        $responseBuilder = new ResponseBuilder($parser);
+
         $this->set('specification', $this->getSpecification());
-        $this->set('interactions_storage', new InteractionsStorage());
+        $this->set('interactions_storage', $interactionsStorage);
         $this->set('provider_state_server', new ProviderStateServer());
-        $this->set('matching_rule_converter', new MatchingRuleConverter());
+        $this->set('matching_rule_converter', $matchingRuleConverter);
         $this->set('matching_rules_storage', new MatchingRulesStorage());
-        $this->set('http_client', new HttpClient());
+        $this->set('http_client', $httpClient);
         $this->set('provider_verifier', new ProviderVerifier());
-        $this->set('fixture_loader', new FixtureLoader());
-        $this->set('parser', new Parser($this->get('fixture_loader'), $this->getSpecification()));
-        $this->set('pact_broker', new PactBroker($this->getSpecification()));
-        $this->set('matching_rule_parser', new MatchingRuleParser($this->get('matching_rule_converter'), $this->get('fixture_loader')));
-        $this->set('server', new Server($this->getSpecification(), $this->get('interactions_storage')));
-        $this->set('request_builder', new RequestBuilder($this->get('parser')));
-        $this->set('response_builder', new ResponseBuilder($this->get('parser')));
-        $this->set('request_matching_rule_builder', new RequestMatchingRuleBuilder($this->get('matching_rule_parser'), $this->get('matching_rule_converter')));
-        $this->set('response_matching_rule_builder', new ResponseMatchingRuleBuilder($this->get('matching_rule_parser'), $this->get('matching_rule_converter')));
-        $this->set('interaction_builder', new InteractionBuilder($this->get('request_builder'), $this->get('response_builder')));
-        $this->set('client', new Client($this->get('server'), $this->get('interactions_storage'), $this->get('http_client')));
-        $this->set('pact_writer', new PactWriter($this->get('interactions_storage'), $this->getSpecification()));
+        $this->set('fixture_loader', $fixtureLoader);
+        $this->set('parser', $parser);
+        $this->set('pact_broker', new PactBroker());
+        $this->set('matching_rule_parser', $matchingRuleParser);
+        $this->set('server', $server);
+        $this->set('request_builder', $requestBuilder);
+        $this->set('response_builder', $responseBuilder);
+        $this->set('request_matching_rule_builder', new RequestMatchingRuleBuilder($matchingRuleParser, $matchingRuleConverter));
+        $this->set('response_matching_rule_builder', new ResponseMatchingRuleBuilder($matchingRuleParser, $matchingRuleConverter));
+        $this->set('interaction_builder', new InteractionBuilder($requestBuilder, $responseBuilder));
+        $this->set('client', new Client($server, $interactionsStorage, $httpClient));
+        $this->set('pact_writer', new PactWriter($interactionsStorage, $this->getSpecification()));
     }
 
     protected function getSpecification(): string

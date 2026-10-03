@@ -4,6 +4,9 @@ namespace PhpPactTest\CompatibilitySuite\Model;
 
 class MatchingRule
 {
+    /**
+     * @param array<array-key, mixed> $matcherAttributes
+     */
     public function __construct(
         private string $matcher,
         private string $category,
@@ -27,6 +30,9 @@ class MatchingRule
         return $this->subCategory;
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getMatcherAttributes(): array
     {
         return $this->matcherAttributes;

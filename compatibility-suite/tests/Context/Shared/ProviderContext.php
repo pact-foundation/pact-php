@@ -11,6 +11,7 @@ use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
 use PhpPactTest\CompatibilitySuite\Service\ProviderStateServerInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
+use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class ProviderContext implements Context
@@ -98,29 +99,25 @@ final class ProviderContext implements Context
     #[Then('the verification results will contain a :error error')]
     public function theVerificationResultsWillContainAError(string $error): void
     {
-        $output = json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
-        $errors = array_reduce(
-            $output['errors'],
-            function (array $errors, array $error) {
-                switch ($error['mismatch']['type']) {
-                    case 'error':
-                        $errors[] = Mismatch::VERIFIER_MISMATCH_ERROR_MAP[$error['mismatch']['message']];
-                        break;
+        $output = (array) json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
+        $errors = [];
+        foreach (Arr::sub($output, 'errors') as $verificationError) {
+            $verificationError = (array) $verificationError;
+            switch (Arr::str($verificationError, 'mismatch', 'type')) {
+                case 'error':
+                    $errors[] = Mismatch::VERIFIER_MISMATCH_ERROR_MAP[Arr::str($verificationError, 'mismatch', 'message')];
+                    break;
 
-                    case 'mismatches':
-                        foreach ($error['mismatch']['mismatches'] as $mismatch) {
-                            $errors[] = Mismatch::VERIFIER_MISMATCH_TYPE_MAP[$mismatch['type']];
-                        }
-                        break;
+                case 'mismatches':
+                    foreach (Arr::sub($verificationError, 'mismatch', 'mismatches') as $mismatch) {
+                        $errors[] = Mismatch::VERIFIER_MISMATCH_TYPE_MAP[Arr::str((array) $mismatch, 'type')];
+                    }
+                    break;
 
-                    default:
-                        break;
-                }
-
-                return $errors;
-            },
-            []
-        );
+                default:
+                    break;
+            }
+        }
         Assert::assertContains($error, $errors);
     }
 }
