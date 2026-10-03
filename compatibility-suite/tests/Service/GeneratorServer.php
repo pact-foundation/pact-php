@@ -3,6 +3,7 @@
 namespace PhpPactTest\CompatibilitySuite\Service;
 
 use PhpPactTest\CompatibilitySuite\Constant\Path;
+use PhpPactTest\CompatibilitySuite\Util\TypeCaster;
 use PhpPactTest\Helper\PhpProcess;
 
 final class GeneratorServer implements GeneratorServerInterface
@@ -34,25 +35,28 @@ final class GeneratorServer implements GeneratorServerInterface
 
     public function getBody(): string
     {
-        return @file_get_contents($this->bodyFile);
+        return (string) @file_get_contents($this->bodyFile);
     }
 
     public function getPath(): string
     {
-        return file_get_contents($this->pathFile);
+        return (string) file_get_contents($this->pathFile);
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getHeader(string $header): array
     {
-        $headers = json_decode(file_get_contents($this->headersFile), true);
+        $headers = json_decode((string) file_get_contents($this->headersFile), true);
 
-        return $headers[$header] ?? [];
+        return array_values(array_map(TypeCaster::toString(...), is_array($headers) ? (array) ($headers[$header] ?? []) : []));
     }
 
     public function getQueryParam(string $name): string
     {
-        $queryParams = json_decode(file_get_contents($this->queryParamsFile), true);
+        $queryParams = json_decode((string) file_get_contents($this->queryParamsFile), true);
 
-        return $queryParams[$name] ?? '';
+        return TypeCaster::toString(is_array($queryParams) ? ($queryParams[$name] ?? '') : '');
     }
 }

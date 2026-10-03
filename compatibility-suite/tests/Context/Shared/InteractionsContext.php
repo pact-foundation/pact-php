@@ -20,6 +20,9 @@ class InteractionsContext implements Context
     ) {
     }
 
+    /**
+     * @param array<int, Interaction> $interactions
+     */
     #[Given('the following HTTP interactions have been defined:')]
     public function theFollowingHttpInteractionsHaveBeenDefined(array $interactions): void
     {

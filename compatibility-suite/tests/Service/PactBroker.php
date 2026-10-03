@@ -10,7 +10,7 @@ final class PactBroker implements PactBrokerInterface
     private Client $client;
     private PactPath $pactPath;
 
-    public function __construct(private string $specificationVersion)
+    public function __construct()
     {
         $this->client = new Client();
     }
@@ -33,8 +33,8 @@ final class PactBroker implements PactBrokerInterface
                 if ($response->getStatusCode() !== 200) {
                     continue;
                 }
-                $status = json_decode($response->getBody(), true);
-                if ($status['ok']) {
+                $status = json_decode((string) $response->getBody(), true);
+                if (is_array($status) && ($status['ok'] ?? false)) {
                     break;
                 }
             } catch (\Throwable) {
@@ -50,8 +50,13 @@ final class PactBroker implements PactBrokerInterface
         sleep(1);
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function getMatrix(): array
     {
-        return json_decode(file_get_contents(sprintf('http://localhost:9292/matrix.json?q[][pacticipant]=%s&q[][pacticipant]=%s', $this->pactPath->getConsumer(), PactPath::PROVIDER)), true);
+        $matrix = json_decode((string) file_get_contents(sprintf('http://localhost:9292/matrix.json?q[][pacticipant]=%s&q[][pacticipant]=%s', $this->pactPath->getConsumer(), PactPath::PROVIDER)), true);
+
+        return is_array($matrix) ? $matrix : [];
     }
 }

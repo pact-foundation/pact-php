@@ -4,6 +4,7 @@ namespace PhpPactTest\CompatibilitySuite\Service;
 
 use JsonPath\JsonObject;
 use PHPUnit\Framework\Assert;
+use PhpPactTest\CompatibilitySuite\Util\TypeCaster;
 use Ramsey\Uuid\Uuid;
 
 final class BodyValidator implements BodyValidatorInterface
@@ -24,16 +25,22 @@ final class BodyValidator implements BodyValidatorInterface
         match ($type) {
             'integer' => Assert::assertIsInt($value),
             'decimal number' => Assert::assertIsFloat($value),
-            'hexadecimal number' => Assert::assertIsString($value) && Assert::assertMatchesRegularExpression(self::HEX_REGEX, $value),
+            'hexadecimal number' => $this->assertStringMatches(self::HEX_REGEX, $value),
             'random string' => Assert::assertIsString($value),
-            'string from the regex' => Assert::assertIsString($value) && Assert::assertMatchesRegularExpression(self::STR_REGEX, $value),
-            'date' => Assert::assertIsString($value) && Assert::assertMatchesRegularExpression(self::DATE_REGEX, $value),
-            'time' => Assert::assertIsString($value) && Assert::assertMatchesRegularExpression(self::TIME_REGEX, $value),
-            'date-time' => Assert::assertIsString($value) && Assert::assertMatchesRegularExpression(self::DATETIME_REGEX, $value),
-            'UUID', 'simple UUID', 'lower-case-hyphenated UUID', 'upper-case-hyphenated UUID', 'URN UUID' => Assert::assertTrue(Uuid::isValid($value)),
+            'string from the regex' => $this->assertStringMatches(self::STR_REGEX, $value),
+            'date' => $this->assertStringMatches(self::DATE_REGEX, $value),
+            'time' => $this->assertStringMatches(self::TIME_REGEX, $value),
+            'date-time' => $this->assertStringMatches(self::DATETIME_REGEX, $value),
+            'UUID', 'simple UUID', 'lower-case-hyphenated UUID', 'upper-case-hyphenated UUID', 'URN UUID' => Assert::assertTrue(Uuid::isValid(TypeCaster::toString($value))),
             'boolean' => Assert::assertIsBool($value),
             default => null,
         };
+    }
+
+    private function assertStringMatches(string $pattern, mixed $value): void
+    {
+        Assert::assertIsString($value);
+        Assert::assertMatchesRegularExpression($pattern, $value);
     }
 
     public function validateValue(string $path, string $value): void

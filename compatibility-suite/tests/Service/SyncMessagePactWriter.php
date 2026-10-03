@@ -3,8 +3,8 @@
 namespace PhpPactTest\CompatibilitySuite\Service;
 
 use PhpPact\Config\Enum\WriteMode;
-use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\MockService\MockServerConfig;
+use PhpPact\SyncMessage\Model\SyncMessage;
 use PhpPact\SyncMessage\Factory\SyncMessageDriverFactory;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
@@ -16,7 +16,7 @@ class SyncMessagePactWriter implements SyncMessagePactWriterInterface
     ) {
     }
 
-    public function write(Message $message, PactPath $pactPath, WriteMode $mode = WriteMode::OVERWRITE): void
+    public function write(SyncMessage $message, PactPath $pactPath, WriteMode $mode = WriteMode::OVERWRITE): void
     {
         $config = new MockServerConfig();
         $config

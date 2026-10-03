@@ -12,6 +12,9 @@ use PhpPactTest\CompatibilitySuite\Model\VerifyResult;
 
 final class ProviderVerifier implements ProviderVerifierInterface
 {
+    /**
+     * @var array<int, string|Broker>
+     */
     private array $sources = [];
     private VerifierConfigInterface $config;
 

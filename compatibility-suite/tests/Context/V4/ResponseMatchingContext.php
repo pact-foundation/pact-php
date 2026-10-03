@@ -15,6 +15,7 @@ use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
 use PhpPactTest\CompatibilitySuite\Service\ResponseMatchingRuleBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
+use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class ResponseMatchingContext implements Context
@@ -35,7 +36,7 @@ final class ResponseMatchingContext implements Context
     public function anExpectedResponseConfiguredWithTheFollowing(TableNode $table): void
     {
         $rows = $table->getHash();
-        $row = reset($rows);
+        $row = reset($rows) ?: [];
         $interaction = $this->builder->build([
             'No' => $this->id,
             'method' => 'GET',
@@ -79,27 +80,24 @@ final class ResponseMatchingContext implements Context
     #[Then('the response mismatches will contain a :type mismatch with error :error')]
     public function theResponseMismatchesWillContainAMismatchWithError(string $type, string $error): void
     {
-        $output = json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
-        $errors = array_reduce(
-            $output['errors'],
-            function (array $errors, array $error) use ($type) {
-                switch ($error['mismatch']['type']) {
-                    case 'mismatches':
-                        foreach ($error['mismatch']['mismatches'] as $mismatch) {
-                            if ($mismatch['type'] === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]) {
-                                $errors[] = $mismatch['mismatch'];
-                            }
+        $output = (array) json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
+        $errors = [];
+        foreach (Arr::sub($output, 'errors') as $verificationError) {
+            $verificationError = (array) $verificationError;
+            switch (Arr::str($verificationError, 'mismatch', 'type')) {
+                case 'mismatches':
+                    foreach (Arr::sub($verificationError, 'mismatch', 'mismatches') as $mismatch) {
+                        $mismatch = (array) $mismatch;
+                        if (Arr::str($mismatch, 'type') === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]) {
+                            $errors[] = $mismatch['mismatch'];
                         }
-                        break;
+                    }
+                    break;
 
-                    default:
-                        break;
-                }
-
-                return $errors;
-            },
-            []
-        );
+                default:
+                    break;
+            }
+        }
         Assert::assertContains($error, $errors);
     }
 }

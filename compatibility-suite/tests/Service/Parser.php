@@ -3,7 +3,6 @@
 namespace PhpPactTest\CompatibilitySuite\Service;
 
 use PhpPact\Consumer\Model\Body\Binary;
-use PhpPact\Consumer\Model\Body\Multipart;
 use PhpPact\Consumer\Model\Body\Text;
 use PhpPactTest\CompatibilitySuite\Exception\InvalidXmlFixtureException;
 use PhpPactTest\CompatibilitySuite\Model\Xml;
@@ -26,32 +25,32 @@ final class Parser implements ParserInterface
     ) {
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function parseHeaders(string $headers, bool $raw = false): array
     {
         if (empty($headers)) {
             return [];
         }
-        return array_reduce(
-            explode(',', $headers),
-            function (array $values, string $header) use ($raw): array {
-                [$header, $value] = explode(':', rtrim(ltrim(trim($header), "'"), "'"), 2);
+        $values = [];
+        foreach (explode(',', $headers) as $headerLine) {
+            [$header, $value] = explode(':', rtrim(ltrim(trim($headerLine), "'"), "'"), 2);
 
-                $header = trim($header);
-                $value = trim($value);
+            $header = trim($header);
+            $value = trim($value);
 
-                if ($raw || in_array(strtolower($header), self::SINGLE_VALUE_HEADERS)) {
-                    $values[$header][] = $value;
-                } else {
-                    $values[$header] = array_merge($values[$header] ?? [], array_map(fn (string $value) => trim($value), explode(',', $value)));
-                }
+            if ($raw || in_array(strtolower($header), self::SINGLE_VALUE_HEADERS, true)) {
+                $values[$header][] = $value;
+            } else {
+                $values[$header] = array_merge($values[$header] ?? [], array_map(fn (string $value) => trim($value), explode(',', $value)));
+            }
+        }
 
-                return $values;
-            },
-            []
-        );
+        return $values;
     }
 
-    public function parseBody(string $body, ?string $contentType = null): Text|Binary|Multipart|null
+    public function parseBody(string $body, ?string $contentType = null): Text|Binary|null
     {
         if (empty($body)) {
             return null;
@@ -70,9 +69,9 @@ final class Parser implements ParserInterface
                 if (!$body) {
                     throw new InvalidXmlFixtureException(sprintf("could not read fixture '%s'", $fileName));
                 }
-                $contentType = (string) $body->contentType ?? 'text/plain';
-                $contents = $body->contents ?? '';
-                $lineEndings = (string) (iterator_to_array($contents->attributes())['eol'] ?? '');
+                $contentType = isset($body->contentType) ? (string) $body->contentType : 'text/plain';
+                $lineEndings = (string) (iterator_to_array($body->contents->attributes())['eol'] ?? '');
+                $contents = (string) $body->contents;
 
                 if ($lineEndings === 'CRLF' && PHP_OS_FAMILY !== 'Windows') {
                     $contents = str_replace("\n", "\r\n", $contents);
@@ -98,28 +97,32 @@ final class Parser implements ParserInterface
         return new Text($body, $contentType ?? 'text/plain');
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function parseQueryString(string $query): array
     {
         if (empty($query)) {
             return [];
         }
 
-        return array_reduce(
-            explode('&', $query),
-            function (array $values, string $kv): array {
-                if (str_contains($kv, '=')) {
-                    [$key, $value] = explode('=', $kv, 2);
-                    $values[$key][] = $value;
-                } else {
-                    $values[$kv][] = '';
-                }
+        $values = [];
+        foreach (explode('&', $query) as $kv) {
+            if (str_contains($kv, '=')) {
+                [$key, $value] = explode('=', $kv, 2);
+                $values[$key][] = $value;
+            } else {
+                $values[$kv][] = '';
+            }
+        }
 
-                return $values;
-            },
-            []
-        );
+        return $values;
     }
 
+    /**
+     * @param array<array-key, array<array-key, string>> $rows
+     * @return array<string, string>
+     */
     public function parseMetadataTable(array $rows): array
     {
         $metadata = [];
@@ -138,6 +141,9 @@ final class Parser implements ParserInterface
         return $value;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function parseMetadataMultiValues(string $items): array
     {
         $metadata = [];

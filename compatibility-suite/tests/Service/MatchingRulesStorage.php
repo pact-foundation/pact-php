@@ -5,7 +5,7 @@ namespace PhpPactTest\CompatibilitySuite\Service;
 final class MatchingRulesStorage implements MatchingRulesStorageInterface
 {
     /**
-     * @var array<int, string>
+     * @var array<string, array<int, string>>
      */
     private array $files = [];
 

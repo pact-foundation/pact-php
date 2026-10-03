@@ -19,7 +19,7 @@ final class ProviderStateContext implements Context
     #[BeforeScenario]
     public function startProviderState(BeforeScenarioScope $scope): void
     {
-        if (preg_match('/^Verifying .* provider state/', $scope->getScenario()->getTitle())) {
+        if (preg_match('/^Verifying .* provider state/', (string) $scope->getScenario()->getTitle())) {
             $this->providerStateServer->start();
         }
     }
@@ -27,7 +27,7 @@ final class ProviderStateContext implements Context
     #[AfterScenario]
     public function stopProviderState(AfterScenarioScope $scope): void
     {
-        if (preg_match('/^Verifying .* provider state/', $scope->getScenario()->getTitle())) {
+        if (preg_match('/^Verifying .* provider state/', (string) $scope->getScenario()->getTitle())) {
             $this->providerStateServer->stop();
         }
     }

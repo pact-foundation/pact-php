@@ -15,5 +15,8 @@ interface ProviderStateServerInterface
 
     public function hasAction(string $action): bool;
 
+    /**
+     * @param array<array-key, mixed> $params
+     */
     public function hasState(string $action, string $state, array $params = []): bool;
 }

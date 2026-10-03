@@ -12,6 +12,7 @@ use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
+use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class ConsumerContext implements Context
@@ -54,17 +55,17 @@ final class ConsumerContext implements Context
     #[Then('the interaction in the Pact file will contain :states provider state(s)')]
     public function theInteractionInThePactFileWillContainProviderStates(int $states): void
     {
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        Assert::assertCount($states, $pact['interactions'][0]['providerStates']);
+        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        Assert::assertCount($states, Arr::sub($pact, 'interactions', 0, 'providerStates'));
     }
 
     #[Then('the interaction in the Pact file will contain provider state :name')]
     public function theInteractionInThePactFileWillContainProviderState(string $name): void
     {
-        $pact = json_decode(file_get_contents($this->pactPath), true);
+        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
         Assert::assertNotEmpty(array_filter(
-            $pact['interactions'][0]['providerStates'],
-            fn (array $providerState) => $providerState['name'] === $name
+            Arr::sub($pact, 'interactions', 0, 'providerStates'),
+            fn (mixed $providerState) => Arr::str((array) $providerState, 'name') === $name
         ));
     }
 
@@ -72,7 +73,7 @@ final class ConsumerContext implements Context
     public function aProviderStateIsSpecifiedWithTheFollowingData(string $state, TableNode $table): void
     {
         $rows = $table->getHash();
-        $row = reset($rows);
+        $row = reset($rows) ?: [];
         $this->interaction->addProviderState($state, $row);
     }
 
@@ -80,12 +81,12 @@ final class ConsumerContext implements Context
     public function theProviderStateInThePactFileWillContainTheFollowingParameters(string $name, TableNode $table): void
     {
         $rows = $table->getHash();
-        $row = reset($rows);
-        $params = json_decode($row['parameters'], true);
-        $pact = json_decode(file_get_contents($this->pactPath), true);
+        $row = reset($rows) ?: [];
+        $params = json_decode((string) ($row['parameters'] ?? ''), true);
+        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
         Assert::assertNotEmpty(array_filter(
-            $pact['interactions'][0]['providerStates'],
-            fn (array $providerState) => $providerState['name'] === $name && $providerState['params'] === $params
+            Arr::sub($pact, 'interactions', 0, 'providerStates'),
+            fn (mixed $providerState) => Arr::str((array) $providerState, 'name') === $name && Arr::sub((array) $providerState, 'params') === (array) $params
         ));
     }
 }

@@ -17,10 +17,15 @@ use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\ParserInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
+use PhpPactTest\CompatibilitySuite\Util\Arr;
+use PhpPactTest\CompatibilitySuite\Util\TypeCaster;
 
 final class ProviderContext implements Context
 {
     private int $id = 1;
+    /**
+     * @var list<int>
+     */
     private array $ids = [];
     private PactPath $pactPath;
 
@@ -88,8 +93,12 @@ final class ProviderContext implements Context
     public function aPactFileForIsToBeVerifiedWithProviderState(string $name, string $fixture, string $state): void
     {
         $this->aPactFileForIsToBeVerified($name, $fixture);
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        $pact['messages'][0]['providerState'] = $state;
+        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $messages = Arr::sub($pact, 'messages');
+        $message = Arr::sub($messages, 0);
+        $message['providerState'] = $state;
+        $messages[0] = $message;
+        $pact['messages'] = $messages;
         file_put_contents($this->pactPath, json_encode($pact));
     }
 
@@ -103,7 +112,7 @@ final class ProviderContext implements Context
             'path' => '/messages',
             'body' => 'JSON: ' . json_encode(['description' => $name]),
             'response body' => $fixture,
-            'response headers' => 'Pact-Message-Metadata: ' . base64_encode(json_encode($this->parser->parseMetadataTable($table->getHash()))),
+            'response headers' => 'Pact-Message-Metadata: ' . base64_encode(TypeCaster::toString(json_encode($this->parser->parseMetadataTable($table->getHash())))),
         ]);
         $this->storage->add(InteractionsStorageInterface::SERVER_DOMAIN, $this->id, $interaction);
         $this->server->register($this->id);
@@ -123,26 +132,33 @@ final class ProviderContext implements Context
     public function aPactFileForIsToBeVerifiedWithTheFollowingMetadata(string $name, string $fixture, TableNode $table): void
     {
         $this->aPactFileForIsToBeVerified($name, $fixture);
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        $pact['messages'][0]['metaData'] = $this->parser->parseMetadataTable($table->getHash());
+        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $messages = Arr::sub($pact, 'messages');
+        $message = Arr::sub($messages, 0);
+        $message['metaData'] = $this->parser->parseMetadataTable($table->getHash());
+        $messages[0] = $message;
+        $pact['messages'] = $messages;
         file_put_contents($this->pactPath, json_encode($pact));
     }
 
     #[Given('a Pact file for :name is to be verified with the following:')]
     public function aPactFileForIsToBeVerifiedWithTheFollowing(string $name, TableNode $table): void
     {
+        $body = '';
+        $matchingRules = null;
+        $metadata = null;
         foreach ($table->getRowsHash() as $key => $value) {
             switch ($key) {
                 case 'body':
-                    $body = $value;
+                    $body = TypeCaster::toString($value);
                     break;
 
                 case 'matching rules':
-                    $matchingRules = $this->fixtureLoader->loadJson($value);
+                    $matchingRules = $this->fixtureLoader->loadJson(TypeCaster::toString($value));
                     break;
 
                 case 'metadata':
-                    $metadata = $value;
+                    $metadata = TypeCaster::toString($value);
                     break;
 
                 default:
@@ -150,11 +166,15 @@ final class ProviderContext implements Context
             }
         }
         $this->aPactFileForIsToBeVerified($name, $body);
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        if (isset($metadata)) {
-            $pact['messages'][0]['metadata'] = array_merge($pact['messages'][0]['metadata'], $this->parser->parseMetadataMultiValues($metadata));
+        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $messages = Arr::sub($pact, 'messages');
+        $message = Arr::sub($messages, 0);
+        if (null !== $metadata) {
+            $message['metadata'] = array_merge(Arr::sub($message, 'metadata'), $this->parser->parseMetadataMultiValues($metadata));
         }
-        $pact['messages'][0]['matchingRules'] = $matchingRules;
+        $message['matchingRules'] = $matchingRules;
+        $messages[0] = $message;
+        $pact['messages'] = $messages;
         file_put_contents($this->pactPath, json_encode($pact));
     }
 }
