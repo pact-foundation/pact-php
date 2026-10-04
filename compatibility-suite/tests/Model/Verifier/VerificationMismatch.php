@@ -31,6 +31,18 @@ final class VerificationMismatch
         return TypeCaster::toString($this->data['message'] ?? '');
     }
 
+    /**
+     * The short label asserted by the compatibility-suite features for a
+     * verifier error message, or null when the message has no fixed label.
+     */
+    public function getErrorLabel(): ?string
+    {
+        return match ($this->getMessage()) {
+            'One or more of the setup state change handlers has failed' => 'State change request failed',
+            default => null,
+        };
+    }
+
     public function getInteractionId(): string
     {
         return TypeCaster::toString($this->data['interactionId'] ?? '');

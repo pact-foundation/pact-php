@@ -9,7 +9,7 @@ use Behat\Step\Then;
 use Behat\Step\When;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
-use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\VerifierMismatchType;
 use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationError;
@@ -127,12 +127,12 @@ final class ProviderContext implements Context
             function (array $errors, VerificationError $error) {
                 switch ($error->getMismatch()->getType()) {
                     case 'error':
-                        $errors[] = Mismatch::VERIFIER_MISMATCH_ERROR_MAP[$error->getMismatch()->getMessage()];
+                        $errors[] = $error->getMismatch()->getErrorLabel();
                         break;
 
                     case 'mismatches':
                         foreach ($error->getMismatch()->getMismatches() as $mismatchItem) {
-                            $errors[] = Mismatch::VERIFIER_MISMATCH_TYPE_MAP[$mismatchItem->getType()];
+                            $errors[] = VerifierMismatchType::tryFrom($mismatchItem->getType())?->description();
                         }
                         break;
 

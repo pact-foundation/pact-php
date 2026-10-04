@@ -6,8 +6,8 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Step\Then;
 use Behat\Step\When;
-use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
-use PhpPactTest\CompatibilitySuite\Model\Mismatch\Mismatch as DatatypeMismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\MockServerMismatchType;
 use PhpPactTest\CompatibilitySuite\Model\MockServer\RequestMismatch;
 use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Service\ClientInterface;
@@ -181,7 +181,7 @@ final class ConsumerContext implements Context
         Assert::assertSame(RequestMismatch::TYPE_REQUEST_MISMATCH, $mismatch->getType());
         $mismatches = array_filter(
             $mismatch->getMismatches(),
-            fn (DatatypeMismatch $mismatch): bool => $mismatch->getType() === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]
+            fn (Mismatch $mismatch): bool => $mismatch->getType() === MockServerMismatchType::from($type)->verifierType()->value
                 && str_contains($mismatch->getMismatch(), $error)
         );
         Assert::assertNotEmpty($mismatches);
@@ -234,7 +234,7 @@ final class ConsumerContext implements Context
         Assert::assertSame(RequestMismatch::TYPE_REQUEST_MISMATCH, $mismatch->getType());
         $mismatches = array_filter(
             $mismatch->getMismatches(),
-            fn (DatatypeMismatch $mismatch): bool => $mismatch->getType() === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]
+            fn (Mismatch $mismatch): bool => $mismatch->getType() === MockServerMismatchType::from($type)->verifierType()->value
                 && $mismatch->getPath() === $path
                 && str_contains($mismatch->getMismatch(), $error)
         );

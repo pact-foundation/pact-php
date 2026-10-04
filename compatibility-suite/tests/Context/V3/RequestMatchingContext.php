@@ -8,9 +8,9 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
-use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
 use PhpPactTest\CompatibilitySuite\Exception\IntegrationJsonFormatException;
-use PhpPactTest\CompatibilitySuite\Model\Mismatch\Mismatch as DatatypeMismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\MockServerMismatchType;
 use PhpPactTest\CompatibilitySuite\Model\MockServer\RequestMismatch;
 use PhpPactTest\CompatibilitySuite\Service\ClientInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
@@ -89,12 +89,12 @@ final class RequestMatchingContext implements Context
             Assert::assertSame(RequestMismatch::TYPE_REQUEST_MISMATCH, $mismatch->getType());
             $mismatches = array_merge($mismatches, array_filter(
                 $mismatch->getMismatches(),
-                fn (DatatypeMismatch $mismatch): bool => $mismatch->getType() === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$this->type]
+                fn (Mismatch $mismatch): bool => $mismatch->getType() === MockServerMismatchType::from($this->type)->verifierType()->value
             ));
         }
         $mismatches = array_filter(
             $mismatches,
-            function (DatatypeMismatch $mismatch) use ($key, $path, $error): bool {
+            function (Mismatch $mismatch) use ($key, $path, $error): bool {
                 $actual = $key === 'key' ? $mismatch->getKey() : $mismatch->getPath();
 
                 return $actual === $path

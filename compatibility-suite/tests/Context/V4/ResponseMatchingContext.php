@@ -7,7 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
-use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\MockServerMismatchType;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Model\Verifier\VerifierOutput;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
@@ -86,7 +86,7 @@ final class ResponseMatchingContext implements Context
             switch ($verificationError->getMismatch()->getType()) {
                 case 'mismatches':
                     foreach ($verificationError->getMismatch()->getMismatches() as $mismatch) {
-                        if ($mismatch->getType() === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]) {
+                        if ($mismatch->getType() === MockServerMismatchType::from($type)->verifierType()->value) {
                             $errors[] = $mismatch->getMismatch();
                         }
                     }
