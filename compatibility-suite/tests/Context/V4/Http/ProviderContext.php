@@ -9,7 +9,6 @@ use Behat\Step\Then;
 use PhpPactTest\CompatibilitySuite\Model\Mismatch\VerifierMismatchType;
 use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
-use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationError;
 use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationMismatch;
 use PhpPactTest\CompatibilitySuite\Model\Verifier\VerifierOutput;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
@@ -41,28 +40,29 @@ final class ProviderContext implements Context
     public function thereWillBeAPendingError(string $error): void
     {
         $output = VerifierOutput::fromJson($this->providerVerifier->getVerifyResult()->getOutput());
-        $errors = array_reduce(
-            $output->getPendingErrors(),
-            function (array $errors, VerificationError $error) {
-                switch ($error->getMismatch()->getType()) {
-                    case VerificationMismatch::TYPE_ERROR:
-                        $errors[] = $error->getMismatch()->getErrorLabel();
-                        break;
+        $errors = [];
+        foreach ($output->getPendingErrors() as $verificationError) {
+            switch ($verificationError->getMismatch()->getType()) {
+                case VerificationMismatch::TYPE_ERROR:
+                    $errorLabel = $verificationError->getMismatch()->getErrorLabel();
+                    if ($errorLabel !== null) {
+                        $errors[] = $errorLabel;
+                    }
+                    break;
 
-                    case VerificationMismatch::TYPE_MISMATCHES:
-                        foreach ($error->getMismatch()->getMismatches() as $mismatchItem) {
-                            $errors[] = VerifierMismatchType::tryFrom($mismatchItem->getType())?->description();
+                case VerificationMismatch::TYPE_MISMATCHES:
+                    foreach ($verificationError->getMismatch()->getMismatches() as $mismatchItem) {
+                        $description = VerifierMismatchType::tryFrom($mismatchItem->getType())?->description();
+                        if ($description !== null) {
+                            $errors[] = $description;
                         }
-                        break;
+                    }
+                    break;
 
-                    default:
-                        break;
-                }
-
-                return $errors;
-            },
-            []
-        );
+                default:
+                    break;
+            }
+        }
         Assert::assertContains($error, $errors);
     }
 

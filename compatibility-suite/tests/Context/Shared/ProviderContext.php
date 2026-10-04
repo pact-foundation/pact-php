@@ -105,12 +105,18 @@ final class ProviderContext implements Context
         foreach ($output->getErrors() as $verificationError) {
             switch ($verificationError->getMismatch()->getType()) {
                 case VerificationMismatch::TYPE_ERROR:
-                    $errors[] = $verificationError->getMismatch()->getErrorLabel();
+                    $errorLabel = $verificationError->getMismatch()->getErrorLabel();
+                    if ($errorLabel !== null) {
+                        $errors[] = $errorLabel;
+                    }
                     break;
 
                 case VerificationMismatch::TYPE_MISMATCHES:
                     foreach ($verificationError->getMismatch()->getMismatches() as $mismatch) {
-                        $errors[] = VerifierMismatchType::tryFrom($mismatch->getType())?->description();
+                        $description = VerifierMismatchType::tryFrom($mismatch->getType())?->description();
+                        if ($description !== null) {
+                            $errors[] = $description;
+                        }
                     }
                     break;
 
