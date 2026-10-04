@@ -2,6 +2,8 @@
 
 namespace PhpPactTest\CompatibilitySuite\Service;
 
+use PhpPactTest\CompatibilitySuite\Model\PactBroker\Matrix;
+
 interface PactBrokerInterface
 {
     public function publish(int $id): void;
@@ -10,8 +12,5 @@ interface PactBrokerInterface
 
     public function stop(): void;
 
-    /**
-     * @return array<array-key, mixed>
-     */
-    public function getMatrix(): array;
+    public function getMatrix(): Matrix;
 }

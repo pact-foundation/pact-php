@@ -3,6 +3,7 @@
 namespace PhpPactTest\CompatibilitySuite\Service;
 
 use GuzzleHttp\Client;
+use PhpPactTest\CompatibilitySuite\Model\PactBroker\Matrix;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 
 final class PactBroker implements PactBrokerInterface
@@ -50,13 +51,10 @@ final class PactBroker implements PactBrokerInterface
         sleep(1);
     }
 
-    /**
-     * @return array<array-key, mixed>
-     */
-    public function getMatrix(): array
+    public function getMatrix(): Matrix
     {
-        $matrix = json_decode((string) file_get_contents(sprintf('http://localhost:9292/matrix.json?q[][pacticipant]=%s&q[][pacticipant]=%s', $this->pactPath->getConsumer(), PactPath::PROVIDER)), true);
+        $matrix = file_get_contents(sprintf('http://localhost:9292/matrix.json?q[][pacticipant]=%s&q[][pacticipant]=%s', $this->pactPath->getConsumer(), PactPath::PROVIDER));
 
-        return is_array($matrix) ? $matrix : [];
+        return Matrix::fromJson((string) $matrix);
     }
 }

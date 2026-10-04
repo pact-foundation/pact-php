@@ -18,7 +18,6 @@ use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
 use PhpPactTest\CompatibilitySuite\Service\ResponseBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
-use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class ProviderContext implements Context
@@ -68,7 +67,7 @@ final class ProviderContext implements Context
     #[Then('a verification result will NOT be published back')]
     public function aVerificationResultWillNotBePublishedBack(): void
     {
-        Assert::assertSame(1, Arr::int($this->pactBroker->getMatrix(), 'summary', 'unknown'));
+        Assert::assertSame(1, $this->pactBroker->getMatrix()->getSummary()->getUnknown());
     }
 
     #[Given('publishing of verification results is enabled')]
@@ -84,13 +83,13 @@ final class ProviderContext implements Context
     #[Then('a successful verification result will be published back for interaction {:id}')]
     public function aSuccessfulVerificationResultWillBePublishedBackForInteraction(int $id): void
     {
-        Assert::assertSame(1, Arr::int($this->pactBroker->getMatrix(), 'summary', 'success'));
+        Assert::assertSame(1, $this->pactBroker->getMatrix()->getSummary()->getSuccess());
     }
 
     #[Then('a failed verification result will be published back for the interaction {:id}')]
     public function aFailedVerificationResultWillBePublishedBackForTheInteraction(int $id): void
     {
-        Assert::assertSame(1, Arr::int($this->pactBroker->getMatrix(), 'summary', 'failed'));
+        Assert::assertSame(1, $this->pactBroker->getMatrix()->getSummary()->getFailed());
     }
 
     #[Given('a Pact file for interaction :id is to be verified with a provider state :state defined')]
