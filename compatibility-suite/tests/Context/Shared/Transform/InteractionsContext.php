@@ -37,15 +37,15 @@ class InteractionsContext implements Context
     }
 
     /**
-     * @param array<array-key, string|int> $data
+     * @param array<array-key, string> $data
      */
     private function storeMatchingRules(int $id, array $data): void
     {
         if (isset($data['matching rules'])) {
-            $this->matchingRulesStorage->add(MatchingRulesStorageInterface::REQUEST_DOMAIN, $id, (string) $data['matching rules']);
+            $this->matchingRulesStorage->add(MatchingRulesStorageInterface::REQUEST_DOMAIN, $id, $data['matching rules']);
         }
         if (isset($data['response matching rules'])) {
-            $this->matchingRulesStorage->add(MatchingRulesStorageInterface::RESPONSE_DOMAIN, $id, (string) $data['response matching rules']);
+            $this->matchingRulesStorage->add(MatchingRulesStorageInterface::RESPONSE_DOMAIN, $id, $data['response matching rules']);
         }
     }
 }
