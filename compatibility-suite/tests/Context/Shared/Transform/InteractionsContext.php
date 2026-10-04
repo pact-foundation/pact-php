@@ -17,6 +17,9 @@ class InteractionsContext implements Context
     ) {
     }
 
+    /**
+     * @return array<int, Interaction>
+     */
     #[Transform('table:No,method,path,query,headers,body,response,response content,response body')]
     #[Transform('table:No,method,path,query,headers,body,response,response headers,response content,response body')]
     #[Transform('table:No,method,path,query,headers,body,matching rules')]
@@ -33,6 +36,9 @@ class InteractionsContext implements Context
         return $interactions;
     }
 
+    /**
+     * @param array<array-key, string> $data
+     */
     private function storeMatchingRules(int $id, array $data): void
     {
         if (isset($data['matching rules'])) {

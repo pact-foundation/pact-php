@@ -15,7 +15,7 @@ final class SetUpContext implements Context
     public function cleanUpPacts(BeforeScenarioScope $scope): void
     {
         $files = glob(Path::PACTS_PATH . '/*.json');
-        foreach ($files as $file) {
+        foreach ($files ?: [] as $file) {
             if (is_file($file)) {
                 unlink($file);
             }
@@ -23,7 +23,7 @@ final class SetUpContext implements Context
     }
 
     #[BeforeSuite]
-    public static function initPhpunit()
+    public static function initPhpunit(): void
     {
         static $initialized = false;
         if (!$initialized) {

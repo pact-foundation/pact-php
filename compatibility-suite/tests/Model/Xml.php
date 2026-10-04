@@ -3,6 +3,7 @@
 namespace PhpPactTest\CompatibilitySuite\Model;
 
 use PhpPact\Consumer\Model\Body\Text;
+use PhpPactTest\CompatibilitySuite\Exception\InvalidXmlFixtureException;
 use SimpleXMLElement;
 
 class Xml extends Text
@@ -15,12 +16,18 @@ class Xml extends Text
     public function getContents(): string
     {
         $root = simplexml_load_string(parent::getContents());
+        if (false === $root) {
+            throw new InvalidXmlFixtureException('Could not parse XML contents');
+        }
 
-        return json_encode([
+        return (string) json_encode([
             'root' => $this->xmlElementToArray($root),
         ]);
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     private function xmlElementToArray(SimpleXMLElement $element): array
     {
         $children = $element->children();

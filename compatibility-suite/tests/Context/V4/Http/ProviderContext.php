@@ -6,8 +6,11 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Step\Given;
 use Behat\Step\Then;
-use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\VerifierMismatchType;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationMismatch;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerifierOutput;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
 use PHPUnit\Framework\Assert;
@@ -27,38 +30,39 @@ final class ProviderContext implements Context
     public function aPactFileForInteractionIsToBeVerifiedButIsMarkedPending(int $id): void
     {
         $this->pactWriter->write($id, $this->pactPath);
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        $pact['interactions'][0]['pending'] = true;
-        file_put_contents($this->pactPath, json_encode($pact));
+        $pact = Pact::fromFile($this->pactPath);
+        $pact->getInteraction(0)->setPending(true);
+        file_put_contents($this->pactPath, $pact->toJson());
         $this->providerVerifier->addSource($this->pactPath);
     }
 
     #[Then('there will be a pending :error error')]
     public function thereWillBeAPendingError(string $error): void
     {
-        $output = json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
-        $errors = array_reduce(
-            $output['pendingErrors'],
-            function (array $errors, array $error) {
-                switch ($error['mismatch']['type']) {
-                    case 'error':
-                        $errors[] = Mismatch::VERIFIER_MISMATCH_ERROR_MAP[$error['mismatch']['message']];
-                        break;
+        $output = VerifierOutput::fromJson($this->providerVerifier->getVerifyResult()->getOutput());
+        $errors = [];
+        foreach ($output->getPendingErrors() as $verificationError) {
+            switch ($verificationError->getMismatch()->getType()) {
+                case VerificationMismatch::TYPE_ERROR:
+                    $errorLabel = $verificationError->getMismatch()->getErrorLabel();
+                    if ($errorLabel !== null) {
+                        $errors[] = $errorLabel;
+                    }
+                    break;
 
-                    case 'mismatches':
-                        foreach ($error['mismatch']['mismatches'] as $mismatch) {
-                            $errors[] = Mismatch::VERIFIER_MISMATCH_TYPE_MAP[$mismatch['type']];
+                case VerificationMismatch::TYPE_MISMATCHES:
+                    foreach ($verificationError->getMismatch()->getMismatches() as $mismatchItem) {
+                        $description = VerifierMismatchType::tryFrom($mismatchItem->getType())?->description();
+                        if ($description !== null) {
+                            $errors[] = $description;
                         }
-                        break;
+                    }
+                    break;
 
-                    default:
-                        break;
-                }
-
-                return $errors;
-            },
-            []
-        );
+                default:
+                    break;
+            }
+        }
         Assert::assertContains($error, $errors);
     }
 
@@ -82,9 +86,9 @@ final class ProviderContext implements Context
             }
         }
         $this->pactWriter->write($id, $this->pactPath);
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        $pact['interactions'][0]['comments'] = $comments;
-        file_put_contents($this->pactPath, json_encode($pact));
+        $pact = Pact::fromFile($this->pactPath);
+        $pact->getInteraction(0)->setComments($comments);
+        file_put_contents($this->pactPath, $pact->toJson());
         $this->providerVerifier->addSource($this->pactPath);
     }
 

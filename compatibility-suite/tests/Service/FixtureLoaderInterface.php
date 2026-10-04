@@ -6,7 +6,10 @@ interface FixtureLoaderInterface
 {
     public function load(string $fileName): string;
 
-    public function loadJson(string $fileName): mixed;
+    /**
+     * @return array<array-key, mixed>
+     */
+    public function loadJson(string $fileName): array;
 
     public function isBinary(string $fileName): bool;
 

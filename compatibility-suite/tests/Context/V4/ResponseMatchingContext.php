@@ -7,8 +7,10 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
-use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\MockServerMismatchType;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationMismatch;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerifierOutput;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
@@ -35,7 +37,7 @@ final class ResponseMatchingContext implements Context
     public function anExpectedResponseConfiguredWithTheFollowing(TableNode $table): void
     {
         $rows = $table->getHash();
-        $row = reset($rows);
+        $row = reset($rows) ?: [];
         $interaction = $this->builder->build([
             'No' => $this->id,
             'method' => 'GET',
@@ -79,27 +81,22 @@ final class ResponseMatchingContext implements Context
     #[Then('the response mismatches will contain a :type mismatch with error :error')]
     public function theResponseMismatchesWillContainAMismatchWithError(string $type, string $error): void
     {
-        $output = json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
-        $errors = array_reduce(
-            $output['errors'],
-            function (array $errors, array $error) use ($type) {
-                switch ($error['mismatch']['type']) {
-                    case 'mismatches':
-                        foreach ($error['mismatch']['mismatches'] as $mismatch) {
-                            if ($mismatch['type'] === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]) {
-                                $errors[] = $mismatch['mismatch'];
-                            }
+        $output = VerifierOutput::fromJson($this->providerVerifier->getVerifyResult()->getOutput());
+        $errors = [];
+        foreach ($output->getErrors() as $verificationError) {
+            switch ($verificationError->getMismatch()->getType()) {
+                case VerificationMismatch::TYPE_MISMATCHES:
+                    foreach ($verificationError->getMismatch()->getMismatches() as $mismatch) {
+                        if ($mismatch->getType() === MockServerMismatchType::from($type)->verifierType()->value) {
+                            $errors[] = $mismatch->getMismatch();
                         }
-                        break;
+                    }
+                    break;
 
-                    default:
-                        break;
-                }
-
-                return $errors;
-            },
-            []
-        );
+                default:
+                    break;
+            }
+        }
         Assert::assertContains($error, $errors);
     }
 }

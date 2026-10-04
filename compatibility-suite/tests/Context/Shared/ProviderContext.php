@@ -7,7 +7,9 @@ use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
 use GuzzleHttp\Psr7\Uri;
-use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\VerifierMismatchType;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationMismatch;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerifierOutput;
 use PhpPactTest\CompatibilitySuite\Service\ProviderStateServerInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
@@ -98,29 +100,30 @@ final class ProviderContext implements Context
     #[Then('the verification results will contain a :error error')]
     public function theVerificationResultsWillContainAError(string $error): void
     {
-        $output = json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
-        $errors = array_reduce(
-            $output['errors'],
-            function (array $errors, array $error) {
-                switch ($error['mismatch']['type']) {
-                    case 'error':
-                        $errors[] = Mismatch::VERIFIER_MISMATCH_ERROR_MAP[$error['mismatch']['message']];
-                        break;
+        $output = VerifierOutput::fromJson($this->providerVerifier->getVerifyResult()->getOutput());
+        $errors = [];
+        foreach ($output->getErrors() as $verificationError) {
+            switch ($verificationError->getMismatch()->getType()) {
+                case VerificationMismatch::TYPE_ERROR:
+                    $errorLabel = $verificationError->getMismatch()->getErrorLabel();
+                    if ($errorLabel !== null) {
+                        $errors[] = $errorLabel;
+                    }
+                    break;
 
-                    case 'mismatches':
-                        foreach ($error['mismatch']['mismatches'] as $mismatch) {
-                            $errors[] = Mismatch::VERIFIER_MISMATCH_TYPE_MAP[$mismatch['type']];
+                case VerificationMismatch::TYPE_MISMATCHES:
+                    foreach ($verificationError->getMismatch()->getMismatches() as $mismatch) {
+                        $description = VerifierMismatchType::tryFrom($mismatch->getType())?->description();
+                        if ($description !== null) {
+                            $errors[] = $description;
                         }
-                        break;
+                    }
+                    break;
 
-                    default:
-                        break;
-                }
-
-                return $errors;
-            },
-            []
-        );
+                default:
+                    break;
+            }
+        }
         Assert::assertContains($error, $errors);
     }
 }

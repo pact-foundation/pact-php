@@ -14,10 +14,13 @@ final class InteractionBuilder implements InteractionBuilderInterface
     ) {
     }
 
+    /**
+     * @param array<array-key, string|int> $data
+     */
     public function build(array $data): Interaction
     {
         $interaction = new Interaction();
-        $interaction->setDescription($data['description'] ?? 'Interaction ' . (int) $data['No']);
+        $interaction->setDescription((string) ($data['description'] ?? 'Interaction ' . (int) $data['No']));
 
         $request = new ConsumerRequest();
         $this->requestBuilder->build($request, array_intersect_key($data, array_flip(['method', 'path', 'query', 'headers', 'body'])));

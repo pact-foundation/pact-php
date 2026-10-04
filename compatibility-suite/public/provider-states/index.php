@@ -8,7 +8,8 @@ require __DIR__ . '/../../../vendor/autoload.php';
 $app = new FrameworkX\App();
 
 $path = __DIR__ . '/provider-states.json';
-$get = fn (): array => json_decode(file_get_contents($path), true);
+/** @var \Closure(): array<int, array<array-key, mixed>> $get */
+$get = fn (): array => (array) json_decode((string) file_get_contents($path), true);
 $set = fn (array $providerStates) => file_put_contents($path, json_encode($providerStates));
 
 if (!file_exists($path)) {

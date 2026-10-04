@@ -3,6 +3,7 @@
 namespace PhpPactTest\CompatibilitySuite\Service;
 
 use GuzzleHttp\Client;
+use PhpPactTest\CompatibilitySuite\Model\PactBroker\Matrix;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 
 final class PactBroker implements PactBrokerInterface
@@ -10,7 +11,7 @@ final class PactBroker implements PactBrokerInterface
     private Client $client;
     private PactPath $pactPath;
 
-    public function __construct(private string $specificationVersion)
+    public function __construct()
     {
         $this->client = new Client();
     }
@@ -33,8 +34,8 @@ final class PactBroker implements PactBrokerInterface
                 if ($response->getStatusCode() !== 200) {
                     continue;
                 }
-                $status = json_decode($response->getBody(), true);
-                if ($status['ok']) {
+                $status = json_decode((string) $response->getBody(), true);
+                if (is_array($status) && ($status['ok'] ?? false)) {
                     break;
                 }
             } catch (\Throwable) {
@@ -50,8 +51,10 @@ final class PactBroker implements PactBrokerInterface
         sleep(1);
     }
 
-    public function getMatrix(): array
+    public function getMatrix(): Matrix
     {
-        return json_decode(file_get_contents(sprintf('http://localhost:9292/matrix.json?q[][pacticipant]=%s&q[][pacticipant]=%s', $this->pactPath->getConsumer(), PactPath::PROVIDER)), true);
+        $matrix = file_get_contents(sprintf('http://localhost:9292/matrix.json?q[][pacticipant]=%s&q[][pacticipant]=%s', $this->pactPath->getConsumer(), PactPath::PROVIDER));
+
+        return Matrix::fromJson((string) $matrix);
     }
 }

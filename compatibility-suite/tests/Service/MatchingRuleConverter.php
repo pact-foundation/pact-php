@@ -26,6 +26,7 @@ use PhpPact\Consumer\Matcher\Matchers\Type;
 use PhpPact\Consumer\Matcher\Matchers\Values;
 use PhpPact\Consumer\Matcher\Model\MatcherInterface;
 use PhpPactTest\CompatibilitySuite\Model\MatchingRule;
+use PhpPactTest\CompatibilitySuite\Util\TypeCaster;
 
 final class MatchingRuleConverter implements MatchingRuleConverterInterface
 {
@@ -36,13 +37,13 @@ final class MatchingRuleConverter implements MatchingRuleConverterInterface
                 $min = $rule->getMatcherAttribute('min');
                 $max = $rule->getMatcherAttribute('max');
                 if (null !== $min && null !== $max && is_array($value)) {
-                    return new MinMaxType(reset($value), $min, $max);
+                    return new MinMaxType(reset($value), TypeCaster::toInt($min), TypeCaster::toInt($max));
                 }
                 if (null !== $min && is_array($value)) {
-                    return new MinType(reset($value), $min);
+                    return new MinType(reset($value), TypeCaster::toInt($min));
                 }
                 if (null !== $max && is_array($value)) {
-                    return new MaxType(reset($value), $max);
+                    return new MaxType(reset($value), TypeCaster::toInt($max));
                 }
                 return new Type($value);
 
@@ -50,7 +51,7 @@ final class MatchingRuleConverter implements MatchingRuleConverterInterface
                 return new Equality($value);
 
             case 'include':
-                return new Includes($rule->getMatcherAttribute('value'));
+                return new Includes(TypeCaster::toString($rule->getMatcherAttribute('value')));
 
             case 'number':
                 return new Number($this->getNumber($value));
@@ -65,35 +66,42 @@ final class MatchingRuleConverter implements MatchingRuleConverterInterface
                 return new NullValue();
 
             case 'date':
-                return new Date($rule->getMatcherAttribute('format'), $value);
+                return new Date(TypeCaster::toString($rule->getMatcherAttribute('format')), TypeCaster::toString($value));
 
             case 'boolean':
-                return new Boolean($value);
+                return new Boolean((bool) $value);
 
             case 'contentType':
-                return new ContentType($rule->getMatcherAttribute('value'));
+                return new ContentType(TypeCaster::toString($rule->getMatcherAttribute('value')));
 
             case 'values':
-                return new Values($value);
+                return new Values((array) $value);
 
             case 'notEmpty':
                 return new NotEmpty($value);
 
             case 'semver':
-                return new Semver($value);
+                return new Semver(TypeCaster::toString($value));
 
             case 'eachKey':
-                return new EachKey($value, $rule->getMatcherAttribute('rules'));
+                /** @var array<MatcherInterface> $rules */
+                $rules = (array) $rule->getMatcherAttribute('rules');
+
+                return new EachKey((array) $value, $rules);
 
             case 'eachValue':
-                return new EachValue($value, $rule->getMatcherAttribute('rules'));
+                /** @var array<MatcherInterface> $rules */
+                $rules = (array) $rule->getMatcherAttribute('rules');
+
+                return new EachValue((array) $value, $rules);
 
             case 'arrayContains':
-                return new ArrayContains($rule->getMatcherAttribute('variants'));
+                return new ArrayContains((array) $rule->getMatcherAttribute('variants'));
 
             case 'regex':
-                $regex = $rule->getMatcherAttribute('regex');
-                return new Regex($regex, $value ?? '');
+                $regex = TypeCaster::toString($rule->getMatcherAttribute('regex'));
+
+                return new Regex($regex, is_array($value) ? array_map(TypeCaster::toString(...), $value) : TypeCaster::toString($value ?? ''));
 
             case 'statusCode':
                 return new StatusCode($this->getHttpStatus($rule));
@@ -116,7 +124,7 @@ final class MatchingRuleConverter implements MatchingRuleConverterInterface
     private function getInteger(mixed $value): int
     {
         if (is_numeric($value)) {
-            return $value + 0;
+            return (int) $value;
         }
 
         // @todo Fix this compatibility-suite's mistake: there is no integer in `basic.json`
@@ -135,6 +143,6 @@ final class MatchingRuleConverter implements MatchingRuleConverterInterface
 
     private function getHttpStatus(MatchingRule $rule): HttpStatus
     {
-        return HttpStatus::from($rule->getMatcherAttribute('status') ?? '');
+        return HttpStatus::from(TypeCaster::toString($rule->getMatcherAttribute('status') ?? ''));
     }
 }

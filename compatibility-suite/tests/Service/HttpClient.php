@@ -37,13 +37,16 @@ final class HttpClient implements HttpClientInterface
         return $this->client->request($request->getMethod(), $uri->withPath($request->getPath()), $options);
     }
 
+    /**
+     * @param array<string, string[]|null> $query
+     */
     private function formatQueryString(array $query): string
     {
         $result = [];
 
         foreach ($query as $key => $values) {
-            foreach ($values as $value) {
-                $result[] = urlencode($key) . '=' . urlencode($value);
+            foreach ((array) $values as $value) {
+                $result[] = urlencode((string) $key) . '=' . urlencode((string) $value);
             }
         }
 

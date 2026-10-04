@@ -7,6 +7,9 @@ use Psr\Container\ContainerInterface;
 
 abstract class AbstractServiceContainer implements ContainerInterface
 {
+    /**
+     * @var array<string, mixed>
+     */
     private array $services = [];
 
     public function has(string $id): bool

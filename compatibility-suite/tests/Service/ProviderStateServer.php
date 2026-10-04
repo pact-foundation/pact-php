@@ -28,11 +28,14 @@ final class ProviderStateServer implements ProviderStateServerInterface
 
     public function hasAction(string $action): bool
     {
-        return file_get_contents(sprintf('http://localhost:%d/has-action?action=%s', $this->getPort(), urlencode($action)));
+        return (bool) file_get_contents(sprintf('http://localhost:%d/has-action?action=%s', $this->getPort(), urlencode($action)));
     }
 
+    /**
+     * @param array<array-key, mixed> $params
+     */
     public function hasState(string $action, string $state, array $params = []): bool
     {
-        return file_get_contents(sprintf('http://localhost:%d/has-state?action=%s&state=%s%s', $this->getPort(), urlencode($action), urlencode($state), $params ? ('&' . http_build_query($params)) : ''));
+        return (bool) file_get_contents(sprintf('http://localhost:%d/has-state?action=%s&state=%s%s', $this->getPort(), urlencode($action), urlencode($state), $params ? ('&' . http_build_query($params)) : ''));
     }
 }

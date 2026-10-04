@@ -19,7 +19,7 @@ final class PactBrokerContext implements Context
     #[BeforeScenario]
     public function startPactBroker(BeforeScenarioScope $scope): void
     {
-        if (str_contains($scope->getScenario()->getTitle(), 'via a Pact broker')) {
+        if (str_contains((string) $scope->getScenario()->getTitle(), 'via a Pact broker')) {
             $this->pactBroker->start();
         }
     }
@@ -27,7 +27,7 @@ final class PactBrokerContext implements Context
     #[AfterScenario]
     public function stopPactBroker(AfterScenarioScope $scope): void
     {
-        if (str_contains($scope->getScenario()->getTitle(), 'via a Pact broker')) {
+        if (str_contains((string) $scope->getScenario()->getTitle(), 'via a Pact broker')) {
             $this->pactBroker->stop();
         }
     }

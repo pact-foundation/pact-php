@@ -9,8 +9,11 @@ use Behat\Step\Then;
 use Behat\Step\When;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
-use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\VerifierMismatchType;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationMismatch;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerifierOutput;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
@@ -68,9 +71,9 @@ final class ProviderContext implements Context
         $message->setContents($this->parser->parseBody($fixture));
         $this->pactWriter->write($message, $this->pactPath);
         $this->providerVerifier->addSource($this->pactPath);
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        $pact['interactions'][0]['pending'] = true;
-        file_put_contents($this->pactPath, json_encode($pact));
+        $pact = Pact::fromFile($this->pactPath);
+        $pact->getInteraction(0)->setPending(true);
+        file_put_contents($this->pactPath, $pact->toJson());
     }
 
     #[Given('a Pact file for :name::fixture is to be verified with the following comments:')]
@@ -97,9 +100,9 @@ final class ProviderContext implements Context
         $message->setContents($this->parser->parseBody($fixture));
         $this->pactWriter->write($message, $this->pactPath);
         $this->providerVerifier->addSource($this->pactPath);
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        $pact['interactions'][0]['comments'] = $comments;
-        file_put_contents($this->pactPath, json_encode($pact));
+        $pact = Pact::fromFile($this->pactPath);
+        $pact->getInteraction(0)->setComments($comments);
+        file_put_contents($this->pactPath, $pact->toJson());
     }
 
     #[When('the verification is run')]
@@ -118,29 +121,30 @@ final class ProviderContext implements Context
     #[Then('there will be a pending :error error')]
     public function thereWillBeAPendingError(string $error): void
     {
-        $output = json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
-        $errors = array_reduce(
-            $output['pendingErrors'],
-            function (array $errors, array $error) {
-                switch ($error['mismatch']['type']) {
-                    case 'error':
-                        $errors[] = Mismatch::VERIFIER_MISMATCH_ERROR_MAP[$error['mismatch']['message']];
-                        break;
+        $output = VerifierOutput::fromJson($this->providerVerifier->getVerifyResult()->getOutput());
+        $errors = [];
+        foreach ($output->getPendingErrors() as $verificationError) {
+            switch ($verificationError->getMismatch()->getType()) {
+                case VerificationMismatch::TYPE_ERROR:
+                    $errorLabel = $verificationError->getMismatch()->getErrorLabel();
+                    if ($errorLabel !== null) {
+                        $errors[] = $errorLabel;
+                    }
+                    break;
 
-                    case 'mismatches':
-                        foreach ($error['mismatch']['mismatches'] as $mismatch) {
-                            $errors[] = Mismatch::VERIFIER_MISMATCH_TYPE_MAP[$mismatch['type']];
+                case VerificationMismatch::TYPE_MISMATCHES:
+                    foreach ($verificationError->getMismatch()->getMismatches() as $mismatchItem) {
+                        $description = VerifierMismatchType::tryFrom($mismatchItem->getType())?->description();
+                        if ($description !== null) {
+                            $errors[] = $description;
                         }
-                        break;
+                    }
+                    break;
 
-                    default:
-                        break;
-                }
-
-                return $errors;
-            },
-            []
-        );
+                default:
+                    break;
+            }
+        }
         Assert::assertContains($error, $errors);
     }
 

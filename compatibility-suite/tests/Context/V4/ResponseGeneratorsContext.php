@@ -5,6 +5,7 @@ namespace PhpPactTest\CompatibilitySuite\Context\V4;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Step\When;
+use PhpPactTest\CompatibilitySuite\Model\MockServer\MockServerContext;
 use PhpPactTest\CompatibilitySuite\Service\BodyStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\ClientInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
@@ -43,7 +44,7 @@ final class ResponseGeneratorsContext implements Context
         $this->client->sendRequestToServer($this->id);
 
         $body = $this->client->getResponse()->getBody()->getContents();
-        $href = json_decode($table->getRow(0)[0], true)['href'];
+        $href = MockServerContext::fromJson($table->getRow(0)[0])->getHref();
         $serverBaseUri = $this->server->getBaseUri();
         $search = [
             (string) $serverBaseUri->withHost('127.0.0.1'),

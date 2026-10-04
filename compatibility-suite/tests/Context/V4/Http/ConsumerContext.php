@@ -8,10 +8,12 @@ use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
 use PhpPact\Consumer\Model\Interaction;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
+use PhpPactTest\CompatibilitySuite\Util\TypeCaster;
 use PHPUnit\Framework\Assert;
 
 final class ConsumerContext implements Context
@@ -42,8 +44,8 @@ final class ConsumerContext implements Context
     #[Then('the first interaction in the Pact file will have a type of :type')]
     public function theFirstInteractionInThePactFileWillHaveATypeOf(string $type): void
     {
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        Assert::assertSame($type, $pact['interactions'][0]['type']);
+        $pact = Pact::fromFile($this->pactPath);
+        Assert::assertSame($type, $pact->getInteraction(0)->getType());
     }
 
     #[Given('a key of :key is specified for the HTTP interaction')]
@@ -55,8 +57,8 @@ final class ConsumerContext implements Context
     #[Then('the first interaction in the Pact file will have :name = :value')]
     public function theFirstInteractionInThePactFileWillHave(string $name, string $value): void
     {
-        $pact = json_decode(file_get_contents($this->pactPath), true);
-        Assert::assertJsonStringEqualsJsonString($value, json_encode($pact['interactions'][0][$name]));
+        $pact = Pact::fromFile($this->pactPath);
+        Assert::assertJsonStringEqualsJsonString($value, TypeCaster::toString(json_encode($pact->getInteraction(0)->getAttribute($name))));
     }
 
     #[Given('the HTTP interaction is marked as pending')]

@@ -10,6 +10,7 @@ use Behat\Step\Then;
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\PublishOptions;
 use PhpPact\Standalone\ProviderVerifier\Model\Source\Broker;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactBrokerInterface;
@@ -66,7 +67,7 @@ final class ProviderContext implements Context
     #[Then('a verification result will NOT be published back')]
     public function aVerificationResultWillNotBePublishedBack(): void
     {
-        Assert::assertSame(1, $this->pactBroker->getMatrix()['summary']['unknown']);
+        Assert::assertSame(1, $this->pactBroker->getMatrix()->getSummary()->getUnknown());
     }
 
     #[Given('publishing of verification results is enabled')]
@@ -82,13 +83,13 @@ final class ProviderContext implements Context
     #[Then('a successful verification result will be published back for interaction {:id}')]
     public function aSuccessfulVerificationResultWillBePublishedBackForInteraction(int $id): void
     {
-        Assert::assertSame(1, $this->pactBroker->getMatrix()['summary']['success']);
+        Assert::assertSame(1, $this->pactBroker->getMatrix()->getSummary()->getSuccess());
     }
 
     #[Then('a failed verification result will be published back for the interaction {:id}')]
     public function aFailedVerificationResultWillBePublishedBackForTheInteraction(int $id): void
     {
-        Assert::assertSame(1, $this->pactBroker->getMatrix()['summary']['failed']);
+        Assert::assertSame(1, $this->pactBroker->getMatrix()->getSummary()->getFailed());
     }
 
     #[Given('a Pact file for interaction :id is to be verified with a provider state :state defined')]
@@ -96,9 +97,9 @@ final class ProviderContext implements Context
     {
         $pactPath = new PactPath("c-$id");
         $this->pactWriter->write($id, $pactPath);
-        $pact = json_decode(file_get_contents($pactPath), true);
-        $pact['interactions'][0]['providerStates'][] = ['name' => $state];
-        file_put_contents($pactPath, json_encode($pact));
+        $pact = Pact::fromFile($pactPath);
+        $pact->getInteraction(0)->addProviderState($state);
+        file_put_contents($pactPath, $pact->toJson());
         $this->providerVerifier->addSource($pactPath);
     }
 

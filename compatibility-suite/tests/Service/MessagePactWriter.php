@@ -12,7 +12,6 @@ use PhpPactTest\CompatibilitySuite\Model\PactPath;
 class MessagePactWriter implements MessagePactWriterInterface
 {
     public function __construct(
-        private ParserInterface $parser,
         private string $specificationVersion,
     ) {
     }

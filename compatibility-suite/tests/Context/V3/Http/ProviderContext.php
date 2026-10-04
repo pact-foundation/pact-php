@@ -6,6 +6,7 @@ use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Step\Given;
 use Behat\Step\Then;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderStateServerInterface;
@@ -28,10 +29,10 @@ final class ProviderContext implements Context
     public function aPactFileForInteractionIsToBeVerifiedWithTheFollowingProviderStatesDefined(int $id, TableNode $table): void
     {
         $this->pactWriter->write($id, $this->pactPath);
-        $pact = json_decode(file_get_contents($this->pactPath));
+        $pact = Pact::fromFile($this->pactPath);
         $rows = $table->getHash();
-        $pact->interactions[0]->providerStates = array_map(fn (array $row): array => ['name' => $row['State Name'], 'params' => json_decode($row['Parameters'] ?? '{}', true)], $rows);
-        file_put_contents($this->pactPath, json_encode($pact));
+        $pact->getInteraction(0)->setProviderStates(array_map(fn (array $row): array => ['name' => $row['State Name'], 'params' => json_decode($row['Parameters'] ?? '{}', true)], $rows));
+        file_put_contents($this->pactPath, $pact->toJson());
         $this->providerVerifier->addSource($this->pactPath);
     }
 

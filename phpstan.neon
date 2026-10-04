@@ -5,6 +5,7 @@ parameters:
         - src
         - tests
         - example
+        - compatibility-suite
     excludePaths:
         analyseAndScan:
             - example/protobuf-async-message/library/src

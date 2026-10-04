@@ -20,7 +20,10 @@ final class ResponseMatchingRuleBuilder implements ResponseMatchingRuleBuilderIn
         foreach ($this->parser->parse($file) as $rule) {
             switch ($rule->getCategory()) {
                 case 'status':
-                    $response->setStatus($this->converter->convert($rule, $response->getStatus()));
+                    $matcher = $this->converter->convert($rule, $response->getStatus());
+                    if ($matcher) {
+                        $response->setStatus($matcher);
+                    }
                     break;
 
                 case 'header':

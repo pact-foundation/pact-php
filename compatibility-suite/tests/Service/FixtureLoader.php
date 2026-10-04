@@ -11,16 +11,29 @@ class FixtureLoader implements FixtureLoaderInterface
 {
     public function load(string $fileName): string
     {
-        return file_get_contents($this->getFilePath($fileName));
+        $contents = file_get_contents($this->getFilePath($fileName));
+        if (false === $contents) {
+            throw new FixtureNotFoundException(sprintf("Could not load fixture '%s'", $fileName));
+        }
+
+        return $contents;
     }
 
-    public function loadJson(string $fileName): mixed
+    /**
+     * @return array<array-key, mixed>
+     */
+    public function loadJson(string $fileName): array
     {
         try {
-            return json_decode($this->load($fileName), true, 512, JSON_THROW_ON_ERROR);
+            $decoded = json_decode($this->load($fileName), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
             throw new InvalidJsonFixtureException(sprintf("Could not load json fixture '%s': %s", $fileName, $exception->getMessage()));
         }
+        if (!is_array($decoded)) {
+            throw new InvalidJsonFixtureException(sprintf("Could not load json fixture '%s': not an array", $fileName));
+        }
+
+        return $decoded;
     }
 
     public function isBinary(string $fileName): bool

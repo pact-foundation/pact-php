@@ -8,8 +8,10 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
-use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
 use PhpPactTest\CompatibilitySuite\Exception\IntegrationJsonFormatException;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\MockServerMismatchType;
+use PhpPactTest\CompatibilitySuite\Model\MockServer\RequestMismatch;
 use PhpPactTest\CompatibilitySuite\Service\ClientInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
@@ -82,23 +84,25 @@ final class RequestMatchingContext implements Context
     {
         $error = str_replace('\"', '"', $error);
         $key = $this->type === self::HEADER_TYPE ? 'key' : 'path';
-        $mismatches = json_decode($this->server->getVerifyResult()->getOutput(), true);
-        $mismatches = array_reduce($mismatches, function (array $results, array $mismatch): array {
-            Assert::assertSame('request-mismatch', $mismatch['type']);
-            $results = array_merge($results, array_filter(
-                $mismatch['mismatches'],
-                fn (array $mismatch) => $mismatch['type'] === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$this->type]
+        $mismatches = [];
+        foreach (RequestMismatch::listFromArray((array) json_decode($this->server->getVerifyResult()->getOutput(), true)) as $mismatch) {
+            Assert::assertSame(RequestMismatch::TYPE_REQUEST_MISMATCH, $mismatch->getType());
+            $mismatches = array_merge($mismatches, array_filter(
+                $mismatch->getMismatches(),
+                fn (Mismatch $mismatch): bool => $mismatch->getType() === MockServerMismatchType::from($this->type)->verifierType()->value
             ));
-
-            return $results;
-        }, []);
+        }
         $mismatches = array_filter(
             $mismatches,
-            fn (array $mismatch) => $mismatch[$key] === $path
-                && (
-                    str_contains($mismatch['mismatch'], $error)
-                    || @preg_match("|$error|", $mismatch['mismatch'])
-                )
+            function (Mismatch $mismatch) use ($key, $path, $error): bool {
+                $actual = $key === 'key' ? $mismatch->getKey() : $mismatch->getPath();
+
+                return $actual === $path
+                    && (
+                        str_contains($mismatch->getMismatch(), $error)
+                        || @preg_match("|$error|", $mismatch->getMismatch())
+                    );
+            }
         );
         Assert::assertNotEmpty($mismatches);
     }
@@ -108,7 +112,7 @@ final class RequestMatchingContext implements Context
     {
         $this->type = self::BODY_TYPE;
         $rows = $table->getHash();
-        $row = reset($rows);
+        $row = reset($rows) ?: [];
         $interaction = $this->builder->build([
             'No' => $this->id,
             'method' => 'POST',
@@ -128,7 +132,7 @@ final class RequestMatchingContext implements Context
     public function aRequestIsReceivedWithTheFollowing(TableNode $table): void
     {
         $rows = $table->getHash();
-        $row = reset($rows);
+        $row = reset($rows) ?: [];
         $request = $this->storage->get(InteractionsStorageInterface::CLIENT_DOMAIN, $this->id)->getRequest();
         $this->requestBuilder->build($request, $row);
         $this->client->sendRequestToServer($this->id);
