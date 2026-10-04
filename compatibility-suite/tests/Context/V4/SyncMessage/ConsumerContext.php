@@ -15,6 +15,9 @@ use PhpPact\Standalone\MockService\Model\VerifyResult;
 use PhpPact\SyncMessage\Driver\Interaction\SyncMessageDriverInterface;
 use PhpPact\SyncMessage\Model\SyncMessage;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Interaction;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
+use PhpPactTest\CompatibilitySuite\Model\Pact\ProviderState;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Model\Xml;
 use PhpPactTest\CompatibilitySuite\Plugin\SyncMessageTestDriverFactory;
@@ -22,17 +25,13 @@ use PhpPactTest\CompatibilitySuite\Service\BodyStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\BodyValidatorInterface;
 use PhpPactTest\CompatibilitySuite\Service\FixtureLoaderInterface;
 use PhpPactTest\CompatibilitySuite\Service\ParserInterface;
-use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PhpPactTest\CompatibilitySuite\Util\TypeCaster;
 use PHPUnit\Framework\Assert;
 
 final class ConsumerContext implements Context
 {
     private SyncMessage $message;
-    /**
-     * @var array<array-key, mixed>
-     */
-    private array $pact;
+    private Pact $pact;
     private PactPath $pactPath;
     private MockServerConfig $config;
     private SyncMessageDriverInterface $driver;
@@ -76,8 +75,8 @@ final class ConsumerContext implements Context
     #[Then('the first interaction in the Pact file will have a type of :type')]
     public function theFirstInteractionInThePactFileWillHaveATypeOf(string $type): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
-        Assert::assertSame($type, Arr::str($pact, 'interactions', 0, 'type'));
+        $pact = Pact::fromFile($this->pactPath);
+        Assert::assertSame($type, $pact->getInteraction(0)->getType());
     }
 
     #[Given('a key of :key is specified for the synchronous message interaction')]
@@ -101,9 +100,8 @@ final class ConsumerContext implements Context
     #[Then('the first interaction in the Pact file will have :name = :value')]
     public function theFirstInteractionInThePactFileWillHave(string $name, string $value): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
-        $interaction = Arr::sub($pact, 'interactions', 0);
-        Assert::assertJsonStringEqualsJsonString($value, (string) json_encode($interaction[$name] ?? null));
+        $pact = Pact::fromFile($this->pactPath);
+        Assert::assertJsonStringEqualsJsonString($value, (string) json_encode($pact->getInteraction(0)->getAttribute($name)));
     }
 
     #[Given('the message request payload contains the :fixture JSON document')]
@@ -138,19 +136,19 @@ final class ConsumerContext implements Context
     public function aPactFileForTheMessageInteractionWillHaveBeenWritten(): void
     {
         Assert::assertTrue(file_exists($this->pactPath));
-        $this->pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $this->pact = Pact::fromFile($this->pactPath);
     }
 
     #[Then('the pact file will contain :num interaction')]
     public function thePactFileWillContainInteraction(int $num): void
     {
-        Assert::assertCount($num, Arr::sub($this->pact, 'interactions'));
+        Assert::assertCount($num, $this->pact->getInteractions());
     }
 
     #[Then('the first interaction in the pact file will contain the :fixture document as the request')]
     public function theFirstInteractionInThePactFileWillContainTheDocumentAsTheRequest(string $fixture): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $pact = Pact::fromFile($this->pactPath);
         $expectedBody = $this->parser->parseBody($fixture);
         if ($expectedBody instanceof Xml) {
             $expectedContent = $expectedBody->getRawContents();
@@ -161,20 +159,20 @@ final class ConsumerContext implements Context
         } else {
             $expectedContent = null;
         }
-        Assert::assertEquals($expectedContent, Arr::sub($pact, 'interactions', 0, 'request', 'contents')['content'] ?? null);
+        Assert::assertEquals($expectedContent, $pact->getInteraction(0)->getRequest()->getContents()?->getContent());
     }
 
     #[Then('the first interaction in the pact file request content type will be :contentType')]
     public function theFirstInteractionInThePactFileRequestContentTypeWillBe(string $contentType): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
-        Assert::assertSame($contentType, Arr::str($pact, 'interactions', 0, 'request', 'contents', 'contentType'));
+        $pact = Pact::fromFile($this->pactPath);
+        Assert::assertSame($contentType, $pact->getInteraction(0)->getRequest()->getContents()?->getContentType());
     }
 
     #[Then('the first interaction in the pact file will contain the :fixture document as a response')]
     public function theFirstInteractionInThePactFileWillContainTheDocumentAsAResponse(string $fixture): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $pact = Pact::fromFile($this->pactPath);
         $expectedBody = $this->parser->parseBody($fixture);
         if ($expectedBody instanceof Xml) {
             $expectedContent = $expectedBody->getRawContents();
@@ -185,27 +183,27 @@ final class ConsumerContext implements Context
         } else {
             $expectedContent = null;
         }
-        Assert::assertEquals($expectedContent, Arr::sub($pact, 'interactions', 0, 'response', 0, 'contents')['content'] ?? null);
+        Assert::assertEquals($expectedContent, $pact->getInteraction(0)->getResponse(0)->getContents()?->getContent());
     }
 
     #[Then('the first interaction in the pact file response content type will be :contentType')]
     public function theFirstInteractionInThePactFileResponseContentTypeWillBe(string $contentType): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
-        Assert::assertSame($contentType, Arr::str($pact, 'interactions', 0, 'response', 0, 'contents', 'contentType'));
+        $pact = Pact::fromFile($this->pactPath);
+        Assert::assertSame($contentType, $pact->getInteraction(0)->getResponse(0)->getContents()?->getContentType());
     }
 
     #[Then('the first interaction in the pact file will contain :num response messages')]
     public function theFirstInteractionInThePactFileWillContainResponseMessages(int $num): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
-        Assert::assertCount($num, Arr::sub($pact, 'interactions', 0, 'response'));
+        $pact = Pact::fromFile($this->pactPath);
+        Assert::assertCount($num, (array) $pact->getInteraction(0)->getAttribute('response'));
     }
 
     #[Then('the first interaction in the pact file will contain the :fixture document as the first response message')]
     public function theFirstInteractionInThePactFileWillContainTheDocumentAsTheFirstResponseMessage(string $fixture): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $pact = Pact::fromFile($this->pactPath);
         $expectedBody = $this->parser->parseBody($fixture);
         if ($expectedBody instanceof Xml) {
             $expectedContent = $expectedBody->getRawContents();
@@ -216,13 +214,13 @@ final class ConsumerContext implements Context
         } else {
             $expectedContent = null;
         }
-        Assert::assertEquals($expectedContent, Arr::sub($pact, 'interactions', 0, 'response', 0, 'contents')['content'] ?? null);
+        Assert::assertEquals($expectedContent, $pact->getInteraction(0)->getResponse(0)->getContents()?->getContent());
     }
 
     #[Then('the first interaction in the pact file will contain the :fixture document as the second response message')]
     public function theFirstInteractionInThePactFileWillContainTheDocumentAsTheSecondResponseMessage(string $fixture): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $pact = Pact::fromFile($this->pactPath);
         $expectedBody = $this->parser->parseBody($fixture);
         if ($expectedBody instanceof Xml) {
             $expectedContent = $expectedBody->getRawContents();
@@ -233,7 +231,7 @@ final class ConsumerContext implements Context
         } else {
             $expectedContent = null;
         }
-        Assert::assertEquals($expectedContent, Arr::sub($pact, 'interactions', 0, 'response', 1, 'contents')['content'] ?? null);
+        Assert::assertEquals($expectedContent, $pact->getInteraction(0)->getResponse(1)->getContents()?->getContent());
     }
 
     #[Given('the message request contains the following metadata:')]
@@ -276,8 +274,8 @@ final class ConsumerContext implements Context
             $expectedValue = stripslashes(substr($value, 6));
             $expectedValue = json_decode($expectedValue, true);
         }
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
-        Assert::assertEquals($expectedValue, Arr::sub($pact, 'interactions', 0, 'request', 'metadata')[$key] ?? null);
+        $pact = Pact::fromFile($this->pactPath);
+        Assert::assertEquals($expectedValue, $pact->getInteraction(0)->getRequest()->getMetadata()[$key] ?? null);
     }
 
     #[Given('a provider state :state for the synchronous message is specified')]
@@ -297,13 +295,13 @@ final class ConsumerContext implements Context
     #[Then('the first message in the pact file will contain :states provider state(s)')]
     public function theFirstMessageInThePactFileWillContainProviderStates(int $states): void
     {
-        Assert::assertCount($states, Arr::sub($this->pact, 'interactions', 0, 'providerStates'));
+        Assert::assertCount($states, $this->pact->getInteraction(0)->getProviderStates());
     }
 
     #[Then('the first message in the Pact file will contain provider state :state')]
     public function theFirstMessageInThePactFileWillContainProviderState(string $state): void
     {
-        $states = array_map(fn ($state): string => Arr::str((array) $state, 'name'), Arr::sub($this->pact, 'interactions', 0, 'providerStates'));
+        $states = array_map(fn (ProviderState $state): string => $state->getName(), $this->pact->getInteraction(0)->getProviderStates());
         Assert::assertContains($state, $states);
     }
 
@@ -314,7 +312,7 @@ final class ConsumerContext implements Context
         Assert::assertContains([
             'name' => $state,
             'params' => $params,
-        ], Arr::sub($this->pact, 'interactions', 0, 'providerStates'));
+        ], array_map(fn (ProviderState $state): array => $state->toArray(), $this->pact->getInteraction(0)->getProviderStates()));
     }
 
     #[Given('the message request is configured with the following:')]

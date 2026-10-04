@@ -8,11 +8,12 @@ use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
 use PhpPact\Consumer\Model\Interaction;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
+use PhpPactTest\CompatibilitySuite\Model\Pact\ProviderState;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
-use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class ConsumerContext implements Context
@@ -55,17 +56,17 @@ final class ConsumerContext implements Context
     #[Then('the interaction in the Pact file will contain :states provider state(s)')]
     public function theInteractionInThePactFileWillContainProviderStates(int $states): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
-        Assert::assertCount($states, Arr::sub($pact, 'interactions', 0, 'providerStates'));
+        $pact = Pact::fromFile($this->pactPath);
+        Assert::assertCount($states, $pact->getInteraction(0)->getProviderStates());
     }
 
     #[Then('the interaction in the Pact file will contain provider state :name')]
     public function theInteractionInThePactFileWillContainProviderState(string $name): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $pact = Pact::fromFile($this->pactPath);
         Assert::assertNotEmpty(array_filter(
-            Arr::sub($pact, 'interactions', 0, 'providerStates'),
-            fn (mixed $providerState) => Arr::str((array) $providerState, 'name') === $name
+            $pact->getInteraction(0)->getProviderStates(),
+            fn (ProviderState $providerState): bool => $providerState->getName() === $name
         ));
     }
 
@@ -83,10 +84,10 @@ final class ConsumerContext implements Context
         $rows = $table->getHash();
         $row = reset($rows) ?: [];
         $params = json_decode((string) ($row['parameters'] ?? ''), true);
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $pact = Pact::fromFile($this->pactPath);
         Assert::assertNotEmpty(array_filter(
-            Arr::sub($pact, 'interactions', 0, 'providerStates'),
-            fn (mixed $providerState) => Arr::str((array) $providerState, 'name') === $name && Arr::sub((array) $providerState, 'params') === (array) $params
+            $pact->getInteraction(0)->getProviderStates(),
+            fn (ProviderState $providerState): bool => $providerState->getName() === $name && $providerState->getParams() === (array) $params
         ));
     }
 }

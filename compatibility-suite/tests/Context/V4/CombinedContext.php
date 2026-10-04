@@ -8,12 +8,13 @@ use Behat\Step\Then;
 use Behat\Step\When;
 use PhpPact\Config\Enum\WriteMode;
 use PhpPact\Consumer\Model\Message;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Interaction;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
-use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class CombinedContext implements Context
@@ -58,8 +59,8 @@ final class CombinedContext implements Context
     #[Then('there will be an interaction in the Pact file with a type of :type')]
     public function thereWillBeAnInteractionInThePactFileWithATypeOf(string $type): void
     {
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
-        $types = array_map(fn (mixed $interaction): string => Arr::str((array) $interaction, 'type'), Arr::sub($pact, 'interactions'));
+        $pact = Pact::fromFile($this->pactPath);
+        $types = array_map(fn (Interaction $interaction): string => $interaction->getType(), $pact->getInteractions());
         Assert::assertContains($type, $types);
     }
 }

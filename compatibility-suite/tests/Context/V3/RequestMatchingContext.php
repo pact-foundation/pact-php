@@ -10,13 +10,14 @@ use Behat\Step\Then;
 use Behat\Step\When;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
 use PhpPactTest\CompatibilitySuite\Exception\IntegrationJsonFormatException;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\Mismatch as DatatypeMismatch;
+use PhpPactTest\CompatibilitySuite\Model\MockServer\RequestMismatch;
 use PhpPactTest\CompatibilitySuite\Service\ClientInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\RequestBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\RequestMatchingRuleBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
-use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class RequestMatchingContext implements Context
@@ -83,25 +84,23 @@ final class RequestMatchingContext implements Context
     {
         $error = str_replace('\"', '"', $error);
         $key = $this->type === self::HEADER_TYPE ? 'key' : 'path';
-        $output = (array) json_decode($this->server->getVerifyResult()->getOutput(), true);
         $mismatches = [];
-        foreach ($output as $mismatch) {
-            $mismatch = (array) $mismatch;
-            Assert::assertSame('request-mismatch', $mismatch['type']);
+        foreach (RequestMismatch::listFromArray((array) json_decode($this->server->getVerifyResult()->getOutput(), true)) as $mismatch) {
+            Assert::assertSame(RequestMismatch::TYPE_REQUEST_MISMATCH, $mismatch->getType());
             $mismatches = array_merge($mismatches, array_filter(
-                Arr::sub($mismatch, 'mismatches'),
-                fn (mixed $mismatch): bool => Arr::str((array) $mismatch, 'type') === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$this->type]
+                $mismatch->getMismatches(),
+                fn (DatatypeMismatch $mismatch): bool => $mismatch->getType() === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$this->type]
             ));
         }
         $mismatches = array_filter(
             $mismatches,
-            function (mixed $mismatch) use ($key, $path, $error): bool {
-                $mismatch = (array) $mismatch;
+            function (DatatypeMismatch $mismatch) use ($key, $path, $error): bool {
+                $actual = $key === 'key' ? $mismatch->getKey() : $mismatch->getPath();
 
-                return $mismatch[$key] === $path
+                return $actual === $path
                     && (
-                        str_contains(Arr::str($mismatch, 'mismatch'), $error)
-                        || @preg_match("|$error|", Arr::str($mismatch, 'mismatch'))
+                        str_contains($mismatch->getMismatch(), $error)
+                        || @preg_match("|$error|", $mismatch->getMismatch())
                     );
             }
         );

@@ -10,6 +10,7 @@ use Behat\Step\Then;
 use GuzzleHttp\Psr7\Uri;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\PublishOptions;
 use PhpPact\Standalone\ProviderVerifier\Model\Source\Broker;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactBrokerInterface;
@@ -97,13 +98,9 @@ final class ProviderContext implements Context
     {
         $pactPath = new PactPath("c-$id");
         $this->pactWriter->write($id, $pactPath);
-        $pact = (array) json_decode((string) file_get_contents($pactPath), true);
-        $interactions = Arr::sub($pact, 'interactions');
-        $interaction = Arr::sub($interactions, 0);
-        $interaction['providerStates'] = array_merge(Arr::sub($interaction, 'providerStates'), [['name' => $state]]);
-        $interactions[0] = $interaction;
-        $pact['interactions'] = $interactions;
-        file_put_contents($pactPath, json_encode($pact));
+        $pact = Pact::fromFile($pactPath);
+        $pact->getInteraction(0)->addProviderState($state);
+        file_put_contents($pactPath, $pact->toJson());
         $this->providerVerifier->addSource($pactPath);
     }
 

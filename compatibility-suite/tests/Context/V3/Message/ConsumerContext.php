@@ -13,6 +13,8 @@ use PhpPact\Consumer\MessageBuilder;
 use PhpPact\Standalone\PactMessage\PactMessageConfig;
 use PhpPactTest\CompatibilitySuite\Constant\Path;
 use PhpPactTest\CompatibilitySuite\Model\Message;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact as PactFile;
+use PhpPactTest\CompatibilitySuite\Model\Pact\ProviderState;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Service\BodyStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\BodyValidatorInterface;
@@ -29,10 +31,7 @@ final class ConsumerContext implements Context
     private MessageBuilder $builder;
     private stdClass|null $receivedMessage;
     private bool $verifyResult;
-    /**
-     * @var array<array-key, mixed>
-     */
-    private array $pact;
+    private PactFile $pact;
     private PactPath $pactPath;
 
     public function __construct(
@@ -104,13 +103,13 @@ final class ConsumerContext implements Context
     public function aPactFileForTheMessageInteractionWillHaveBeenWritten(): void
     {
         Assert::assertTrue(file_exists($this->pactPath));
-        $this->pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
+        $this->pact = PactFile::fromFile($this->pactPath);
     }
 
     #[Then('the pact file will contain :messages message interaction(s)')]
     public function thePactFileWillContainMessageInteraction(int $messages): void
     {
-        Assert::assertCount($messages, Arr::sub($this->pact, 'messages'));
+        Assert::assertCount($messages, $this->pact->getMessages());
     }
 
     #[Then('the first message in the pact file will contain the :fixture document')]
@@ -118,14 +117,14 @@ final class ConsumerContext implements Context
     {
         Assert::assertJsonStringEqualsJsonString(
             $this->fixtureLoader->load($fixture),
-            TypeCaster::toString(json_encode(Arr::sub($this->pact, 'messages', 0, 'contents')))
+            TypeCaster::toString(json_encode($this->pact->getMessage(0)->getContents()))
         );
     }
 
     #[Then('the first message in the pact file content type will be :contentType')]
     public function theFirstMessageInThePactFileContentTypeWillBe(string $contentType): void
     {
-        Assert::assertSame($contentType, Arr::str($this->pact, 'messages', 0, 'metadata', 'contentType'));
+        Assert::assertSame($contentType, TypeCaster::toString($this->pact->getMessage(0)->getMetadata()['contentType'] ?? ''));
     }
 
     #[When('the message is NOT successfully processed with a :error exception')]
@@ -176,7 +175,7 @@ final class ConsumerContext implements Context
     #[Then('/^the first message in the pact file will contain the message metadata "([^"]+)" == "(.+)"$/')]
     public function theFirstMessageInThePactFileWillContainTheMessageMetadata(string $key, string $value): void
     {
-        $actual = Arr::sub($this->pact, 'messages', 0, 'metadata')[$key] ?? null;
+        $actual = $this->pact->getMessage(0)->getMetadata()[$key] ?? null;
         if (is_string($actual)) {
             Assert::assertSame($this->parser->parseMetadataValue($value), $actual);
         } else {
@@ -199,13 +198,13 @@ final class ConsumerContext implements Context
     #[Then('the first message in the pact file will contain :states provider state(s)')]
     public function theFirstMessageInThePactFileWillContainProviderStates(int $states): void
     {
-        Assert::assertCount($states, Arr::sub($this->pact, 'messages', 0, 'providerStates'));
+        Assert::assertCount($states, $this->pact->getMessage(0)->getProviderStates());
     }
 
     #[Then('the first message in the Pact file will contain provider state :state')]
     public function theFirstMessageInThePactFileWillContainProviderState(string $state): void
     {
-        $states = array_map(fn (mixed $state): string => Arr::str((array) $state, 'name'), Arr::sub($this->pact, 'messages', 0, 'providerStates'));
+        $states = array_map(fn (ProviderState $state): string => $state->getName(), $this->pact->getMessage(0)->getProviderStates());
         Assert::assertContains($state, $states);
     }
 
@@ -224,7 +223,7 @@ final class ConsumerContext implements Context
         Assert::assertContains([
             'name' => $state,
             'params' => $params,
-        ], Arr::sub($this->pact, 'messages', 0, 'providerStates'));
+        ], array_map(fn (ProviderState $state): array => $state->toArray(), $this->pact->getMessage(0)->getProviderStates()));
     }
 
     #[Given('the message is configured with the following:')]

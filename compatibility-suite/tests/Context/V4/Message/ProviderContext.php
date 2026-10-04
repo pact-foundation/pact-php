@@ -10,14 +10,16 @@ use Behat\Step\When;
 use PhpPact\Consumer\Model\Message;
 use PhpPact\Standalone\ProviderVerifier\Model\Config\ProviderTransport;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationError;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerifierOutput;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\MessagePactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\ParserInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
-use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class ProviderContext implements Context
@@ -69,13 +71,9 @@ final class ProviderContext implements Context
         $message->setContents($this->parser->parseBody($fixture));
         $this->pactWriter->write($message, $this->pactPath);
         $this->providerVerifier->addSource($this->pactPath);
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
-        $interactions = Arr::sub($pact, 'interactions');
-        $interaction = Arr::sub($interactions, 0);
-        $interaction['pending'] = true;
-        $interactions[0] = $interaction;
-        $pact['interactions'] = $interactions;
-        file_put_contents($this->pactPath, json_encode($pact));
+        $pact = Pact::fromFile($this->pactPath);
+        $pact->getInteraction(0)->setPending(true);
+        file_put_contents($this->pactPath, $pact->toJson());
     }
 
     #[Given('a Pact file for :name::fixture is to be verified with the following comments:')]
@@ -102,13 +100,9 @@ final class ProviderContext implements Context
         $message->setContents($this->parser->parseBody($fixture));
         $this->pactWriter->write($message, $this->pactPath);
         $this->providerVerifier->addSource($this->pactPath);
-        $pact = (array) json_decode((string) file_get_contents($this->pactPath), true);
-        $interactions = Arr::sub($pact, 'interactions');
-        $interaction = Arr::sub($interactions, 0);
-        $interaction['comments'] = $comments;
-        $interactions[0] = $interaction;
-        $pact['interactions'] = $interactions;
-        file_put_contents($this->pactPath, json_encode($pact));
+        $pact = Pact::fromFile($this->pactPath);
+        $pact->getInteraction(0)->setComments($comments);
+        file_put_contents($this->pactPath, $pact->toJson());
     }
 
     #[When('the verification is run')]
@@ -127,19 +121,18 @@ final class ProviderContext implements Context
     #[Then('there will be a pending :error error')]
     public function thereWillBeAPendingError(string $error): void
     {
-        $output = (array) json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
+        $output = VerifierOutput::fromJson($this->providerVerifier->getVerifyResult()->getOutput());
         $errors = array_reduce(
-            Arr::sub($output, 'pendingErrors'),
-            function (array $errors, mixed $error) {
-                $mismatch = Arr::sub((array) $error, 'mismatch');
-                switch (Arr::str($mismatch, 'type')) {
+            $output->getPendingErrors(),
+            function (array $errors, VerificationError $error) {
+                switch ($error->getMismatch()->getType()) {
                     case 'error':
-                        $errors[] = Mismatch::VERIFIER_MISMATCH_ERROR_MAP[Arr::str($mismatch, 'message')];
+                        $errors[] = Mismatch::VERIFIER_MISMATCH_ERROR_MAP[$error->getMismatch()->getMessage()];
                         break;
 
                     case 'mismatches':
-                        foreach (Arr::sub($mismatch, 'mismatches') as $mismatchItem) {
-                            $errors[] = Mismatch::VERIFIER_MISMATCH_TYPE_MAP[Arr::str((array) $mismatchItem, 'type')];
+                        foreach ($error->getMismatch()->getMismatches() as $mismatchItem) {
+                            $errors[] = Mismatch::VERIFIER_MISMATCH_TYPE_MAP[$mismatchItem->getType()];
                         }
                         break;
 

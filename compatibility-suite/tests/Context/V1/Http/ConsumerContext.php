@@ -7,20 +7,19 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Step\Then;
 use Behat\Step\When;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
+use PhpPactTest\CompatibilitySuite\Model\Mismatch\Mismatch as DatatypeMismatch;
+use PhpPactTest\CompatibilitySuite\Model\MockServer\RequestMismatch;
+use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Service\ClientInterface;
 use PhpPactTest\CompatibilitySuite\Service\FixtureLoaderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\RequestBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
-use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class ConsumerContext implements Context
 {
-    /**
-     * @var array<array-key, mixed>
-     */
-    private array $pact;
+    private Pact $pact;
 
     public function __construct(
         private ServerInterface $server,
@@ -82,20 +81,20 @@ final class ConsumerContext implements Context
     #[Then('the pact file will contain {:num} interaction(s)')]
     public function thePactFileWillContainInteraction(int $num): void
     {
-        $this->pact = (array) json_decode((string) file_get_contents($this->server->getPactPath()), true);
-        Assert::assertEquals($num, count(Arr::sub($this->pact, 'interactions')));
+        $this->pact = Pact::fromFile($this->server->getPactPath());
+        Assert::assertEquals($num, count($this->pact->getInteractions()));
     }
 
     #[Then('the {first} interaction request will be for a :method')]
     public function theFirstInteractionRequestWillBeForA(string $method): void
     {
-        Assert::assertSame($method, Arr::str($this->pact, 'interactions', 0, 'request', 'method'));
+        Assert::assertSame($method, $this->pact->getInteraction(0)->getRequest()->getMethod());
     }
 
     #[Then('the {first} interaction response will contain the :fixture document')]
     public function theFirstInteractionResponseWillContainTheDocument(string $fixture): void
     {
-        Assert::assertEquals($this->fixtureLoader->loadJson($fixture), Arr::sub($this->pact, 'interactions', 0, 'response', 'body'));
+        Assert::assertEquals($this->fixtureLoader->loadJson($fixture), $this->pact->getInteraction(0)->getResponse()->getBody());
     }
 
     #[When('the mock server is started with interactions :ids')]
@@ -123,11 +122,12 @@ final class ConsumerContext implements Context
         $request = $this->storage->get(InteractionsStorageInterface::SERVER_DOMAIN, $id)->getRequest();
         $mismatches = $this->getMismatches();
         Assert::assertCount(1, $mismatches);
-        $mismatch = (array) current($mismatches);
-        Assert::assertSame('missing-request', Arr::str($mismatch, 'type'));
-        Assert::assertSame($request->getMethod(), Arr::str($mismatch, 'request', 'method'));
-        Assert::assertSame($request->getPath(), Arr::str($mismatch, 'request', 'path'));
-        Assert::assertSame($request->getQuery(), Arr::sub($mismatch, 'request', 'query'));
+        $mismatch = reset($mismatches);
+        Assert::assertInstanceOf(RequestMismatch::class, $mismatch);
+        Assert::assertSame(RequestMismatch::TYPE_MISSING_REQUEST, $mismatch->getType());
+        Assert::assertSame($request->getMethod(), $mismatch->getRequest()->getMethod());
+        Assert::assertSame($request->getPath(), $mismatch->getRequest()->getPath());
+        Assert::assertSame($request->getQuery(), $mismatch->getRequest()->getQuery());
         // TODO assert headers, body
     }
 
@@ -143,17 +143,18 @@ final class ConsumerContext implements Context
         $request = $this->storage->get(InteractionsStorageInterface::SERVER_DOMAIN, $id)->getRequest();
         $mismatches = $this->getMismatches();
         Assert::assertCount(2, $mismatches);
-        $notFoundRequests = array_filter($mismatches, fn (mixed $mismatch) => Arr::str((array) $mismatch, 'type') === 'request-not-found');
-        $mismatch = (array) current($notFoundRequests);
-        Assert::assertSame($request->getMethod(), Arr::str($mismatch, 'request', 'method'));
-        Assert::assertSame($request->getPath(), Arr::str($mismatch, 'request', 'path'));
+        $notFoundRequests = array_filter($mismatches, fn (RequestMismatch $mismatch): bool => $mismatch->getType() === RequestMismatch::TYPE_REQUEST_NOT_FOUND);
+        $mismatch = reset($notFoundRequests);
+        Assert::assertInstanceOf(RequestMismatch::class, $mismatch);
+        Assert::assertSame($request->getMethod(), $mismatch->getRequest()->getMethod());
+        Assert::assertSame($request->getPath(), $mismatch->getRequest()->getPath());
         // TODO assert query, headers, body
     }
 
     #[Then('the {first} interaction request query parameters will be :query')]
     public function theFirstInteractionRequestQueryParametersWillBe(string $query): void
     {
-        Assert::assertEquals($query, Arr::str($this->pact, 'interactions', 0, 'request', 'query'));
+        Assert::assertEquals($query, $this->pact->getInteraction(0)->getRequest()->getQuery());
     }
 
     #[When('request :id is made to the mock server with the following changes:')]
@@ -175,12 +176,13 @@ final class ConsumerContext implements Context
     public function theMismatchesWillContainAMismatchWithError(string $type, string $error): void
     {
         $mismatches = $this->getMismatches();
-        $mismatch = (array) current($mismatches);
-        Assert::assertSame('request-mismatch', Arr::str($mismatch, 'type'));
+        $mismatch = reset($mismatches);
+        Assert::assertInstanceOf(RequestMismatch::class, $mismatch);
+        Assert::assertSame(RequestMismatch::TYPE_REQUEST_MISMATCH, $mismatch->getType());
         $mismatches = array_filter(
-            Arr::sub($mismatch, 'mismatches'),
-            fn (mixed $mismatch) => Arr::str((array) $mismatch, 'type') === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]
-                && str_contains(Arr::str((array) $mismatch, 'mismatch'), $error)
+            $mismatch->getMismatches(),
+            fn (DatatypeMismatch $mismatch): bool => $mismatch->getType() === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]
+                && str_contains($mismatch->getMismatch(), $error)
         );
         Assert::assertNotEmpty($mismatches);
     }
@@ -196,48 +198,51 @@ final class ConsumerContext implements Context
     {
         $mismatches = $this->getMismatches();
         Assert::assertCount(2, $mismatches);
-        $notFoundRequests = array_filter($mismatches, fn (mixed $mismatch) => Arr::str((array) $mismatch, 'type') === 'request-not-found');
-        $mismatch = (array) current($notFoundRequests);
-        Assert::assertSame($method, Arr::str($mismatch, 'request', 'method'));
-        Assert::assertSame($path, Arr::str($mismatch, 'request', 'path'));
+        $notFoundRequests = array_filter($mismatches, fn (RequestMismatch $mismatch): bool => $mismatch->getType() === RequestMismatch::TYPE_REQUEST_NOT_FOUND);
+        $mismatch = reset($notFoundRequests);
+        Assert::assertInstanceOf(RequestMismatch::class, $mismatch);
+        Assert::assertSame($method, $mismatch->getRequest()->getMethod());
+        Assert::assertSame($path, $mismatch->getRequest()->getPath());
     }
 
     #[Then('the {first} interaction request will contain the header :header with value :value')]
     public function theFirstInteractionRequestWillContainTheHeaderWithValue(string $header, string $value): void
     {
-        Assert::assertArrayHasKey($header, Arr::sub($this->pact, 'interactions', 0, 'request', 'headers'));
-        Assert::assertSame($value, Arr::str($this->pact, 'interactions', 0, 'request', 'headers', $header));
+        $request = $this->pact->getInteraction(0)->getRequest();
+        Assert::assertTrue($request->hasHeader($header));
+        Assert::assertSame($value, $request->getHeader($header));
     }
 
     #[Then('the {first} interaction request content type will be :contentType')]
     public function theFirstInteractionRequestContentTypeWillBe(string $contentType): void
     {
-        Assert::assertSame($contentType, Arr::str($this->pact, 'interactions', 0, 'request', 'headers', 'Content-Type'));
+        Assert::assertSame($contentType, $this->pact->getInteraction(0)->getRequest()->getHeader('Content-Type'));
     }
 
     #[Then('the {first} interaction request will contain the :fixture document')]
     public function theFirstInteractionRequestWillContainTheDocument(string $fixture): void
     {
-        Assert::assertEquals($this->fixtureLoader->loadJson($fixture), Arr::sub($this->pact, 'interactions', 0, 'request', 'body'));
+        Assert::assertEquals($this->fixtureLoader->loadJson($fixture), $this->pact->getInteraction(0)->getRequest()->getBody());
     }
 
     #[Then('the mismatches will contain a :type mismatch with path :path with error :error')]
     public function theMismatchesWillContainAMismatchWithPathWithError(string $type, string $path, string $error): void
     {
         $mismatches = $this->getMismatches();
-        $mismatch = (array) current($mismatches);
-        Assert::assertSame('request-mismatch', Arr::str($mismatch, 'type'));
+        $mismatch = reset($mismatches);
+        Assert::assertInstanceOf(RequestMismatch::class, $mismatch);
+        Assert::assertSame(RequestMismatch::TYPE_REQUEST_MISMATCH, $mismatch->getType());
         $mismatches = array_filter(
-            Arr::sub($mismatch, 'mismatches'),
-            fn (mixed $mismatch) => Arr::str((array) $mismatch, 'type') === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]
-                && Arr::str((array) $mismatch, 'path') === $path
-                && str_contains(Arr::str((array) $mismatch, 'mismatch'), $error)
+            $mismatch->getMismatches(),
+            fn (DatatypeMismatch $mismatch): bool => $mismatch->getType() === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]
+                && $mismatch->getPath() === $path
+                && str_contains($mismatch->getMismatch(), $error)
         );
         Assert::assertNotEmpty($mismatches);
     }
 
     /**
-     * @return array<array-key, mixed>
+     * @return list<RequestMismatch>
      */
     private function getMismatches(): array
     {
@@ -245,6 +250,6 @@ final class ConsumerContext implements Context
             return [];
         }
 
-        return (array) json_decode($this->server->getVerifyResult()->getOutput(), true);
+        return RequestMismatch::listFromArray((array) json_decode($this->server->getVerifyResult()->getOutput(), true));
     }
 }

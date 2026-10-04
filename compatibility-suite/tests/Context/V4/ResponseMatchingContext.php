@@ -9,13 +9,13 @@ use Behat\Step\Then;
 use Behat\Step\When;
 use PhpPactTest\CompatibilitySuite\Constant\Mismatch;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerifierOutput;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\PactWriterInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
 use PhpPactTest\CompatibilitySuite\Service\ResponseMatchingRuleBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\ServerInterface;
-use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PHPUnit\Framework\Assert;
 
 final class ResponseMatchingContext implements Context
@@ -80,16 +80,14 @@ final class ResponseMatchingContext implements Context
     #[Then('the response mismatches will contain a :type mismatch with error :error')]
     public function theResponseMismatchesWillContainAMismatchWithError(string $type, string $error): void
     {
-        $output = (array) json_decode($this->providerVerifier->getVerifyResult()->getOutput(), true);
+        $output = VerifierOutput::fromJson($this->providerVerifier->getVerifyResult()->getOutput());
         $errors = [];
-        foreach (Arr::sub($output, 'errors') as $verificationError) {
-            $verificationError = (array) $verificationError;
-            switch (Arr::str($verificationError, 'mismatch', 'type')) {
+        foreach ($output->getErrors() as $verificationError) {
+            switch ($verificationError->getMismatch()->getType()) {
                 case 'mismatches':
-                    foreach (Arr::sub($verificationError, 'mismatch', 'mismatches') as $mismatch) {
-                        $mismatch = (array) $mismatch;
-                        if (Arr::str($mismatch, 'type') === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]) {
-                            $errors[] = $mismatch['mismatch'];
+                    foreach ($verificationError->getMismatch()->getMismatches() as $mismatch) {
+                        if ($mismatch->getType() === Mismatch::MOCK_SERVER_MISMATCH_TYPE_MAP[$type]) {
+                            $errors[] = $mismatch->getMismatch();
                         }
                     }
                     break;
