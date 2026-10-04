@@ -16,20 +16,19 @@ use PhpPactTest\CompatibilitySuite\Model\Message;
 use PhpPactTest\CompatibilitySuite\Model\Pact\Pact as PactFile;
 use PhpPactTest\CompatibilitySuite\Model\Pact\ProviderState;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
+use PhpPactTest\CompatibilitySuite\Model\ReceivedMessage;
 use PhpPactTest\CompatibilitySuite\Service\BodyStorageInterface;
 use PhpPactTest\CompatibilitySuite\Service\BodyValidatorInterface;
 use PhpPactTest\CompatibilitySuite\Service\FixtureLoaderInterface;
 use PhpPactTest\CompatibilitySuite\Service\MessageGeneratorBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\ParserInterface;
-use PhpPactTest\CompatibilitySuite\Util\Arr;
 use PhpPactTest\CompatibilitySuite\Util\TypeCaster;
 use PHPUnit\Framework\Assert;
-use stdClass;
 
 final class ConsumerContext implements Context
 {
     private MessageBuilder $builder;
-    private stdClass|null $receivedMessage;
+    private ReceivedMessage|null $receivedMessage;
     private bool $verifyResult;
     private PactFile $pact;
     private PactPath $pactPath;
@@ -79,7 +78,7 @@ final class ConsumerContext implements Context
         }
         Assert::assertJsonStringEqualsJsonString(
             $this->fixtureLoader->load($fixture . '.json'),
-            TypeCaster::toString(json_encode($this->receivedMessage->contents))
+            TypeCaster::toString(json_encode($this->receivedMessage->getContents()))
         );
     }
 
@@ -89,8 +88,7 @@ final class ConsumerContext implements Context
         if (null === $this->receivedMessage) {
             throw new Exception('The received message is null.');
         }
-        $metadata = (array) $this->receivedMessage->metadata;
-        Assert::assertSame($contentType, Arr::str($metadata, 'contentType'));
+        Assert::assertSame($contentType, $this->receivedMessage->getContentType());
     }
 
     #[Then('the consumer test will have passed')]
@@ -163,7 +161,7 @@ final class ConsumerContext implements Context
         if (null === $this->receivedMessage) {
             throw new Exception('The received message is null.');
         }
-        $metadata = (array) $this->receivedMessage->metadata;
+        $metadata = $this->receivedMessage->getMetadata();
         $actual = $metadata[$key] ?? null;
         if (is_string($actual)) {
             Assert::assertSame($this->parser->parseMetadataValue($value), $actual);
@@ -257,7 +255,7 @@ final class ConsumerContext implements Context
         if (null === $this->receivedMessage) {
             throw new Exception('The received message is null.');
         }
-        $this->bodyStorage->setBody(TypeCaster::toString(json_encode($this->receivedMessage->contents)));
+        $this->bodyStorage->setBody(TypeCaster::toString(json_encode($this->receivedMessage->getContents())));
         $this->validator->validateType($path, $type);
     }
 
@@ -267,14 +265,13 @@ final class ConsumerContext implements Context
         if (null === $this->receivedMessage) {
             throw new Exception('The received message is null.');
         }
-        $this->bodyStorage->setBody(TypeCaster::toString(json_encode($this->receivedMessage->metadata)));
+        $this->bodyStorage->setBody(TypeCaster::toString(json_encode($this->receivedMessage->getMetadata())));
         $this->validator->validateType("$.$key", $type);
     }
 
     public function storeMessage(string $message): void
     {
-        $decoded = json_decode($message);
-        $this->receivedMessage = $decoded instanceof stdClass ? $decoded : null;
+        $this->receivedMessage = ReceivedMessage::fromJson($message);
     }
 
     private function process(callable $callback): void
