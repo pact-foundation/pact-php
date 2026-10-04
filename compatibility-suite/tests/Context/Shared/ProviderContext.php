@@ -8,6 +8,7 @@ use Behat\Step\Then;
 use Behat\Step\When;
 use GuzzleHttp\Psr7\Uri;
 use PhpPactTest\CompatibilitySuite\Model\Mismatch\VerifierMismatchType;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationMismatch;
 use PhpPactTest\CompatibilitySuite\Model\Verifier\VerifierOutput;
 use PhpPactTest\CompatibilitySuite\Service\ProviderStateServerInterface;
 use PhpPactTest\CompatibilitySuite\Service\ProviderVerifierInterface;
@@ -103,11 +104,11 @@ final class ProviderContext implements Context
         $errors = [];
         foreach ($output->getErrors() as $verificationError) {
             switch ($verificationError->getMismatch()->getType()) {
-                case 'error':
+                case VerificationMismatch::TYPE_ERROR:
                     $errors[] = $verificationError->getMismatch()->getErrorLabel();
                     break;
 
-                case 'mismatches':
+                case VerificationMismatch::TYPE_MISMATCHES:
                     foreach ($verificationError->getMismatch()->getMismatches() as $mismatch) {
                         $errors[] = VerifierMismatchType::tryFrom($mismatch->getType())?->description();
                     }

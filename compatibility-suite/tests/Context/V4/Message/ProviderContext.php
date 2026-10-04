@@ -13,6 +13,7 @@ use PhpPactTest\CompatibilitySuite\Model\Mismatch\VerifierMismatchType;
 use PhpPactTest\CompatibilitySuite\Model\Pact\Pact;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
 use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationError;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationMismatch;
 use PhpPactTest\CompatibilitySuite\Model\Verifier\VerifierOutput;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
@@ -126,11 +127,11 @@ final class ProviderContext implements Context
             $output->getPendingErrors(),
             function (array $errors, VerificationError $error) {
                 switch ($error->getMismatch()->getType()) {
-                    case 'error':
+                    case VerificationMismatch::TYPE_ERROR:
                         $errors[] = $error->getMismatch()->getErrorLabel();
                         break;
 
-                    case 'mismatches':
+                    case VerificationMismatch::TYPE_MISMATCHES:
                         foreach ($error->getMismatch()->getMismatches() as $mismatchItem) {
                             $errors[] = VerifierMismatchType::tryFrom($mismatchItem->getType())?->description();
                         }

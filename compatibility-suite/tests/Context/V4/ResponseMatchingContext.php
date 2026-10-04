@@ -9,6 +9,7 @@ use Behat\Step\Then;
 use Behat\Step\When;
 use PhpPactTest\CompatibilitySuite\Model\Mismatch\MockServerMismatchType;
 use PhpPactTest\CompatibilitySuite\Model\PactPath;
+use PhpPactTest\CompatibilitySuite\Model\Verifier\VerificationMismatch;
 use PhpPactTest\CompatibilitySuite\Model\Verifier\VerifierOutput;
 use PhpPactTest\CompatibilitySuite\Service\InteractionBuilderInterface;
 use PhpPactTest\CompatibilitySuite\Service\InteractionsStorageInterface;
@@ -84,7 +85,7 @@ final class ResponseMatchingContext implements Context
         $errors = [];
         foreach ($output->getErrors() as $verificationError) {
             switch ($verificationError->getMismatch()->getType()) {
-                case 'mismatches':
+                case VerificationMismatch::TYPE_MISMATCHES:
                     foreach ($verificationError->getMismatch()->getMismatches() as $mismatch) {
                         if ($mismatch->getType() === MockServerMismatchType::from($type)->verifierType()->value) {
                             $errors[] = $mismatch->getMismatch();
