@@ -10,6 +10,9 @@ use PhpPact\FFI\Exception\InvalidResultException;
 use PhpPact\FFI\Model\ArrayData;
 use PhpPact\FFI\Model\BinaryData;
 use PhpPact\FFI\Model\Result;
+use PhpPact\Log\Enum\LogLevel;
+use PhpPact\Log\Logger;
+use PhpPact\Log\Model\Stdout;
 use PhpPact\Standalone\Installer\Model\Scripts;
 
 class Client implements ClientInterface
@@ -224,8 +227,9 @@ class Client implements ClientInterface
 
     public function initWithLogLevel(string $logLevel): void
     {
-        $method = 'pactffi_init_with_log_level';
-        $this->call($method, $logLevel);
+        $logger = Logger::instance($this);
+        $logger->attach(new Stdout(LogLevel::tryFrom(\strtoupper($logLevel)) ?? LogLevel::INFO));
+        $logger->apply();
     }
 
     public function pactHandleWriteFile(int $pact, string $directory, bool $overwrite): int
