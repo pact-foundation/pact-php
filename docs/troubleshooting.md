@@ -104,3 +104,18 @@ $config->setLogLevel('DEBUG');
     * Do not support plugins (e.g. csv, gRPC)
 * Cons
     * Only single sink (stdout)
+
+### Windows process isolation
+
+On Windows, running `composer run-examples` can randomly cause this error:
+
+```
+Script cd example/protobuf-sync-message/consumer && phpunit handling the run-example:protobuf-sync-message event returned with error code -1073741819
+Script composer run-example:protobuf-sync-message handling the run-examples event returned with error code -1073741819
+```
+
+According to [Microsoft](https://learn.microsoft.com/en-us/answers/questions/379441/error-code-exited-with-code-1073741819#answer-379350):
+
+> it indicates that your program was terminated due to an access violation. This error can occur for a variety of reasons, including de-referencing a NULL pointer or referencing an invalid address.
+
+The solution is `composer run-examples:windows`. It attach option `--process-isolation`, which fixed this error.
