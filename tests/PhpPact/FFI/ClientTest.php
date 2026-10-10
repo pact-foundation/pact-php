@@ -6,6 +6,7 @@ use FFI\CData;
 use PhpPact\FFI\Client;
 use PhpPact\FFI\ClientInterface;
 use PhpPact\FFI\Model\BinaryData;
+use PhpPact\Log\Logger;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
@@ -143,6 +144,7 @@ class ClientTest extends TestCase
     public function testInitWithLogLevel(): void
     {
         $this->client->initWithLogLevel('test');
+        Logger::tearDown();
         $this->expectNotToPerformAssertions();
     }
 
