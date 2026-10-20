@@ -4,10 +4,10 @@
 
 This is because you install Pact-PHP in one environment, then share/mount the project to other environment and use it, like virtual machine or container.
 
-### Failed loading pact.so/pact.dll/pact.dylib
+### Failed loading libpact_ffi.so/pact_ffi.dll/libpact_ffi.dylib
 
 ```
-[FFI\Exception] Failed loading 'vendor/pact-php/bin/pact-ffi-lib/pact.so'
+[FFI\Exception] Failed loading 'vendor/pact-php/bin/pact-ffi-lib/libpact_ffi.so'
 ```
 
 * Reason: For example, install on Windows, but use on Linux virtual machine/container
@@ -16,11 +16,11 @@ This is because you install Pact-PHP in one environment, then share/mount the pr
 ### Invalid ELF header
 
 ```
-FFI\Exception: Failed loading 'vendor/pact-php/bin/pact-ffi-lib/pact.so' (/lib/x86_64-linux-gnu/libc.so: invalid ELF header)
+FFI\Exception: Failed loading 'vendor/pact-php/bin/pact-ffi-lib/libpact_ffi.so' (/lib/x86_64-linux-gnu/libc.so: invalid ELF header)
 ```
 
 * Reason: For example, install on Ubuntu (doesn't has musl), but use on Alpine (has musl) virtual machine/container
-* Solution: On virtual machine or container - First, force remove the file with `rm vendor/pact-php/bin/pact-ffi-lib/pact.so`, then install again with `composer install` or `composer update`
+* Solution: On virtual machine or container - First, force remove the library directory with `rm -r vendor/pact-php/bin/pact-ffi-lib`, then install again with `composer install` or `composer update`
 
 
 ## Output Logging
