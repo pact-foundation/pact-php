@@ -21,9 +21,9 @@ class Scripts
 
     public static function getLibrary(): string
     {
-        $extension = PHP_OS_FAMILY === 'Windows' ? 'dll' : (PHP_OS === 'Darwin' ? 'dylib' : 'so');
+        $filename = PHP_OS_FAMILY === 'Windows' ? 'pact_ffi.dll' : (PHP_OS === 'Darwin' ? 'libpact_ffi.dylib' : 'libpact_ffi.so');
 
-        return self::$destinationDir . "/bin/pact-ffi-lib/pact.{$extension}";
+        return self::$destinationDir . "/bin/pact-ffi-lib/{$filename}";
     }
 
     public static function getStubService(): string
