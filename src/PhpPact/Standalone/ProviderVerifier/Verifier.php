@@ -98,6 +98,10 @@ class Verifier
             $config->getVerificationOptions()->isDisableSslVerification(),
             $config->getVerificationOptions()->getRequestTimeout()
         );
+        $this->client->verifierSetNoPactsIsError(
+            $this->handle,
+            $config->getVerificationOptions()->isNoPactsIsError()
+        );
     }
 
     private function setPublishOptions(VerifierConfigInterface $config): void

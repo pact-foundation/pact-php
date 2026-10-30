@@ -81,6 +81,8 @@ interface ClientInterface
 
     public function verifierSetVerificationOptions(CData $handle, bool $disableSslVerification, int $requestTimeout): int;
 
+    public function verifierSetNoPactsIsError(CData $handle, bool $isError): int;
+
     public function verifierSetPublishOptions(CData $handle, string $providerVersion, ?string $buildUrl, ?ArrayData $providerTags, ?string $providerBranch): int;
 
     public function verifierSetConsumerFilters(CData $handle, ?ArrayData $consumerFilters): void;

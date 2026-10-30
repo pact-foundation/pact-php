@@ -6,6 +6,7 @@ class VerificationOptions implements VerificationOptionsInterface
 {
     private int $requestTimeout           = 5000;
     private bool $disableSslVerification = false;
+    private bool $noPactsIsError         = true;
 
     public function isDisableSslVerification(): bool
     {
@@ -29,5 +30,17 @@ class VerificationOptions implements VerificationOptionsInterface
     public function getRequestTimeout(): int
     {
         return $this->requestTimeout;
+    }
+
+    public function isNoPactsIsError(): bool
+    {
+        return $this->noPactsIsError;
+    }
+
+    public function setNoPactsIsError(bool $noPactsIsError): self
+    {
+        $this->noPactsIsError = $noPactsIsError;
+
+        return $this;
     }
 }

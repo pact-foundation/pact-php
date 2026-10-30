@@ -68,7 +68,8 @@ class VerifierTest extends TestCase
             ->setFilterState($filterState = 'given state');
         $this->config->getVerificationOptions()
             ->setRequestTimeout($requestTimeout = 500)
-            ->setDisableSslVerification($disableSslVerification = true);
+            ->setDisableSslVerification($disableSslVerification = true)
+            ->setNoPactsIsError($noPactsIsError = false);
         $publishOptions = new PublishOptions();
         $publishOptions
             ->setProviderTags($providerTags = $hasProviderTags ? ['feature-x', 'master', 'test', 'prod'] : [])
@@ -87,6 +88,7 @@ class VerifierTest extends TestCase
         $this->expectsVerifierSetFilterInfo($this->handle, $filterDescription, $filterState, $filterNoState);
         $this->expectsVerifierSetProviderState($this->handle, (string) $stateChangeUrl, $stateChangeTearDown, $stateChangeAsBody);
         $this->expectsVerifierSetVerificationOptions($this->handle, $disableSslVerification, $requestTimeout, 0);
+        $this->expectsVerifierSetNoPactsIsError($this->handle, $noPactsIsError, 0);
         $this->expectsVerifierSetPublishOptions(
             $this->handle,
             $providerVersion,
