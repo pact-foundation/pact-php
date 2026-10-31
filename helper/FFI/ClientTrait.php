@@ -493,6 +493,15 @@ trait ClientTrait
             ->willReturn($result);
     }
 
+    protected function expectsVerifierSetNoPactsIsError(CData $handle, bool $isError, int $result): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('verifierSetNoPactsIsError')
+            ->with($handle, $isError)
+            ->willReturn($result);
+    }
+
     /**
      * @param string[] $providerTags
      */
