@@ -70,7 +70,7 @@ class StubServerTest extends TestCase
             ->method('waitUntil')
             ->with($this->callback(function (callable $callback) use ($started) {
                 $port = 123;
-                $this->assertSame($started ? 1 : 0, $callback('out', $started ? "Server started on port $port" : 'not started'));
+                $this->assertSame($started, $callback('out', $started ? "Server started on port $port" : 'not started'));
                 $this->assertSame($started ? $port : 0, $this->config->getPort());
 
                 return true;
