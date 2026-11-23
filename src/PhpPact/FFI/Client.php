@@ -358,6 +358,16 @@ class Client implements ClientInterface
         return $result;
     }
 
+    public function verifierSetNoPactsIsError(CData $handle, bool $isError): int
+    {
+        $method = 'pactffi_verifier_set_no_pacts_is_error';
+        $result = $this->call($method, $handle, $isError);
+        if (!is_int($result)) {
+            throw new InvalidResultException(sprintf('Invalid result of "%s". Expected "integer", but got "%s"', $method, get_debug_type($result)));
+        }
+        return $result;
+    }
+
     public function verifierSetPublishOptions(CData $handle, string $providerVersion, ?string $buildUrl, ?ArrayData $providerTags, ?string $providerBranch): int
     {
         $method = 'pactffi_verifier_set_publish_options';

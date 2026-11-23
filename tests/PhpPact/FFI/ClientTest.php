@@ -249,6 +249,15 @@ class ClientTest extends TestCase
         }
     }
 
+    public function testVerifierSetNoPactsIsError(): void
+    {
+        $handle = $this->client->verifierNewForApplication('name', '1.1');
+        if ($handle) {
+            $result = $this->client->verifierSetNoPactsIsError($handle, false);
+            $this->assertSame(0, $result);
+        }
+    }
+
     public function testVerifierSetPublishOptions(): void
     {
         $handle = $this->client->verifierNewForApplication('name', '1.1');
