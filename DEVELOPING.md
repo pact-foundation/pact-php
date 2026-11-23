@@ -2,7 +2,8 @@
 
 ## Pre Reqs
 
-- PHP 8.x or greater
+- PHP 8.2+ to run the test suite (`composer.json` requires `^8.1`, but the dev
+  dependencies no longer install on 8.1)
 - FFI and Sockets extensions enabled in your php.ini
 
 ## Steps
@@ -20,6 +21,31 @@
    1. Run static code analysis
 
 ## CI Locally
+
+### Alpine (musl)
+
+The `test-alpine` CI jobs run unit tests and examples on x86_64 and aarch64 using
+`alpine:3.24` and its distro PHP 8.5 packages. Keep all PHP extension packages on
+the same version as the runtime required by Alpine's
+[`composer` package](https://pkgs.alpinelinux.org/package/v3.24/community/x86_64/composer).
+Use a [supported Alpine release](https://alpinelinux.org/releases/) with current
+PHP security patches: `roave/security-advisories` checks the PHP runtime as well
+as dependencies, so an outdated runtime can fail `composer install` before any
+tests run. Do not remove the advisories or ignore platform requirements.
+
+To run the same checks locally, install Docker and run this from a fresh checkout
+on an x86_64 or arm64/aarch64 host. Do not reuse `vendor` or downloaded `bin`
+artifacts from a glibc-based host; Composer must install the musl libraries in
+the container.
+
+```shell
+docker run --env PACT_DO_NOT_TRACK=true --rm -v "$PWD":/home alpine:3.24 /bin/sh -c '
+  apk add --no-cache shared-mime-info php85-dev php85-ffi php85-pecl-grpc php85-sockets php85-tokenizer php85-dom php85-xml php85-xmlwriter php85-simplexml composer protobuf-dev &&
+  cd /home &&
+  composer install &&
+  composer test &&
+  composer run-examples'
+```
 
 ### MacOS ARM
 
