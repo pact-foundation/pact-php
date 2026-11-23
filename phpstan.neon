@@ -1,5 +1,11 @@
+includes:
+    - phpstan-baseline.neon
+
 parameters:
     level: max
+    # Keep the analysed language level equal to the PHP the php-cs job runs on,
+    # so the reported errors (and the baseline above) do not depend on the runner's PHP.
+    phpVersion: 80200
     paths:
         - src
         - tests
