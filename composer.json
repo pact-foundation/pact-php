@@ -244,21 +244,20 @@
     "extra": {
         "downloads": {
             "pact-ffi-headers": {
-                "version": "0.5.10",
-                "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/pact.h",
+                "version": "0.5.12",
+                "url": "https://github.com/pact-foundation/pact-reference/releases/download/pact_ffi-v{$version}/pact.h",
                 "path": "bin/pact-ffi-headers/pact.h"
             },
             "pact-ffi-lib": {
-                "version": "0.5.10",
+                "version": "0.5.12",
                 "variables": {
-                    "{$prefix}": "PHP_OS_FAMILY === 'Windows' ? 'pact_ffi' : 'libpact_ffi'",
-                    "{$os}": "PHP_OS === 'Darwin' ? 'macos' : strtolower(PHP_OS_FAMILY)",
                     "{$architecture}": "in_array(php_uname('m'), ['arm64', 'aarch64']) ? 'aarch64' : 'x86_64'",
-                    "{$musl}": "PHP_OS === 'Linux' && musl() === true ? '-musl' : ''",
-                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'dll' : (PHP_OS === 'Darwin' ? 'dylib' : 'so')"
+                    "{$platform}": "PHP_OS === 'Darwin' ? 'apple-darwin' : (PHP_OS_FAMILY === 'Windows' ? 'pc-windows-msvc' : (musl() === true ? 'unknown-linux-musl' : 'unknown-linux-gnu'))",
+                    "{$extension}": "PHP_OS_FAMILY === 'Windows' ? 'zip' : 'tar.xz'"
                 },
-                "url": "https://github.com/pact-foundation/pact-reference/releases/download/libpact_ffi-v{$version}/{$prefix}-{$os}-{$architecture}{$musl}.{$extension}.gz",
-                "path": "bin/pact-ffi-lib/pact.{$extension}"
+                "url": "https://github.com/pact-foundation/pact-reference/releases/download/pact_ffi-v{$version}/pact_ffi-{$architecture}-{$platform}.{$extension}",
+                "path": "bin/pact-ffi-lib",
+                "ignore": ["*.a", "*.lib", "*.md"]
             },
             "pact-stub-server": {
                 "version": "0.7.1",
