@@ -21,18 +21,26 @@ final class HttpClient implements HttpClientInterface
 
     public function sendRequest(ConsumerRequest $request, UriInterface $uri): ResponseInterface
     {
-        $options = [];
-        $options['query'] = $this->formatQueryString($request->getQuery());
-        $options['headers'] = $request->getHeaders();
+        $headers = [];
+        foreach ($request->getHeaders() as $name => $values) {
+            if ([] !== $values) {
+                $headers[$name] = $values;
+            }
+        }
+
+        $options = [
+            'query' => $this->formatQueryString($request->getQuery()),
+            'headers' => $headers,
+            'http_errors' => false,
+        ];
+
         $body = $request->getBody();
         if ($body instanceof Text || $body instanceof Binary) {
-            $options['body'] = match (true) {
-                $body instanceof Text => $body->getContents(),
-                $body instanceof Binary => file_get_contents($body->getPath()),
-            };
-            $options['headers']['Content-Type'] = $body->getContentType();
+            $options['body'] = $body instanceof Text
+                ? $body->getContents()
+                : (string) file_get_contents($body->getPath());
+            $options['headers']['Content-Type'] = [$body->getContentType()];
         }
-        $options['http_errors'] = false;
 
         return $this->client->request($request->getMethod(), $uri->withPath($request->getPath()), $options);
     }
