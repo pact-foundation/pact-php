@@ -16,6 +16,13 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
+# Pact plugins that the plugin driver would otherwise auto-install at runtime, from
+# whatever the plugin index lists as the latest release. Keep in step with the latest
+# releases; the examples job also keys its plugin cache on these.
+env:
+  csv_plugin_version: 0.1.0
+  protobuf_plugin_version: 0.8.1
+
 jobs:
   php-cs:
     runs-on: ubuntu-latest
@@ -93,12 +100,24 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.pact/plugins
-          key: ${{ matrix.os }}-pact-plugins
+          # The plugin driver uses the highest version it finds in this directory, so a
+          # cache holding another version would win over the install below. Keying on the
+          # versions means changing one always starts from an empty cache.
+          key: ${{ matrix.os }}-pact-plugins-${{ env.csv_plugin_version }}-${{ env.protobuf_plugin_version }}
 
       - uses: pact-foundation/pact-cli@5c8c53c24fa163f548e81463acdde99c465f4194 # main
 
       - name: Install SSE plugin
         run: pact plugin install https://github.com/tienvx/pact-sse-plugin/releases/tag/0.1.0 -y
+
+      # The plugin driver auto-installs these two at runtime, from whatever the plugin
+      # index points at, so install them here instead: the versions stay visible in the
+      # workflow and an upstream release cannot change what CI runs. Keep them in step
+      # with the latest releases.
+      - name: Install Pact Plugins
+        run: |
+          pact plugin install https://github.com/pact-foundation/pact-plugins/releases/tag/csv-plugin-${{ env.csv_plugin_version }} -y
+          pact plugin install https://github.com/pactflow/pact-protobuf-plugin/releases/tag/v-${{ env.protobuf_plugin_version }} -y
 
       - name: Run examples
         run: ${{ matrix.os == 'windows-latest' && 'composer run-examples:windows' || 'composer run-examples' }}
@@ -167,4 +186,4 @@ jobs:
         name: Checkout repository
       # Keep extensions aligned with Alpine's Composer PHP runtime on a supported release.
       - name: run musl # If shared-mime-info not installed - Expected binary contents to have content type 'image/jpeg' but detected contents was 'application/octet-stream'
-        run: docker run --env PACT_DO_NOT_TRACK=true --rm -v $PWD:/home alpine:3.24 /bin/sh -c 'apk add --no-cache shared-mime-info php85-dev php85-ffi php85-pecl-grpc php85-sockets php85-tokenizer php85-dom php85-xml php85-xmlwriter php85-simplexml composer protobuf-dev curl file && cd /home && composer install && curl --proto '=https' --tlsv1.2 -LsSf https://github.com/pact-foundation/pact-cli/releases/latest/download/pact-installer.sh | sh && . "$HOME/.config/pact/env.sh" && pact plugin install https://github.com/tienvx/pact-sse-plugin/releases/tag/0.1.0 -y && composer test && composer run-examples'
+        run: docker run --env PACT_DO_NOT_TRACK=true --rm -v $PWD:/home alpine:3.24 /bin/sh -c 'apk add --no-cache shared-mime-info php85-dev php85-ffi php85-pecl-grpc php85-sockets php85-tokenizer php85-dom php85-xml php85-xmlwriter php85-simplexml composer protobuf-dev curl file && cd /home && composer install && curl --proto '=https' --tlsv1.2 -LsSf https://github.com/pact-foundation/pact-cli/releases/latest/download/pact-installer.sh | sh && . "$HOME/.config/pact/env.sh" && pact plugin install https://github.com/tienvx/pact-sse-plugin/releases/tag/0.1.0 -y && pact plugin install https://github.com/pact-foundation/pact-plugins/releases/tag/csv-plugin-${{ env.csv_plugin_version }} -y && pact plugin install https://github.com/pactflow/pact-protobuf-plugin/releases/tag/v-${{ env.protobuf_plugin_version }} -y && composer test && composer run-examples'
