@@ -28,7 +28,7 @@ class Selector implements SelectorInterface
     }
 
     /**
-     * @return array<string, string|bool>
+     * @return array<string|bool>
      */
     public function jsonSerialize(): array
     {

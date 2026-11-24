@@ -16,6 +16,16 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
+# Pact plugins that the plugin driver would otherwise auto-install at runtime, from
+# whatever the plugin index lists as the latest release. Keep in step with the latest
+# releases; the examples job also keys its plugin cache on these.
+env:
+  # 0.0.6 is the last CSV plugin release with pluginInterfaceVersion 1. This release line
+  # pins pact-ffi 0.4.x, which only speaks plugin interface v1, so 0.1.0 fails to load:
+  # "Could not load plugin - Failed to send init request to the plugin - status: Unimplemented".
+  csv_plugin_version: 0.0.6
+  protobuf_plugin_version: 0.8.1
+
 jobs:
   php-cs:
     runs-on: ubuntu-latest
@@ -23,16 +33,16 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         name: Checkout repository
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # v2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
-          php-version: 8.1
+          php-version: 8.2
           coverage: none
 
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@65e4f84970763564f46a70b8a54b90d033b3bdda # 4.0.0
         with:
           dependency-versions: 'locked'
 
@@ -49,34 +59,34 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.3]
-        os: [ubuntu-latest, macos-15, macos-15-intel, windows-latest, ubuntu-24.04-arm]
+        php: [8.4]
+        os: [ubuntu-latest, macos-15, windows-latest, ubuntu-24.04-arm]
     timeout-minutes: 60
     env:
       extensions: sockets, curl, zip, ffi, grpc
       key: extensions-cache-v1 # can be any string, change to clear the extension cache.
 
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         name: Checkout repository
 
       - name: Setup cache environment
         id: extcache
-        uses: shivammathur/cache-extensions@4595bea7d6630821b0a3a4894f816402faaf324c # v1
+        uses: shivammathur/cache-extensions@0769e8b0c165c62888174c0fe66557ca1616ae45 # v1
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ env.extensions }}
           key: ${{ env.key }}
 
       - name: Cache extensions
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ${{ steps.extcache.outputs.dir }}
           key: ${{ steps.extcache.outputs.key }}
           restore-keys: ${{ steps.extcache.outputs.key }}
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # v2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           extensions: ${{ env.extensions }}
           php-version: ${{ matrix.php }}
@@ -85,15 +95,29 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Composer install
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@65e4f84970763564f46a70b8a54b90d033b3bdda # 4.0.0
         with:
           dependency-versions: 'locked'
 
       - name: Cache Pact Plugins
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.pact/plugins
-          key: ${{ matrix.os }}-pact-plugins
+          # The plugin driver uses the highest version it finds in this directory, so a
+          # cache holding another version would win over the install below. Keying on the
+          # versions means changing one always starts from an empty cache.
+          key: ${{ matrix.os }}-pact-plugins-${{ env.csv_plugin_version }}-${{ env.protobuf_plugin_version }}
+
+      - uses: pact-foundation/pact-cli@5c8c53c24fa163f548e81463acdde99c465f4194 # main
+
+      # The plugin driver auto-installs these two at runtime, from whatever the plugin
+      # index points at, so install them here instead: the versions stay visible in the
+      # workflow and an upstream release cannot change what CI runs. Keep them in step
+      # with the latest releases.
+      - name: Install Pact Plugins
+        run: |
+          pact plugin install https://github.com/pact-foundation/pact-plugins/releases/tag/csv-plugin-${{ env.csv_plugin_version }} -y
+          pact plugin install https://github.com/pactflow/pact-protobuf-plugin/releases/tag/v-${{ env.protobuf_plugin_version }} -y
 
       - name: Run examples
         run: composer run-examples
@@ -107,22 +131,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ '8.1', '8.2', '8.3', '8.4' ]
+        php: [ '8.2', '8.3', '8.4', '8.5' ]
         dependencies: [ 'lowest', 'locked' ]
 
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         name: Checkout repository
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # v2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           extensions: 'sockets, curl, zip, ffi'
           php-version: ${{ matrix.php }}
           coverage: pcov
 
       - name: Composer install
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@65e4f84970763564f46a70b8a54b90d033b3bdda # 4.0.0
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
@@ -132,7 +156,7 @@ jobs:
           PACT_DO_NOT_TRACK: true
 
       - name: Coveralls Parallel
-        uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2
         with:
           flag-name: ${{ matrix.php }}-${{ matrix.dependencies }}
           parallel: true
@@ -144,7 +168,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
-      uses: coverallsapp/github-action@5cbfd81b66ca5d10c19b062c04de0199c215fb6e # v2
+      uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2
       with:
         parallel-finished: true
 
@@ -158,7 +182,8 @@ jobs:
         os: [ubuntu-latest, ubuntu-24.04-arm]
 
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         name: Checkout repository
+      # Keep extensions aligned with Alpine's Composer PHP runtime on a supported release.
       - name: run musl # If shared-mime-info not installed - Expected binary contents to have content type 'image/jpeg' but detected contents was 'application/octet-stream'
-        run: docker run --env PACT_DO_NOT_TRACK=true --rm -v $PWD:/home alpine:3.19 /bin/sh -c 'apk add --no-cache shared-mime-info php82-dev php82-ffi php82-pecl-grpc php82-sockets php82-tokenizer php82-dom php82-xml php82-xmlwriter php82-simplexml composer protobuf-dev && cd /home && composer install && composer test && composer run-examples'
+        run: docker run --env PACT_DO_NOT_TRACK=true --rm -v $PWD:/home alpine:3.24 /bin/sh -c 'apk add --no-cache shared-mime-info php85-dev php85-ffi php85-pecl-grpc php85-sockets php85-tokenizer php85-dom php85-xml php85-xmlwriter php85-simplexml composer protobuf-dev curl file && cd /home && composer install && curl --proto '=https' --tlsv1.2 -LsSf https://github.com/pact-foundation/pact-cli/releases/latest/download/pact-installer.sh | sh && . "$HOME/.config/pact/env.sh" && pact plugin install https://github.com/pact-foundation/pact-plugins/releases/tag/csv-plugin-${{ env.csv_plugin_version }} -y && pact plugin install https://github.com/pactflow/pact-protobuf-plugin/releases/tag/v-${{ env.protobuf_plugin_version }} -y && composer test && composer run-examples'

@@ -36,13 +36,13 @@ class StubServer
         }
         $this->process->start($callback ?? null);
         if (is_null($logLevel) || in_array(\strtoupper($logLevel), ['INFO', 'DEBUG', 'TRACE'])) {
-            $this->process->waitUntil(function (string $type, string $output) {
+            $this->process->waitUntil(function (string $type, string $output): bool {
                 $result = preg_match('/Server started on port (\d+)/', $output, $matches);
                 if ($result === 1 && $this->config->getPort() === 0) {
                     $this->config->setPort((int)$matches[1]);
                 }
 
-                return $result;
+                return (bool)$result;
             });
         } else {
             if ($this->config->getPort() === 0) {
