@@ -50,6 +50,10 @@ final class ResponseGeneratorsContext implements Context
             (string) $serverBaseUri->withHost('127.0.0.1'),
             (string) $serverBaseUri->withHost('[::1]'),
             (string) $serverBaseUri->withHost('[0:0:0:0:0:0:0:1]'),
+            // pact-ffi 0.4.x reports the mock server URL with an unbracketed IPv6 host,
+            // which is not a valid URI host, so it cannot be built with Uri::withHost().
+            sprintf('%s://::1:%d', $serverBaseUri->getScheme(), $serverBaseUri->getPort()),
+            sprintf('%s://0:0:0:0:0:0:0:1:%d', $serverBaseUri->getScheme(), $serverBaseUri->getPort()),
         ];
         $body = str_replace($search, $href, $body);
         $this->bodyStorage->setBody($body);
