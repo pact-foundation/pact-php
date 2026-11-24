@@ -19,7 +19,7 @@ final class PactBroker implements PactBrokerInterface
     {
         $this->pactPath = new PactPath("c-$id");
         $this->client->put(sprintf('http://localhost:9292/pacts/provider/%s/consumer/%s/version/1.0.0', PactPath::PROVIDER, $this->pactPath->getConsumer()), [
-            'body' => file_get_contents($this->pactPath),
+            'body' => (string) file_get_contents($this->pactPath),
             'headers' => ['Content-Type' => 'application/json'],
         ]);
     }
