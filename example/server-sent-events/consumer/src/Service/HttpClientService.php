@@ -21,7 +21,7 @@ class HttpClientService
             'headers' => [
                 'Accept' => 'text/event-stream',
                 'Cache-Control' => 'no-cache',
-                'Last-Event-ID' => 123,
+                'Last-Event-ID' => '123',
             ],
             'stream' => true,
             'http_errors' => false,
