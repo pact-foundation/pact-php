@@ -20,7 +20,10 @@ concurrency:
 # whatever the plugin index lists as the latest release. Keep in step with the latest
 # releases; the examples job also keys its plugin cache on these.
 env:
-  csv_plugin_version: 0.1.0
+  # 0.0.6 is the last CSV plugin release with pluginInterfaceVersion 1. This release line
+  # pins pact-ffi 0.4.x, which only speaks plugin interface v1, so 0.1.0 fails to load:
+  # "Could not load plugin - Failed to send init request to the plugin - status: Unimplemented".
+  csv_plugin_version: 0.0.6
   protobuf_plugin_version: 0.8.1
 
 jobs:
