@@ -105,7 +105,7 @@ jobs:
           # versions means changing one always starts from an empty cache.
           key: ${{ matrix.os }}-pact-plugins-${{ env.csv_plugin_version }}-${{ env.protobuf_plugin_version }}
 
-      - uses: pact-foundation/pact-cli@5c8c53c24fa163f548e81463acdde99c465f4194 # main
+      - uses: pact-foundation/pact-cli@bd23962318473e49e9d6ccd84217637e045c36ec # main
 
       - name: Install SSE plugin
         run: pact plugin install https://github.com/tienvx/pact-sse-plugin/releases/tag/0.1.0 -y
